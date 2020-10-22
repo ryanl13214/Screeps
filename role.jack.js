@@ -17,7 +17,7 @@ var rolejack = {
 
     run: function(creep) {
         var startCpujack = Game.cpu.getUsed();
-        checkglobaltasks(creep);
+        creepfunctions.checkglobaltasks(creep);
         //   checklocaltasks(creep);
         if (creep.memory.tasklist.length == 0) {
         if (creep.memory.full == true && creep.carry.energy == 0) {

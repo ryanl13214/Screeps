@@ -8,44 +8,46 @@ var creepfunctions = {
     
     */
     checkglobaltasks: function(creep) {
-        if (creep.memory.tasklist[0][0] == "moveto") {
-            const path = creep.pos.findPathTo(creep.memory.targetroom);
-            if (path.length > 0) {
-                creep.move(path[0].direction);
-            } else {
-                creep.memory.tasklist[0].splice(0, 1);
+        if(creep.memory.tasklist[0]){
+            if (creep.memory.tasklist[0][0] == "moveto") {
+                const path = creep.pos.findPathTo(creep.memory.targetroom);
+                if (path.length > 0) {
+                    creep.move(path[0].direction);
+                } else {
+                    creep.memory.tasklist[0].splice(0, 1);
+                }
             }
-        }
-        if (creep.memory.tasklist[0][0] == "moveToRoom") {
-
-
-
-
-
-
-
-
-
-
-
-
-
-        }
-        if (creep.memory.tasklist[0][0] == "pickup") {
-            const path = creep.pos.findPathTo(creep.memory.targetroom);
-            if (path.length > 0) {
-                creep.move(path[0].direction);
-            } else {
-                creep.memory.tasklist[0].splice(0, 1);
+            if (creep.memory.tasklist[0][0] == "moveToRoom") {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
             }
-        }
-
-        if (creep.memory.tasklist[0][0] == "dropoff") {
-            const path = creep.pos.findPathTo(creep.memory.targetroom);
-            if (path.length > 0) {
-                creep.move(path[0].direction);
-            } else {
-                creep.memory.tasklist[0].splice(0, 1);
+            if (creep.memory.tasklist[0][0] == "pickup") {
+                const path = creep.pos.findPathTo(creep.memory.targetroom);
+                if (path.length > 0) {
+                    creep.move(path[0].direction);
+                } else {
+                    creep.memory.tasklist[0].splice(0, 1);
+                }
+            }
+    
+            if (creep.memory.tasklist[0][0] == "dropoff") {
+                const path = creep.pos.findPathTo(creep.memory.targetroom);
+                if (path.length > 0) {
+                    creep.move(path[0].direction);
+                } else {
+                    creep.memory.tasklist[0].splice(0, 1);
+                }
             }
         }
     },

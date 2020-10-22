@@ -34,12 +34,7 @@ var spwan =
         
         
         
-     ///////////////////////////////////////////
-        
-        
-        
-        
-        
+ 
         
         
         
@@ -73,15 +68,22 @@ var spwan =
             requiredJacks=0;
         }
          
-       
+    
+    /*
+    CREEPS WITH MEMSTRUCTS
+        jack 
+        mover
+        attackcreeps
+        scout
+        claimer
+    */
        //standard creep memory
-        var  memstruct={
-           pickuptarget:"",
-           pickupitem:"",
-           transfertargroom:"",
-           transfercontainer:"",
-           
-       };
+    var  memstruct={
+        pickuptarget:"",
+        pickupitem:"",
+        transfertargroom:"",
+        transfercontainer:""
+    };
        
        
        
@@ -129,7 +131,7 @@ var spwan =
             }
             else if(movers.length == 0  ) 
             {
-               spawnss[i].spawnCreep([CARRY,CARRY,MOVE,CARRY,MOVE,MOVE], 'mover' + Game.time, {memory: {role: 'mover',cpuUsed:0,roomtarg: roomname,sourcetarget:Game.time%2,tasklist:[],full:false,memstruct:memstruct}});
+               spawnss[i].spawnCreep([CARRY,CARRY,MOVE,CARRY,MOVE,MOVE], 'mover' + Game.time, {memory: {role: 'mover',cpuUsed:0,roomtarg: roomname,target:"a",tasklist:[],full:false,memstruct:memstruct}});
             }
             else if(towermover==0 && spawnss[i].name ==roomname  )
             {
@@ -148,15 +150,15 @@ var spwan =
             }
             else if(movers.length <4 && requiredJacks==0) 
             {
-               spawnss[i].spawnCreep([CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], 'mover' + Game.time, {memory: {role: 'mover',cpuUsed:0,roomtarg: roomname,sourcetarget:Game.time%2,tasklist:[],full:false,pickuptarget:"",pickupitem:"",transfertargroom:"",transfercontainer:""}});
+               spawnss[i].spawnCreep([CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], 'mover' + Game.time, {memory: {role: 'mover',cpuUsed:0,roomtarg: roomname ,target:"a",tasklist:[],full:false,memstruct:memstruct}});
             }
             
             else if(upgraders.length ==0 && requiredJacks==0) 
             {
-               spawnss[i].spawnCreep([WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE  ], 'upgrader' + Game.time, {memory: {role: 'upgrader',cpuUsed:0,roomtarg: roomname,sourcetarget:Game.time%2,tasklist:[],full:false, memstruct:memstruct}});
+               spawnss[i].spawnCreep([WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE  ], 'upgrader' + Game.time, {memory: {role: 'upgrader',cpuUsed:0,tasklist:[],full:false}});
             }
             
-            else if(upgraders.length <2 && requiredJacks==0 && storagevalue >700000 ) 
+            else if(upgraders.length <3 && requiredJacks==0 && storagevalue >700000 ) 
             {
                                 var numberofparts = Math.floor(energyavailable/300);
                 var bodyparts = [];
