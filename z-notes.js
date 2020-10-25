@@ -166,6 +166,16 @@ ATTACK_POWER: 30,
 
 
 
+        
+    //console.log( (RAMPART_DECAY_AMOUNT / REPAIR_POWER / RAMPART_DECAY_TIME)*169);//   0.5 energy per tick 
+   // console.log(  ROAD_DECAY_AMOUNT / REPAIR_POWER /  ROAD_DECAY_TIME);// 
+   // console.log(   ROAD_DECAY_AMOUNT * CONSTRUCTION_COST_ROAD_SWAMP_RATIO) / REPAIR_POWER /  ROAD_DECAY_TIME);// 
+   // console.log(  CONTAINER_DECAY / REPAIR_POWER / CONTAINER_DECAY_TIME_OWNED);// 
+    console.log(   CONTAINER_DECAY / REPAIR_POWER / CONTAINER_DECAY_TIME);// 
+        
+        
+        
+        
 
 
 
@@ -218,12 +228,14 @@ catalyzed ghodium alkalide	 + 	150	TOUGH	-70% damage taken
 
 
 
+key mins
 
 
-
-
-
-
+catalyzed ghodium alkalide  	-70% damage taken                                                      
+catalyzed utrium acid        	+300% attack effectiveness                                             
+catalyzed lemergium alkalide    +300% heal and rangedHeal effectiveness                                        
+catalyzed zynthium acid	     	+300% dismantle effectiveness                                      
+catalyzed zynthium alkalide	   	+300% fatigue decrease speed                                 
 
 
 

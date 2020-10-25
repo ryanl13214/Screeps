@@ -3,7 +3,7 @@ var roleharvester = {
     run: function(creep) {
         
         
-        if(creep.ticksToLive <130){
+        if(creep.ticksToLive <150){
             creep.memory.role="harvesteralt";
         }
         

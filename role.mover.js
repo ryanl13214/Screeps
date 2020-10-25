@@ -1,3 +1,15 @@
+/*
+KNOWN ISSUES
+tombstones with energy will stick creeps to them untill is decays before the resouces are picked up
+
+
+
+
+*/
+
+
+
+
 var roleMover = {
     //     this role is for moving energy from full containers to other areas within the same room    
     run: function(creep)
@@ -22,7 +34,7 @@ var roleMover = {
                 {
                     filter: (res) =>
                     {
-                        return (res.store.getUsedCapacity() != res.store.getUsedCapacity(RESOURCE_ENERGY)) || (res.store.getUsedCapacity(RESOURCE_ENERGY) > 100);
+                        return (res.resourceType !=  RESOURCE_ENERGY) || (res.amount > 100);
                     }
                 });  
             if (droppedresources == undefined && creep.memory.target == "a")
@@ -88,23 +100,23 @@ var roleMover = {
             else if (creep.memory.target != undefined)
             {
                 var object = Game.getObjectById(creep.memory.target);
-                var errorcode = creep.withdraw(object, RESOURCE_ENERGY);
+                console.log(creep.memory.target);
+                console.log( object );
+                const resourcekeys = Object.keys(object.store);
+                var errorcode = creep.withdraw(object, resourcekeys[0]); 
                 if (errorcode != 0)
                 {
                     var moveerrorcode = creep.moveTo(object,
                     {
                         reusePath: 10,
-                        visualizePathStyle: {
-                                stroke: '#ffaa00'
-                            }
+                        visualizePathStyle: {stroke: '#ffaa00'}
                     });
                 }
-                else if (errorcode == 0 || errorcode == -7)
+                else if (errorcode != 0  )
                 {
                     creep.memory.target = "a";
                 }
-                if(object == null){creep.memory.target = "a";}
-               
+                if(object == null){creep.memory.target = "a";} 
             }
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,20 +189,20 @@ var roleMover = {
                         return (structure.structureType == STRUCTURE_STORAGE);
                     }
                 });
-                var terminal = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                var terminalObject = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
                         return (structure.structureType == STRUCTURE_TERMINAL) && structure.store.energy < 50000;
                     }
                 });
-                if (storagemain != undefined)
+                if (terminalObject != undefined)
                 {
-                    targ = storagemain;
+                    targ = terminalObject;
                 }
                 else
                 {
-                    targ = terminal;
+                    targ = storagemain;
                 }
                 const resourcevalues = Object.values(creep.store);
                 const resourcekeys = Object.keys(creep.store);

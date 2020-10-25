@@ -3,10 +3,15 @@ var spawnmain = require('spawn');
 var buildbase = require('buildbase');
 var tower = require('tower');
 var defcon = require('defcon');
- var ownedrooms=["W35S8"];
+var terminalManager = require('terminal');
+var ownedrooms=["W35S8"];
+ 
+var storecpu=0;
+ 
+var ticks=0;
 module.exports.loop = function (){
 
- 
+         var mainstartCpu = Game.cpu.getUsed();
 //------------------------------------------------------------------------------------------------
 //                                    ROLES
 //------------------------------------------------------------------------------------------------
@@ -40,22 +45,26 @@ module.exports.loop = function (){
 var  roomname= ownedrooms[i];
   
         var creepsInRoom =Game.rooms[roomname].creeps; 
-     
+        var storagevalue = 0;
+        var defconlevel;
+        if (Game.rooms[roomname].storage != undefined)
+        {
+            storagevalue = Game.rooms[roomname].storage.store.energy;
+        }
       
         var startCpu = Game.cpu.getUsed();
-            var defconlevel = defcon.run(roomname);
+            defconlevel = defcon.run(roomname);
         var defcon_cpu_used =+ Game.cpu.getUsed() - startCpu;
       
       
-        if(Game.time%2==0)
-        {
-            var startCpu = Game.cpu.getUsed();
-                spawnmain.run(roomname,defconlevel);
-            var spawnmain_cpu_used =+ Game.cpu.getUsed() - startCpu;
-        }
+      
+        var startCpu = Game.cpu.getUsed();
+            spawnmain.run(roomname,defconlevel,storagevalue);
+        var spawnmain_cpu_used =+ Game.cpu.getUsed() - startCpu;
+      
       
         
-        if(Game.time%500==0)
+        if(Game.time%5==0)
         {
             var startCpu = Game.cpu.getUsed();
                 buildbase.run(roomname,25,13);
@@ -68,18 +77,12 @@ var  roomname= ownedrooms[i];
         
         
         //markets here
+        var startCpu = Game.cpu.getUsed();
+            terminalManager.run(roomname,0,defconlevel,storagevalue) 
+        var tower_cpu_used =+ Game.cpu.getUsed() - startCpu;
         
         
-         
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        //labs here
         
         
         
@@ -99,6 +102,17 @@ var  roomname= ownedrooms[i];
         
     //}catch(e){}
     }//end of rooms loop 
+      var all_cpu_used =+ Game.cpu.getUsed() - mainstartCpu;
+      ticks+=1;
+        storecpu+=all_cpu_used;
+   // console.log(storecpu/ticks);
+   
     
- 
+    if(false){
+        storecpu=0;
+        ticks=0;
+    }
+    
+    
+    
 }
