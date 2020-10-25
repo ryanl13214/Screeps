@@ -100,10 +100,16 @@ var roleMover = {
             else if (creep.memory.target != undefined)
             {
                 var object = Game.getObjectById(creep.memory.target);
-                console.log(creep.memory.target);
-                console.log( object );
-                const resourcekeys = Object.keys(object.store);
-                var errorcode = creep.withdraw(object, resourcekeys[0]); 
+              
+                var resourcekeys =  [RESOURCE_ENERGY];
+               
+                if(object == null){creep.memory.target = "a";} else{
+                    
+                    resourcekeys =Object.keys(object.store) ;
+                   
+                } 
+                
+                var errorcode = creep.withdraw(object,resourcekeys[0] ); 
                 if (errorcode != 0)
                 {
                     var moveerrorcode = creep.moveTo(object,
@@ -116,7 +122,7 @@ var roleMover = {
                 {
                     creep.memory.target = "a";
                 }
-                if(object == null){creep.memory.target = "a";} 
+              
             }
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////

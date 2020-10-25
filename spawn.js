@@ -150,11 +150,11 @@ var spwan = {
                         }
                     });
                 }
-                else if (harvesters.length < 2 && energyavailable > 850)
+                else if (harvesters.length < 2 && energyavailable > 1000)
                 {
                     if (harvesters.length == 0)
                     {
-                        spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], 'harvester1' + roomname,
+                        spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], 'harvester1' + roomname,
                         {
                             memory:
                             {
