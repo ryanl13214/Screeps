@@ -13,7 +13,7 @@ var tower = {
          
     
     for(var i =0 ; i < towers.length;i++){
-    
+     var closestHostile = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
     
         var closestDamagedStructure = towers[i].room.find(FIND_STRUCTURES, {
             filter: (structure) => structure.hits < structure.hitsMax * 0.2 && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART
@@ -25,11 +25,11 @@ var tower = {
         }
    
         
-        if(closestDamagedStructure.length != 0) {
+        if(closestDamagedStructure.length != 0 && closestHostile== undefined) {
             towers[i].repair(closestDamagedStructure[0]);
         }
 
-        var closestHostile = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        
         if(closestHostile) {
             towers[i].attack(closestHostile);
         }

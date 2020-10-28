@@ -40,6 +40,9 @@ var spwan = {
             var harvesters = _.filter(creepsinroom, (creep) => creep.memory.role == 'harvester');
             var movers = _.filter(creepsinroom, (creep) => creep.memory.role == 'mover');
             var upgraders = _.filter(creepsinroom, (creep) => creep.memory.role == 'upgrader');
+            var resourcemover = _.filter(creepsinroom, (creep) => creep.memory.role == 'resmover');
+ 
+ 
  
             var requiredJacks = 5;
             if (Game.rooms[roomname].controller.level > 3 && storagevalue > 10000 && creepsinroom.length != 0)
@@ -141,7 +144,7 @@ var spwan = {
                 }
                 else if (towermover == 0 && spawnss[i].name == roomname)
                 {
-                    spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
+                    spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE,WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
                     {
                         memory:
                         {
@@ -150,11 +153,22 @@ var spwan = {
                         }
                     });
                 }
+                else if (resourcemover == 0 && spawnss[i].name == roomname && Game.rooms[roomname].controller.level ==6)
+                {
+                    spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE,WORK, CARRY, CARRY, MOVE], 'resourcemover' + roomname,
+                    {
+                        memory:
+                        {
+                            role: 'resmover',
+                            working: false
+                        }
+                    });
+                }
                 else if (harvesters.length < 2 && energyavailable > 1000)
                 {
                     if (harvesters.length == 0)
                     {
-                        spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], 'harvester1' + roomname,
+                        spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE], 'harvester1' + roomname,
                         {
                             memory:
                             {
@@ -165,7 +179,7 @@ var spwan = {
                     }
                     else
                     {
-                        spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
+                        spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE], 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
                         {
                             memory:
                             {
@@ -175,7 +189,7 @@ var spwan = {
                         });
                     }
                 }
-                else if (movers.length < 4 && requiredJacks == 0)
+                else if (movers.length < 4 && requiredJacks == 0 &&    Game.rooms[roomname].controller.level <  6)
                 {
                     spawnss[i].spawnCreep([CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 'mover' + Game.time,
                     {
@@ -191,6 +205,23 @@ var spwan = {
                         }
                     });
                 }
+                else if (movers.length < 2 && requiredJacks == 0 &&   Game.rooms[roomname].controller.level ==  6)
+                {
+                    spawnss[i].spawnCreep([CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 'mover' + Game.time,
+                    {
+                        memory:
+                        {
+                            role: 'mover',
+                            cpuUsed: 0,
+                            roomtarg: roomname,
+                            target: "a",
+                            tasklist: [],
+                            full: false,
+                            memstruct: memstruct
+                        }
+                    });
+                }
+                
                 else if (upgraders.length == 0 && requiredJacks == 0)
                 {
                     spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], 'upgrader' + Game.time,

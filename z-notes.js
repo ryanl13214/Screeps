@@ -29,7 +29,7 @@ types of attacks
         drain the energy from the towers and hope they cannot replenish the energy quick enough
         takes 100 attacks to reduce energy to 0 
     undefended 
-        single attack creep
+        single attack creep with healer creep
     
 
 
@@ -73,21 +73,21 @@ nuking                    KEEP , BUNKER
 
  
 
-boosting each creep with  tough bodyparts with damage reducing  reduces damage by 70% meaning 270 damage is done needs 6 body parts worth of tough
+boosting each creep with  tough bodyparts with damage reducing  reduces damage by 70% meaning 270 damage is done needs 3 body parts worth of tough
 needs 22 heal bodyparts 
     
     
     boosted jack attack
-        7 tough boosted 25% damage
+        7 tough boosted 30% damage
         15 attack boosted 
         15 heal boosted
         13 boosted move to give full move
     
     
     stats
-        requires 1400 damage to get throguh tough
+        requires 2100 damage to get throguh tough
         attack dps is 30 * 4 * 15 1800
-        heals 720 damage each tick     effectiely 2880 with tough bodyparts
+        heals 720 damage each tick     effectiely 2160 with tough bodyparts
         full move
     
     

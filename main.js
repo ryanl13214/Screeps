@@ -4,6 +4,7 @@ var buildbase = require('buildbase');
 var tower = require('tower');
 var defcon = require('defcon');
 var terminalManager = require('terminal');
+var linkManager = require('links');
 var ownedrooms=["W35S8"];
  
 var storecpu=0;
@@ -76,13 +77,60 @@ var  roomname= ownedrooms[i];
         var tower_cpu_used =+ Game.cpu.getUsed() - startCpu;
         
         
+        
+        
+         
+        
         //markets here
         var startCpu = Game.cpu.getUsed();
-            terminalManager.run(roomname,0,defconlevel,storagevalue) 
+            terminalManager.run(roomname,Game.rooms[roomname].terminal,defconlevel,storagevalue); 
         var tower_cpu_used =+ Game.cpu.getUsed() - startCpu;
         
         
+        
+        var startCpu = Game.cpu.getUsed();
+            linkManager.run(roomname,25,13) ;
+        var tower_cpu_used =+ Game.cpu.getUsed() - startCpu;
+         
+        
         //labs here
+        
+        
+        
+        
+         /*
+              for (var i = 0; i < links.length; i++) {
+            if (links[i].energy > 300) {
+                links[i].transferEnergy(linkto);
+            }
+        }
+        
+        
+          var roomname = name;
+        var linkto = Game.rooms[roomname].lookForAt('structure', 24, 21)[0];
+        var links = Game.rooms[roomname].find(FIND_MY_STRUCTURES, {
+            filter: {
+                structureType: STRUCTURE_LINK
+            }
+        });
+ 
+  
+        
+ 
+        
+  
+
+        */
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         

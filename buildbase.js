@@ -13,7 +13,7 @@
 // all positions are from storage
 var core=[
     
-    
+    [1,-3],
      [-2,-2],
      [-1,-2], 
      [0,-2], 
@@ -43,9 +43,9 @@ var core=[
      [3,1],     
     [-1,2],
       [0,2],  
-    [-2,2]
-    
-    
+    [-2,2],
+    [-1,-4],[0,-4],[-1,-3],[0,-3],[-3,-2],[-3,1],[-4,-1],[-3,-2],[0,2],[1,2],[2,2],[1,3],[4,1],[4,2],[3,3],[3,2],
+   [-3,2],[-4,0]
     
     
     
@@ -351,10 +351,58 @@ var basebuild = {
             
             }
             
-            
-            
-            
-            
+            if (Game.rooms[roomname].controller.level > 5)
+            {
+                var   flag1 = Game.flags[roomname+"container1"];
+                var   flag0 = Game.flags[roomname+"container0"]; 
+                
+                const found = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag1.pos,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER)  ;
+                    }
+                });
+                
+                const found1 = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag0.pos,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER)  ;
+                    }
+                });
+                
+                
+                
+                if(found1.length!=0){
+                            if(found1[0].structureType == STRUCTURE_CONTAINER){
+                    found1[0].destroy();
+                    }
+                }
+                
+                
+                if(found.length!=0){
+                    if(found[0].structureType== STRUCTURE_CONTAINER){
+                    found[0].destroy();
+                    }
+                }
+                Game.rooms[roomname].createConstructionSite(flag1.pos.x  , flag1.pos.y, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(flag1.pos.x  , flag1.pos.y, STRUCTURE_LINK);
+                
+                Game.rooms[roomname].createConstructionSite(flag0.pos.x  , flag0.pos.y, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(flag0.pos.x  , flag0.pos.y, STRUCTURE_LINK);
+                
+                Game.rooms[roomname].createConstructionSite(storage_xpos -2 , storage_ypos +1,  STRUCTURE_CONTAINER);
+                
+                 
+                
+            //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
+            //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
+                
+            }
+                
+                
+                
             
             
             

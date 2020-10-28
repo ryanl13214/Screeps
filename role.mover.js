@@ -46,13 +46,7 @@ var roleMover = {
                         return (structure.structureType == STRUCTURE_STORAGE) && structure.store.energy > 500000;
                     }
                 });
-                links = creep.pos.findClosestByRange(FIND_STRUCTURES,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_LINK) && structure.energy > 400;
-                    }
-                });
+           
                 containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
@@ -75,10 +69,7 @@ var roleMover = {
                 {
                     creep.memory.target = containers.id;
                 }
-                else if (links != undefined)
-                {
-                    creep.memory.target = links.id;
-                }
+             
                 else if (storagemain != undefined)
                 {
                     creep.memory.target = storagemain.id;
@@ -108,7 +99,10 @@ var roleMover = {
                     resourcekeys =Object.keys(object.store) ;
                    
                 } 
-                
+                if(resourcekeys.length==0){
+                    
+                      creep.memory.target = "a";
+                }
                 var errorcode = creep.withdraw(object,resourcekeys[0] ); 
                 if (errorcode != 0)
                 {
@@ -134,7 +128,7 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION) && structure.energy != structure.energyCapacity;
+                        return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
                     }
                 });
                 var targets4 = creep.pos.findClosestByPath(FIND_STRUCTURES,
@@ -188,29 +182,18 @@ var roleMover = {
             }
             else
             {
-                var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_STORAGE);
-                    }
-                });
+          
                 var terminalObject = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_TERMINAL) && structure.store.energy < 50000;
+                        return (structure.structureType == STRUCTURE_TERMINAL)  ;
                     }
                 });
-                if (terminalObject != undefined)
-                {
+             
                     targ = terminalObject;
-                }
-                else
-                {
-                    targ = storagemain;
-                }
-                const resourcevalues = Object.values(creep.store);
+                 
+          const resourcevalues = Object.values(creep.store);
                 const resourcekeys = Object.keys(creep.store);
                 if (creep.transfer(targ, resourcekeys[0], resourcevalues[0]) == ERR_NOT_IN_RANGE)
                 {

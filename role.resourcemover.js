@@ -2,49 +2,129 @@ var roleresourcemover = {
 
     
     run: function(creep) {
-        
-    
+
+
  
-    
-    
-    
-    
-    
-   //     var sources = creep.room.find(FIND_STRUCTURES, { filter: (structure) =>{return (structure.structureType == STRUCTURE_CONTAINER);}}); 
-      // creep.say(sources.length); 
-	  var sources = creep.room.find(FIND_STRUCTURES, { filter: (structure) =>{return (structure.structureType == STRUCTURE_STORAGE);}}); 
-	
     if(creep.carry.energy == 0  )
     {
-    creep.memory.working = false;
-    } else if (creep.memory.working == false && creep.carry.energy == creep.carryCapacity) 
+        creep.memory.working = false;
+    } 
+    else if (creep.memory.working == false && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) 
     {
-    creep.memory.working = true;
+        creep.memory.working = true;
     }
+	  var flagmid = Game.flags[creep.room.name];
 	
+    creep.moveTo(new RoomPosition(flagmid.pos.x-1, flagmid.pos.y, creep.room.name), {visualizePathStyle: {stroke: '#ffaa00'}});
+ 
 	if(creep.memory.working == false)
 	{	    
-
-        if(creep.withdraw(creep.pos.findClosestByRange(sources), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-        {
-        creep.moveTo(creep.pos.findClosestByRange(sources), {visualizePathStyle: {stroke: '#ffaa00'}});
+   var  storagemain = creep.pos.findClosestByPath(LOOK_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_STORAGE) && structure.store.getCapacity(RESOURCE_ENERGY) < structure.store.getCapacity();
+                    }
+                });
+         var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_LINK)  ;
+                    }
+                });
+        if(storagemain!=undefined){  
+              
+            const resourcekeys = Object.keys(storagemain.store);
+            for(var i = 0 ; i < resourcekeys.length ; i++){ 
+                if(resourcekeys[i] != "energy")
+                { 
+                    creep.withdraw(storagemain, resourcekeys[i]);
+                }
+            }
+            
+            
         }
-    }
-           
-    if(creep.memory.working == true)
-    {   
-       var targets = creep.room.find(FIND_STRUCTURES, { filter: (structure) =>{return (structure.structureType == STRUCTURE_TOWER    ) && structure.energy <500;}});
-    
-    if(targets == null){   var targets = creep.room.find(FIND_STRUCTURES, { filter: (structure) =>{return (structure.structureType == STRUCTURE_SPAWN   ) && structure.store.energy <300;}});}
-      
-      
-        if(creep.transfer(targets[0] ,RESOURCE_ENERGY, creep.energyAvailable) == ERR_NOT_IN_RANGE) 
+        else
         {
-        creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                   creep.withdraw(sourcelink, RESOURCE_ENERGY) ;
+          
+            
+            
         }
-    }
-    
         
-}};
+        
+    }
+
+    
+      
+    
+    
+    if(creep.memory.working == true)
+    {    var  ofloadcontainer;
+        var flagmain = Game.flags[creep.room.name];
+        var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES , flagmain.pos.x - 2  , flagmain.pos.y +1);
+            for(var i = 0 ; i < temp.length ; i ++ )
+            {
+                 if(temp[i].structureType == STRUCTURE_CONTAINER){ofloadcontainer= temp[i];}
+            }
+  
+      
+    
+       // var linkto = Game.rooms[roomname].lookForAt('structure', storage_xpos - 2  , storage_ypos -1 )[0];
+      
+      
+   creep.transfer(ofloadcontainer, RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
+                
+      
+      
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    }
+};
 module.exports = roleresourcemover;
 
