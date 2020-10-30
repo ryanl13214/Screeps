@@ -1,8 +1,6 @@
 /*
 KNOWN ISSUES
-tombstones with energy will stick creeps to them untill is decays before the resouces are picked up
-
-
+ 
 
 
 */
@@ -54,6 +52,18 @@ var roleMover = {
                         return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1600;
                     }
                 });
+                if (containers == undefined)
+                {
+                containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 800;
+                    }
+                }); 
+                }
+                
+                
                 var tombstones = creep.pos.findClosestByPath(FIND_TOMBSTONES,
                 {
                     filter: (tomb) =>

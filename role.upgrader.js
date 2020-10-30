@@ -1,5 +1,7 @@
 var roleUpgrader = {
     run: function(creep) {
+        
+        
         if(creep.memory.full && creep.carry.energy == 0) {
             creep.memory.full = false;
         }
@@ -22,6 +24,7 @@ var roleUpgrader = {
                  creep.moveTo(Game.flags[creep.room.name + "controllerpos"  ].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
             } 
         }
+        
         
 	}
 };

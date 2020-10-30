@@ -57,15 +57,16 @@ var  roomname= ownedrooms[i];
             defconlevel = defcon.run(roomname);
         var defcon_cpu_used =+ Game.cpu.getUsed() - startCpu;
       
-      
+         if(Game.time%4==0)
+        {
       
         var startCpu = Game.cpu.getUsed();
             spawnmain.run(roomname,defconlevel,storagevalue);
         var spawnmain_cpu_used =+ Game.cpu.getUsed() - startCpu;
-      
+        }
       
         
-        if(Game.time%5==0)
+        if(Game.time%500==0)
         {
             var startCpu = Game.cpu.getUsed();
                 buildbase.run(roomname,25,13);
@@ -80,53 +81,25 @@ var  roomname= ownedrooms[i];
         
         
          
-        
+          
+        if(Game.time%100==0)
+        {
         //markets here
         var startCpu = Game.cpu.getUsed();
             terminalManager.run(roomname,Game.rooms[roomname].terminal,defconlevel,storagevalue); 
-        var tower_cpu_used =+ Game.cpu.getUsed() - startCpu;
-        
+        var Terminal_cpu_used =+ Game.cpu.getUsed() - startCpu;
+        }
         
         
         var startCpu = Game.cpu.getUsed();
             linkManager.run(roomname,25,13) ;
-        var tower_cpu_used =+ Game.cpu.getUsed() - startCpu;
+        var Link_cpu_used =+ Game.cpu.getUsed() - startCpu;
          
         
         //labs here
         
         
-        
-        
-         /*
-              for (var i = 0; i < links.length; i++) {
-            if (links[i].energy > 300) {
-                links[i].transferEnergy(linkto);
-            }
-        }
-        
-        
-          var roomname = name;
-        var linkto = Game.rooms[roomname].lookForAt('structure', 24, 21)[0];
-        var links = Game.rooms[roomname].find(FIND_MY_STRUCTURES, {
-            filter: {
-                structureType: STRUCTURE_LINK
-            }
-        });
- 
-  
-        
- 
-        
-  
-
-        */
-        
-        
-        
-        
-        
-        
+     
         
         
         
@@ -153,14 +126,19 @@ var  roomname= ownedrooms[i];
       var all_cpu_used =+ Game.cpu.getUsed() - mainstartCpu;
       ticks+=1;
         storecpu+=all_cpu_used;
-   // console.log(storecpu/ticks);
+   //  console.log(storecpu/ticks);
    
     
     if(false){
         storecpu=0;
         ticks=0;
     }
-    
+    if(true){
+      console.log("link cpu: "+Link_cpu_used);
+       console.log("Terminal_cpu_used : "+Terminal_cpu_used);
+       console.log("tower_cpu_used  : "+tower_cpu_used);
+       console.log("spawnmain_cpu_used cpu: "+spawnmain_cpu_used);
+    }  
     
     
 }
