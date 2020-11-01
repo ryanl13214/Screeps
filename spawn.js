@@ -12,7 +12,7 @@
 */
 //Game.spawns['w35s8'].spawnCreep([MOVE], 'flager' + Game.time, {memory: {role: 'flagger' , target:"source0"}});
 var spwan = {
-    run: function(roomname, defconlevel,storagevalue)
+    run: function(roomname, defconlevel,storagevalue,roomExits)
     {
         if (Game.spawns[roomname].spawning)
         {
@@ -41,6 +41,9 @@ var spwan = {
             var movers = _.filter(creepsinroom, (creep) => creep.memory.role == 'mover');
             var upgraders = _.filter(creepsinroom, (creep) => creep.memory.role == 'upgrader');
             var resourcemover = _.filter(creepsinroom, (creep) => creep.memory.role == 'resmover');
+            var extractor = _.filter(creepsinroom, (creep) => creep.memory.role == 'extractor');
+ 
+ 
  
  
  
@@ -59,6 +62,7 @@ var spwan = {
             */
             //standard creep memory
             var memstruct = {
+                spawnRoom:roomname,
                 pickuptarget: "",
                 pickupitem: "",
                 transfertargroom: "",
@@ -147,7 +151,7 @@ var spwan = {
                     spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE,WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
                     {
                         memory:
-                        {
+                        { memstruct: memstruct,
                             role: 'towermover',
                             working: false
                         }
@@ -160,7 +164,8 @@ var spwan = {
                         memory:
                         {
                             role: 'resmover',
-                            working: false
+                            working: false,
+                            memstruct: memstruct
                         }
                     });
                 }
@@ -173,7 +178,8 @@ var spwan = {
                             memory:
                             {
                                 role: 'harvester',
-                                sourcetarget: 1
+                                sourcetarget: 1,
+                            memstruct: memstruct
                             }
                         });
                     }
@@ -184,7 +190,8 @@ var spwan = {
                             memory:
                             {
                                 role: 'harvester',
-                                sourcetarget: (harvesters[0].memory.sourcetarget + 1) % 2
+                                sourcetarget: (harvesters[0].memory.sourcetarget + 1) % 2,
+                            memstruct: memstruct
                             }
                         });
                     }
@@ -230,7 +237,8 @@ var spwan = {
                         {
                             role: 'upgrader',
                             cpuUsed: 0,
-                            full: false
+                            full: false,
+                            memstruct: memstruct
                         }
                     });
                 }
@@ -290,24 +298,9 @@ var spwan = {
                         }
                     });
                 }
-                else if (claim && Game.time % 900 < 15)
+            
+                else if (extractor.length < 1 && 1==1)//////////////////////////////////////////////
                 {
-                    var memstruct = {
-                        pickuptarget: "",
-                        pickupitem: "",
-                        transfertargroom: "",
-                        transfercontainer: "",
-                    };
-                    //     spawnss[i].spawnCreep([CLAIM,MOVE,MOVE,MOVE,MOVE], 'claim' + Game.time, {memory: {role: 'claim',cpuUsed:0,roomtarg: claimroomtarg ,sourcetarget:Game.time%2,tasklist:[["moveToRoom","W36S12"]["moveToRoom","W33S12"]["moveToRoom","W33S13"]["moveToRoom","W31S13"]],full:false ,memstruct:memstruct,route:routetotargroom}});
-                }
-                else if (claim && Game.time % 200 < 25)
-                {
-                    var memstruct = {
-                        pickuptarget: "",
-                        pickupitem: "",
-                        transfertargroom: "",
-                        transfercontainer: "",
-                    };
                     var numberofparts = Math.floor(energyavailable / 350);
                     var bodyparts = [];
                     for (let i = 0; i < numberofparts; i++)
@@ -319,7 +312,21 @@ var spwan = {
                         bodyparts.push(MOVE);
                         bodyparts.push(MOVE);
                     }
-                    //   spawnss[i].spawnCreep(bodyparts, 'jackclaim' + Game.time, {memory: {role: 'jack',cpuUsed:0,roomtarg: claimroomtarg ,sourcetarget:Game.time%2,tasklist:[["moveToRoom","W36S12"]["moveToRoom","W33S12"]["moveToRoom","W33S13"]["moveToRoom","W31S13"]],full:false,memstruct:memstruct ,route:routetotargroom}});
+                    spawnss[i].spawnCreep(bodyparts, 'extractor' + Game.time,
+                    {
+                        memory:
+                        {
+                            role: 'extractor',
+                            cpuUsed: 0,
+                            depositId:false ,
+                            mineralType:"",
+                            roomtarg: roomname,
+                            sourcetarget: Game.time % 2,
+                            tasklist: [],
+                            full: false,
+                            memstruct: memstruct
+                        }
+                    });
                 }
                 //   console.log(Game.time%200);
             }

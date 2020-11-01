@@ -7,6 +7,7 @@ var roleupgrader = require('role.upgrader');
 var roletowermover = require('role.towermover');
 var roleclaimer = require('role.claimer');
 var roleresourcemover = require('role.resourcemover');
+var roleextractor = require('role.extractor');
 
 
 
@@ -56,6 +57,9 @@ var roles =
             }
             if(creep.memory.role=="resmover"){
                 roleresourcemover.run(creep);/////////////////////////////////////////////////////////
+            }  
+                        if(creep.memory.role=="extractor"){
+                roleextractor.run(creep);/////////////////////////////////////////////////////////
             }  
         }
     }

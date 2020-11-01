@@ -36,6 +36,16 @@ module.exports.loop = function (){
         Game.cpu.generatePixel()
     }
     
+    
+    
+
+ 
+ 
+   
+    
+    
+    
+    
 //------------------------------------------------------------------------------------------------
 //                    START OF ROOMS LOOP
 //------------------------------------------------------------------------------------------------
@@ -45,7 +55,37 @@ module.exports.loop = function (){
     {
 var  roomname= ownedrooms[i];
   
-        var creepsInRoom =Game.rooms[roomname].creeps; 
+//var creepsInRoom =Game.rooms[roomname].creeps; 
+        
+            var   creepsInRoom=       _.filter(Game.creeps, (creep) => creep.memory.memstruct.spawnRoom === ownedrooms[i]);
+        
+        
+        
+        
+        
+        var roomExits=[0,0,0,0];
+        
+        roomExits[0]=Game.rooms[roomname].find(FIND_EXIT_TOP);
+        roomExits[1]=Game.rooms[roomname].find(FIND_EXIT_RIGHT);
+        roomExits[2]=Game.rooms[roomname].find(FIND_EXIT_BOTTOM);
+        roomExits[3]=Game.rooms[roomname].find(FIND_EXIT_LEFT);
+      
+ 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         var storagevalue = 0;
         var defconlevel;
         if (Game.rooms[roomname].storage != undefined)
@@ -61,7 +101,7 @@ var  roomname= ownedrooms[i];
         {
       
         var startCpu = Game.cpu.getUsed();
-            spawnmain.run(roomname,defconlevel,storagevalue);
+            spawnmain.run(roomname,defconlevel,storagevalue,roomExits);
         var spawnmain_cpu_used =+ Game.cpu.getUsed() - startCpu;
         }
       
