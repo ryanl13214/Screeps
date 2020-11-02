@@ -11,22 +11,18 @@ var tower = {
         for (var i = 0; i < towers.length; i++)
         {
             var closestHostile = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            var closestDamagedStructure = towers[i].room.find(FIND_STRUCTURES,
-            {
-                filter: (structure) => structure.hits < structure.hitsMax * 0.2 && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART
+              var closestDamagedStructure = towers[i].pos.findInRange(FIND_STRUCTURES,5,
+            {   filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL 
             });
-            if (closestHostile)
-            {console.log(closestHostile);
+            
+          
+            
+            
+            if (closestHostile != undefined)
+            { 
                 towers[i].attack(closestHostile);
             }
-            else if (closestDamagedStructure.length == 0)
-            {
-                var closestDamagedStructure = towers[i].room.find(FIND_STRUCTURES,
-                {
-                    filter: (structure) => structure.hits < 20000 && (structure.structureType == STRUCTURE_RAMPART)
-                });
-            }
-            else if (closestDamagedStructure.length != 0 && closestHostile == undefined)
+            else if (closestDamagedStructure.length != 0  )
             {
                 towers[i].repair(closestDamagedStructure[0]);
             }

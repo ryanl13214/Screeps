@@ -242,7 +242,7 @@ var spwan = {
                         }
                     });
                 }
-                else if (upgraders.length < 3 && requiredJacks == 0 && storagevalue > 700000)
+                else if (upgraders.length <1 && requiredJacks == 0 && storagevalue > 700000)
                 {
                     var numberofparts = Math.floor(energyavailable / 300);
                     var bodyparts = [];

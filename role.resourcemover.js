@@ -117,14 +117,25 @@ var roleresourcemover = {
                 }
                 else
                 {
-                    var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                    var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
                     {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_STORAGE);
-                        }
+                        filter: (structure) => structure.hits < structure.hitsMax * 0.6 && structure.structureType != STRUCTURE_WALL
                     });
-                    creep.transfer(storagemain, RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
+                    if (closestDamagedStructure.length != 0)
+                    {
+                        creep.repair(closestDamagedStructure[0]);
+                    }
+                    else
+                    {
+                        var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                        {
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType == STRUCTURE_STORAGE);
+                            }
+                        });
+                        creep.transfer(storagemain, RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
+                    }
                 }
             }
         }

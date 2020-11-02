@@ -173,7 +173,7 @@ var  roomname= ownedrooms[i];
         storecpu=0;
         ticks=0;
     }
-    if(true){
+    if(false){
       console.log("link cpu: "+Link_cpu_used);
        console.log("Terminal_cpu_used : "+Terminal_cpu_used);
        console.log("tower_cpu_used  : "+tower_cpu_used);

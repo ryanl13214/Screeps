@@ -9,8 +9,8 @@
 var terminalManager = {
     run: function(roomname, terminalActual, defcon, storagevalue)
     {
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H", "O", "U", "L", "Z", "X", "G", "energy"];
-        var allValues = [20000, 20000, 20000,5000, 5000, 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000];
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H", "O", "U", "L", "Z", "X", "G", "energy","GO"];
+        var allValues = [20000, 20000, 20000,5000, 5000, 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000,3000];
         var listOfResourcesInsideTerminal = terminalActual.store;
         var resourcekeys = Object.keys(listOfResourcesInsideTerminal);
         var resourcevalues = Object.values(listOfResourcesInsideTerminal);
