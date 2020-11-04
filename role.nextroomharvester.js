@@ -35,8 +35,10 @@ var rolenextroomHarvester = {
             }
             else
             { // IF CREEP IS NOT IN TARGET ROOM AND HAS NO ENERRGY
-                var exitToTargRoom = creep.room.findExitTo(creep.memory.target) ;
-                creep.moveTo(exitToTargRoom[0].pos);
+                
+               const exitDir = Game.map.findExit(creep.room, creep.memory.target);
+    const exit = creep.pos.findClosestByRange(exitDir);
+    creep.moveTo(exit);
             }
         }
         if (creep.memory.full == true)
@@ -66,9 +68,9 @@ var rolenextroomHarvester = {
             }
             else if (targets.length > 0 && creep.room.name != creep.memory.home)
             {
-                if (creep.build(targets[0]) == ERR_NOT_IN_RANGE)
+                if (creep.build(targets[targets.length - 1 ]) == ERR_NOT_IN_RANGE)
                 {
-                    creep.moveTo(targets[0],
+                    creep.moveTo(targets[targets.length - 1],
                     {
                         visualizePathStyle:
                         {
@@ -79,8 +81,10 @@ var rolenextroomHarvester = {
             }
             else
             {
-                var exitToTargRoom = creep.room.findExitTo(creep.memory.home);
-                creep.moveTo(exitToTargRoom[0].pos);
+                
+                          const exitDir = Game.map.findExit(creep.room, creep.memory.home);
+    const exit = creep.pos.findClosestByRange(exitDir);
+    creep.moveTo(exit);
             }
         }
     }

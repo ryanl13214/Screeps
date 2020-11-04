@@ -101,7 +101,7 @@ var  roomname= ownedrooms[i];
         {
       
         var startCpu = Game.cpu.getUsed();
-            spawnmain.run(roomname,defconlevel,storagevalue,roomExits);
+            spawnmain.run(roomname,defconlevel,storagevalue,roomExits,creepsInRoom);
         var spawnmain_cpu_used =+ Game.cpu.getUsed() - startCpu;
         }
       
