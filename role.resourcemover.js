@@ -1,3 +1,36 @@
+
+
+
+
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+if there is energy in the link then withdraw it 
+if the energy level of the terminal is over 51,000 withdraw energy from it
+
+
+
+
+
+
+
+
+*/
+
+
+
+
+
 var roleresourcemover = {
     run: function(creep)
     {
@@ -24,6 +57,13 @@ var roleresourcemover = {
                 filter: (structure) =>
                 {
                     return (structure.structureType == STRUCTURE_STORAGE && structure.store.getUsedCapacity("energy") < structure.store.getUsedCapacity());
+                }
+            });
+            var overflowingterminal = creep.pos.findClosestByPath(FIND_STRUCTURES,
+            {
+                filter: (structure) =>
+                {
+                    return (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") >51000);
                 }
             });
             if (storagemain != undefined)
@@ -56,7 +96,13 @@ var roleresourcemover = {
                         ofloadcontainer = temp[i];
                     }
                 }
-                if (ofloadcontainer.store.getUsedCapacity() != 2000 && sourcelink.store.getUsedCapacity("energy") == 0)
+              
+                if(sourcelink.store.getUsedCapacity("energy") == 0 && overflowingterminal != undefined){
+                     creep.withdraw(overflowingterminal, RESOURCE_ENERGY);
+                }
+                
+                
+                else if (ofloadcontainer.store.getUsedCapacity() != 2000 && sourcelink.store.getUsedCapacity("energy") == 0)
                 {
                     var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
                     {
@@ -66,8 +112,9 @@ var roleresourcemover = {
                         }
                     });
                     creep.withdraw(storagemain, RESOURCE_ENERGY);
-                }
+                }else{
                 creep.withdraw(sourcelink, RESOURCE_ENERGY);
+                }
             }
         }
         if (creep.memory.working == true)
@@ -117,11 +164,38 @@ var roleresourcemover = {
                 }
                 else
                 {
+                    var twoTowers = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                    {
+                        filter: (structure) =>    structure.structureType == STRUCTURE_TOWER  && structure.store.getUsedCapacity("energy") <100
+                    });
+                     
+                    if (twoTowers.length > 0 && false)
+                    {
+                        
+            creep.transfer(twoTowers[0], RESOURCE_ENERGY, creep.store.getUsedCapacity());
+
+                    }else{
+                        
                     var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
                     {
-                        filter: (structure) => structure.hits < structure.hitsMax * 0.6 && structure.structureType != STRUCTURE_WALL
+                        filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
                     });
-                    if (closestDamagedStructure.length != 0)
+                    
+                    
+                    var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_LINK);
+                        }
+                    });
+                    
+                    
+                    
+                    
+                    
+                    
+                    if (closestDamagedStructure.length != 0 && creep.room.storage.store.getUsedCapacity() >100000 && creep.room.terminal.store.getUsedCapacity("energy") <55000 && sourcelink != undefined)//////////////////////////////////////////
                     {
                         creep.repair(closestDamagedStructure[0]);
                     }
@@ -135,6 +209,7 @@ var roleresourcemover = {
                             }
                         });
                         creep.transfer(storagemain, RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
+                    }
                     }
                 }
             }

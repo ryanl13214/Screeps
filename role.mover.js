@@ -54,15 +54,24 @@ var roleMover = {
                 });
                 if (containers == undefined)
                 {
-                containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
-                {
-                    filter: (structure) =>
+                    containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
                     {
-                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 800;
-                    }
-                }); 
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 400;
+                        }
+                    }); 
                 }
-                
+                if (containers == undefined)
+                {
+                    containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_TERMINAL) && structure.store.energy > 51000;
+                        }
+                    }); 
+                }
                 
                 var tombstones = creep.pos.findClosestByPath(FIND_TOMBSTONES,
                 {
@@ -80,7 +89,7 @@ var roleMover = {
                     creep.memory.target = containers.id;
                 }
              
-                else if (storagemain != undefined)
+                else if (storagemain != undefined && creep.room.controller.level <8)
                 {
                     creep.memory.target = storagemain.id;
                 }
@@ -145,10 +154,10 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy < 1000;
+                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy < 1500;
                     }
                 });
-                var targets5 = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
@@ -175,9 +184,9 @@ var roleMover = {
                 {
                     targ = targets4;
                 }
-                else if (targets5 != undefined)
+                else if (storagemain != undefined  && creep.room.controller.level <8)
                 {
-                    targ = targets5;
+                    targ = storagemain;
                 }
                 if (creep.transfer(targ, RESOURCE_ENERGY, creep.energyAvailable) == ERR_NOT_IN_RANGE)
                 {

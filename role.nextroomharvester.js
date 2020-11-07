@@ -20,7 +20,16 @@ var rolenextroomHarvester = {
         {
             if (creep.room.name == creep.memory.target) // IF CREEP IS IN TARGET ROOM AND HAS NO ENERGY
             {
-                creep.pos.createConstructionSite(STRUCTURE_ROAD);
+                    var target = creep.room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_ROAD);
+                    }
+                });
+                if(target.length <25 && target.length <25){
+             //   creep.pos.createConstructionSite(STRUCTURE_ROAD);
+                }
                 var sources = creep.room.find(FIND_SOURCES_ACTIVE);
                 if (creep.harvest(creep.pos.findClosestByPath(sources)) == ERR_NOT_IN_RANGE)
                 {
@@ -84,6 +93,8 @@ var rolenextroomHarvester = {
                 
                           const exitDir = Game.map.findExit(creep.room, creep.memory.home);
     const exit = creep.pos.findClosestByRange(exitDir);
+    Game.map.visual.line(creep.pos,exit,
+    {color: '#ff0000', lineStyle: 'dashed'});
     creep.moveTo(exit);
             }
         }

@@ -74,7 +74,7 @@ var  roomname= ownedrooms[i];
         
         
         
-        
+        Game.map.visual.circle(new RoomPosition(25,25,roomname),500);
         
         
         

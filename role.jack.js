@@ -59,6 +59,10 @@ var rolejack = {
                     if (!creep.memory.hastask) {
                         creepfunctions.buildstructs(creep);
                     }
+                    if (!creep.memory.hastask && creep.room.controller.ticksToDowngrade>3000) {
+                        creepfunctions.repairbuildingsfull(creep);
+                    }
+                    
                     if (!creep.memory.hastask) {
                         creepfunctions.upgradecontroller(creep);
                     }

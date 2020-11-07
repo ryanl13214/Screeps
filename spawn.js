@@ -28,7 +28,7 @@ var spwan = {
         if (Game.time % 5 == 0)
         {
             var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
-            console.log(energyavailable);
+           
            
             var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
             var repairers = _.filter(creepsinroom, (creep) => creep.memory.role == 'repair');
@@ -41,7 +41,7 @@ var spwan = {
             var nextroomharvester = _.filter(creepsinroom, (creep) => creep.memory.role == 'nextroom');
              
             var requiredJacks = 5;
-            if (Game.rooms[roomname].controller.level > 3 && storagevalue > 10000 && creepsinroom.length != 0)
+            if (Game.rooms[roomname].controller.level > 3 && storagevalue > 10000 && creepsinroom.length >2)
             {
                 requiredJacks = 0;
             }
@@ -59,15 +59,15 @@ var spwan = {
             var routetotargroom;
             if (Game.flags[roomname + "claim"])
             {
-                // claim = true;
+                
                 claimroomtarg = Game.flags[roomname + "claim"].memory;
             }
             var numberofnextrooms = roomExits.length;
-            console.log("nextroom[q]a" +nextroomharvester.length+"--required next rooms-"+numberofnextrooms);
+             
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
             for (var i = 0; i < spawnss.length; i++)
             {
-                if (jacks.length == 0 && requiredJacks != 0)
+                if (jacks.length < 3 && requiredJacks != 0)
                 {
                     spawnss[i].spawnCreep([WORK, CARRY, MOVE, CARRY, MOVE], 'jack' + Game.time,
                     {
@@ -76,12 +76,15 @@ var spwan = {
                             role: 'jack',
                             cpuUsed: 0,
                             roomtarg: roomname,
-                            sourcetarget: Game.time % 2,
+                            sourcetarget: (Game.time *3 )% 2,
                             tasklist: [],
                             full: false,
                             memstruct: memstruct
                         }
                     });
+                    
+                    
+                    
                 }
                 else if (jacks.length < requiredJacks && energyavailable > 349)
                 {
@@ -140,7 +143,7 @@ var spwan = {
                 }
                 else if (resourcemover == 0 && spawnss[i].name == roomname && Game.rooms[roomname].controller.level == 6)
                 {
-                    spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'resourcemover' + roomname,
+                    spawnss[i].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'resourcemover' + roomname,
                     {
                         memory:
                         {
@@ -326,7 +329,7 @@ var spwan = {
                 else if (nextroomharvester.length < numberofnextrooms)  
                           
                 {
-                    console.log("nextroom[q]");
+                
                     var numberofparts = Math.floor(energyavailable / 350);
                     if(numberofparts>50){numberofparts=Math.floor( 50/6);}
                     var bodyparts = [];
@@ -344,7 +347,7 @@ var spwan = {
                     const resourcevalues = Object.values(roomExits);
                     const resourcekeys = Object.keys(roomExits);
                     if (nextroomharvester.length == 0)
-                    {console.log("nextroomharvester.length == 0");
+                    { 
                         spawnss[i].spawnCreep(bodyparts, 'nextroom-' + roomname + "-" + resourcevalues[resourcevalues.length - 1],
                         {
                             memory:
@@ -362,7 +365,7 @@ var spwan = {
                     }
                     else
                     {       
-                        console.log("resourcevalues[q]");
+                         
                         var takenrooms = []
                         for (var u = 0; u < nextroomharvester.length; u++)
                         {

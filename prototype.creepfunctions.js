@@ -133,6 +133,11 @@ var creepfunctions = {
                 return (s.structureType == STRUCTURE_ROAD || s.structureType == STRUCTURE_CONTAINER) && s.hits < s.hitsMax * 0.99;
             }
         });
+        
+          
+        
+        
+        
         if (repairtarg) {
             if (creep.repair(repairtarg) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(repairtarg, {
@@ -140,7 +145,38 @@ var creepfunctions = {
                 });
             }
             creep.memory.hastask = true;
+        }else{
+            
+            
+                     var closestDamagedStructure = creep.room.find(FIND_STRUCTURES, 
+                    {
+                        filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
+                    });
+                    if (closestDamagedStructure.length != 0)
+                    {
+                        if (creep.repair(closestDamagedStructure[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(closestDamagedStructure[0], {
+                    reusePath: 5
+                });
+            }
+              creep.memory.hastask = true;
+                    }   
+            
+            
+            
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     },
     /*
     USED BY: 
@@ -174,10 +210,10 @@ var creepfunctions = {
             filter: (structure) => {
                 return  (
                     (structure.structureType == STRUCTURE_EXTENSION && structure.energy       < 50)  ||  
-                    (structure.structureType == STRUCTURE_TOWER     && structure .energy      < 500) || 
+                   
                     (structure.structureType == STRUCTURE_CONTAINER && structure.store.energy < 500) || 
-                    (structure.structureType == STRUCTURE_SPAWN     && structure.energy       < 300) ||
-                    (structure.structureType == STRUCTURE_STORAGE   && structure.store.energy < 10000)   
+                    (structure.structureType == STRUCTURE_SPAWN     && structure.energy       < 300) 
+                  
                 );
             }
         });

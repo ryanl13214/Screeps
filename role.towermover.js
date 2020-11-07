@@ -64,7 +64,7 @@ var roletowermover = {
             {
                 var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
                 {
-                    filter: (structure) => structure.hits < structure.hitsMax * 0.6 && structure.structureType != STRUCTURE_WALL
+                    filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
                 });
                 if (closestDamagedStructure.length != 0)
                 {
