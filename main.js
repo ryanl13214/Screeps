@@ -5,7 +5,7 @@ var tower = require('tower');
 var defcon = require('defcon');
 var terminalManager = require('terminal');
 var linkManager = require('links');
-var ownedrooms=["W35S8"];
+var ownedrooms=["W16S52"];
  
 var storecpu=0;
  
@@ -16,9 +16,6 @@ module.exports.loop = function (){
 //------------------------------------------------------------------------------------------------
 //                                    ROLES
 //------------------------------------------------------------------------------------------------
-    var startCpu = Game.cpu.getUsed();
-        roles.run();
-    var roles_cpu_used =+ Game.cpu.getUsed() - startCpu;
  
 //------------------------------------------------------------------------------------------------
 //                          deleting memory
@@ -55,12 +52,37 @@ module.exports.loop = function (){
     {
 var  roomname= ownedrooms[i];
   
-//var creepsInRoom =Game.rooms[roomname].creeps; 
+        
+        var mainflag = Game.flags[roomname];
+        if( mainflag == undefined){
+            
+              var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+            
+            console.log(spawnss);
+            
+             Game.rooms[roomname].createFlag(spawnss[0].pos.x - 2, spawnss[0].pos.y, roomname);
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
             var   creepsInRoom=       _.filter(Game.creeps, (creep) => creep.memory.memstruct.spawnRoom === ownedrooms[i]);
         
         
-        
+            var startCpu = Game.cpu.getUsed();
+                roles.run(creepsInRoom);
+            var roles_cpu_used =+ Game.cpu.getUsed() - startCpu;
+         
         
         
         var roomExits=[0,0,0,0];
@@ -109,7 +131,7 @@ var  roomname= ownedrooms[i];
         if(Game.time%500==0)
         {
             var startCpu = Game.cpu.getUsed();
-                buildbase.run(roomname,25,13);
+                buildbase.run(roomname,mainflag.pos.x,mainflag.pos.y);/////////////////////////////////////////////////////////////////
             var buildbase_cpu_used =+ Game.cpu.getUsed() - startCpu;
         }    
         
@@ -122,11 +144,11 @@ var  roomname= ownedrooms[i];
         
          
           
-        if(Game.time%100==0)
+        if(Game.time%100==0 || (storagevalue <10000 && Game.rooms[roomname].terminal != undefined) )
         {
         //markets here
         var startCpu = Game.cpu.getUsed();
-            terminalManager.run(roomname,Game.rooms[roomname].terminal,defconlevel,storagevalue); 
+          //  terminalManager.run(roomname,Game.rooms[roomname].terminal,defconlevel,storagevalue); 
         var Terminal_cpu_used =+ Game.cpu.getUsed() - startCpu;
         }
         

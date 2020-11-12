@@ -10,68 +10,62 @@ var roleresourcemover = require('role.resourcemover');
 var roleextractor = require('role.extractor');
 var rolenextroomharvester = require('role.nextroomharvester');
 var roleguard = require('role.basicroomguard');
+var rolescout = require('role.scout');
 
 
 
 
 var roles = 
 {
-    run: function() 
+    run: function(creepsglobal) 
     {
-        
          
- 
-        var creepsglobal =Game.creeps;
- 
-        
-        for(var name in creepsglobal)
+        for(var i = 0 ; i < creepsglobal.length; i++ )
         {
-            var creep = Game.creeps[name];
+            var creep = Game.creeps[creepsglobal[i].name];
             if(creep.memory.role=="jack"){
                 rolejack.run(creep);
-            }
+            }else
             
             if(creep.memory.role=="flagger"){
                 roleflag.run(creep);
-            }
+            }else
             if(creep.memory.role=="repair"){
                 rolerepair.run(creep);
-            }
+            }else
             if(creep.memory.role=="harvester"){
                 roleHarvester.run(creep);
-            }
+            }else
             if(creep.memory.role=="harvesteralt"){
                 roleHarvester.run(creep);
-            }         
+            }   else      
             if(creep.memory.role=="claimer"){
                 roleclaimer.run(creep);
-            }  
+            }  else
             if(creep.memory.role=="mover"){
                 rolemover.run(creep);
-            }
+            }else
             if(creep.memory.role=="towermover"){
                 roletowermover.run(creep);
-            }
+            }else
             if(creep.memory.role=="upgrader"){
                 roleupgrader.run(creep);
-            }
-            if(creep.memory.role=="attacker"){
-                roleflag.run(creep);/////////////////////////////////////////////////////////
-            }
+            }else
             if(creep.memory.role=="resmover"){
-                roleresourcemover.run(creep);/////////////////////////////////////////////////////////
-            }  
-                        if(creep.memory.role=="extractor"){
+                roleresourcemover.run(creep); 
+            }  else
+            if(creep.memory.role=="extractor"){
                 roleextractor.run(creep);
             }  
-            
-                              if(creep.memory.role=="nextroom"){
+            else if(creep.memory.role=="nextroom"){
                 rolenextroomharvester.run(creep);
-            }        
-                              if(creep.memory.role=="guard"){
+            }  else      
+            if(creep.memory.role=="guard"){
                 roleguard.run(creep);
-            }             
-            
+            }  else           
+            if(creep.memory.role=="scout"){
+                rolescout.run(creep);
+            }        
             
         }
     }

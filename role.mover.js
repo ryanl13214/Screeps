@@ -72,6 +72,18 @@ var roleMover = {
                         }
                     }); 
                 }
+                if (containers == undefined)
+                {
+                    containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_STORAGE) && structure.store.energy > 1000;
+                        }
+                    }); 
+                }
+                
+                
                 
                 var tombstones = creep.pos.findClosestByPath(FIND_TOMBSTONES,
                 {
@@ -210,8 +222,13 @@ var roleMover = {
                     }
                 });
              
+             
+             
+             if(terminalObject != undefined){
                     targ = terminalObject;
-                 
+             }else if(creep.room.storage != undefined){
+                 targ = creep.room.storage;
+             }
           const resourcevalues = Object.values(creep.store);
                 const resourcekeys = Object.keys(creep.store);
                 if (creep.transfer(targ, resourcekeys[0], resourcevalues[0]) == ERR_NOT_IN_RANGE)

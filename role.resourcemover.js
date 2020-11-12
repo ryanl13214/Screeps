@@ -1,36 +1,7 @@
-
-
-
-
-
 /*
-
-
-
-
-
-
-
-
-
-
-
 if there is energy in the link then withdraw it 
 if the energy level of the terminal is over 51,000 withdraw energy from it
-
-
-
-
-
-
-
-
 */
-
-
-
-
-
 var roleresourcemover = {
     run: function(creep)
     {
@@ -43,7 +14,7 @@ var roleresourcemover = {
             creep.memory.working = true;
         }
         var flagmid = Game.flags[creep.room.name];
-        creep.moveTo(new RoomPosition(flagmid.pos.x - 1, flagmid.pos.y, creep.room.name),
+        creep.moveTo(new RoomPosition(flagmid.pos.x - 1, flagmid.pos.y - 1, creep.room.name),
         {
             visualizePathStyle:
             {
@@ -56,14 +27,15 @@ var roleresourcemover = {
             {
                 filter: (structure) =>
                 {
-                    return (structure.structureType == STRUCTURE_STORAGE && structure.store.getUsedCapacity("energy") < structure.store.getUsedCapacity());
+                    return (structure.structureType == STRUCTURE_STORAGE && structure.store.getUsedCapacity("energy") < structure.store
+                        .getUsedCapacity());
                 }
             });
             var overflowingterminal = creep.pos.findClosestByPath(FIND_STRUCTURES,
             {
                 filter: (structure) =>
                 {
-                    return (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") >51000);
+                    return (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") > 51000);
                 }
             });
             if (storagemain != undefined)
@@ -88,7 +60,7 @@ var roleresourcemover = {
                 });
                 var ofloadcontainer;
                 var flagmain = Game.flags[creep.room.name];
-                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y + 1);
+                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
                 for (var i = 0; i < temp.length; i++)
                 {
                     if (temp[i].structureType == STRUCTURE_CONTAINER)
@@ -96,12 +68,15 @@ var roleresourcemover = {
                         ofloadcontainer = temp[i];
                     }
                 }
-              
-                if(sourcelink.store.getUsedCapacity("energy") == 0 && overflowingterminal != undefined){
-                     creep.withdraw(overflowingterminal, RESOURCE_ENERGY);
+                if (ofloadcontainer == undefined)
+                {
+                    // build stucture
                 }
-                
-                
+                else
+                if (sourcelink.store.getUsedCapacity("energy") == 0 && overflowingterminal != undefined)
+                {
+                    creep.withdraw(overflowingterminal, RESOURCE_ENERGY);
+                }
                 else if (ofloadcontainer.store.getUsedCapacity() != 2000 && sourcelink.store.getUsedCapacity("energy") == 0)
                 {
                     var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
@@ -112,8 +87,10 @@ var roleresourcemover = {
                         }
                     });
                     creep.withdraw(storagemain, RESOURCE_ENERGY);
-                }else{
-                creep.withdraw(sourcelink, RESOURCE_ENERGY);
+                }
+                else
+                {
+                    creep.withdraw(sourcelink, RESOURCE_ENERGY);
                 }
             }
         }
@@ -121,9 +98,10 @@ var roleresourcemover = {
         {
             if (creep.store.getUsedCapacity("energy") < creep.store.getUsedCapacity())
             {
+                
                 var ofloadcontainer;
                 var flagmain = Game.flags[creep.room.name];
-                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y + 1);
+                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y - 1);
                 for (var i = 0; i < temp.length; i++)
                 {
                     if (temp[i].structureType == STRUCTURE_TERMINAL)
@@ -140,7 +118,7 @@ var roleresourcemover = {
             {
                 var ofloadcontainer;
                 var flagmain = Game.flags[creep.room.name];
-                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y + 1);
+                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
                 for (var i = 0; i < temp.length; i++)
                 {
                     if (temp[i].structureType == STRUCTURE_CONTAINER)
@@ -166,50 +144,41 @@ var roleresourcemover = {
                 {
                     var twoTowers = creep.pos.findInRange(FIND_STRUCTURES, 1,
                     {
-                        filter: (structure) =>    structure.structureType == STRUCTURE_TOWER  && structure.store.getUsedCapacity("energy") <100
+                        filter: (structure) => structure.structureType == STRUCTURE_TOWER && structure.store.getUsedCapacity("energy") < 100
                     });
-                     
                     if (twoTowers.length > 0 && false)
                     {
-                        
-            creep.transfer(twoTowers[0], RESOURCE_ENERGY, creep.store.getUsedCapacity());
-
-                    }else{
-                        
-                    var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
-                    {
-                        filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
-                    });
-                    
-                    
-                    var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_LINK);
-                        }
-                    });
-                    
-                    
-                    
-                    
-                    
-                    
-                    if (closestDamagedStructure.length != 0 && creep.room.storage.store.getUsedCapacity() >100000 && creep.room.terminal.store.getUsedCapacity("energy") <55000 && sourcelink != undefined)//////////////////////////////////////////
-                    {
-                        creep.repair(closestDamagedStructure[0]);
+                        creep.transfer(twoTowers[0], RESOURCE_ENERGY, creep.store.getUsedCapacity());
                     }
                     else
                     {
-                        var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                        var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
+                        {
+                            filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
+                        });
+                        var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
                         {
                             filter: (structure) =>
                             {
-                                return (structure.structureType == STRUCTURE_STORAGE);
+                                return (structure.structureType == STRUCTURE_LINK);
                             }
                         });
-                        creep.transfer(storagemain, RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
-                    }
+                        if (closestDamagedStructure.length != 0 && creep.room.storage.store.getUsedCapacity() > 100000 && creep.room.terminal.store
+                            .getUsedCapacity("energy") < 55000 && sourcelink != undefined) //////////////////////////////////////////
+                        {
+                            creep.repair(closestDamagedStructure[0]);
+                        }
+                        else
+                        {
+                            var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                            {
+                                filter: (structure) =>
+                                {
+                                    return (structure.structureType == STRUCTURE_STORAGE);
+                                }
+                            });
+                            creep.transfer(storagemain, RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
+                        }
                     }
                 }
             }

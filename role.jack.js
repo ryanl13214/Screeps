@@ -28,6 +28,9 @@ var rolejack = {
                 creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
             }
             if (!creep.memory.full) {
+                 if (creep.memory.lastpos == creep.room.pos) {
+                  //  creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
+                }
                 creep.memory.hastask = false;
                 if (!creep.memory.hastask) {
                     creepfunctions.findfullcontainers(creep,1000);
@@ -35,18 +38,25 @@ var rolejack = {
                 if (!creep.memory.hastask) {
                     var sources = creep.room.find(FIND_SOURCES);
                     if (creep.harvest(sources[creep.memory.sourcetarget]) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(sources[creep.memory.sourcetarget], {
+                        
+                         
+                        
+                       if ( creep.moveTo(sources[creep.memory.sourcetarget], {
                             visualizePathStyle: {
                                 stroke: '#ffaa00'
                             }
-                        });
+                            
+                            
+                            
+                            
+                        }) == -2){
+                            creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
+                        }
                     }
                 }
             }
             if (creep.memory.full) {
-                if (creep.memory.lastpos == creep.room.pos) {
-                    creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
-                }
+              
                 creep.memory.lastpos = creep.room.pos;
                 creep.memory.hastask = false;
                 if (!creep.memory.hastask) {
