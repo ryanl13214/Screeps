@@ -89,11 +89,9 @@ var defcon = {
             
             
         if(target.length !=0){
- 
-         console.log("ranged parts "+ numberOfRangedParts);
-         console.log("total parts "+ totalBodyParts);
+  
              if(  numberOfRangedParts == 1 && totalBodyParts<30 ){
-                 console.log("defcon 7");
+                
                  return 7;//change to 7 once ranger is complete.
              }
              else if(target.length<3 && totalBodyParts<40   ){

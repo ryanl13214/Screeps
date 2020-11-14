@@ -17,9 +17,9 @@ var rolejack = {
 
     run: function(creep) {
         var startCpujack = Game.cpu.getUsed();
-        creepfunctions.checkglobaltasks(creep);
+     //   creepfunctions.checkglobaltasks(creep);
         //   checklocaltasks(creep);
-        if (creep.memory.tasklist.length == 0) {
+        if (1==1) {//move the global takslis t check here
         if (creep.memory.full == true && creep.carry.energy == 0) {
                 creep.memory.full = false;
             }
@@ -60,6 +60,11 @@ var rolejack = {
                 creep.memory.lastpos = creep.room.pos;
                 creep.memory.hastask = false;
                 if (!creep.memory.hastask) {
+                    
+                    
+                     if (!creep.memory.hastask) {
+                        creepfunctions.stocktowerswithenergy(creep);
+                    }
                     if (!creep.memory.hastask) {
                         creepfunctions.stockbuildingswithenergy(creep);
                     }

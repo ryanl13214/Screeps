@@ -41,14 +41,22 @@ var spwan = {
             var nextroomharvester = _.filter(creepsinroom, (creep) => creep.memory.role == 'nextroom');
             var scouts = _.filter(creepsinroom, (creep) => creep.memory.role == 'scout');
             var numberofguardingcreeps = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
-            var requiredJacks = 9;
+            
+            var requiredJacks = 5;
+            if (Game.rooms[roomname].controller.level <3   )
+            {
+               var requiredJacks = 9;
+            }
             if (Game.rooms[roomname].controller.level > 3 && storagevalue > 10000 && creepsinroom.length > 2)
             {
+                
                 requiredJacks = 0;
+                
             }
             //standard creep memory
             var memstruct = {
                 spawnRoom: roomname,
+                tasklist: [],
                 objectIDStorage: "",
                 boosted: false,
                 moveToRenew: false,
@@ -114,7 +122,7 @@ var spwan = {
                     });
                 }
                 const target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
-                console.log(defconlevel);
+          
                 if (defconlevel == 8 && numberofguardingcreeps.length <  target.length)
                 {
                     spawnss[i].spawnCreep([ATTACK, ATTACK, MOVE, MOVE], 'guard' + Game.time,
@@ -127,7 +135,7 @@ var spwan = {
                         }
                     });
                 }
-                if (defconlevel == 7 && numberofguardingcreeps.length <  target.length)
+                if (defconlevel == 7 && numberofguardingcreeps.length <  target.length + 2)
                 {
                     var numberofparts = Math.floor((energyavailable-120) / 200);
                     var bodyparts = [];
@@ -155,7 +163,7 @@ var spwan = {
                         }
                     });
                 }
-                if (defconlevel > 8 || numberofguardingcreeps >= target.length)
+                if (defconlevel > 8 || numberofguardingcreeps >= target.length + 2)
                 {
                     if (jacks.length < requiredJacks - 1)
                     {
@@ -167,7 +175,7 @@ var spwan = {
                                 cpuUsed: 0,
                                 roomtarg: roomname,
                                 sourcetarget: (Game.time * 3) % 2,
-                                tasklist: [],
+                                 
                                 full: false,
                                 memstruct: memstruct
                             }
@@ -194,13 +202,13 @@ var spwan = {
                                 cpuUsed: 0,
                                 roomtarg: roomname,
                                 sourcetarget: Game.time % 2,
-                                tasklist: [],
+                                 
                                 full: false,
                                 memstruct: memstruct
                             }
                         });
                     }
-                     else if (upgraders.length <2 && requiredJacks  != 0 )// add condition that ensures the source and controller are close together
+                     else if (upgraders.length <1 && requiredJacks  != 0 )// add condition that ensures the source and controller are close together
                     {
                           var numberofparts = Math.floor((energyavailable - 150) / 100);
                         var bodyparts = [];
@@ -223,7 +231,7 @@ var spwan = {
                             }
                         });
                     }
-                    if (numberofguardingcreeps.length < 1)
+                    if (numberofguardingcreeps.length < 11)
                     {
                         var numberofparts = Math.floor(energyavailable / 200);
                         var bodyparts = [];
@@ -236,6 +244,7 @@ var spwan = {
                             bodyparts.push(RANGED_ATTACK);
                             bodyparts.push(MOVE);
                         }
+                        /*
                         spawnss[i].spawnCreep(bodyparts, 'guard' + Game.time,
                         {
                             memory:
@@ -245,7 +254,13 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
+                        */
+                        
+                        Game.spawns["W16S52"].spawnCreep([ TOUGH,TOUGH,ATTACK  ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicattacker", memstruct: {spawnRoom: "W16S52",  tasklist: [["moveToRoom",   "W15S53"]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+                        
+                        
                     }
+                                      
                     else if (movers.length == 0 && levelOfController > 4)
                     {
                         spawnss[i].spawnCreep([CARRY, CARRY, MOVE, CARRY, MOVE, MOVE], 'mover' + Game.time,
@@ -256,7 +271,7 @@ var spwan = {
                                 cpuUsed: 0,
                                 roomtarg: roomname,
                                 target: "a",
-                                tasklist: [],
+                                
                                 full: false,
                                 memstruct: memstruct
                             }
@@ -326,7 +341,7 @@ var spwan = {
                                     cpuUsed: 0,
                                     roomtarg: roomname,
                                     target: "a",
-                                    tasklist: [],
+                                    
                                     full: false,
                                     memstruct: memstruct
                                 }
@@ -343,7 +358,7 @@ var spwan = {
                                     cpuUsed: 0,
                                     roomtarg: roomname,
                                     target: "a",
-                                    tasklist: [],
+                                    
                                     full: false,
                                     memstruct: memstruct
                                 }
@@ -361,7 +376,7 @@ var spwan = {
                                 cpuUsed: 0,
                                 roomtarg: roomname,
                                 target: "a",
-                                tasklist: [],
+                                
                                 full: false,
                                 memstruct: memstruct
                             }
@@ -399,7 +414,7 @@ var spwan = {
                                 cpuUsed: 0,
                                 roomtarg: roomname,
                                 sourcetarget: Game.time % 2,
-                                tasklist: [],
+                               
                                 full: false,
                                 memstruct: memstruct
                             }
@@ -434,7 +449,7 @@ var spwan = {
                                 cpuUsed: 0,
                                 roomtarg: roomname,
                                 sourcetarget: Game.time % 2,
-                                tasklist: [],
+                                 
                                 full: false,
                                 memstruct: memstruct
                             }
@@ -476,13 +491,13 @@ var spwan = {
                                 mineralType: "",
                                 roomtarg: roomname,
                                 sourcetarget: Game.time % 2,
-                                tasklist: [],
+                                 
                                 full: false,
                                 memstruct: memstruct
                             }
                         });
                     }
-                    else if (nextroomharvester.length < numberofnextrooms && Game.rooms[roomname].controller.level > 3)
+                    else if (nextroomharvester.length < numberofnextrooms && Game.rooms[roomname].controller.level > 5)
                     {
                         var numberofparts = Math.floor(energyavailable / 350);
                         if (numberofparts > 50)
@@ -513,7 +528,7 @@ var spwan = {
                                     target: roomnames[roomnames.length - 1],
                                     home: roomname,
                                     sourcetarget: 0,
-                                    tasklist: [],
+                                     
                                     full: false,
                                     memstruct: memstruct
                                 }
@@ -549,7 +564,7 @@ var spwan = {
                                             target: roomnames[q],
                                             home: roomname,
                                             sourcetarget: 0,
-                                            tasklist: [],
+                                            
                                             full: false,
                                             memstruct: memstruct
                                         }

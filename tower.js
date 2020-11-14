@@ -30,7 +30,10 @@ var tower = {
                 filter: (structure) => (structure.hits < structure.hitsMax) 
             });
             
-            if (closestHostile != undefined)
+            
+            
+            const range = towers[i].pos.getRangeTo(closestHostile);
+            if (closestHostile != undefined  )// make limiter to ensure tower draining doesnt work 
             {
                 towers[i].attack(closestHostile);
             }

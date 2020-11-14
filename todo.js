@@ -2,7 +2,7 @@
 
 move limiter for spawn from main to the spawn module in order to make spawn directions work without limiting
 
-
+jackm find dropped resources worth picking up
 
 
 dropped resource finder for creeps 

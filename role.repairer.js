@@ -7,7 +7,7 @@ var rolerepair = {
         var startCpurepair = Game.cpu.getUsed();
         //checkglobaltasks(creep);
         //checklocaltasks(creep);
-        if (creep.memory.tasklist.length == 0) {
+        if (creep.memory.memstruct.tasklist.length == 0) {
             
             if (creep.memory.full == true && creep.carry.energy == 0) {
                 creep.memory.full = false;

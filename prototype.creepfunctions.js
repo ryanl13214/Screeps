@@ -29,43 +29,60 @@ var currY =creep.pos.y;
     
     /*
     USED BY: 
-        jack
+        memstruct function
     
     
     
     */
     checkglobaltasks: function(creep)
     {
-        if (creep.memory.tasklist[0])
+     if(   creep.memory.memstruct.tasklist.length ==0 ) {return true;}else
+        if (creep.memory.memstruct.tasklist[0] != undefined)
         {
-            if (creep.memory.tasklist[0][0] == "moveto")
+           
+           
+            if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
             {
-                const path = creep.pos.findPathTo(creep.memory.targetroom);
-                if (path.length > 0)
-                {
-                    creep.move(path[0].direction);
-                }
-                else
-                {
-                    creep.memory.tasklist[0].splice(0, 1);
+                var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
+              var pos1 = creep.pos;
+                var pos2 = targetRoomFlag.pos;
+                const range = creep.pos.getRangeTo(targetRoomFlag.pos);
+                if (range>23 ) {// might cause bug on nxt room wall 
+                creep.moveTo(targetRoomFlag.pos); 
+                          Game.map.visual.line(creep.pos, targetRoomFlag.pos,
+            {
+                color: '#000000',
+                lineStyle: 'solid'
+            });  
+                    
+                }else{
+                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }
             }
-            if (creep.memory.tasklist[0][0] == "moveToRoom")
+           
+                      
+            if (creep.memory.memstruct.tasklist[0][0] == "moveTo")
             {
-                var targetRoomFlag = Game.flags[tasklist[0][1]];
-                if (1 > 10)
-                {
-                    creep.move(path[0].direction);
+              var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1],creep.memory.memstruct.tasklist[0][2],creep.room.name);
+                var range = creep.pos.getRangeTo(targetposition);
+                if (range != 0) { 
+                creep.moveTo(targetposition); 
+                       
+           
+                    creep.say(range);
+                }else{
+                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }
-                else
-                {
-                    creep.memory.tasklist[0].splice(0, 1);
-                }
+                
+                
+                
             }
-            if (creep.memory.tasklist[0][0] == "pickup")
-            {}
-            if (creep.memory.tasklist[0][0] == "dropoff")
-            {}
+           
+           
+           
+        }else{
+            
+            return true;
         }
     },
     /*
@@ -262,10 +279,11 @@ var currY =creep.pos.y;
             {
                 return (
                     (structure.structureType == STRUCTURE_EXTENSION && structure.energy < 50) || (structure.structureType ==
-                        STRUCTURE_CONTAINER && structure.store.energy < 500) || (structure.structureType == STRUCTURE_SPAWN && structure
+                        STRUCTURE_CONTAINER && structure.store.energy < 500)   || (structure.structureType == STRUCTURE_SPAWN && structure
                         .energy < 300));
             }
         });
+        
         creep.say(buildingsneedingenergy.length);
         if (buildingsneedingenergy.length > 0)
         {
@@ -282,6 +300,46 @@ var currY =creep.pos.y;
             creep.memory.hastask = true;
         }
     },
+    
+    
+        stocktowerswithenergy: function(creep)
+    {
+        var buildingsneedingenergy = creep.room.find(FIND_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (
+                     
+                         (structure.structureType == STRUCTURE_TOWER && structure.energy < 300));
+            }
+        });
+        
+        creep.say(buildingsneedingenergy.length);
+        if (buildingsneedingenergy.length > 0)
+        {
+            if (creep.transfer(creep.pos.findClosestByPath(buildingsneedingenergy), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+            {
+                creep.moveTo(creep.pos.findClosestByPath(buildingsneedingenergy),
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffffff'
+                    }
+                });
+            }
+            creep.memory.hastask = true;
+        }
+    },
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*
     USED BY: 
         jack

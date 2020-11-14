@@ -228,6 +228,17 @@ var roads = [
 var basebuild = {
     run: function(roomname, storage_xpos, storage_ypos)
     {
+         for (var i = 0; i < arrayoftowers.length; i++)
+        {
+            try
+            {
+                Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_TOWER);
+            }
+            catch (e)
+            {
+                console.log(e);
+            }
+        }
         for (var i = 0; i < arrayofextensionpositions.length; i++)
         {
             try
@@ -239,17 +250,7 @@ var basebuild = {
                 console.log(e);
             }
         }
-        for (var i = 0; i < arrayoftowers.length; i++)
-        {
-            try
-            {
-                Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_TOWER);
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
-        }
+        
         try
         {
             Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
