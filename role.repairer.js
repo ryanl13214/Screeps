@@ -49,6 +49,10 @@ var rolerepair = {
                     {
                         creepfunctions.repairbuildingsfull(creep);
                     }
+                    if (!creep.memory.hastask) 
+                    {
+                        creepfunctions.upkeepwalls(creep);
+                    }
                 }
             }
         }

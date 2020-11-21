@@ -14,7 +14,19 @@ var roleUpgrader = {
             }
         }
         else 
-        {
+        {  
+               var droppedresources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.resourceType ==  RESOURCE_ENERGY)  ;
+                    }
+                }); 
+            if(droppedresources.length != 0) 
+            { 
+                creep.pickup(droppedresources[0]);
+            } 
+            else{
             const targets =Game.flags[creep.room.name + "controllercontainer" ].pos.lookFor(LOOK_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK)  && structure.store[RESOURCE_ENERGY] != 0
@@ -25,32 +37,28 @@ var roleUpgrader = {
             {
                  creep.moveTo(Game.flags[creep.room.name + "controllerpos"  ].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
             } 
-            }else{
-                 var sources = creep.pos.findClosestByRange(FIND_SOURCES);
-          
-            if (creep.harvest(sources ) == ERR_NOT_IN_RANGE) {
-                        
-                         
-                        
-                       creep.moveTo(sources , {
-                            visualizePathStyle: {
-                                stroke: '#ffaa00'
-                            }
-                            
-                            
-                            
-                            
-                        }) ;
-          
-                
+            }else
+            {
+                var sources = creep.pos.findClosestByRange(FIND_SOURCES);
+              
+                if (creep.harvest(sources ) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(sources , {
+                        visualizePathStyle: {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                }
+            
+            
+            
+            
             }
             
             
             
             
-            
-            
-        }}
+            }
+        }
         
         
 	}

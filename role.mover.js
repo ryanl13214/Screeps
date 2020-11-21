@@ -4,10 +4,6 @@ KNOWN ISSUES
 
 
 */
-
-
-
-
 var roleMover = {
     //     this role is for moving energy from full containers to other areas within the same room    
     run: function(creep)
@@ -16,25 +12,25 @@ var roleMover = {
         // creep logic goes here
         if (creep.store.getUsedCapacity() == 0)
         {
-            creep.memory.full = false;
+            creep.memory.memstruct.full = false;
         }
-        else if (creep.memory.full == false && _.sum(creep.carry) == creep.carryCapacity)
+        else if (creep.memory.memstruct.full == false && _.sum(creep.carry) == creep.carryCapacity)
         {
-            creep.memory.full = true;
+            creep.memory.memstruct.full = true;
             creep.memory.target = "a";
         }
-        if (creep.memory.full == false)
+        if (creep.memory.memstruct.full == false)
         {
             var storagemain;
             var links;
             var containers;
             var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES,
+            {
+                filter: (res) =>
                 {
-                    filter: (res) =>
-                    {
-                        return (res.resourceType !=  RESOURCE_ENERGY) || (res.amount > 100);
-                    }
-                });  
+                    return (res.resourceType != RESOURCE_ENERGY) || (res.amount > 100);
+                }
+            });
             if (droppedresources == undefined && creep.memory.target == "a")
             {
                 storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
@@ -44,52 +40,32 @@ var roleMover = {
                         return (structure.structureType == STRUCTURE_STORAGE) && structure.store.energy > 500000;
                     }
                 });
-           
                 containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1600;
+                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800;
                     }
                 });
-                if (containers == undefined)
+              
+                if (containers == undefined && creep.room.level >5)
                 {
-                    containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    var term = creep.room.terminal;
+                    if(term != undefined)
                     {
-                        filter: (structure) =>
+                        if(term.store.getUsedCapacity("energy") > 50000)
                         {
-                            return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 400;
+                            containers = term.id;
                         }
-                    }); 
+                    }
                 }
-                if (containers == undefined)
-                {
-                    containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_TERMINAL) && structure.store.energy > 51000;
-                        }
-                    }); 
-                }
-                if (containers == undefined)
-                {
-                    containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_STORAGE) && structure.store.energy > 1000;
-                        }
-                    }); 
-                }
-                
-                
-                
+              
                 var tombstones = creep.pos.findClosestByPath(FIND_TOMBSTONES,
                 {
                     filter: (tomb) =>
                     {
-                        return (tomb.store.getUsedCapacity() != tomb.store.getUsedCapacity(RESOURCE_ENERGY)) || (tomb.store.getUsedCapacity(RESOURCE_ENERGY) > 300);
+                        return (tomb.store.getUsedCapacity() != tomb.store.getUsedCapacity(RESOURCE_ENERGY)) || (tomb.store.getUsedCapacity(
+                            RESOURCE_ENERGY) > 300);
                     }
                 });
                 if (tombstones != undefined)
@@ -100,58 +76,70 @@ var roleMover = {
                 {
                     creep.memory.target = containers.id;
                 }
-             
-                else if (storagemain != undefined && creep.room.controller.level <8)
+                else if (storagemain != undefined && creep.room.controller.level < 8)
                 {
                     creep.memory.target = storagemain.id;
                 }
             }
             if (droppedresources != undefined)
             {
-                if (creep.pickup(droppedresources) == ERR_NOT_IN_RANGE)
+                var range = creep.pos.getRangeTo(droppedresources);
+                if (range <= 1)
+                {
+                    creep.pickup(droppedresources);
+                }
+                else
                 {
                     creep.moveTo(droppedresources,
                     {
-                        reusePath: 10,
-                        visualizePathStyle: {
-                                stroke: '#ffaa00'
-                            }
+                        reusePath: range,
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
                     });
                 }
             }
             else if (creep.memory.target != undefined)
             {
                 var object = Game.getObjectById(creep.memory.target);
-              
-                var resourcekeys =  [RESOURCE_ENERGY];
-               
-                if(object == null){creep.memory.target = "a";} else{
-                    
-                    resourcekeys =Object.keys(object.store) ;
-                   
-                } 
-                if(resourcekeys.length==0){
-                    
-                      creep.memory.target = "a";
-                }
-                var errorcode = creep.withdraw(object,resourcekeys[0] ); 
-                if (errorcode != 0)
-                {
-                    var moveerrorcode = creep.moveTo(object,
-                    {
-                        reusePath: 10,
-                        visualizePathStyle: {stroke: '#ffaa00'}
-                    });
-                }
-                else if (errorcode != 0  )
+                var resourcekeys = [RESOURCE_ENERGY];
+                if (object == null)
                 {
                     creep.memory.target = "a";
                 }
-              
+                else
+                {
+                    resourcekeys = Object.keys(object.store);
+                }
+                if (resourcekeys.length == 0)
+                {
+                    creep.memory.target = "a";
+                }
+                var range = creep.pos.getRangeTo(object);
+                if (range <= 1)
+                {
+                    creep.withdraw(object, resourcekeys[0]);
+                }
+                else
+                {
+                    var moveerrorcode = creep.moveTo(object,
+                    {
+                        reusePath: range,
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                    if (moveerrorcode != 0)
+                    {
+                        creep.memory.target = "a";
+                    }
+                }
             }
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////
-        if (creep.memory.full == true)
+        if (creep.memory.memstruct.full == true)
         {
             if (creep.store[RESOURCE_ENERGY] == creep.store.getUsedCapacity())
             {
@@ -159,14 +147,15 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
+                        return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION || structure
+                            .structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
                     }
                 });
                 var targets4 = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy < 1500;
+                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy < 900;
                     }
                 });
                 var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
@@ -196,49 +185,60 @@ var roleMover = {
                 {
                     targ = targets4;
                 }
-                else if (storagemain != undefined  && creep.room.controller.level <8)
+                else if (storagemain != undefined && creep.room.controller.level < 8)
                 {
                     targ = storagemain;
                 }
-                if (creep.transfer(targ, RESOURCE_ENERGY, creep.energyAvailable) == ERR_NOT_IN_RANGE)
+                var range = creep.pos.getRangeTo(targ);
+                if (range <= 1)
                 {
-                    creep.moveTo(targ,
+                  creep.transfer(targ, RESOURCE_ENERGY, creep.energyAvailable);
+                }
+                else
+                {
+                     creep.moveTo(targ,
                     {
-                        reusePath: 5,
-                        visualizePathStyle: {
-                                stroke: '#ffaa00'
-                            }
+                        reusePath: range,
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
                     });
                 }
             }
             else
             {
-          
                 var terminalObject = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_TERMINAL)  ;
+                        return (structure.structureType == STRUCTURE_TERMINAL);
                     }
                 });
-             
-             
-             
-             if(terminalObject != undefined){
-                    targ = terminalObject;
-             }else if(creep.room.storage != undefined){
-                 targ = creep.room.storage;
-             }
-          const resourcevalues = Object.values(creep.store);
-                const resourcekeys = Object.keys(creep.store);
-                if (creep.transfer(targ, resourcekeys[0], resourcevalues[0]) == ERR_NOT_IN_RANGE)
+                if (terminalObject != undefined)
                 {
-                    creep.moveTo(targ,
+                    targ = terminalObject;
+                }
+                else if (creep.room.storage != undefined)
+                {
+                    targ = creep.room.storage;
+                }
+                const resourcevalues = Object.values(creep.store);
+                const resourcekeys = Object.keys(creep.store);
+                var range = creep.pos.getRangeTo(targ);
+                if (range <= 1)
+                {
+                 creep.transfer(targ, resourcekeys[0], resourcevalues[0]);
+                }
+                else
+                {
+                     creep.moveTo(targ,
                     {
-                        reusePath: 5,
-                        visualizePathStyle: {
-                                stroke: '#ffaa00'
-                            }
+                        reusePath: range,
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
                     });
                 }
             }

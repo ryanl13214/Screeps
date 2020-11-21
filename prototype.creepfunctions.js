@@ -1,32 +1,86 @@
 var creepfunctions = {
-    
-    
-        /*
+    /*
     USED BY: 
         most eventually ranger primarily
     
     
     
     */
-    combatMove: function(creep,avoidarray,avoidclosest)
+    findDroppedEnergy: function(creep)
     {
-     var   currX =creep.pos.x;
-var currY =creep.pos.y;
-        
-       var enemyX = avoidclosest.pos.x;
-     var   enemyY= avoidclosest.pos.y;
-        
-       var   basicfleepositonX = enemyX - currX   ;
-           var   basicfleepositonY = enemyY - currY   ;
-        creep.moveTo(new RoomPosition(creep.pos.x -basicfleepositonX ,creep.pos.y -basicfleepositonY,creep.room.name   ));
-        
-        
+        var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES,
+        {
+            filter: (res) =>
+            {
+                return (res.resourceType == RESOURCE_ENERGY) && (res.amount > creep.store.getFreeCapacity());
+            }
+        });
+        if (droppedresources != undefined)
+        {
+            var range = creep.pos.getRangeTo(droppedresources);
+            if (range <= 3)
+            {
+                creep.pickup(droppedresources);
+            }
+            else
+            {
+                creep.moveTo(droppedresources,
+                {
+                    reusePath: range
+                });
+            }
+            creep.memory.hastask = false;
+        }
+    },
+    /*
+    USED BY: 
+        most eventually ranger primarily
+    
+    
+    
+    */
+    stockstorage: function(creep)
+    {
+        var storageactual = creep.room.storage;
+        if (storageactual != undefined)
+        {
+             if (storageactual.store.getUsedCapacity() <20000)
+        {
+            var range = creep.pos.getRangeTo(storageactual);
+            if (range <= 1  )
+            {
+                creep.transfer(storageactual, RESOURCE_ENERGY);
+            }
+            else
+            {
+                creep.moveTo(storageactual,
+                {
+                    reusePath: range
+                });
+            }
+            creep.memory.hastask = false;
+        }
+        }
+    },
+    /*
+    USED BY: 
+        most eventually ranger primarily
+    
+    
+    
+    */
+    combatMove: function(creep, avoidarray, avoidclosest)
+    {
+        var currX = creep.pos.x;
+        var currY = creep.pos.y;
+        var enemyX = avoidclosest.pos.x;
+        var enemyY = avoidclosest.pos.y;
+        var basicfleepositonX = enemyX - currX;
+        var basicfleepositonY = enemyY - currY;
+        creep.moveTo(new RoomPosition(creep.pos.x - basicfleepositonX, creep.pos.y - basicfleepositonY, creep.room.name));
         // to do make it avoid terrain 
         // make it avoid more than one creep.
     },
-    
-    
-    
     /*
     USED BY: 
         memstruct function
@@ -36,52 +90,50 @@ var currY =creep.pos.y;
     */
     checkglobaltasks: function(creep)
     {
-     if(   creep.memory.memstruct.tasklist.length ==0 ) {return true;}else
+        if (creep.memory.memstruct.tasklist.length == 0)
+        {
+            return true;
+        }
+        else
         if (creep.memory.memstruct.tasklist[0] != undefined)
         {
-           
-           
             if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
             {
                 var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
-              var pos1 = creep.pos;
+                var pos1 = creep.pos;
                 var pos2 = targetRoomFlag.pos;
                 const range = creep.pos.getRangeTo(targetRoomFlag.pos);
-                if (range>23 ) {// might cause bug on nxt room wall 
-                creep.moveTo(targetRoomFlag.pos); 
-                          Game.map.visual.line(creep.pos, targetRoomFlag.pos,
-            {
-                color: '#000000',
-                lineStyle: 'solid'
-            });  
-                    
-                }else{
-                     creep.memory.memstruct.tasklist.splice(0, 1);
+                if (range > 23)
+                { // might cause bug on nxt room wall 
+                    creep.moveTo(targetRoomFlag.pos);
+                    Game.map.visual.line(creep.pos, targetRoomFlag.pos,
+                    {
+                        color: '#000000',
+                        lineStyle: 'solid'
+                    });
+                }
+                else
+                {
+                    creep.memory.memstruct.tasklist.splice(0, 1);
                 }
             }
-           
-                      
             if (creep.memory.memstruct.tasklist[0][0] == "moveTo")
             {
-              var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1],creep.memory.memstruct.tasklist[0][2],creep.room.name);
+                var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.room.name);
                 var range = creep.pos.getRangeTo(targetposition);
-                if (range != 0) { 
-                creep.moveTo(targetposition); 
-                       
-           
+                if (range != 0)
+                {
+                    creep.moveTo(targetposition);
                     creep.say(range);
-                }else{
-                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }
-                
-                
-                
+                else
+                {
+                    creep.memory.memstruct.tasklist.splice(0, 1);
+                }
             }
-           
-           
-           
-        }else{
-            
+        }
+        else
+        {
             return true;
         }
     },
@@ -127,7 +179,7 @@ var currY =creep.pos.y;
         else
         {
             var storageMain = creep.room.storage;
-            if (storageMain != undefined && storageMain.store.getUsedCapacity() >50000 )
+            if (storageMain != undefined && storageMain.store.getUsedCapacity() > 50000)
             {
                 if (creep.withdraw(storageMain, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
                 {
@@ -183,7 +235,12 @@ var currY =creep.pos.y;
         });
         if (repairtarg)
         {
-            if (creep.repair(repairtarg) == ERR_NOT_IN_RANGE)
+            var range = creep.pos.getRangeTo(repairtarg);
+            if (range <= 3)
+            {
+                creep.repair(repairtarg);
+            }
+            else
             {
                 creep.moveTo(repairtarg,
                 {
@@ -206,11 +263,25 @@ var currY =creep.pos.y;
         {
             filter: (s) =>
             {
-                return (s.structureType == STRUCTURE_ROAD || s.structureType == STRUCTURE_CONTAINER) && s.hits < s.hitsMax * 0.99;
+                return (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART) && s.hits < s.hitsMax * 0.99;
             }
         });
         if (repairtarg)
         {
+            var range = creep.pos.getRangeTo(repairtarg);
+            if (range <= 3)
+            {
+                creep.repair(repairtarg);
+            }
+            else
+            {
+                creep.moveTo(repairtarg,
+                {
+                    reusePath: 5
+                });
+            }
+            /*
+            
             if (creep.repair(repairtarg) == ERR_NOT_IN_RANGE)
             {
                 creep.moveTo(repairtarg,
@@ -218,29 +289,42 @@ var currY =creep.pos.y;
                     reusePath: 5
                 });
             }
+            */
             creep.memory.hastask = true;
         }
-        else
+    },
+    /*
+    USED BY: 
+        repairer
+    
+    
+    
+    */
+    upkeepwalls: function(creep)
+    {
+        var repairtarg = creep.pos.findClosestByRange(FIND_STRUCTURES,
         {
-            var closestDamagedStructure = creep.room.find(FIND_STRUCTURES,
+            filter: (s) =>
             {
-                filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
-            });
-            closestDamagedStructure += creep.room.find(FIND_STRUCTURES,
-            {
-                filter: (structure) => structure.hits < structure.hitsMax * 0.015 && structure.structureType == STRUCTURE_WALL
-            });
-            if (closestDamagedStructure.length != 0)
-            {
-                if (creep.repair(closestDamagedStructure[0]) == ERR_NOT_IN_RANGE)
-                {
-                    creep.moveTo(closestDamagedStructure[0],
-                    {
-                        reusePath: 5
-                    });
-                }
-                creep.memory.hastask = true;
+                return (s.structureType == STRUCTURE_WALL && s.hits < s.hitsMax * 0.015) || (s.structureType == STRUCTURE_RAMPART && s
+                    .hits < s.hitsMax * 0.015);
             }
+        });
+        if (repairtarg)
+        {
+            var range = creep.pos.getRangeTo(repairtarg);
+            if (range <= 3)
+            {
+                creep.repair(repairtarg);
+            }
+            else
+            {
+                creep.moveTo(repairtarg,
+                {
+                    reusePath: 5
+                });
+            }
+            creep.memory.hastask = true;
         }
     },
     /*
@@ -279,11 +363,10 @@ var currY =creep.pos.y;
             {
                 return (
                     (structure.structureType == STRUCTURE_EXTENSION && structure.energy < 50) || (structure.structureType ==
-                        STRUCTURE_CONTAINER && structure.store.energy < 500)   || (structure.structureType == STRUCTURE_SPAWN && structure
+                        STRUCTURE_CONTAINER && structure.store.energy < 500) || (structure.structureType == STRUCTURE_SPAWN && structure
                         .energy < 300));
             }
         });
-        
         creep.say(buildingsneedingenergy.length);
         if (buildingsneedingenergy.length > 0)
         {
@@ -300,20 +383,16 @@ var currY =creep.pos.y;
             creep.memory.hastask = true;
         }
     },
-    
-    
-        stocktowerswithenergy: function(creep)
+    stocktowerswithenergy: function(creep)
     {
         var buildingsneedingenergy = creep.room.find(FIND_STRUCTURES,
         {
             filter: (structure) =>
             {
                 return (
-                     
-                         (structure.structureType == STRUCTURE_TOWER && structure.energy < 300));
+                    (structure.structureType == STRUCTURE_TOWER && structure.energy < 300));
             }
         });
-        
         creep.say(buildingsneedingenergy.length);
         if (buildingsneedingenergy.length > 0)
         {
@@ -330,16 +409,6 @@ var currY =creep.pos.y;
             creep.memory.hastask = true;
         }
     },
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     /*
     USED BY: 
         jack

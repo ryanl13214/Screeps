@@ -28,10 +28,14 @@ var rolejack = {
                 creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
             }
             if (!creep.memory.full) {
-                 if (creep.memory.lastpos == creep.room.pos) {
-                  //  creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
-                }
+              
+              
                 creep.memory.hastask = false;
+                 if (!creep.memory.hastask) {
+                    creepfunctions.findDroppedEnergy(creep);
+                }
+                
+                
                 if (!creep.memory.hastask) {
                     creepfunctions.findfullcontainers(creep,1000);
                 }
@@ -75,8 +79,9 @@ var rolejack = {
                         creepfunctions.buildstructs(creep);
                     }
                     if (!creep.memory.hastask && creep.room.controller.ticksToDowngrade>3000) {
-                        creepfunctions.repairbuildingsfull(creep);
+                        creepfunctions.stockstorage(creep);
                     }
+                
                     
                     if (!creep.memory.hastask) {
                         creepfunctions.upgradecontroller(creep);
