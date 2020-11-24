@@ -21,9 +21,9 @@ var tower = {
             {
                 filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL
             });
-            var initalbuild = towers[i].room.find(FIND_MY_STRUCTURES, 
+            var initalbuild = towers[i].room.find(FIND_STRUCTURES, 
             {
-                filter: (structure) => (structure.hits < 300) && structure.structureType == STRUCTURE_RAMPART    
+                filter: (structure) => (structure.hits < 10000 &&  structure.structureType == STRUCTURE_RAMPART) || ( structure.hits < 30000 &&    structure.structureType == STRUCTURE_WALL   )
             });
             var woundedCreeps = Game.rooms[roomname].find(FIND_MY_CREEPS,
             {

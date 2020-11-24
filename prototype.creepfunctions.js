@@ -18,7 +18,7 @@ var creepfunctions = {
         if (droppedresources != undefined)
         {
             var range = creep.pos.getRangeTo(droppedresources);
-            if (range <= 3)
+            if (range <= 1)
             {
                 creep.pickup(droppedresources);
             }
@@ -181,10 +181,17 @@ var creepfunctions = {
             var storageMain = creep.room.storage;
             if (storageMain != undefined && storageMain.store.getUsedCapacity() > 50000)
             {
-                if (creep.withdraw(storageMain, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+                
+                 var range = creep.pos.getRangeTo(storageMain);
+                if (range <= 1)
+                {
+                    creep.withdraw(storageMain);
+                }
+                else
                 {
                     creep.moveTo(storageMain,
                     {
+                        reusePath: range,
                         visualizePathStyle:
                         {
                             stroke: '#ffaa00'
@@ -280,16 +287,8 @@ var creepfunctions = {
                     reusePath: 5
                 });
             }
-            /*
-            
-            if (creep.repair(repairtarg) == ERR_NOT_IN_RANGE)
-            {
-                creep.moveTo(repairtarg,
-                {
-                    reusePath: 5
-                });
-            }
-            */
+           
+           
             creep.memory.hastask = true;
         }
     },
@@ -421,13 +420,23 @@ var creepfunctions = {
         var constructionsites = creep.room.find(FIND_CONSTRUCTION_SITES);
         if (constructionsites.length != 0)
         {
-            if (creep.build(constructionsites[0]) == ERR_NOT_IN_RANGE)
+            
+             var range = creep.pos.getRangeTo(constructionsites[0]);
+            if (range <= 3)
+            {
+                creep.build(constructionsites[0]);
+            }
+            else
             {
                 creep.moveTo(constructionsites[0],
                 {
-                    reusePath: 5
+                    reusePath:range
                 });
             }
+            
+            
+            
+            
             creep.memory.hastask = true;
         }
     }

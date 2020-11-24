@@ -14,7 +14,7 @@
 var standardspawning = require('prototype.standardspawning');
 var attackspawning   = require('prototype.attackspawning');
 var spwan = {
-    run: function(roomname, defconlevel, storagevalue, roomExits, creepsinroom)
+    run: function(roomname, defconstruct, storagevalue, roomExits, creepsinroom)
     {
         if (Game.spawns[roomname].spawning)
         {
@@ -30,7 +30,8 @@ var spwan = {
             }
             
         }
-        if (Game.time % 5 == 0  || defconlevel<10)
+      
+        if (Game.time % 5 == 0  || defconstruct.defenceLevel < 10)
         {
             var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
             var energycurrentlyavailable = Game.rooms[roomname].energyAvailable;
@@ -63,9 +64,9 @@ var spwan = {
             };
             
             
-        if(defconlevel == 9 ){
+        if(defconstruct.defenceLevel == 9 || ( movers.length ==0 || harvesters.length ==0) && creepsinroom.length < 5){
             var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
-                     if (jacks.length < levelOfController && ( movers.length ==0 || harvesters.length ==0))
+                     if (jacks.length < 5  )
                     {  
                         var numberofparts = Math.floor(energycurrentlyavailable / 350);//bugged
                         var bodyparts = [];
@@ -78,10 +79,10 @@ var spwan = {
                             bodyparts.push(MOVE);
                             bodyparts.push(MOVE);
                         }
-                        
+                         
                         
                         if(numberofparts ==0 ){bodyparts=[WORK,MOVE,CARRY];}
-                        spawnss[i].spawnCreep(bodyparts, 'jack' + Game.time,
+                        Game.spawns[roomname].spawnCreep(bodyparts, 'jack' + Game.time,
                         {
                             memory:
                             {
@@ -99,16 +100,16 @@ var spwan = {
             
             
             
-        }else if(defconlevel > 10) {
+        }else if(defconstruct.defenceLevel  > 10) {
             // support spawning here
             
             
-        }else if(defconlevel ==10){
-            standardspawning.run(roomname, defconlevel, storagevalue, roomExits, creepsinroom,energyavailable,energycurrentlyavailable,jacks,repairers,towermover,harvesters,movers,upgraders,resourcemover,extractor,nextroomharvester,scouts,numberofguardingcreeps,memstruct);
+        }else if(defconstruct.defenceLevel  ==10){
+            standardspawning.run(roomname, defconstruct, storagevalue, roomExits, creepsinroom,energyavailable,energycurrentlyavailable,jacks,repairers,towermover,harvesters,movers,upgraders,resourcemover,extractor,nextroomharvester,scouts,numberofguardingcreeps,memstruct);
             
             
-        }else if(defconlevel < 10){
-            attackspawning.run(roomname, defconlevel, storagevalue , creepsinroom,energyavailable,energycurrentlyavailable,jacks,repairers,towermover,harvesters,movers,upgraders,resourcemover,extractor,nextroomharvester,scouts,numberofguardingcreeps,memstruct);
+        }else if(defconstruct.defenceLevel  < 10){
+            attackspawning.run(roomname, defconstruct, storagevalue , creepsinroom,energyavailable,energycurrentlyavailable,jacks,repairers,towermover,harvesters,movers,upgraders,resourcemover,extractor,nextroomharvester,scouts,numberofguardingcreeps,memstruct);
             
             
             

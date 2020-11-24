@@ -95,7 +95,7 @@ var Standardspwan = {
                             });
                         }
                     }
-                    else if (movers.length < 5 && Game.rooms[roomname].controller.level < 6 && levelOfController > 4)
+                    else if (movers.length < 4 && Game.rooms[roomname].controller.level < 6 && levelOfController > 4)
                     {
                         spawnss[i].spawnCreep([CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
                             'mover' + Game.time,
@@ -152,7 +152,7 @@ var Standardspwan = {
                         
             
             
-                    else if (repairers.length == 0 && Game.spawns[roomname].room.controller.level > 3)
+                    else if (repairers.length < 2 && Game.spawns[roomname].room.controller.level > 3)
                     {
                         var bodyparts = [ ];
                          
@@ -230,7 +230,7 @@ var Standardspwan = {
                     }
                      else if (upgraders.length <1  )// add condition that ensures the source and controller are close together
                     {
-                        console.log("spawn ugrader");
+                         
                           var numberofparts = Math.floor((energyavailable - 200) / 100);
                         var bodyparts = [];
                         if(numberofparts >7){numberofparts=6;}

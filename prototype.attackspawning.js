@@ -14,8 +14,17 @@ var attackspawning = {
     2    attack has had some sucsess (first wall brieched)                                 --- (spawn 8 ranged attacks that sit on the circualr road and range the enemy ) 
     1    strong seige                                                                      --- call bossted creeps from other rooms  and continuous squad production (also beild engineer creeps.)
     0    sector wide seige (two or more rooms at defcon 1,2,3)                             -- all rooms in range spawn defending creeps and then yeet them into the enemy base. 
+    
+     
+    -5 harrase the enemy colinisation attempt with rangers 
+    -6 harrase a remote mining operation
+    -7 destroy edge of the enemy room with next room opperations                           
+    -8 send in seige squads to enemy room                                              
+    -9 send in multiple squads to the enemy rooms  (also cosndier nuking)
+    -10  
+    -11 
     */
-        
+    // if an attack is happening it is given prioruty if they are fufilled then the next stage is also done ie in a siege then we will also harrase the mining opperations if they exist .   
         
       
         
