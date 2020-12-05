@@ -149,10 +149,22 @@ var Standardspwan = {
                     }
                                    
                       
-                        
+                         else if (scouts.length < 1 && Game.rooms[roomname].controller.level > 3)///////////////////////////////////
+                    {
+                        spawnss[i].spawnCreep([MOVE], 'scout' + roomname,
+                        {
+                            memory:
+                            {
+                                memstruct: memstruct,
+                                role: 'scout',
+                                exitchosen: "a",
+                                prevRoom: roomname
+                            }
+                        });
+                    }
             
             
-                    else if (repairers.length < 2 && Game.spawns[roomname].room.controller.level > 3)
+                    else if (repairers.length < 1 && Game.spawns[roomname].room.controller.level > 1)
                     {
                         var bodyparts = [ ];
                          
@@ -186,19 +198,7 @@ var Standardspwan = {
                             }
                         });
                     }
-                    else if (scouts.length < 0 && Game.rooms[roomname].controller.level > 3)///////////////////////////////////
-                    {
-                        spawnss[i].spawnCreep([MOVE], 'scout' + roomname,
-                        {
-                            memory:
-                            {
-                                memstruct: memstruct,
-                                role: 'scout',
-                                exitchosen: "a",
-                                prevRoom: roomname
-                            }
-                        });
-                    }
+                    
                     else if (extractor.length < 1 && extractorneeded && 1 == 2) //////////////////////////////////////////////
                     {
                         var numberofparts = Math.floor(energyavailable / 350);
@@ -228,7 +228,7 @@ var Standardspwan = {
                             }
                         });
                     }
-                     else if (upgraders.length <1  )// add condition that ensures the source and controller are close together
+                     else if (upgraders.length <2  )// add condition that ensures the source and controller are close together
                     {
                          
                           var numberofparts = Math.floor((energyavailable - 200) / 100);

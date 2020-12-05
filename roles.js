@@ -11,6 +11,7 @@ var roleextractor = require('role.extractor');
 var rolenextroomharvester = require('role.nextroomharvester');
 var roleguard = require('role.basicroomguard');
 var rolescout = require('role.scout');
+var rolemulti = require('role.multi');
 
 
 
@@ -66,7 +67,9 @@ var roles =
             if(creep.memory.role=="scout"){
                 rolescout.run(creep);
             }        
-            
+            if(creep.memory.role=="multi"){
+                rolemulti.run(creep);
+            }    
         }
     }
 }

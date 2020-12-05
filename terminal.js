@@ -1,16 +1,28 @@
 /*
     total resouce distribution is 
     104,000  raw resources 
-    80k finished resources
+    105k finished resources
     50k energy =234,000
-    65,000 free space
+    40,000 free space
     above this sell all
+    
+catalyzed zynthium alkalide	   	+300% fatigue decrease speed   
+catalyzed ghodium alkalide  	-70% damage taken                                                      
+catalyzed utrium acid        	+300% attack effectiveness                                             
+catalyzed lemergium alkalide    +300% heal and rangedHeal effectiveness                                        
+catalyzed keanium alkalide	 + 	60	RANGED_ATTACK	+300% rangedAttack and rangedMassAttack effectiveness                             
+
+
+
+
+
+    
 */
 var terminalManager = {
     run: function(roomname, terminalActual, defcon, storagevalue)
     {
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H", "O", "U", "L", "Z", "X", "G", "energy", "GO"];// power and facory resources
-        var allValues = [20000, 20000, 20000, 5000, 5000, 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000, 3000];
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2",   "H", "O"  , "U" , "L" , "Z" , "X"  , "G" , "energy", "GO","XKHO2"];// power and facory resources
+        var allValues    = [20000  , 20000  , 20000  , 5000   , 5000   , 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000   , 3000,25000];
         var listOfResourcesInsideTerminal = terminalActual.store;
         var resourcekeys = Object.keys(listOfResourcesInsideTerminal);
         var resourcevalues = Object.values(listOfResourcesInsideTerminal);

@@ -141,7 +141,7 @@ ranged
         "work": 100,
         "attack": 80,
         "carry": 50,
-        "heal": 250,
+        "heal": 250,                         heal 12 close or 4 range 3   boost 36 close   12 rangd
         "ranged_attack": 150,
         "tough": 10,
         "claim": 600
@@ -230,12 +230,11 @@ catalyzed ghodium alkalide	 + 	150	TOUGH	-70% damage taken
 
 key mins
 
-
+catalyzed zynthium alkalide	   	+300% fatigue decrease speed   
 catalyzed ghodium alkalide  	-70% damage taken                                                      
 catalyzed utrium acid        	+300% attack effectiveness                                             
 catalyzed lemergium alkalide    +300% heal and rangedHeal effectiveness                                        
-catalyzed zynthium acid	     	+300% dismantle effectiveness                                      
-catalyzed zynthium alkalide	   	+300% fatigue decrease speed                                 
+catalyzed keanium alkalide	 + 	60	RANGED_ATTACK	+300% rangedAttack and rangedMassAttack effectiveness                             
 
 
 

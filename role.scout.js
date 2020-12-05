@@ -7,9 +7,28 @@ room considtions
   sources with 2 accessable areas
  */
  var rolescout = {
+     
+   
+     
      run: function(creep)
      {
-         if (creep.room.name == creep.memory.prevRoom || creep.memory.exitchosen == "a")
+        var flagstruct={
+         roomissafe:false,
+         roomsuitableforClaiming:false,
+         numberOfSourcesInRoom:0,
+         
+         roomIsFightTeritory:false,
+         roomIsMyTeritory:false,
+         distancefromoom:9999,
+         claimedroomstuct:{
+            MineRooms:[],
+            mineroomsProfitmargin:[],
+            cpuUsedlastTick:99,
+            roomdefconstruct:{}
+         }
+        };
+     
+         if (creep.room.name == creep.memory.prevRoom || creep.memory.exitchosen == "a")// creep stays in the same room
          {
              const roomExits = Game.map.describeExits(creep.room.name);
              const roomnames = Object.values(roomExits);
@@ -17,7 +36,7 @@ room considtions
              {
                  creep.memory.exitchosen = Math.floor(Math.random() * roomnames.length);
              }
-          //   creep.say(creep.memory.exitchosen);
+             //   creep.say(creep.memory.exitchosen);
              const exitDir = Game.map.findExit(creep.room, roomnames[creep.memory.exitchosen]);
              const exit = creep.pos.findClosestByRange(exitDir);
              creep.moveTo(exit,
@@ -28,28 +47,7 @@ room considtions
                      stroke: 'rgb(1,3,4)'
                  }
              });
-             
-             
-              
-             
-             creep.say( creep.moveTo(exit));
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
-             
+             creep.say(creep.moveTo(exit));
              Game.map.visual.line(creep.pos, exit,
              {
                  color: '#ffffff',
@@ -58,7 +56,7 @@ room considtions
          }
          else
          {
-             if (creep.memory.exitchosen != "a" && creep.room.name != creep.memory.prevRoom)
+             if (creep.memory.exitchosen != "a" && creep.room.name != creep.memory.prevRoom)// if ceep has moved into new room
              {
                  creep.moveTo(new RoomPosition(25, 25, creep.room.name),
                  {
@@ -76,41 +74,43 @@ room considtions
                  {
                      creep.room.createFlag(25, 25, creep.room.name);
                      var flagForRoom = Game.flags[creep.room.name];
-                     flagForRoom.memory.distance = 1500 - creep.ticksToLive;
-                     flagForRoom.memory.dangerours = false;
-                     if (creep.ticksToLive < 100)
-                     {
-                         Game.flags[creep.memory.memstruct.spawnRoom].memory.extramineingrooms = +[creep.room.name];
-                     }
+                     flagForRoom.memory.flagstruct=flagstruct;
+                     flagForRoom.memory.flagstruct.distancefromoom = 1500 - creep.ticksToLive;
+                       const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                        if (target){
+                              flagForRoom.memory.flagstruct.roomissafe = false;
+                        }else{
+                     flagForRoom.memory.flagstruct.roomissafe = true;
+                      if (creep.ticksToLive > 1400 )
+                         {
+                             Game.flags[creep.memory.home].memory.flagstruct.claimedroomstuct.MineRooms.push(creep.room.name);
+                              
+         Game.flags[creep.memory.home].memory.flagstruct.roomIsFightTeritory=true;
+         Game.flags[creep.memory.home].memory.flagstruct.roomIsMyTeritory=true;
+                         }
+                        }
                  }
                  else
                  {
-                     if (flagForRoom.memory.distance > 1500 - creep.ticksToLive)
+                     if (flagForRoom.memory.flagstruct.distancefromoom  > 1500 - creep.ticksToLive)
                      {
-                         flagForRoom.memory.distance = 1500 - creep.ticksToLive;
+                         flagForRoom.memory.flagstruct.distancefromoom  = 1500 - creep.ticksToLive;
                      }
-                    try
-                    {
-                       if (  creep.ticksToLive > 1400)
-                        {
-                            Game.flags[creep.memory.home].memory.extraMineRooms += [creep.room.name];
-                        }
-                    }catch (e)
-                    {
-                          Game.flags[creep.memory.home].memory.extraMineRooms = [creep.room.name];     
-                    }
                      
-                     if (creep.ticksToLive > 1400)
+                     if (creep.ticksToLive > 1400  )
                      {
-                         Game.flags[creep.memory.home].memory.extraMineRooms.push(creep.room.name);
+                        Game.flags[creep.memory.home].memory.flagstruct.claimedroomstuct.MineRooms.push(creep.room.name);/// this causes duplicates to need to remove dupes
+                        
+         Game.flags[creep.memory.home].memory.flagstruct.roomIsFightTeritory=true;
+         Game.flags[creep.memory.home].memory.flagstruct.roomIsMyTeritory=true;
                      }
-                     if (creep.ticksToLive > 1000)
+                     if (creep.ticksToLive > 1300)
                      {
-                         Game.map.visual.rect(new RoomPosition(5, 5, creep.pos.roomName), 40, 40,
-                         {
-                             fill: 'transparent',
-                             stroke: '#ff0000'
-                         });
+                         
+           
+                       
+                       
+                         
                      }
                  }
              }

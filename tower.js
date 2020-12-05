@@ -23,7 +23,7 @@ var tower = {
             });
             var initalbuild = towers[i].room.find(FIND_STRUCTURES, 
             {
-                filter: (structure) => (structure.hits < 10000 &&  structure.structureType == STRUCTURE_RAMPART) || ( structure.hits < 30000 &&    structure.structureType == STRUCTURE_WALL   )
+                filter: (structure) => (structure.hits < 100000 &&  structure.structureType == STRUCTURE_RAMPART) || ( structure.hits < 300000 &&    structure.structureType == STRUCTURE_WALL   )
             });
             var woundedCreeps = Game.rooms[roomname].find(FIND_MY_CREEPS,
             {

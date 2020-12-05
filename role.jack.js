@@ -36,9 +36,7 @@ var rolejack = {
                 }
                 
                 
-                if (!creep.memory.hastask) {
-                    creepfunctions.findfullcontainers(creep,1000);
-                }
+            
                 if (!creep.memory.hastask) {
                     var sources = creep.room.find(FIND_SOURCES);
                     if (creep.harvest(sources[creep.memory.sourcetarget]) == ERR_NOT_IN_RANGE) {
