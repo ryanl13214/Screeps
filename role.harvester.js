@@ -22,11 +22,15 @@ var roleharvester = {
                 }});
             if (targets.length == 0) {
                 var constructionsites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1);
-                if (constructionsites.length != 0) {
-                    creep.build(constructionsites[0])
+                  console.log(constructionsites[0] );
+                if (constructionsites[0]  != undefined) {
+                   
+                   creep.say( creep.build(constructionsites[0]))
+                     
                 }
-                if (constructionsites.length ==0) {
-                    creep.drop(RESOURCE_ENERGY, 5)
+                else if (constructionsites.length ==0) 
+                {
+                    creep.drop(RESOURCE_ENERGY, 20)
                     creep.say("drop");
                 }
             }

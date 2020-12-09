@@ -27,17 +27,25 @@ var roleUpgrader = {
                 creep.pickup(droppedresources[0]);
             } 
             else{
-            const targets =Game.flags[creep.room.name + "controllercontainer" ].pos.lookFor(LOOK_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK)  && structure.store[RESOURCE_ENERGY] != 0
-            }});
+         
             
-            if(targets.length != 0){
-            if(creep.withdraw(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+            var targets = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK  )  ;
+                    }
+                });
+            
+            
+            if(targets  != undefined)
             {
-                 creep.moveTo(Game.flags[creep.room.name + "controllerpos"  ].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } 
-            }else
+                if(creep.withdraw(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+                {
+                     creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffaa00'}});
+                } 
+            }
+            else
             {
                 var sources = creep.pos.findClosestByRange(FIND_SOURCES);
               

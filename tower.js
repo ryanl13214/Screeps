@@ -41,11 +41,11 @@ var tower = {
             {
                 towers[i].heal(woundedCreeps[0]);
             }
-            else if (closestDamagedStructure.length != 0 && towers[i].store.getUsedCapacity() > 200)
+            else if (closestDamagedStructure.length != 0 && towers[i].store.getUsedCapacity() > 200 && towers[i].room.controller.level >3)
             {
                 towers[i].repair(closestDamagedStructure[0]);
             }
-            else if (initalbuild.length != 0  )
+            else if (initalbuild.length != 0  && towers[i].room.controller.level >3 )
             {
                 towers[i].repair(initalbuild[0]);
             }

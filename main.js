@@ -5,20 +5,21 @@ var tower = require('tower');
 var defcon = require('defcon');
 var terminalManager = require('terminal');
 var linkManager = require('links');
-var ownedrooms = ["W16S52"];
+var ownedrooms = ["E24N3"];
 var squadmanage = require('squadManager');
 var storecpu = 0;
 var ticks = 0;
 module.exports.loop = function()
 {
     var mainstartCpu = Game.cpu.getUsed();
+    var gametime = Game.time;
     //------------------------------------------------------------------------------------------------
     //                                    ROLES
     //------------------------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
     //                          deleting memory
     //------------------------------------------------------------------------------------------------
-    if (false)
+    if (gametime % 1000 ==0)
     {
         for (var name in Memory.creeps)
         {
@@ -135,7 +136,7 @@ module.exports.loop = function()
             spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
             var spawnmain_cpu_used = +Game.cpu.getUsed() - startCpu;
         }
-        if (Game.time % 500 == 0)
+        if (Game.time % 1000 == 0)
         {
             var startCpu = Game.cpu.getUsed();
             buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y); /////////////////////////////////////////////////////////////////

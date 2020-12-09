@@ -31,7 +31,7 @@ var rolecontrollerflagger = {
       
         if(creep.pos.inRangeTo(creep.room.find(FIND_SOURCES)[1], 1)) 
         {
-           creep.room.createFlag(creep.pos.x, creep.pos.y, creep.room.name+'source1');
+           creep.room.createFlag(creep.pos.x, creep.pos.y, creep.room.name+'source1');//
         }
         
         if(creep.pos.inRangeTo(creep.room.find(FIND_SOURCES)[1], 2)) 

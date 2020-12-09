@@ -14,7 +14,7 @@ var roleMover = {
         {
             creep.memory.memstruct.full = false;
         }
-        else if (creep.memory.memstruct.full == false && _.sum(creep.carry) == creep.carryCapacity)
+        if (creep.memory.memstruct.full == false && creep.store.getFreeCapacity() ==0)
         {
             creep.memory.memstruct.full = true;
             creep.memory.target = "a";

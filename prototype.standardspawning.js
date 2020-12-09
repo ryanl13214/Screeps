@@ -68,9 +68,22 @@ var Standardspwan = {
                     else if (harvesters.length < 2  )
                     {
                        
+                        var numberofparts = Math.floor((energyavailable-250) / 100); 
+                        var bodyparts = [CARRY, MOVE, MOVE, MOVE, MOVE];
+                        for (let i = 0; i < numberofparts; i++)
+                        {
+                            bodyparts.push(WORK);
+                     
+                        }
+                         
+                        
+                        if(numberofparts >8){bodyparts=[WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE];}
+                       
+                       
+                       
                         if (harvesters.length == 0)
                         {
-                            spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE], 'harvester1' +
+                            spawnss[i].spawnCreep(bodyparts, 'harvester1' +
                                 roomname,
                                 {
                                     memory:
@@ -83,7 +96,7 @@ var Standardspwan = {
                         }
                         else
                         {
-                            spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE], 'harvester' + (
+                            spawnss[i].spawnCreep(bodyparts, 'harvester' + (
                                 harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
                             {
                                 memory:
@@ -95,9 +108,9 @@ var Standardspwan = {
                             });
                         }
                     }
-                    else if (movers.length < 4 && Game.rooms[roomname].controller.level < 6 && levelOfController > 4)
+                    else if (movers.length < 4 && levelOfController < 6 && levelOfController >= 3)
                     {
-                        spawnss[i].spawnCreep([CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
+                        spawnss[i].spawnCreep([CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
                             'mover' + Game.time,
                             {
                                 memory:
@@ -129,26 +142,7 @@ var Standardspwan = {
                                 }
                             });
                     }
-                    else if (movers.length < 1  && Game.rooms[roomname].controller.level == 7 )
-                    {
-                        spawnss[i].spawnCreep([CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE,
-                            CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE
-                        ], 'mover' + Game.time,
-                        {
-                            memory:
-                            {
-                                role: 'mover',
-                                cpuUsed: 0,
-                                roomtarg: roomname,
-                                target: "a",
-                                
-                                full: false,
-                                memstruct: memstruct
-                            }
-                        });
-                    }
-                                   
-                      
+             
                          else if (scouts.length < 1 && Game.rooms[roomname].controller.level > 3)///////////////////////////////////
                     {
                         spawnss[i].spawnCreep([MOVE], 'scout' + roomname,
@@ -164,7 +158,7 @@ var Standardspwan = {
                     }
             
             
-                    else if (repairers.length < 1 && Game.spawns[roomname].room.controller.level > 1)
+                    else if (repairers.length < 2 && Game.spawns[roomname].room.controller.level > 2)
                     {
                         var bodyparts = [ ];
                          
