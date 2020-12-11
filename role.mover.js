@@ -143,6 +143,7 @@ var roleMover = {
         {
             if (creep.store[RESOURCE_ENERGY] == creep.store.getUsedCapacity())
             {
+                
                 var targets2 = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
@@ -151,6 +152,7 @@ var roleMover = {
                             .structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
                     }
                 });
+                
                 var targets4 = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
@@ -158,21 +160,13 @@ var roleMover = {
                         return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy < 900;
                     }
                 });
-                var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_STORAGE);
-                    }
-                });
-                var terminal = creep.pos.findClosestByPath(FIND_STRUCTURES,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_TERMINAL) && structure.store.energy < 50000;
-                    }
-                });
+                
+                var storagemain = creep.room.storage;
+                
+                var terminal = creep.room.terminal;
+                
                 var targ;
+                
                 if (targets2 != undefined)
                 {
                     targ = targets2;

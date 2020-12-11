@@ -146,6 +146,13 @@ var creepfunctions = {
         var enemyY = avoidclosest.pos.y;
         var basicfleepositonX = enemyX - currX;
         var basicfleepositonY = enemyY - currY;
+        
+        if(basicfleepositonX > 49){basicfleepositonX=49;}
+        if(basicfleepositonX < 0){basicfleepositonX=0;}
+        
+        if(basicfleepositonY > 49){basicfleepositonY=49;}
+        if(basicfleepositonY < 0){basicfleepositonY=0;}
+         
         creep.moveTo(new RoomPosition(creep.pos.x - basicfleepositonX, creep.pos.y - basicfleepositonY, creep.room.name));
         // to do make it avoid terrain 
         // make it avoid more than one creep.
@@ -427,17 +434,17 @@ var creepfunctions = {
     */
     buildstructs: function(creep)
     {
-        var constructionsites = creep.room.find(FIND_CONSTRUCTION_SITES);
-        if (constructionsites.length != 0)
+        var constructionsites = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+        if (constructionsites  != undefined)
         {
-            var range = creep.pos.getRangeTo(constructionsites[0]);
+            var range = creep.pos.getRangeTo(constructionsites);
             if (range <= 3)
             {
-                creep.build(constructionsites[0]);
+                creep.build(constructionsites);
             }
             else
             {
-                creep.moveTo(constructionsites[0],
+                creep.moveTo(constructionsites,
                 {
                     reusePath: range
                 });

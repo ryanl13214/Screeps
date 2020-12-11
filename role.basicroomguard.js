@@ -143,6 +143,57 @@ var roleguard = {
                     }
                 }
             }
+            
+            
+            
+            
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+            
+            
+            
+            
+            
+            if (creep.memory.attackrole == "rangerhealer")
+            {
+                const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
+                const targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+                if (targets.length > 0)
+                {
+                    creep.rangedAttack(targets[0]);
+                }
+                
+                if (creep.hits < creep.hitsMax )
+                {
+                    creep.heal(creep);
+                }
+                
+                
+                const range = creep.pos.getRangeTo(target);
+                if (range > 2 && creep.hits + 300 > creep.hitsMax)
+                {
+                    creep.moveTo(target);
+                }
+                if (range < 3 || (creep.hits + 300 < creep.hitsMax && range < 5) )
+                {
+                    creepfunctions.combatMove(creep, targetArr, target);
+                }
+        
+                
+                
+            }
+            
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+            
+            
+            
+            
+            
+            
+            
+            
         }
     }
 };

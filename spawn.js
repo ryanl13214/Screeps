@@ -12,7 +12,7 @@
 */
 //Game.spawns['w35s8'].spawnCreep([MOVE], 'flager' + Game.time, {memory: {role: 'flagger' , target:"source0"}});
 var standardspawning = require('prototype.standardspawning');
-var attackspawning   = require('prototype.attackspawning');
+ 
 var spwan = {
     run: function(roomname, defconstruct, storagevalue, roomExits, creepsinroom)
     {
@@ -31,7 +31,44 @@ var spwan = {
             
         }
       
-        if (Game.time % 5 == 0  || defconstruct.defenceLevel < 10)
+      
+      
+      
+      
+            
+            var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+            
+            for(var i = 0; i < spawnss.length; i++){
+                
+            var ajacentcreepstorenew = spawnss[i].pos.findInRange(FIND_MY_CREEPS,1,
+            {
+                filter: (creep) =>
+                {
+                    return (creep.memory.memstruct.boosted == false && (   creep.memory.memstruct.opportuniticRenew ==true  ||    creep.memory.memstruct.moveToRenew ==true   ) && creep.ticksToLive < 1450 );
+                }
+            });
+                
+          
+                if(ajacentcreepstorenew.length != 0){
+                    spawnss[i].renewCreep(ajacentcreepstorenew[0]);
+                }
+                
+                
+            }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+        if (Game.time % 15 == 0  || defconstruct.defenceLevel < 10)
         {
             var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
             var energycurrentlyavailable = Game.rooms[roomname].energyAvailable;
@@ -100,11 +137,22 @@ var spwan = {
             
             
             
-        } else if(defconstruct.defenceLevel  ==10){
+        } else if(defconstruct.defenceLevel  == 10 ){
             standardspawning.run(roomname, defconstruct, storagevalue, roomExits, creepsinroom,energyavailable,energycurrentlyavailable,jacks,repairers,towermover,harvesters,movers,upgraders,resourcemover,extractor,nextroomharvester,scouts,numberofguardingcreeps,memstruct);
+          
+            
+        } else{
             
             
-        } 
+       //     Game.spawns[roomname].spawnCreep([ATTACK ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicattacker", memstruct: {spawnRoom:roomname,  tasklist: [],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+
+
+
+            
+            
+            
+            
+        }
         
         
         

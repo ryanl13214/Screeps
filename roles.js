@@ -1,5 +1,5 @@
 var rolejack = require('role.jack');
-var roleflag = require('role.jointflaggers');
+
 var rolerepair = require('role.repairer');
 var roleHarvester = require('role.harvester');
 var rolemover = require('role.mover');
@@ -26,10 +26,6 @@ var roles =
             var creep = Game.creeps[creepsglobal[i].name];
             if(creep.memory.role=="jack"){
                 rolejack.run(creep);
-            }else
-            
-            if(creep.memory.role=="flagger"){
-                roleflag.run(creep);
             }else
             if(creep.memory.role=="repair"){
                 rolerepair.run(creep);
