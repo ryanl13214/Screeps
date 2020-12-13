@@ -33,13 +33,14 @@ var roletowermover = {
         }
         if (creep.memory.working == true)
         {
-            var targets = creep.room.find(FIND_STRUCTURES,
+            var targets = creep.pos.findInRange(FIND_STRUCTURES,1,
             {
                 filter: (structure) =>
                 {
-                    return (structure.structureType == STRUCTURE_TOWER) && structure.energy < 500;
+                    return (structure.structureType == STRUCTURE_TOWER   && structure.energy < 500 ) || (structure.structureType == STRUCTURE_SPAWN  && structure.energy < 300 ) ;
                 }
             });
+            
             if (targets == null)
             {
                 var targets = creep.room.find(FIND_STRUCTURES,

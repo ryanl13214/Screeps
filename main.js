@@ -52,18 +52,11 @@ module.exports.loop = function()
     }
     const resourcevalues = Object.values(testingsquads);
     const resourcekeys = Object.keys(testingsquads);
-    if (resourcekeys.length == -10)
-    {
-        squadmanage.initializeSquad("squadID", [], false, "test", "W16S52",
-        {
-            "heal1": [MOVE],
-            "heal2": [MOVE],
-            "attack1": [MOVE]
-        });
-    }
+
+
     for (var i = 0; i < resourcekeys.length; i++)
     {
-       squadmanage.run(resourcekeys[0]);
+     squadmanage.run(resourcekeys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    flag reset

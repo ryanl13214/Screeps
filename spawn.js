@@ -142,11 +142,10 @@ var spwan = {
           
             
         } else{
-            
-            
-       //     Game.spawns[roomname].spawnCreep([ATTACK ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicattacker", memstruct: {spawnRoom:roomname,  tasklist: [],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
-
-
+                var numberofguardingcreeps = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
+            if(numberofguardingcreeps < 1){
+            Game.spawns[roomname].spawnCreep([ATTACK ,MOVE,ATTACK ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicattacker", memstruct: {spawnRoom:roomname,  tasklist: [],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+                }
 
             
             

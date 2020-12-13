@@ -56,7 +56,8 @@ var Standardspwan = {
                     }
                     else if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4)
                     {
-                        spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
+                       // spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
+                        spawnss[i].spawnCreep([WORK,WORK,WORK,WORK,WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
                         {
                             memory:
                             {
@@ -80,7 +81,7 @@ var Standardspwan = {
                     }
                     else if (harvesters.length < 2  )
                     { 
-                       console.log("harvester spawn");
+                      
                         var numberofparts = Math.floor((energyavailable-250) / 100); 
                         var bodyparts = [CARRY, MOVE, MOVE, MOVE, MOVE];
                         for (let j = 0; j < numberofparts; j++)
@@ -157,7 +158,7 @@ var Standardspwan = {
                     }
             
             
-                    else if (repairers.length < 1 && Game.spawns[roomname].room.controller.level > 2)
+                    else if (repairers.length < 3 && Game.spawns[roomname].room.controller.level > 2)
                     {
                         var bodyparts = [ ];
                          
@@ -226,7 +227,7 @@ var Standardspwan = {
                          
                           var numberofparts = Math.floor((energyavailable - 200) / 100);
                         var bodyparts = [];
-                        if(numberofparts >7){numberofparts=6;}
+                        if(numberofparts >9){numberofparts=9;}
                         for (let i = 0; i < numberofparts; i++)
                         {
                             bodyparts.push(WORK);

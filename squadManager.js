@@ -1,59 +1,44 @@
+var creepfunctions = require('prototype.creepfunctions');
 var squadmanager = {
-    run: function(squadID)
-    {
+    run: function(squadID) {
         var mainMemoryObject = Memory.squadObject[squadID];
         var numberOfLivingSqaudMembers = [];
-        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        {
-            if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]))
-            {
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++) {
+            if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c])) {
                 numberOfLivingSqaudMembers.push(mainMemoryObject.SquadMembersCurrent[c]);
             }
         }
-         
         mainMemoryObject.SquadMembersCurrent = numberOfLivingSqaudMembers;
-         
-        if (mainMemoryObject.squadcreationtime + 500 < Game.time && numberOfLivingSqaudMembers.length ==0 )
+        
+        if (mainMemoryObject.squadcreationtime + 500 < Game.time && numberOfLivingSqaudMembers.length == 0) 
         {
             delete Memory.squadObject[squadID];
-        }
-        else
+        } 
+        else 
         {
-             mainMemoryObject.squadisready=false;
             const resourcevalues = Object.values(mainMemoryObject.SquadMembersGoal);
-            //    console.log("squad goald length "+ resourcevalues.length );
-            //    console.log("squad d length "+ mainMemoryObject.SquadMembersCurrent.length );  
-            if (mainMemoryObject.SquadMembersCurrent.length < resourcevalues.length)
+            if (mainMemoryObject.SquadMembersCurrent.length < resourcevalues.length && mainMemoryObject.squadcreationtime + 1000 < Game.time) 
             {
-                // console.log(squadID +" needs spanging ");
                 this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
-            }
-            else if (1==2)
+            } else if (1 == 2) 
             {
                 ///boosting
-            }else if (mainMemoryObject.SquadMembersCurrent.length == resourcevalues.length)
+            } 
+            else if (mainMemoryObject.SquadMembersCurrent.length == resourcevalues.length) 
             {
-                mainMemoryObject.squadisready=true;
+                console.log("squad is ready ",squadID );
+                mainMemoryObject.squadisready = true;
             }
-            
-                  if(mainMemoryObject.squadisready)
-         {
-            if(mainMemoryObject.squadType=="centerroomattacksquad")
+            if (mainMemoryObject.squadisready) 
             {
-                 this.centtersquad_controlFunction(squadID);
+                if (mainMemoryObject.squadType == "centerroomattacksquad") 
+                {
+                    this.centtersquad_controlFunction(squadID);
+                }
             }
-                
         }
-            
-            
-        }
-        
- 
-        
-        
     },
-    initializeSquad: function(squadID, arrayOfSquadGoals, squadIsBoosted, squadType, squadHomeRoom, SquadMembers)
-    {
+    initializeSquad: function(squadID, arrayOfSquadGoals, squadIsBoosted, squadType, squadHomeRoom, SquadMembers) {
         console.log("creating squad");
         Memory.squadObject[squadID] = {
             arrayOfSquadGoals: arrayOfSquadGoals,
@@ -61,16 +46,15 @@ var squadmanager = {
             squadType: squadType,
             squadHomeRoom: squadHomeRoom,
             SquadMembersCurrent: [],
-            squadposition: [25,25],
+            squadposition: [25, 25],
             SquadMembersGoal: SquadMembers,
-            squadisready:false,
+            squadisready: false,
             squadcreationtime: Game.time,
             squaddisolvetime: Game.time + 1500
         };
     },
     planMovement: function(data) {},
-    spawnnewcreep: function(squadID, squadHomeRoom)
-    {
+    spawnnewcreep: function(squadID, squadHomeRoom) {// add in function fpor broken squads to be reincorpirated
         // find the missing members 
         var memstruct = {
             spawnRoom: squadHomeRoom,
@@ -93,129 +77,134 @@ var squadmanager = {
         const number = Object.values(mainMemoryObject.SquadMembersCurrent).length;
         const resourcevalues = Object.values(mainMemoryObject.SquadMembersGoal);
         const names = Object.keys(mainMemoryObject.SquadMembersGoal);
-        spawnss.spawnCreep(resourcevalues[number], names[number] + "-" + squadID,
-        {
-            memory:
-            {
+        spawnss.spawnCreep(resourcevalues[number], names[number] + "-" + squadID, {
+            memory: {
                 role: 'multi',
                 cpuUsed: 0,
                 memstruct: memstruct
             }
         });
     },
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     centtersquad_controlFunction: function(squadID) {
-      //  console.log("centtersquad_controlFunction");
-              var mainMemoryObject = Memory.squadObject[squadID];
-       var newroomposition= new RoomPosition(mainMemoryObject.squadposition[0],mainMemoryObject.squadposition[1],mainMemoryObject.arrayOfSquadGoals[0])
-       
-           var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        
-        if(target != undefined)
-        {
-            mainMemoryObject.squadposition=[target.pos.x,target.pos.y];
-        }else if( Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0]){
-            if(mainMemoryObject.arrayOfSquadGoals.length > 1){
-                console.log("before splice",  mainMemoryObject.arrayOfSquadGoals);
-                var tmp=  mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
+        //  console.log("centtersquad_controlFunction");
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
+
+        var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+        if (target != undefined) {
+            mainMemoryObject.squadposition = [target.pos.x, target.pos.y];
+        } else if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0]) {
+            if (mainMemoryObject.arrayOfSquadGoals.length > 1) {
+                console.log("before splice", mainMemoryObject.arrayOfSquadGoals);
+                var tmp = mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
                 mainMemoryObject.arrayOfSquadGoals.push(tmp);
-                console.log("after splice",  mainMemoryObject.arrayOfSquadGoals);
+                console.log("after splice", mainMemoryObject.arrayOfSquadGoals);
             }
         }
-        
-        
-   
-   
-        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        {
-          var creeper = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]);
-          var targets = creeper.pos.findInRange(FIND_MY_CREEPS,3);
-          if(targets.length >= mainMemoryObject.SquadMembersCurrent.length  ||  creeper.pos.x==0||  creeper.pos.x==49||  creeper.pos.y==0||  creeper.pos.y==49)
-          {// if all the creps are close together 
-                creeper.moveTo(newroomposition);
-                 Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).say("close");
-          }
-          else
-          {
-              creeper.moveTo(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos);  
-             Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).say("far");
-          }
-        }
-        
-         for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        {
-          var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-         Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).attack(target);
-        }
-        
-        
-       /* 
-         if (creep.memory.attackrole == "rangerhealer")
+
+
+
+ 
+
+            var healers = [];
+            var rangers = [];
+            for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++) {
+                if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name == "healer1-E24N3centerdamagesquad") {
+                    healers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+                } else {
+                    rangers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+                }
+
+            }
+
+
+
+            for (var c = 0; c < rangers.length; c++) 
             {
-                const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
-                const targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-                if (targets.length > 0)
+                var creeper = rangers[c];
+
+                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                const range = creeper.pos.getRangeTo(targets);
+                const rangetohealer = creeper.pos.getRangeTo(healers[0]);
+                creeper.say(rangetohealer);
+                
+                // error checking for room transition
+                if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0])
                 {
-                    creep.rangedAttack(targets[0]);
+                    
+                     creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
                 }
                 
-                if (creep.hits < creep.hitsMax )
+                
+                if (range > 3 && creeper.hits + 300 > creeper.hitsMax) 
                 {
-                    creep.heal(creep);
+                    creeper.moveTo(newroomposition);
+
+                } 
+                else if (rangetohealer == 1 && creeper.hits < creeper.hitsMax) 
+                {
+
+
+                } 
+                else if (creeper.hits + 300 < creeper.hitsMax) 
+                {
+                    creeper.moveTo(healers[0]);
+                }
+                if (range <= 3) 
+                {
+                    creeper.rangedAttack(targets);
+                }
+            }
+
+            for (var c = 0; c < healers.length; c++) 
+            {
+                  
+                var creeper = healers[c];
+                var target = creeper.pos.findInRange(FIND_MY_CREEPS, 1, {filter: function(object) {return object.hits < object.hitsMax;}});
+                if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0])
+                {
+                    
+                     creeper.moveTo(game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+                }
+                if (target.length != 0) 
+                {
+                    creeper.heal(target[0]);
+                }
+                else
+                {
+                    var target = creeper.pos.findInRange(FIND_MY_CREEPS, 3, {filter: function(object) {return object.hits < object.hitsMax;}});
+                    if (target.length != 0) 
+                    {
+                        creeper.rangedHeal(target[0]);
+                    }
                 }
                 
                 
-                const range = creep.pos.getRangeTo(target);
-                if (range > 2 && creep.hits + 300 > creep.hitsMax)
-                {
-                    creep.moveTo(target);
-                }
-                if (range < 3 || (creep.hits + 300 < creep.hitsMax && range < 5) )
-                {
-                    creepfunctions.combatMove(creep, targetArr, target);
-                }
-        
                 
-                
-            }        
-        */
+                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                const range = creeper.pos.getRangeTo(targets);
+                if (range > 5) 
+                {
+                    creeper.moveTo(newroomposition);
+                }
+                if (range < 5) 
+                {
+                    const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
+                    target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    creepfunctions.combatMove(creeper, targetArr, target);
+                }
+            }
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-         
-         
-     },
-    
-    
-    
-    
-    
-    
-    
+    },
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }
 module.exports = squadmanager;
-/*
-        
-    var towerdamage= C.TOWER_POWER_ATTACK * C.TOWER_FALLOFF * (14 - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-
-        var towerdamage= C.TOWER_POWER_ATTACK * C.TOWER_FALLOFF * (range - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-    }
-        console.log( TOWER_POWER_ATTACK * TOWER_FALLOFF * (14 - TOWER_OPTIMAL_RANGE) / (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE));
-        //        amount -= amount * C.TOWER_FALLOFF * (range - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-        
-         var towerdamage= C.TOWER_POWER_ATTACK * C.TOWER_FALLOFF * (14 - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-
-        */
+ 

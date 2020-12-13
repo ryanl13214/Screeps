@@ -22,10 +22,10 @@ var squadgenerator = {
                 
                 squadmanage.initializeSquad(roomname+"centerdamagesquad", mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange, false, "centerroomattacksquad", roomname, 
                 {
-                    "attack1": [ATTACK,MOVE],
-                    "attack2":[ATTACK,MOVE],
-                    "attack3": [ATTACK,MOVE],
-                    "heal1": [ATTACK,MOVE],
+                    "attack1": [MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK],
+                    "attack2": [MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK],
+                    "attack3": [MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK],
+                    "healer1": [MOVE,HEAL],
                 });
             }
         }
@@ -33,15 +33,4 @@ var squadgenerator = {
 
 }
 module.exports = squadgenerator;
-/*
-        
-    var towerdamage= C.TOWER_POWER_ATTACK * C.TOWER_FALLOFF * (14 - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-
-        var towerdamage= C.TOWER_POWER_ATTACK * C.TOWER_FALLOFF * (range - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-    }
-        console.log( TOWER_POWER_ATTACK * TOWER_FALLOFF * (14 - TOWER_OPTIMAL_RANGE) / (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE));
-        //        amount -= amount * C.TOWER_FALLOFF * (range - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-        
-         var towerdamage= C.TOWER_POWER_ATTACK * C.TOWER_FALLOFF * (14 - C.TOWER_OPTIMAL_RANGE) / (C.TOWER_FALLOFF_RANGE - C.TOWER_OPTIMAL_RANGE);
-
-        */
+ 
