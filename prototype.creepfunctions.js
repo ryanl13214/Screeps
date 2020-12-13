@@ -140,20 +140,45 @@ var creepfunctions = {
     */
     combatMove: function(creep, avoidarray, avoidclosest)
     {
+        
         var currX = creep.pos.x;
         var currY = creep.pos.y;
         var enemyX = avoidclosest.pos.x;
         var enemyY = avoidclosest.pos.y;
-        var basicfleepositonX = enemyX - currX;
-        var basicfleepositonY = enemyY - currY;
         
-        if(basicfleepositonX > 49){basicfleepositonX=49;}
-        if(basicfleepositonX < 0){basicfleepositonX=0;}
         
-        if(basicfleepositonY > 49){basicfleepositonY=49;}
-        if(basicfleepositonY < 0){basicfleepositonY=0;}
+        if(currX > enemyX)
+        {
+            var basicfleepositonX = 1; 
+        }
+        else if (currX == enemyX)
+        {
+            var basicfleepositonX = 0; 
+        }
+        else
+        {       
+            var basicfleepositonX =-1;
+        }
+        
+        if(currY > enemyY)
+        {
+            var basicfleepositonY = 1;
+        }
+        else if (currY == enemyY)
+        {
+            var basicfleepositonY = 0; 
+        }
+        else
+        {       
+            var basicfleepositonY =-1;
+        }
+        
+        
          
-        creep.moveTo(new RoomPosition(creep.pos.x - basicfleepositonX, creep.pos.y - basicfleepositonY, creep.room.name));
+ 
+         
+        creep.moveTo(new RoomPosition(creep.pos.x + basicfleepositonX, creep.pos.y + basicfleepositonY, creep.room.name));
+         
         // to do make it avoid terrain 
         // make it avoid more than one creep.
     },

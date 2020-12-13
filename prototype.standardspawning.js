@@ -158,7 +158,7 @@ var Standardspwan = {
                     }
             
             
-                    else if (repairers.length < 3 && Game.spawns[roomname].room.controller.level > 2)
+                    else if (repairers.length < 1 && Game.spawns[roomname].room.controller.level > 2)
                     {
                         var bodyparts = [ ];
                          
@@ -323,6 +323,10 @@ var Standardspwan = {
                                 }
                             }
                         }
+                    }
+                    else{
+                        /////////////// set squad spawnimng to true 
+                        Game.flags[roomname].memory.flagstruct.spawnfree = true;
                     }
                 }
                 //   console.log(Game.time%200);

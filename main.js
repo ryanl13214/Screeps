@@ -56,7 +56,7 @@ module.exports.loop = function()
 
     for (var i = 0; i < resourcekeys.length; i++)
     {
-     squadmanage.run(resourcekeys[i]);
+     //squadmanage.run(resourcekeys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    flag reset
