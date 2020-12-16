@@ -4,7 +4,13 @@ var creepfunctions = {
         memstruct function
     milti
     
-    
+    if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller, {
+                    visualizePathStyle: {
+                        stroke: '#ffaa00'
+                    }
+                });
+            }
     */
     checkglobaltasks: function(creep) {
         if (creep.memory.memstruct.tasklist.length == 0) {
@@ -21,7 +27,17 @@ var creepfunctions = {
                     // creep.say(creep.id);
                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }
-            } else if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom") {
+            } else  if (creep.memory.memstruct.tasklist[0][0] == "claim") {
+            
+    if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller, {
+                    visualizePathStyle: {
+                        stroke: '#ffaa00'
+                    }
+                });
+            }
+            
+            }else if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom") {
                 var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
                 var pos1 = creep.pos;
                 var pos2 = targetRoomFlag.pos;
@@ -32,6 +48,20 @@ var creepfunctions = {
                         color: '#000000',
                         lineStyle: 'solid'
                     });
+                    
+                    
+                    
+                var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var range2 = creep.pos.getRangeTo(targets);
+
+                if (range2 <= 4) {
+                    const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
+                    target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    this.combatMove(creep, targetArr, target);
+                }
+                    
+                    
+                    
                 } else {
                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }

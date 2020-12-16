@@ -17,9 +17,9 @@ var rolejack = {
 
     run: function(creep) {
         var startCpujack = Game.cpu.getUsed();
-     //   creepfunctions.checkglobaltasks(creep);
+     var check =    creepfunctions.checkglobaltasks(creep);
         //   checklocaltasks(creep);
-        if (1==1) {//move the global takslis t check here
+        if (check) {//move the global takslis t check here
         if (creep.memory.full == true && creep.carry.energy == 0) {
                 creep.memory.full = false;
             }
@@ -91,6 +91,9 @@ var rolejack = {
         if (creep.ticksToLive == 1) {
             console.log("jack cpu avg-" + (creep.memory.cpuUsed / 1500));
         }
+        try{
+        creepfunctions.movehomeandrenew(creep,creep.room.name,100);
+        }catch(e){}
     }
 };
 module.exports = rolejack;

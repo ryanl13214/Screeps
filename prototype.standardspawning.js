@@ -12,6 +12,9 @@ var Standardspwan = {
         }
         var levelOfController = Game.rooms[roomname].controller.level;
  
+ var moversneeded =1;
+ 
+ 
         for (var i = 0; i < spawnss.length; i++) {
 
             if (movers.length == 0) {
@@ -28,7 +31,7 @@ var Standardspwan = {
                 });
             } else if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4) {
                 // spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
-                spawnss[i].spawnCreep([WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname, {
+                spawnss[i].spawnCreep([ WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname, {
                     memory: {
                         memstruct: memstruct,
                         role: 'towermover',
@@ -79,7 +82,7 @@ var Standardspwan = {
                         }
                     });
                 }
-            } else if (movers.length < 2  && Game.spawns[roomname].room.controller.level >= 3) {
+            } else if (movers.length < moversneeded  && Game.spawns[roomname].room.controller.level >= 3) {
 
 
 
@@ -175,8 +178,8 @@ console.log("bodypartsMOVER");
 
                 var numberofparts = Math.floor((energyavailable - 400) / 100);
                 var bodyparts = [];
-                if (numberofparts > 9) {
-                    numberofparts = 9;
+                if (numberofparts > 5) {
+                    numberofparts = 5;
                 }
                 for (let i = 0; i < numberofparts; i++) {
                     bodyparts.push(WORK);

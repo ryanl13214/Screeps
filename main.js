@@ -4,14 +4,31 @@ var buildbase = require('buildbase');
 var tower = require('tower');
 var defcon = require('defcon');
 var terminalManager = require('terminal');
-var squadgenerate = require('squadgenerator'); 
-var ownedrooms = ["E24N3"];
+var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
 var storecpu = 0;
 var ticks = 0;
 
 module.exports.loop = function()
 {
+    
+  
+var ownedrooms = [];
+  
+  var roomsall = Object.keys(Game.rooms);
+ var roomsobj = Game.rooms;
+  for (var i = 0; i <  roomsall.length; i++)
+        { 
+            
+            if (roomsobj[roomsall[i]].controller  != undefined )
+            {  
+            if ((roomsobj[roomsall[i]]).controller.owner.username === "Q13214")
+            { 
+              ownedrooms.push(roomsall[i]);
+            }
+            }
+        }
+  
     var mainstartCpu = Game.cpu.getUsed();
     var gametime = Game.time;
     //------------------------------------------------------------------------------------------------
@@ -52,11 +69,11 @@ module.exports.loop = function()
     }
     const resourcevalues = Object.values(testingsquads);
     const resourcekeys = Object.keys(testingsquads);
-
+ 
 
     for (var i = 0; i < resourcekeys.length; i++)
     {
-      //  squadmanage.run(resourcekeys[i]);
+        squadmanage.run(resourcekeys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    flag reset
@@ -78,7 +95,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     //                    START OF ROOMS LOOP
     //------------------------------------------------------------------------------------------------
-    for (var i = 0; i < ownedrooms.length; i++)
+    for (var i = 0; i <2; i++)
     {
         if(Game.time % 1500 ==0 ){
             Game.flags[roomname].memory.flagstruct.squadspawning ="";
@@ -123,13 +140,13 @@ module.exports.loop = function()
 //                                            SQUAD CREATION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         var startCpu = Game.cpu.getUsed();
-        squadgenerate.run(roomname);
+     squadgenerate.run(roomname);
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            roles
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         var startCpu = Game.cpu.getUsed();
-        roles.run(creepsInRoom);
+         roles.run(creepsInRoom);
         var roles_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var roomExits = [0, 0, 0, 0];
@@ -149,7 +166,7 @@ module.exports.loop = function()
 //                                            defcon
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         var startCpu = Game.cpu.getUsed();
-        defconlevel = defcon.run(roomname);
+       defconlevel = defcon.run(roomname);
         var defcon_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            spawning
@@ -157,7 +174,7 @@ module.exports.loop = function()
       
       
             var startCpu = Game.cpu.getUsed();
-            spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
+         spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
             var spawnmain_cpu_used = +Game.cpu.getUsed() - startCpu;
    
    
@@ -176,7 +193,7 @@ module.exports.loop = function()
         var startCpu = Game.cpu.getUsed();
         if (Game.time % 10 == 0 || defconlevel.defenceLevel < 10)
         {
-            tower.run(roomname);
+           tower.run(roomname);
         }
         var tower_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
