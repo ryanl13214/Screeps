@@ -128,10 +128,14 @@ var rolescout = {
                             }
                             
                         }
-                        
+                        if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level <7 && tmpvar.length >=1){    found= true;}
+                        if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level ==7 && tmpvar.length >2){    found= true;}
+                        if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level ==8 && tmpvar.length >4){    found= true;}
                         if(!found && creep.room.name !=creep.memory.memstruct.spawnRoom && creep.room.controller == undefined)
                         {
+                            
                             Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.centerroomsinrange.push(creep.room.name);/// this causes duplicates to need to remove dupes
+                            
                         }
                         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

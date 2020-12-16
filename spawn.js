@@ -23,7 +23,12 @@ var spwan = {
             {
                 Game.spawns[roomname].spawning.setDirections([LEFT]);
             }
-            else if( Game.rooms[roomname].controller.level >4)
+            else if( Game.rooms[roomname].controller.level <6)
+            {
+                Game.spawns[roomname].spawning.setDirections([RIGHT,TOP_RIGHT,BOTTOM_RIGHT,BOTTOM,BOTTOM_LEFT,TOP]);
+                
+            }           
+            else
             {
                 Game.spawns[roomname].spawning.setDirections([RIGHT,TOP_RIGHT,BOTTOM_RIGHT]);
                 
@@ -68,7 +73,7 @@ var spwan = {
       
       
       
-        if (Game.time % 15 == 0  || defconstruct.defenceLevel < 10)
+        if (Game.time % 10 == 0  || defconstruct.defenceLevel < 10)
         {
             var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
             var energycurrentlyavailable = Game.rooms[roomname].energyAvailable;
@@ -83,7 +88,7 @@ var spwan = {
             var nextroomharvester = _.filter(creepsinroom, (creep) => creep.memory.role == 'nextroom');
             var scouts = _.filter(creepsinroom, (creep) => creep.memory.role == 'scout');
             var numberofguardingcreeps = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
-            
+             
         //standard creep memory
             var memstruct = {
                 spawnRoom: roomname,
@@ -99,6 +104,13 @@ var spwan = {
                 SquadID:"0",
                 SquadRole:false
             };
+            
+        if(  movers.length !=0 && harvesters.length ==2)  
+        {
+                 Game.flags[roomname].memory.flagstruct.spawnfree = true;
+        }else{
+                Game.flags[roomname].memory.flagstruct.spawnfree = false;
+        }
             
             
         if( ( movers.length ==0 || harvesters.length ==0) && creepsinroom.length < 4){

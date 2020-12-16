@@ -2,6 +2,7 @@
 if there is energy in the link then withdraw it 
 if the energy level of the terminal is over 51,000 withdraw energy from it
 */
+var creepfunctions = require('prototype.creepfunctions');
 var roleresourcemover = {
     run: function(creep)
     {

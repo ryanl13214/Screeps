@@ -1,3 +1,4 @@
+var creepfunctions = require('prototype.creepfunctions');
 var roleextractor = {
 
     /** @param {Creep} creep **/

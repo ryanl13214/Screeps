@@ -56,7 +56,7 @@ module.exports.loop = function()
 
     for (var i = 0; i < resourcekeys.length; i++)
     {
-     //squadmanage.run(resourcekeys[i]);
+      //  squadmanage.run(resourcekeys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    flag reset
@@ -80,8 +80,13 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     for (var i = 0; i < ownedrooms.length; i++)
     {
+        if(Game.time % 1500 ==0 ){
+            Game.flags[roomname].memory.flagstruct.squadspawning ="";
+        }
+        
         var roomname = ownedrooms[i];
         var mainflag = Game.flags[roomname];
+ 
         if (mainflag == undefined)
         {
             var flagstruct = {
@@ -102,7 +107,9 @@ module.exports.loop = function()
                     {}
                 }
             };
-            
+        if(Game.time % 1500 ==0 ){
+            mainflag.memory.flagstruct.squadspawning ="";
+        }
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
           
           
@@ -111,7 +118,7 @@ module.exports.loop = function()
             mainflags.memory.flagstruct = flagstruct;
         }
         
-        var creepsInRoom = _.filter(Game.creeps, (creep) => creep.memory.memstruct.spawnRoom === ownedrooms[i]);
+        var creepsInRoom = _.filter(Game.creeps, (creep) =>  (creep.memory.memstruct != undefined &&    creep.memory.memstruct.spawnRoom === ownedrooms[i]));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            SQUAD CREATION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 

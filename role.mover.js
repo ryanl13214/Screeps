@@ -4,6 +4,7 @@ KNOWN ISSUES
 
 
 */
+var creepfunctions = require('prototype.creepfunctions');
 var roleMover = {
     //     this role is for moving energy from full containers to other areas within the same room    
     run: function(creep)
@@ -242,6 +243,8 @@ var roleMover = {
         {
             console.log("mover cpu avg-" + (creep.memory.cpuUsed / 1500));
         }
+        creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
+        
     }
 };
 module.exports = roleMover;

@@ -61,7 +61,7 @@ var rolerepair = {
         {
             console.log("repairer cpu avg-"+(creep.memory.cpuUsed/1500));
         }
-        
+        creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
         
     }
 };

@@ -1,12 +1,11 @@
+var creepfunctions = require('prototype.creepfunctions');
 var roleharvester = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
         
-        if(creep.ticksToLive <150){
-            creep.memory.role="harvesteralt";
-        }
-           if(creep.ticksToLive>1300){
+    
+           if(creep.ticksToLive>1400){
                      creep.moveTo(Game.flags[creep.room.name + "source" + creep.memory.sourcetarget].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
  
@@ -36,6 +35,9 @@ var roleharvester = {
             }
             if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {}
         }
+        
+        //creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
+        
     }
 
 };

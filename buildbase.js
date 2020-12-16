@@ -316,14 +316,7 @@ var basebuild = {
         {
             console.log(e);
         }
-            try
-            {
-                Game.rooms[roomname].createConstructionSite(storage_xpos + -2, storage_ypos , STRUCTURE_LINK);
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
+            
             try
             {
                 Game.rooms[roomname].createConstructionSite(storage_xpos - 2, storage_ypos - 1 , STRUCTURE_TERMINAL);
@@ -359,6 +352,14 @@ var basebuild = {
            
             if (Game.rooms[roomname].controller.level > 5)
             {
+                 try
+            {
+                Game.rooms[roomname].createConstructionSite(storage_xpos + -2, storage_ypos , STRUCTURE_LINK);
+            }
+            catch (e)
+            {
+                console.log(e);
+            }
                 var flag1 = Game.flags[roomname + "container1"];
                 var flag0 = Game.flags[roomname + "container0"];
                 const found = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag1.pos,
