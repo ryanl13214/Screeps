@@ -20,11 +20,14 @@ var ownedrooms = [];
   for (var i = 0; i <  roomsall.length; i++)
         { 
             
-            if (roomsobj[roomsall[i]].controller  != undefined )
+            if (roomsobj[roomsall[i]].controller != undefined )
             {  
+            if (roomsobj[roomsall[i]].controller.owner != undefined )
+            {   
             if ((roomsobj[roomsall[i]]).controller.owner.username === "Q13214")
             { 
               ownedrooms.push(roomsall[i]);
+            }
             }
             }
         }
@@ -73,7 +76,7 @@ var ownedrooms = [];
 
     for (var i = 0; i < resourcekeys.length; i++)
     {
-        squadmanage.run(resourcekeys[i]);
+       // squadmanage.run(resourcekeys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    flag reset
@@ -137,10 +140,19 @@ var ownedrooms = [];
         
         var creepsInRoom = _.filter(Game.creeps, (creep) =>  (creep.memory.memstruct != undefined &&    creep.memory.memstruct.spawnRoom === ownedrooms[i]));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                            defcon
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+        var startCpu = Game.cpu.getUsed();
+       defconlevel = defcon.run(roomname);
+        var defcon_cpu_used = +Game.cpu.getUsed() - startCpu;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            SQUAD CREATION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         var startCpu = Game.cpu.getUsed();
+        if (Game.time % 10 == 0 || defconlevel.defenceLevel < 10)
+        {
      squadgenerate.run(roomname);
+        }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            roles
@@ -162,12 +174,7 @@ var ownedrooms = [];
         {
             storagevalue = Game.rooms[roomname].storage.store.energy;
         }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                            defcon
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-        var startCpu = Game.cpu.getUsed();
-       defconlevel = defcon.run(roomname);
-        var defcon_cpu_used = +Game.cpu.getUsed() - startCpu;
+ 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            spawning
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
@@ -217,9 +224,9 @@ var ownedrooms = [];
                 structureType: STRUCTURE_LINK
             }
         });
-        for (var i = 0; i < links.length; i++) {
-            if (links[i].energy > 300) {
-                links[i].transferEnergy(linkto[0]);
+        for (var o = 0; o < links.length; o++) {
+            if (links[o].energy > 300) {
+                links[o].transferEnergy(linkto[0]);
             }
         }
         var Link_cpu_used = +Game.cpu.getUsed() - startCpu;

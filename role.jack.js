@@ -35,7 +35,46 @@ var rolejack = {
                     creepfunctions.findDroppedEnergy(creep);
                 }
                 
-                
+                 if (!creep.memory.hastask) {
+                  
+                        var          containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800;
+                    }
+                });
+              
+                if (containers != undefined )
+                {
+                     var range = creep.pos.getRangeTo(containers);
+                if (range <= 1)
+                {
+                    creep.withdraw(containers,RESOURCE_ENERGY);
+                }
+                else
+                {
+                    creep.moveTo(containers,
+                    {
+                        reusePath: range,
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                }
+                    
+                    
+                    
+               creep.memory.hastask=true;
+                }
+                    
+             
+             
+                    
+                    
+                    
+                }
             
                 if (!creep.memory.hastask) {
                     var sources = creep.room.find(FIND_SOURCES);

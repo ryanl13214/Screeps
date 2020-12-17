@@ -54,8 +54,12 @@ var spwan = {
             });
                 
           
-                if(ajacentcreepstorenew.length != 0){
+                if(ajacentcreepstorenew.length != 0  && storagevalue !=0){
                     spawnss[i].renewCreep(ajacentcreepstorenew[0]);
+                }else if(ajacentcreepstorenew.length != 0  && storagevalue ==0){
+                    ajacentcreepstorenew[0].memory.isrenweing  =false;
+                     ajacentcreepstorenew[0].memory.memstruct.opportuniticRenew  =false;
+                    
                 }
                 
                 
@@ -204,7 +208,7 @@ var spwan = {
         }
             
  var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
-        if( ( movers.length ==0 || harvesters.length ==0 ) && jacks.length < 6 ){
+        if( (( movers.length ==0 || harvesters.length ==0 ) && jacks.length < 6 )||(  Game.rooms[roomname].controller.level < 3 && jacks.length < 6)){
            
                     
                         var numberofparts = Math.floor(energycurrentlyavailable / 350); 

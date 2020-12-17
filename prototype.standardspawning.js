@@ -17,19 +17,7 @@ var Standardspwan = {
  
         for (var i = 0; i < spawnss.length; i++) {
 
-            if (movers.length == 0) {
-                spawnss[i].spawnCreep([CARRY, CARRY, MOVE, CARRY, MOVE, MOVE], 'mover' + Game.time, {
-                    memory: {
-                        role: 'mover',
-                        cpuUsed: 0,
-                        roomtarg: roomname,
-                        target: "a",
-
-                        full: false,
-                        memstruct: memstruct
-                    }
-                });
-            } else if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4) {
+            if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4) {
                 // spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
                 spawnss[i].spawnCreep([ WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname, {
                     memory: {

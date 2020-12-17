@@ -3,16 +3,16 @@ var roleharvester = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
-        
-    
-           if(creep.ticksToLive>1400){
+         
+           if(creep.ticksToLive>1400  ){
                      creep.moveTo(Game.flags[creep.room.name + "source" + creep.memory.sourcetarget].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
  
         if (creep.carry.energy < creep.carryCapacity - 20) {
-            var sources = creep.room.find(FIND_SOURCES);  
+            
+            var sources = creep.pos.findInRange(FIND_SOURCES,1);  
            
-            creep.harvest(sources[creep.memory.sourcetarget]);
+            creep.harvest(sources[0]);
           
         } else {
             const targets =Game.flags[creep.room.name + "container" + creep.memory.sourcetarget].pos.lookFor(LOOK_STRUCTURES, {
