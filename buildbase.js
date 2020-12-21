@@ -472,11 +472,32 @@ var basebuild = {
             if ( Game.rooms[roomname].controller.level > 2)
                 {
             
+            var terrain = Game.rooms[roomname].getTerrain();
+            
+            
+            
+            
+            
                         for (var i = 0; i < roads.length; i++)
             {
                 try
                 {
-                   Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
+                    
+                    
+                    
+                    
+                    
+                    if (terrain.get(storage_xpos + roads[i][0], storage_ypos + roads[i][1]) ==0){
+                        
+                         Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
+                    
+                        
+                    }  
+           
+                    
+                    
+                    
+                   
                 }
                 catch (e)
                 {

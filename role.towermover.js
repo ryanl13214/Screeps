@@ -63,17 +63,12 @@ var roletowermover = {
             }
             else
             {
-                var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
+                var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 1,
                 {
-                    filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
-                });
-                if (closestDamagedStructure.length != 0)
-                { var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 1,
-                {
-                    filter: (structure) => structure.hits < structure.hitsMax * 0.3 && structure.structureType != STRUCTURE_WALL
+                    filter: (structure) => structure.hits < structure.hitsMax * 0.5 && structure.structureType != STRUCTURE_WALL
                 });
                     
-                }
+              
                 
                 if (closestDamagedStructure.length != 0)
                 {

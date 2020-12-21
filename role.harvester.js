@@ -2,11 +2,13 @@ var creepfunctions = require('prototype.creepfunctions');
 var roleharvester = {
     /** @param {Creep} creep **/
     run: function(creep) {
+        if(creep.ticksToLive<70  ){
+             creep.memory.role="harvesteralt";
+        }
         
-         
-           if(creep.ticksToLive>1400  ){
-                     creep.moveTo(Game.flags[creep.room.name + "source" + creep.memory.sourcetarget].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
+        if(creep.ticksToLive>1400  ){
+            creep.moveTo(Game.flags[creep.room.name + "source" + creep.memory.sourcetarget].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
+        }
  
         if (creep.carry.energy < creep.carryCapacity - 20) {
             

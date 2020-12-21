@@ -54,10 +54,71 @@ var creepfunctions = {
                 var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                 var range2 = creep.pos.getRangeTo(targets);
 
-                if (range2 <= 4) {
+                if (range2 <= 5) {
                     const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
                     target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                     this.combatMove(creep, targetArr, target);
+                }
+                    
+                    
+                    
+                } else {
+                    creep.memory.memstruct.tasklist.splice(0, 1);
+                }
+            } else if (creep.memory.memstruct.tasklist[0][0] == "attackMoveToRoom") {
+                var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
+                var pos1 = creep.pos;
+                var pos2 = targetRoomFlag.pos;
+                var range = creep.pos.getRangeTo(targetRoomFlag.pos);
+                if (range > 23) { // might cause bug on nxt room wall 
+                
+           
+                    
+                    
+                var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var range2 = creep.pos.getRangeTo(targets);
+
+                if (range2 <= 4) {
+ 
+  
+  
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
+                var targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+                if (targets.length > 0)
+                {
+                    creep.rangedAttack(targets[0]);
+                }
+                
+                if (creep.hits < creep.hitsMax )
+                {
+                    creep.heal(creep);
+                }
+                
+                
+                var range = creep.pos.getRangeTo(target);
+                if (range > 3 && creep.hits + 300 > creep.hitsMax)
+                {
+                    creep.moveTo(target);
+                }
+                if (range < 3 || (creep.hits + 300 < creep.hitsMax && range < 5) )
+                {
+                    creepfunctions.combatMove(creep, targetArr, target);
+                }
+  
+  
+  
+  
+  
+  
+                    
+                    
+                    
+                    
+                    
+                }else{
+                         creep.moveTo(targetRoomFlag.pos);
+                    
                 }
                     
                     
@@ -399,7 +460,7 @@ var creepfunctions = {
         var buildingsneedingenergy = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (
-                    (structure.structureType == STRUCTURE_TOWER && structure.energy < 300));
+                    (structure.structureType == STRUCTURE_TOWER && structure.energy < 100));
             }
         });
         creep.say(buildingsneedingenergy.length);

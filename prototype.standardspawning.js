@@ -12,12 +12,27 @@ var Standardspwan = {
         }
         var levelOfController = Game.rooms[roomname].controller.level;
  
+  
  var moversneeded =1;
+ 
+ 
+ if(levelOfController<6){moversneeded=4;}
+ 
+if(levelOfController==6){moversneeded=2;}
+if(levelOfController>6){moversneeded=1;} 
+
+var multiplyrepairerrs=1;
+   var constructionsites = Game.rooms[roomname].find(FIND_CONSTRUCTION_SITES);
+  
+if(constructionsites.length > 10){
+ 
+    multiplyrepairerrs += Math.floor(constructionsites.length /20);
+} 
  
  
         for (var i = 0; i < spawnss.length; i++) {
 
-            if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4) {
+            if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue !=0) {
                 // spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
                 spawnss[i].spawnCreep([ WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname, {
                     memory: {
@@ -26,7 +41,7 @@ var Standardspwan = {
                         working: false
                     }
                 });
-            } else if (resourcemover == 0 && spawnss[i].name == roomname && Game.rooms[roomname].controller.level >= 6) {
+            } else if (resourcemover == 0 && spawnss[i].name == roomname && levelOfController >= 6) {
                 spawnss[i].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'resourcemover' + roomname, {
                     memory: {
                         role: 'resmover',
@@ -70,12 +85,15 @@ var Standardspwan = {
                         }
                     });
                 }
-            } else if (movers.length < moversneeded  && Game.spawns[roomname].room.controller.level >= 3) {
+            } else if (movers.length < moversneeded  && levelOfController >= 3) {
 
 
 
 
                         var bodyparts  = Math.floor((energyavailable ) / 100);
+                        if(levelOfController <= 6){
+                            bodyparts  = Math.floor((energyavailable ) / 200);
+                        }
                         if(bodyparts > 25){bodyparts  =25;}
                         var bodypartsMOVER = [];
                         for (let j = 0; j < bodyparts; j++) {
@@ -83,8 +101,7 @@ var Standardspwan = {
                             bodypartsMOVER.push(CARRY);
                         }
 
-console.log("bodypartsMOVER");
-
+  
                 spawnss[i].spawnCreep(bodypartsMOVER,
                     'mover' + Game.time, {
                         memory: {
@@ -97,7 +114,7 @@ console.log("bodypartsMOVER");
                             memstruct: memstruct
                         }
                     });
-            } else if (scouts.length < 1 && Game.rooms[roomname].controller.level > 3) ///////////////////////////////////
+            } else if (scouts.length < 1 && levelOfController > 3) ///////////////////////////////////
             {
                 spawnss[i].spawnCreep([MOVE], 'scout' + roomname, {
                     memory: {
@@ -107,7 +124,7 @@ console.log("bodypartsMOVER");
                         prevRoom: roomname
                     }
                 });
-            } else if (repairers.length < 1 && Game.spawns[roomname].room.controller.level > 2) {
+            } else if (repairers.length < 1 * multiplyrepairerrs && levelOfController > 2 ){
 
                 var bodyparts = [];
 
@@ -190,7 +207,7 @@ console.log("bodypartsMOVER");
                         memstruct: memstruct
                     }
                 });
-            } else if (nextroomharvester.length < roomExits.length && Game.rooms[roomname].controller.level > 5 && 1 == 2) ////////////////////////////////////////////////
+            } else if (nextroomharvester.length < roomExits.length && levelOfController > 5 && 1 == 2) ////////////////////////////////////////////////
             {
                 var numberofparts = Math.floor(energyavailable / 350);
                 if (numberofparts > 50) {
@@ -208,7 +225,7 @@ console.log("bodypartsMOVER");
                 const roomExits = Game.map.describeExits(roomname);
                 const roomnames = Object.values(roomExits);
                 const resourcekeys = Object.keys(roomExits);
-                if (nextroomharvester.length == 0 && Game.rooms[roomname].controller.level > 3) {
+                if (nextroomharvester.length == 0 && levelOfController > 3) {
                     spawnss[i].spawnCreep(bodyparts, 'nextroom-' + roomname + "-" + roomnames[roomnames.length - 1], {
                         memory: {
                             role: 'nextroom',
@@ -234,7 +251,7 @@ console.log("bodypartsMOVER");
                             }
                         }
 
-                        if (found < 2 && Game.rooms[roomname].controller.level < 7 || found < 1) {
+                        if (found < 2 && levelOfController < 7 || found < 1) {
 
                             spawnss[i].spawnCreep(bodyparts, 'nextroom-' + roomname + "-" + roomnames[q] + " " + found, {
                                 memory: {

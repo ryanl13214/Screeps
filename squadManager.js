@@ -80,6 +80,7 @@ var squadmanager = {
             opportuniticRenew: true,
             hastask: false,
             full: false,
+            spawntime:Game.time,
             wantsToJoinSquad: false,
             isInSquad: false,
             SquadID: "0",

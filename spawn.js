@@ -66,7 +66,7 @@ var spwan = {
             }
             var harvesters = _.filter(creepsinroom, (creep) => creep.memory.role == 'harvester');
             var movers = _.filter(creepsinroom, (creep) => creep.memory.role == 'mover');
-            var claimflag = Game.flags[roomname + "claim"];
+            var claimflag = Game.flags[roomname + "cladim"];
             if (claimflag != undefined &&  movers.length !=0 && harvesters.length ==2 )
             {
                 var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
@@ -82,11 +82,31 @@ var spwan = {
                     hastask: false,
                     full: false,
                     wantsToJoinSquad: false,
+                    spawntime:Game.time,
                     isInSquad: false,
                     SquadID: "claimer",
                     SquadRole: false
                 };
-                if (jacks.length < 2)
+                
+                var guards = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
+                
+   
+                if (guards.length < 2)
+                {
+                    
+                Game.spawns[roomname].spawnCreep([ MOVE, MOVE, MOVE, MOVE  ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE ,MOVE,HEAL,HEAL], 'guard'
+                + Game.time,{memory:{role: 'guard', attackrole: "basicranger", memstruct: {spawnRoom: "E24N3",  tasklist: [
+                    ["attackMoveToRoom",   roomname + "claim"]
+                    ["attackMoveToRoom",   roomname],
+                    ["attackMoveToRoom",   roomname + "claim"],
+                    ["attackMoveToRoom",   roomname],
+                    ["attackMoveToRoom",   roomname + "claim"]
+                    ],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+
+                
+                
+                }    
+                else if (jacks.length < 2)
                 {
                     var numberofparts = Math.floor(energycurrentlyavailable / 350);
                     if (numberofparts > 4)
@@ -157,6 +177,21 @@ var spwan = {
                         });
             
                     }
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 }
             }
       
@@ -210,8 +245,16 @@ var spwan = {
  var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
         if( (( movers.length ==0 || harvesters.length ==0 ) && jacks.length < 6 )||(  Game.rooms[roomname].controller.level < 3 && jacks.length < 6)){
            
+           if( jacks.length < 2){
                     
                         var numberofparts = Math.floor(energycurrentlyavailable / 350); 
+           }else{
+               
+                var numberofparts = Math.floor(energyavailable / 350); 
+           }
+           if(numberofparts> 8){numberofparts=8;}
+           
+           
                         var bodyparts = [];
                         for (let i = 0; i < numberofparts; i++)
                         {
@@ -238,12 +281,12 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
-                    
+          
                      
             
             
-            
-        } else if(defconstruct.defenceLevel  == 10 ){
+        }
+          if(defconstruct.defenceLevel  == 10 ){
             standardspawning.run(roomname, defconstruct, storagevalue, roomExits, creepsinroom,energyavailable,energycurrentlyavailable,jacks,repairers,towermover,harvesters,movers,upgraders,resourcemover,extractor,nextroomharvester,scouts,numberofguardingcreeps,memstruct);
           
             

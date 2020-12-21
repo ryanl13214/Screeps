@@ -100,7 +100,13 @@ var ownedrooms = [];
     //------------------------------------------------------------------------------------------------
     for (var i = 0; i <2; i++)
     {
-        if(Game.time % 1500 ==0 ){
+        if(Game.time % 1500 ==0 )
+        {
+            if(Game.flags[roomname].memory.flagstruct.squadspawning  == undefined )
+            { 
+                Game.flags[roomname].memory.flagstruct["squadspawning"] ="";
+                
+            }
             Game.flags[roomname].memory.flagstruct.squadspawning ="";
         }
         
@@ -149,9 +155,9 @@ var ownedrooms = [];
 //                                            SQUAD CREATION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         var startCpu = Game.cpu.getUsed();
-        if (Game.time % 10 == 0 || defconlevel.defenceLevel < 10)
+        if (Game.time % 15 == 0 || defconlevel.defenceLevel < 10)
         {
-     squadgenerate.run(roomname);
+            squadgenerate.run(roomname);
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +180,6 @@ var ownedrooms = [];
         {
             storagevalue = Game.rooms[roomname].storage.store.energy;
         }
- 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            spawning
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
@@ -188,7 +193,7 @@ var ownedrooms = [];
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            basebuild
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-        if (Game.time % 1000 == 0)
+        if (Game.time % (1500 + i) == 0)
         {
             var startCpu = Game.cpu.getUsed();
             buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
@@ -198,7 +203,7 @@ var ownedrooms = [];
 //                                            towers
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         var startCpu = Game.cpu.getUsed();
-        if (Game.time % 10 == 0 || defconlevel.defenceLevel < 10)
+        if (Game.time % (5+ i) == 0 || defconlevel.defenceLevel < 10)
         {
            tower.run(roomname);
         }
@@ -206,7 +211,7 @@ var ownedrooms = [];
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            terminals
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if (Game.time % 100 == 0 || (storagevalue < 10000 && Game.rooms[roomname].terminal != undefined))
+        if (Game.time % (100 + i) == 0 || (storagevalue < 10000 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();

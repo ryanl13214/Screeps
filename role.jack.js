@@ -131,7 +131,7 @@ var rolejack = {
             console.log("jack cpu avg-" + (creep.memory.cpuUsed / 1500));
         }
         try{
-        creepfunctions.movehomeandrenew(creep,creep.room.name,100);
+     //   creepfunctions.movehomeandrenew(creep,creep.room.name,100);
         }catch(e){}
     }
 };

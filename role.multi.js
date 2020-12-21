@@ -10,6 +10,9 @@ var multi = {
      
      
      
+     try{   creep.heal(creep);}catch(e){}
+     
+     
        creepfunctions.checkglobaltasks(creep);
        
        creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,180);

@@ -375,6 +375,7 @@ Game.spawns["W16S52"].spawnCreep([RANGED_ATTACK ,MOVE], 'guard' + Game.time,{mem
 
 
 
+Game.spawns["E24N3"].spawnCreep([RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,HEAL,HEAL], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicranger", memstruct: {spawnRoom: "E24N3",  tasklist: [["attackMoveToRoom",   "E25N2"]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
 
 
 
