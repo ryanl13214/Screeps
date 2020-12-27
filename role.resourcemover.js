@@ -36,7 +36,7 @@ var roleresourcemover = {
             {
                 filter: (structure) =>
                 {
-                    return (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") > 51000);
+                    return (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") > 60000);
                 }
             });
             if (storagemain != undefined)
@@ -155,7 +155,7 @@ var roleresourcemover = {
                     {
                         var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
                         {
-                            filter: (structure) => structure.hits < structure.hitsMax * 0.1 && structure.structureType != STRUCTURE_WALL
+                            filter: (structure) => structure.hits < structure.hitsMax * 0.5 && structure.structureType != STRUCTURE_WALL
                         });
                         var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
                         {
@@ -164,8 +164,7 @@ var roleresourcemover = {
                                 return (structure.structureType == STRUCTURE_LINK);
                             }
                         });
-                        if (closestDamagedStructure.length != 0 && creep.room.storage.store.getUsedCapacity() > 100000 && creep.room.terminal.store
-                            .getUsedCapacity("energy") < 55000 && sourcelink != undefined) //////////////////////////////////////////
+                        if (closestDamagedStructure.length != 0 && creep.room.storage.store.getUsedCapacity() > 100000 && creep.room.terminal.store.getUsedCapacity("energy") < 55000 && sourcelink != undefined) //////////////////////////////////////////
                         {
                             creep.repair(closestDamagedStructure[0]);
                         }
@@ -182,6 +181,25 @@ var roleresourcemover = {
                         }
                     }
                 }
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
             }
         }
     }

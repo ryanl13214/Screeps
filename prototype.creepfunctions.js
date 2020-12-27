@@ -457,23 +457,8 @@ var creepfunctions = {
         }
     },
     stocktowerswithenergy: function(creep) {
-        var buildingsneedingenergy = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (
-                    (structure.structureType == STRUCTURE_TOWER && structure.energy < 100));
-            }
-        });
-        creep.say(buildingsneedingenergy.length);
-        if (buildingsneedingenergy.length > 0) {
-            if (creep.transfer(creep.pos.findClosestByPath(buildingsneedingenergy), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.pos.findClosestByPath(buildingsneedingenergy), {
-                    visualizePathStyle: {
-                        stroke: '#ffffff'
-                    }
-                });
-            }
-            creep.memory.hastask = true;
-        }
+
+
     },
     /*
     USED BY: 

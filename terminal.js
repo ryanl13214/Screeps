@@ -21,12 +21,13 @@ catalyzed keanium alkalide	 + 	60	RANGED_ATTACK	+300% rangedAttack and rangedMas
 var terminalManager = {
     run: function(roomname, terminalActual, defcon, storagevalue)
     {
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2",   "H", "O"  , "U" , "L" , "Z" , "X"  , "G" , "energy", "GO","XKHO2"];// power and facory resources
-        var allValues    = [20000  , 20000  , 20000  , 5000   , 5000   , 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000   , 3000,25000];
-        var listOfResourcesInsideTerminal = terminalActual.store;
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H", "O", "U", "L", "Z", "X", "G", "energy", "GO", "XKHO2"]; // power and facory resources
+        var allValues = [20000, 20000, 20000, 5000, 5000, 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000, 3000, 25000];
+
+        var listOfResourcesInsideTerminal = Game.rooms[roomname].terminal.store;
         var resourcekeys = Object.keys(listOfResourcesInsideTerminal);
         var resourcevalues = Object.values(listOfResourcesInsideTerminal);
-        if (defcon > 5)
+        if (1 == 1) // defcon controll
         {
             for (var i = 0; i < resourcekeys.length; i++)
             {
@@ -48,15 +49,18 @@ var terminalManager = {
                         var excessResources = resourcevalues[i] - allValues[j];
                         if (buyOrders.length > 1 && excessResources > 200)
                         {
-                             if (storagevalue > 999000 && resourcekeys[i] == "energy" )
-            {
-                
-                  Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
-                
-            }else{
-                  Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
-            }
-                           
+                            if (resourcekeys[i] == "energy")
+                            {
+                                if (storagevalue > 999000 )
+                                {
+                                    Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
+                                }
+                            }
+                            else
+                            {
+                                Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
+                            }
+
                             //  console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
                         }
                     }
@@ -73,14 +77,16 @@ var terminalManager = {
                     //console.log("item not found-"        +resourcekeys[i]+" " +buyOrders.length+"    "+resourcevalues[i]);
                     if (buyOrders.length != 0)
                     {
-                                                    if (storagevalue > 999000 && resourcekeys[i] == "energy" )
-            {
-                
-                  Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
-                
-            }else{
-                  Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
-            }
+                        if (storagevalue > 999000 && resourcekeys[i] == "energy")
+                        {
+
+                            Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
+
+                        }
+                        else
+                        {
+                            Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname);
+                        }
                         // console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
                     }
                 }
@@ -99,31 +105,23 @@ var terminalManager = {
                     // console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
                 }
             }
-             
-            if (storagevalue < 50000 && terminalActual.store.getUsedCapacity("energy") <70000)
+
+            if (storagevalue < 50000 && terminalActual.store.getUsedCapacity("energy") < 65000)
             {
-                let buyOrders = Game.market.getAllOrders(
+
+                var hist = Game.market.getHistory(RESOURCE_ENERGY)
+
+                Game.market.createOrder(
                 {
+                    type: ORDER_BUY,
                     resourceType: RESOURCE_ENERGY,
-                    type: ORDER_SELL
+                    price: (hist[0].avgPrice + (hist[0].stddevPrice)),
+                    totalAmount: 5000,
+                    roomName: roomname
                 });
-                _.sortBy(buyOrders, ['price']);
-                if (buyOrders.length != 0)
-                {
-                 
-                   
-                    Game.market.deal(buyOrders[0].id, 10000, roomname);
-                    
-                }
-            } 
-            
-            
-            
-            
-            
-            
-            
-            
+
+            }
+
         }
     }
 }

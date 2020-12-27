@@ -16,12 +16,14 @@ var rolescout = {
         roomIsFightTeritory:false,
         roomIsMyTeritory:false,
         distancefromoom:9999,
+        squadspawning:"",
         claimedroomstuct:{
             MineRooms:[],
             centerroomsinrange:[],
             mineroomsProfitmargin:[],
             cpuUsedlastTick:99,
-            roomdefconstruct:{}
+            roomdefconstruct:{},
+            dismantelrooms:[]
         }};
      
         if (creep.room.name == creep.memory.prevRoom || creep.memory.exitchosen == "a")// creep stays in the same room
@@ -128,7 +130,7 @@ var rolescout = {
                             }
                             
                         }
-                        if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level <7 && tmpvar.length >=1){    found= true;}
+                        if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level <7 && tmpvar.length >=0){    found= true;}
                         if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level ==7 && tmpvar.length >2){    found= true;}
                         if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level ==8 && tmpvar.length >4){    found= true;}
                         if(!found && creep.room.name !=creep.memory.memstruct.spawnRoom && creep.room.controller == undefined)
@@ -139,7 +141,63 @@ var rolescout = {
                         }
                         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                        cecking if there is structures to dismantel
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       
+              
+                //    dismantelrooms:[]
+       
+               var highwalls = creep.room.find(FIND_STRUCTURES, {
+            filter: (s) => {
+                return (s.structureType == STRUCTURE_WALL ) && s.hits>5000000;
+            }
+        });
                         
+                        
+                        var wallsexisit=false;
+                        var roomsuitable=false;
+                        if(highwalls.length >2){
+                            wallsexisit=true;
+                        }
+                        
+                        
+                        if( creep.room.controller != undefined){
+   if( creep.room.controller.level == 0){
+                            roomsuitable=true;
+                            
+                        }
+                            
+                        }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        var tmpvar =  Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.dismantelrooms;
+                        var found = false;
+                        for(q = 0 ; q <  tmpvar.length ;q++){
+                            
+                            if(tmpvar[q] == creep.room.name){
+                                found= true;
+                            }
+                            
+                        }
+                        if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level <7 && tmpvar.length >=0){    found= true;}
+                        if(!found && wallsexisit && roomsuitable)
+                        {
+                            
+                            Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.dismantelrooms.push(creep.room.name);/// this causes duplicates to need to remove dupes
+                            
+                        }
+                           
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+                           
+                           
+                           
                         
                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.roomIsFightTeritory=true;
                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.roomIsMyTeritory=true;

@@ -89,8 +89,6 @@ var arrayofextensionpositions = [
     [5, -3],
     [-5, -2],
     [-4, -2],
-     
-     
     [1, -3],
     [1, -2],
     [2, -2],
@@ -229,7 +227,7 @@ var basebuild = {
     run: function(roomname, storage_xpos, storage_ypos)
     {
         
-               if (Game.rooms[roomname].controller.level >= 3 && Game.rooms[roomname].controller.level <6 )
+            if (Game.rooms[roomname].controller.level >= 3 && Game.rooms[roomname].controller.level <6 )
             {
                        var flag1 = Game.flags[roomname + "container1"];
                 var flag0 = Game.flags[roomname + "container0"];     
@@ -245,7 +243,17 @@ var basebuild = {
                 
             }
         
-        
+            if (Game.rooms[roomname].controller.level > 5)
+            {
+            try
+            {
+                Game.rooms[roomname].createConstructionSite(storage_xpos - 2, storage_ypos , STRUCTURE_LINK);
+                Game.rooms[roomname].createConstructionSite(storage_xpos - 1, storage_ypos , STRUCTURE_CONTAINER);  
+            }
+            catch (e)
+            {
+                console.log("e");
+            }
         
         
         
@@ -267,6 +275,8 @@ var basebuild = {
                 console.log(e);
             }
         }
+        console.log(arrayofextensionpositions.length);
+        
         for (var i = 0; i < arrayofextensionpositions.length; i++)
         {
             try
@@ -282,6 +292,8 @@ var basebuild = {
        
         if (Game.rooms[roomname].controller.level > 3)
         {
+ 
+            
             Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
             Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_RAMPART); 
                Game.rooms[roomname].createConstructionSite(storage_xpos + 1, storage_ypos, STRUCTURE_RAMPART); 
@@ -334,7 +346,7 @@ var basebuild = {
             {
                 console.log(e);
             }
-            if (Game.rooms[roomname].controller.level >= 6)
+            if (Game.rooms[roomname].controller.level > 6)
             {
                 for (var i = 0; i < core.length; i++)
                 {
@@ -350,16 +362,7 @@ var basebuild = {
             }
             
            
-            if (Game.rooms[roomname].controller.level > 5)
-            {
-                 try
-            {
-                Game.rooms[roomname].createConstructionSite(storage_xpos + -2, storage_ypos , STRUCTURE_LINK);
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
+ 
                 var flag1 = Game.flags[roomname + "container1"];
                 var flag0 = Game.flags[roomname + "container0"];
                 const found = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag1.pos,
@@ -398,6 +401,10 @@ var basebuild = {
                 //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
                 //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
             }
+            
+/////////////////////////////////////////////////////////////////////////////////////////////////////////                   
+//                                  walls
+/////////////////////////////////////////////////////////////////////////////////////////////////////////          
             for (var i = 0; i < 18; i++)
             {
                 if (i % 3 == 0)
@@ -457,21 +464,13 @@ var basebuild = {
                
             }
             
+/////////////////////////////////////////////////////////////////////////////////////////////////////////              
             
             
-            
+           
             if ( Game.rooms[roomname].controller.level > 2)
-                {
-                     Game.rooms[roomname].createConstructionSite((storage_xpos  ) + 2, storage_ypos  , STRUCTURE_RAMPART);
-                    
-                     Game.rooms[roomname].createConstructionSite((storage_xpos  )  , storage_ypos - 1, STRUCTURE_RAMPART);
-                    
-                    
-                }
-            
-            if ( Game.rooms[roomname].controller.level > 2)
-                {
-            
+            {
+                
             var terrain = Game.rooms[roomname].getTerrain();
             
             
@@ -487,7 +486,7 @@ var basebuild = {
                     
                     
                     
-                    if (terrain.get(storage_xpos + roads[i][0], storage_ypos + roads[i][1]) ==0){
+                    if (terrain.get(storage_xpos + roads[i][0], storage_ypos + roads[i][1]) !=1){
                         
                          Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
                     

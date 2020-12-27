@@ -31,9 +31,7 @@ var tower = {
         
         
         
-        
-        console.log(fullbuild.length);
-        
+         
         
         for (var i = 0; i < towers.length; i++)
         {

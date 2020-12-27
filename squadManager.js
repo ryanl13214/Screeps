@@ -46,6 +46,17 @@ var squadmanager = {
                     this.centerMiningOpteration(squadID);
                 }
             }
+            
+            if (mainMemoryObject.SquadMembersCurrent.length != 0) {
+                if (mainMemoryObject.squadType == "dismantelrooms") {
+                    this.reclaimopperation(squadID);
+                }
+            }
+            
+            
+            
+            
+            
 
         }
     },
@@ -495,6 +506,253 @@ var squadmanager = {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    reclaimopperation: function(squadID) {
+
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
+        //var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+  
+        var movers = [];
+        var miners = [];
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++) 
+        {
+            var creepername = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name.substring(0, 4);
+            if (creepername == "move") 
+            {
+                movers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+            if (creepername == "mine") 
+            {
+                miners.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+        }
+        for (var c = 0; c < miners.length; c++) 
+        {
+            var creeper = miners[c];
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
+            {
+                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                var pos1 = creeper.pos;
+                var pos2 = targetRoomFlag.pos;
+                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+                if (range > 23) { // might cause bug on nxt room wall 
+                    creeper.moveTo(targetRoomFlag.pos);
+                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos, {
+                        color: '#000000',
+                        lineStyle: 'solid'
+                    });
+                }
+
+            } else {
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// operations here
+             
+             
+                var target = creeper.pos.findClosestByRange(FIND_STRUCTURES,
+                    {filter: {structureType: STRUCTURE_WALL}});
+                if(target) {
+                    if(creeper.dismantle(target) == ERR_NOT_IN_RANGE) {
+                        creeper.moveTo(target);
+                    }
+                }
+               
+
+                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var range = creeper.pos.getRangeTo(targets);
+
+                if (range < 5) {
+                    const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
+                    target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+                }
+
+            }
+
+        }
+
+        for (var c = 0; c < movers.length; c++) {
+            var creeper = movers[c];
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (creeper.store.getUsedCapacity() != creeper.store.getCapacity() && creeper.room.name == mainMemoryObject.arrayOfSquadGoals[0]) // COLLECT RESOURCES
+            {
+            var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var droppedresources = creeper.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                    filter: (res) => {
+                        return (res.resourceType == RESOURCE_ENERGY) && (res.amount > creeper.store.getFreeCapacity() ) && res.pos.getRangeTo(targets) >5;
+                    }
+                });
+                 if (droppedresources != undefined) 
+                 {
+                    var range = creeper.pos.getRangeTo(droppedresources);
+                    if (range <= 1) 
+                    {
+                        creeper.pickup(droppedresources);
+                    } 
+                    else 
+                    {
+                        creeper.moveTo(droppedresources, {
+                            reusePath: range,
+                            visualizePathStyle: {
+                                stroke: '#ffaa00'
+                            }
+                        });
+                    }
+                }  
+                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var range = creeper.pos.getRangeTo(targets);
+                if (range <= 5) 
+                {
+                    const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
+                    target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    creepfunctions.combatMove(creeper, targetArr, target);
+                }
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (creeper.store.getUsedCapacity() == creeper.store.getCapacity() && creeper.room.name != mainMemoryObject.squadHomeRoom) //  // MOVE TO HOME
+            {
+                var targetRoomFlag = Game.flags[mainMemoryObject.squadHomeRoom];
+                var pos1 = creeper.pos;
+                var pos2 = targetRoomFlag.pos;
+                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+                if (range > 23) { // might cause bug on nxt room wall 
+                    creeper.moveTo(targetRoomFlag.pos);
+                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos, {
+                        color: '#000000',
+                        lineStyle: 'solid'
+                    });
+                }
+
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (creeper.store.getUsedCapacity() != 0 && creeper.room.name == mainMemoryObject.squadHomeRoom) //  // DEPOSIT RESOURCES
+            {
+
+                var storagemain = creeper.room.storage;
+
+                var terminal = creeper.room.terminal;
+
+                var targ;
+
+                if (terminal != undefined) {
+                    targ = terminal;
+                } else if (storagemain != undefined) {
+                    targ = storagemain;
+                }
+                var range = creeper.pos.getRangeTo(targ);
+                if (range <= 1) {
+                    creeper.transfer(targ, RESOURCE_ENERGY, creeper.energyAvailable);
+                } else {
+                    creeper.moveTo(targ, {
+                        reusePath: range,
+                        visualizePathStyle: {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                }
+
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (creeper.store.getUsedCapacity() != creeper.store.getCapacity() && creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
+            {
+                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                var pos1 = creeper.pos;
+                var pos2 = targetRoomFlag.pos;
+                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+                if (range > 23) { // might cause bug on nxt room wall 
+                    creeper.moveTo(targetRoomFlag.pos);
+                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos, {
+                        color: '#000000',
+                        lineStyle: 'solid'
+                    });
+                }
+
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////           
+
+        }
+
+    },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    bumRushSquad: function(squadID) {
+ 
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
+
+        var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+        if (target != undefined) {
+            mainMemoryObject.squadposition = [target.pos.x, target.pos.y];
+        } else if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0]) {
+            if (mainMemoryObject.arrayOfSquadGoals.length > 1) {
+
+                var tmp = mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
+                mainMemoryObject.arrayOfSquadGoals.push(tmp);
+
+            }
+        }
+ 
+        var healers = [];
+        var rangers = [];
+        var attackers = [];
+        var dismantlers = [];
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++) 
+        {
+            var nameOfCreep = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name.substring(0, 4);
+            if (nameOfCreep == "heal") 
+            {
+                healers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            } 
+            else if (nameOfCreep == "rang") 
+            {
+                rangers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+            else if (nameOfCreep == "atta") 
+            {
+                attackers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+            else if (nameOfCreep == "dism") 
+            {
+                dismantlers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    
+    
+    
+    
 
 }
 module.exports = squadmanager;

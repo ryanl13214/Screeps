@@ -33,48 +33,57 @@ var roletowermover = {
         }
         if (creep.memory.working == true)
         {
-            var targets = creep.pos.findInRange(FIND_STRUCTURES,1,
-            {
-                filter: (structure) =>
-                {
-                    return (structure.structureType == STRUCTURE_TOWER   && structure.energy < 500 ) || (structure.structureType == STRUCTURE_SPAWN  && structure.energy < 300 ) ;
-                }
-            });
+            var constructionsites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 3);
             
-            if (targets == null)
+            if (constructionsites.length != 0)
             {
-                var targets = creep.room.find(FIND_STRUCTURES,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_SPAWN) && structure.store.energy < 300;
-                    }
-                });
-            }
-            if (creep.transfer(targets[0], RESOURCE_ENERGY, creep.energyAvailable) == ERR_NOT_IN_RANGE)
-            {
-                creep.moveTo(targets[0],
-                {
-                    visualizePathStyle:
-                    {
-                        stroke: '#ffffff'
-                    }
-                });
+                creep.build(constructionsites[0]);
             }
             else
             {
-                var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                var targets = creep.pos.findInRange(FIND_STRUCTURES, 1,
                 {
-                    filter: (structure) => structure.hits < structure.hitsMax * 0.5 && structure.structureType != STRUCTURE_WALL
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_TOWER && structure.energy < 500) || (structure.structureType == STRUCTURE_SPAWN && structure.energy < 300);
+                    }
                 });
-                    
-              
-                
-                if (closestDamagedStructure.length != 0)
+
+                if (targets == null)
                 {
-                    creep.repair(closestDamagedStructure[0]);
+                    var targets = creep.room.find(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_SPAWN) && structure.store.energy < 300;
+                        }
+                    });
                 }
+                if (creep.transfer(targets[0], RESOURCE_ENERGY, creep.energyAvailable) == ERR_NOT_IN_RANGE)
+                {
+                    creep.moveTo(targets[0],
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffffff'
+                        }
+                    });
+                }
+                else
+                {
+                    var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                    {
+                        filter: (structure) => structure.hits < structure.hitsMax * 0.5 && structure.structureType != STRUCTURE_WALL
+                    });
+
+                    if (closestDamagedStructure.length != 0)
+                    {
+                        creep.repair(closestDamagedStructure[0]);
+                    }
+                }
+
             }
+
         }
     }
 };

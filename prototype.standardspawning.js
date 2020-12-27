@@ -18,7 +18,7 @@ var Standardspwan = {
  
  if(levelOfController<6){moversneeded=4;}
  
-if(levelOfController==6){moversneeded=2;}
+if(levelOfController==6){moversneeded=1;}
 if(levelOfController>6){moversneeded=1;} 
 
 var multiplyrepairerrs=1;
@@ -34,7 +34,7 @@ if(constructionsites.length > 10){
 
             if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue !=0) {
                 // spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
-                spawnss[i].spawnCreep([ WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname, {
+                spawnss[i].spawnCreep([WORK,WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname, {
                     memory: {
                         memstruct: memstruct,
                         role: 'towermover',
@@ -42,7 +42,7 @@ if(constructionsites.length > 10){
                     }
                 });
             } else if (resourcemover == 0 && spawnss[i].name == roomname && levelOfController >= 6) {
-                spawnss[i].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'resourcemover' + roomname, {
+                spawnss[i].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE], 'resourcemover' + roomname, {
                     memory: {
                         role: 'resmover',
                         working: false,
@@ -62,7 +62,7 @@ if(constructionsites.length > 10){
                 }
 
                 if (numberofparts > 12) {
-                    bodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    bodyparts = [WORK,WORK, WORK,  WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 }
 
                 if (harvesters.length == 0) {
@@ -124,7 +124,7 @@ if(constructionsites.length > 10){
                         prevRoom: roomname
                     }
                 });
-            } else if (repairers.length < 1 * multiplyrepairerrs && levelOfController > 2 ){
+            } else if (repairers.length <  1 * multiplyrepairerrs && levelOfController > 2 ){
 
                 var bodyparts = [];
 

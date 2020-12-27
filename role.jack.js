@@ -41,7 +41,7 @@ var rolejack = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800;
+                        return( ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800)||((structure.structureType == STRUCTURE_LINK) && structure.store.energy > 500)) ;
                     }
                 });
               

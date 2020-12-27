@@ -45,11 +45,12 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800;
+                        return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800) || ((structure.structureType == STRUCTURE_LINK) && structure.store.energy > 500)
+                        ;
                     }
                 });
               
-                if (containers == undefined && creep.room.level >5)
+                if (containers == undefined && creep.room.level >5 && creep.room.terminal != undefined)
                 {
                     var term = creep.room.terminal;
                     if(term != undefined)

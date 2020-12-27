@@ -2,7 +2,7 @@ var creepfunctions = require('prototype.creepfunctions');
 var roleharvester = {
     /** @param {Creep} creep **/
     run: function(creep) {
-        if(creep.ticksToLive<70  ){
+        if(creep.ticksToLive<130  ){
              creep.memory.role="harvesteralt";
         }
         
