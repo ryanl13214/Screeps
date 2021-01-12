@@ -8,12 +8,13 @@ var roleresourcemover = {
     {
         if (creep.store.getFreeCapacity() == creep.store.getCapacity())
         {
-            creep.memory.working = false;
+            creep.memory.creepIsFull = false;
         }
-        else if (creep.memory.working == false && creep.store.getFreeCapacity() == 0)
+        else if (creep.memory.creepIsFull == false && creep.store.getFreeCapacity() == 0)
         {
-            creep.memory.working = true;
+            creep.memory.creepIsFull = true;
         }
+
         var flagmid = Game.flags[creep.room.name];
         creep.moveTo(new RoomPosition(flagmid.pos.x - 1, flagmid.pos.y - 1, creep.room.name),
         {
@@ -22,186 +23,318 @@ var roleresourcemover = {
                 stroke: '#ffaa00'
             }
         });
-        if (creep.memory.working == false)
+
+        if (creep.memory.neededBoost == "")
         {
-            var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+
+            if (creep.memory.creepIsFull == false)
             {
-                filter: (structure) =>
-                {
-                    return (structure.structureType == STRUCTURE_STORAGE && structure.store.getUsedCapacity("energy") < structure.store
-                        .getUsedCapacity());
-                }
-            });
-            var overflowingterminal = creep.pos.findClosestByPath(FIND_STRUCTURES,
-            {
-                filter: (structure) =>
-                {
-                    return (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") > 60000);
-                }
-            });
-            if (storagemain != undefined)
-            {
-                const resourcekeys = Object.keys(storagemain.store);
-                for (var i = 0; i < resourcekeys.length; i++)
-                {
-                    if (resourcekeys[i] != "energy")
-                    { // creep.say(resourcekeys[i]);
-                        creep.withdraw(storagemain, resourcekeys[i]);
-                    }
-                }
-            }
-            else
-            {
-                var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_LINK);
+                        return (structure.structureType == STRUCTURE_STORAGE && structure.store.getUsedCapacity("energy") < structure.store
+                            .getUsedCapacity());
                     }
                 });
-                var ofloadcontainer;
-                var flagmain = Game.flags[creep.room.name];
-                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
-                for (var i = 0; i < temp.length; i++)
+                var overflowingterminal = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
-                    if (temp[i].structureType == STRUCTURE_CONTAINER)
+                    filter: (structure) =>
                     {
-                        ofloadcontainer = temp[i];
+                        return (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") > 60000);
+                    }
+                });
+                if (storagemain != undefined  && creep.room.terminal.store.getFreeCapacity() != 0)
+                {
+                    const resourcekeys = Object.keys(storagemain.store);
+                    for (var i = 0; i < resourcekeys.length; i++)
+                    {
+                        if (resourcekeys[i] != "energy")
+                        { // creep.say(resourcekeys[i]);
+                            creep.withdraw(storagemain, resourcekeys[i]);
+                        }
                     }
                 }
-                if (ofloadcontainer == undefined)
-                {
-                    // build stucture
-                }
                 else
-                if (sourcelink.store.getUsedCapacity("energy") == 0 && overflowingterminal != undefined)
                 {
-                    creep.withdraw(overflowingterminal, RESOURCE_ENERGY);
-                }
-                else if (ofloadcontainer.store.getUsedCapacity() != 2000 && sourcelink.store.getUsedCapacity("energy") == 0)
-                {
-                    var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                    var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
                     {
                         filter: (structure) =>
                         {
-                            return (structure.structureType == STRUCTURE_STORAGE);
+                            return (structure.structureType == STRUCTURE_LINK);
                         }
                     });
-                    creep.withdraw(storagemain, RESOURCE_ENERGY);
-                }
-                else
-                {
-                    creep.withdraw(sourcelink, RESOURCE_ENERGY);
-                }
-            }
-        }
-        if (creep.memory.working == true)
-        {
-            if (creep.store.getUsedCapacity("energy") < creep.store.getUsedCapacity())
-            {
-                
-                var ofloadcontainer;
-                var flagmain = Game.flags[creep.room.name];
-                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y - 1);
-                for (var i = 0; i < temp.length; i++)
-                {
-                    if (temp[i].structureType == STRUCTURE_TERMINAL)
+                    var ofloadcontainer;
+                    var flagmain = Game.flags[creep.room.name];
+                    var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
+                    for (var i = 0; i < temp.length; i++)
                     {
-                        ofloadcontainer = temp[i];
-                    }
-                }
-                // var linkto = Game.rooms[roomname].lookForAt('structure', storage_xpos - 2  , storage_ypos -1 )[0];
-                const resourcevalues = Object.values(creep.store);
-                const resourcekeys = Object.keys(creep.store);
-                creep.transfer(ofloadcontainer, resourcekeys[0], resourcevalues[0]);
-            }
-            else
-            {
-                var ofloadcontainer;
-                var flagmain = Game.flags[creep.room.name];
-                var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
-                for (var i = 0; i < temp.length; i++)
-                {
-                    if (temp[i].structureType == STRUCTURE_CONTAINER)
-                    {
-                        ofloadcontainer = temp[i];
-                    }
-                }
-                // var linkto = Game.rooms[roomname].lookForAt('structure', storage_xpos - 2  , storage_ypos -1 )[0];
-                if (ofloadcontainer.store.getUsedCapacity() < 2000)
-                {
-                    var transfervalue;
-                    if (ofloadcontainer.store.getFreeCapacity() - creep.store.getUsedCapacity(RESOURCE_ENERGY) > 0)
-                    {
-                        transfervalue = creep.store.getUsedCapacity(RESOURCE_ENERGY);
-                    }
-                    else
-                    {
-                        transfervalue = ofloadcontainer.store.getFreeCapacity();
-                    }
-                    creep.transfer(ofloadcontainer, RESOURCE_ENERGY, transfervalue);
-                }
-                else
-                {
-                    var twoTowers = creep.pos.findInRange(FIND_STRUCTURES, 1,
-                    {
-                        filter: (structure) => structure.structureType == STRUCTURE_TOWER && structure.store.getUsedCapacity("energy") < 100
-                    });
-                    if (twoTowers.length > 0 && false)
-                    {
-                        creep.transfer(twoTowers[0], RESOURCE_ENERGY, creep.store.getUsedCapacity());
-                    }
-                    else
-                    {
-                        var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
+                        if (temp[i].structureType == STRUCTURE_CONTAINER)
                         {
-                            filter: (structure) => structure.hits < structure.hitsMax * 0.5 && structure.structureType != STRUCTURE_WALL
+                            ofloadcontainer = temp[i];
+                        }
+                    }
+                    if (ofloadcontainer == undefined)
+                    {
+                        // build stucture
+                    }
+                    else
+                    if (sourcelink.store.getUsedCapacity("energy") == 0 && overflowingterminal != undefined)
+                    {
+                        creep.withdraw(overflowingterminal, RESOURCE_ENERGY);
+                    }
+                    else if (ofloadcontainer.store.getUsedCapacity() != 2000 && sourcelink.store.getUsedCapacity("energy") == 0)
+                    {
+                        var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                        {
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType == STRUCTURE_STORAGE);
+                            }
                         });
-                        var sourcelink = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                        creep.withdraw(storagemain, RESOURCE_ENERGY);
+                    }
+                    else
+                    {
+                        creep.withdraw(sourcelink, RESOURCE_ENERGY);
+                    }
+                }
+            }
+            if (creep.memory.creepIsFull == true)
+            {
+                if (creep.store.getUsedCapacity("energy") < creep.store.getUsedCapacity() && creep.room.terminal.store.getFreeCapacity() >  500)
+                {
+                    creep.say("term");
+                    var ofloadcontainer;
+                    var flagmain = Game.flags[creep.room.name];
+                    var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y - 1);
+                    for (var i = 0; i < temp.length; i++)
+                    {
+                        if (temp[i].structureType == STRUCTURE_TERMINAL)
+                        {
+                            ofloadcontainer = temp[i];
+                        }
+                    }
+                    // var linkto = Game.rooms[roomname].lookForAt('structure', storage_xpos - 2  , storage_ypos -1 )[0];
+                    const resourcevalues = Object.values(creep.store);
+                    const resourcekeys = Object.keys(creep.store);
+                    creep.transfer(ofloadcontainer, resourcekeys[0], resourcevalues[0]);
+                }
+                else if(creep.store.getUsedCapacity("energy") < creep.store.getUsedCapacity() && creep.room.terminal.store.getFreeCapacity() < 500){
+                    
+                    var ofloadcontainer;
+                    var flagmain = Game.flags[creep.room.name];
+                    var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x , flagmain.pos.y );
+                    for (var i = 0; i < temp.length; i++)
+                    {
+                        if (temp[i].structureType == STRUCTURE_STORAGE)
+                        {
+                            ofloadcontainer = temp[i];
+                        }
+                    }
+                    // var linkto = Game.rooms[roomname].lookForAt('structure', storage_xpos - 2  , storage_ypos -1 )[0];
+                    const resourcevalues = Object.values(creep.store);
+                    const resourcekeys = Object.keys(creep.store);
+                    creep.transfer(ofloadcontainer, resourcekeys[0], resourcevalues[0]);
+                }
+                else
+                {
+                    var ofloadcontainer;
+                    var flagmain = Game.flags[creep.room.name];
+                    var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
+                    for (var i = 0; i < temp.length; i++)
+                    {
+                        if (temp[i].structureType == STRUCTURE_CONTAINER)
+                        {
+                            ofloadcontainer = temp[i];
+                        }
+                    }
+                    // var linkto = Game.rooms[roomname].lookForAt('structure', storage_xpos - 2  , storage_ypos -1 )[0];
+                    if (ofloadcontainer.store.getUsedCapacity() < 2000)
+                    {
+                        var transfervalue;
+                        if (ofloadcontainer.store.getFreeCapacity() - creep.store.getUsedCapacity(RESOURCE_ENERGY) > 0)
+                        {
+                            transfervalue = creep.store.getUsedCapacity(RESOURCE_ENERGY);
+                        }
+                        else
+                        {
+                            transfervalue = ofloadcontainer.store.getFreeCapacity();
+                        }
+                        creep.transfer(ofloadcontainer, RESOURCE_ENERGY, transfervalue);
+                    }
+                    else
+                    {
+
+                        var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                        {
+                            filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL
+                        });
+                        var sourcelink = creep.pos.findInRange(FIND_STRUCTURES, 1,
                         {
                             filter: (structure) =>
                             {
                                 return (structure.structureType == STRUCTURE_LINK);
                             }
                         });
-                        if (closestDamagedStructure.length != 0 && creep.room.storage.store.getUsedCapacity() > 100000 && creep.room.terminal.store.getUsedCapacity("energy") < 55000 && sourcelink != undefined) //////////////////////////////////////////
+                        if (closestDamagedStructure.length != 0 && creep.room.storage.store.getUsedCapacity() > 995000 && sourcelink != undefined)
                         {
-                            creep.repair(closestDamagedStructure[0]);
+                            var tmp = 0;
+                            var value = 9999999999999999999;
+
+                            for (var i = 0; i < closestDamagedStructure.length; i++)
+                            {
+                                if (closestDamagedStructure[i].hits < value)
+                                {
+                                    value = closestDamagedStructure[i].hits;
+                                    tmp = i;
+                                }
+                            }
+
+                            creep.repair(closestDamagedStructure[tmp]);
                         }
                         else
                         {
-                            var storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
-                            {
-                                filter: (structure) =>
-                                {
-                                    return (structure.structureType == STRUCTURE_STORAGE);
-                                }
-                            });
+                            var storagemain = creep.room.storage;
                             creep.transfer(storagemain, RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
                         }
                     }
+
+                }
+            }
+
+        }
+        else
+        {
+            if(creep.memory.neededBoost != "cleanup"){
+            if (creep.memory.creepIsFull == false)
+            {
+                
+               creep.withdraw(creep.room.terminal, creep.memory.neededBoost);
+                // withdraw boost from terminal
+           creep.memory.creepIsFull =true;
+            }
+
+            if (creep.memory.creepIsFull == true)
+            {
+
+                if (creep.store.getUsedCapacity(creep.memory.neededBoost) != 0)
+                {
+                    var flagmain = Game.flags[creep.room.name];
+
+                    var boostlab;
+                    var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y - 2);
+                    for (var i = 0; i < temp.length; i++)
+                    {
+                        if (temp[i].structureType == STRUCTURE_LAB)
+                        {
+                            boostlab = temp[i];
+
+                        }
+                    }
+creep.say(boostlab.id);
+                    //transfer boost to lab
+                    creep.transfer(boostlab, creep.memory.neededBoost, creep.store.getUsedCapacity(creep.memory.neededBoost));
+                }
+                else
+                {
+                    //dump rest into storage
+                    creep.transfer(creep.room.storage, RESOURCE_ENERGY);
+                }
+            }
+            }else{
+                
+                if (creep.memory.creepIsFull == false){
+                    creep.say("q");
+                  var flagmain = Game.flags[creep.room.name];
+
+                    var boostlab;
+                    var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y - 2);
+                    for (var i = 0; i < temp.length; i++)
+                    {
+                        if (temp[i].structureType == STRUCTURE_LAB)
+                        {
+                            boostlab = temp[i];
+
+                        }
+                    }
+                    
+                    
+                       const resourcekeys = Object.keys(boostlab.store);
+                    for (var i = 0; i < resourcekeys.length; i++)
+                    {
+                        if (resourcekeys[i] != "energy")
+                        { // creep.say(resourcekeys[i]);
+                            creep.withdraw(boostlab, resourcekeys[i]);
+                            creep.memory.creepIsFull =true;
+                        }
+                        
+                    }
+                    
+                    
+                    
+                     
+                }
+                
+                 if (creep.memory.creepIsFull == true){
+                       creep.say("qo");
+                     
+                            const resourcekeys = Object.keys(creep.store);
+                    for (var i = 0; i < resourcekeys.length; i++)
+                    {
+                        if (resourcekeys[i] != "energy")
+                        { // creep.say(resourcekeys[i]);
+                        if(creep.room.terminal.store.getFreeCapacity() !=0){
+                             creep.transfer(creep.room.terminal, resourcekeys[i]);
+                        }else{
+                             creep.transfer(creep.room.storage, resourcekeys[i]);
+                        }
+                        }
+                    }
+                     
+                     
+                      
+                 }
+                
+                
+                
+                        var flagmain = Game.flags[creep.room.name];
+
+                    var boostlab;
+                    var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y - 2);
+                    for (var i = 0; i < temp.length; i++)
+                    {
+                        if (temp[i].structureType == STRUCTURE_LAB)
+                        {
+                            boostlab = temp[i];
+
+                        }
+                    }
+                    
+                    
+                       const resourcekeys = Object.keys(boostlab.store);
+                
+                
+                
+                
+                if(resourcekeys.length ==1){
+                    creep.memory.neededBoost = "";
                 }
                 
                 
                 
                 
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
             }
+            
+            
+            
+            
+            
+            
+
         }
+
     }
 };
 module.exports = roleresourcemover;

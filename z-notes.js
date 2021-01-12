@@ -58,7 +58,138 @@ nuking                    KEEP , BUNKER
 
 
 
-
+ REACTIONS: {
+        H: {
+            O: "OH",
+            L: "LH",
+            K: "KH",
+            U: "UH",
+            Z: "ZH",
+            G: "GH"
+        },
+        O: {
+            H: "OH",
+            L: "LO",
+            K: "KO",
+            U: "UO",
+            Z: "ZO",
+            G: "GO"
+        },
+        Z: {
+            K: "ZK",
+            H: "ZH",
+            O: "ZO"
+        },
+        L: {
+            U: "UL",
+            H: "LH",
+            O: "LO"
+        },
+        K: {
+            Z: "ZK",
+            H: "KH",
+            O: "KO"
+        },
+        G: {
+            H: "GH",
+            O: "GO"
+        },
+        U: {
+            L: "UL",
+            H: "UH",
+            O: "UO"
+        },
+        OH: {
+            UH: "UH2O",
+            UO: "UHO2",
+            ZH: "ZH2O",
+            ZO: "ZHO2",
+            KH: "KH2O",
+            KO: "KHO2",
+            LH: "LH2O",
+            LO: "LHO2",
+            GH: "GH2O",
+            GO: "GHO2"
+        },
+        X: {
+            UH2O: "XUH2O",
+            UHO2: "XUHO2",
+            LH2O: "XLH2O",
+            LHO2: "XLHO2",
+            KH2O: "XKH2O",
+            KHO2: "XKHO2",
+            ZH2O: "XZH2O",
+            ZHO2: "XZHO2",
+            GH2O: "XGH2O",
+            GHO2: "XGHO2"
+        },
+        ZK: {
+            UL: "G"
+        },
+        UL: {
+            ZK: "G"
+        },
+        LH: {
+            OH: "LH2O"
+        },
+        ZH: {
+            OH: "ZH2O"
+        },
+        GH: {
+            OH: "GH2O"
+        },
+        KH: {
+            OH: "KH2O"
+        },
+        UH: {
+            OH: "UH2O"
+        },
+        LO: {
+            OH: "LHO2"
+        },
+        ZO: {
+            OH: "ZHO2"
+        },
+        KO: {
+            OH: "KHO2"
+        },
+        UO: {
+            OH: "UHO2"
+        },
+        GO: {
+            OH: "GHO2"
+        },
+        LH2O: {
+            X: "XLH2O"
+        },
+        KH2O: {
+            X: "XKH2O"
+        },
+        ZH2O: {
+            X: "XZH2O"
+        },
+        UH2O: {
+            X: "XUH2O"
+        },
+        GH2O: {
+            X: "XGH2O"
+        },
+        LHO2: {
+            X: "XLHO2"
+        },
+        UHO2: {
+            X: "XUHO2"
+        },
+        KHO2: {
+            X: "XKHO2"
+        },
+        ZHO2: {
+            X: "XZHO2"
+        },
+        GHO2: {
+            X: "XGHO2"
+        }
+    },
 
 
 
@@ -337,7 +468,9 @@ Game.spawns["W16S52"].spawnCreep([RANGED_ATTACK ,MOVE], 'guard' + Game.time,{mem
 
 
 
+// boost testing
 
+Game.spawns["E28N5"].spawnCreep([TOUGH,ATTACK ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicattacker", memstruct: {spawnRoom: "E28N5",  tasklist: [["boost",   "go",1]],objectIDStorage: "",boosted: true, moveToRenew: false, opportuniticRenew: false, hastask: false}} });
 
 
 

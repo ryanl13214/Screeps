@@ -45,40 +45,50 @@ var roletowermover = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_TOWER && structure.energy < 500) || (structure.structureType == STRUCTURE_SPAWN && structure.energy < 300);
+                        return (structure.structureType == STRUCTURE_TOWER && structure.energy < 800) ;
                     }
                 });
 
-                if (targets == null)
+             if (targets.length != 0)
+            {
+                 
+                var transverAmount=200 ;
+                
+                if(transverAmount> creep.store.getUsedCapacity())
                 {
-                    var targets = creep.room.find(FIND_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_SPAWN) && structure.store.energy < 300;
-                        }
-                    });
+                    transverAmount = creep.store.getUsedCapacity();
                 }
-                if (creep.transfer(targets[0], RESOURCE_ENERGY, creep.energyAvailable) == ERR_NOT_IN_RANGE)
-                {
-                    creep.moveTo(targets[0],
-                    {
-                        visualizePathStyle:
-                        {
-                            stroke: '#ffffff'
-                        }
-                    });
-                }
+                 
+                 
+               creep.transfer(targets[0], RESOURCE_ENERGY,transverAmount);
+            }
+                
+                
                 else
                 {
-                    var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                    var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 3,
                     {
-                        filter: (structure) => structure.hits < structure.hitsMax * 0.5 && structure.structureType != STRUCTURE_WALL
+                        filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL
                     });
+            
+                    var tmp=0;
+                    var  value=9999999999999999999;
+                      
+                    for (var i = 0; i < closestDamagedStructure.length; i++)
+                    {
+                        if(closestDamagedStructure[i].hits <value)
+                        {
+                            value = closestDamagedStructure[i].hits;
+                            tmp = i ;
+                        }
+                    }
+                   
+
+
 
                     if (closestDamagedStructure.length != 0)
                     {
-                        creep.repair(closestDamagedStructure[0]);
+                        creep.repair(closestDamagedStructure[tmp]);
                     }
                 }
 

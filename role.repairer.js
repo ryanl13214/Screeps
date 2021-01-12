@@ -25,6 +25,7 @@ var rolerepair = {
                 }
                 
                 if (!creep.memory.hastask) {
+                    creep.say("a");
                     var sources = creep.room.find(FIND_SOURCES);
                     if (creep.harvest(sources[creep.memory.sourcetarget]) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(sources[creep.memory.sourcetarget], {
@@ -36,8 +37,29 @@ var rolerepair = {
                 }
             }
             
+            
+            
+            
             if (creep.memory.full) 
             {
+                
+       var target =creep.room.find(FIND_HOSTILE_CREEPS);
+       
+       
+      var    targe2 = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        var structuresclosetoenemys =[];
+        if( targe2!=undefined  ){
+                var structuresclosetoenemys = targe2.pos.findInRange(FIND_STRUCTURES, 3,
+                        {
+                            filter: (structure) => ( structure.structureType == STRUCTURE_WALL ||  structure.structureType == STRUCTURE_RAMPART)
+                        });
+                    
+        }
+       
+       
+       
+                if(structuresclosetoenemys.length ==0){
+                
                 creep.memory.hastask = false;
                 if (!creep.memory.hastask) 
                 {
@@ -54,8 +76,44 @@ var rolerepair = {
                         creepfunctions.upkeepwalls(creep);
                     }
                 }
+                }else{
+                    
+                    
+                  
+                  
+                      if (structuresclosetoenemys.length !=0 ) {
+                          
+                          
+                          
+                             var tmp=0;
+        var  value=9999999999999999999;
+          
+        for (var i = 0; i < structuresclosetoenemys.length; i++)
+        {
+            if(structuresclosetoenemys[i].hits <value)
+            {
+                value = structuresclosetoenemys[i].hits;
+                tmp = i ;
             }
         }
+                          
+                          
+                          
+            var range = creep.pos.getRangeTo(structuresclosetoenemys[tmp]);
+            if (range <= 3) {
+                creep.repair(structuresclosetoenemys[tmp]);
+            } else {
+                creep.moveTo(structuresclosetoenemys[tmp], {
+                    reusePath: 5
+                });
+            }
+                    
+                
+                
+                
+            }
+        }
+            }
         creep.memory.cpuUsed =    creep.memory.cpuUsed+ (Game.cpu.getUsed() - startCpurepair);
         if(creep.ticksToLive ==1)
         {
@@ -63,6 +121,7 @@ var rolerepair = {
         }
         creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
         
+    }
     }
 };
 module.exports = rolerepair;

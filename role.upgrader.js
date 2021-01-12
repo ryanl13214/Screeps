@@ -28,7 +28,7 @@ var roleUpgrader = {
 
                 var targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK);
+                        return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK) && structure.store.getUsedCapacity() >creep.store.getFreeCapacity();
                     }
                 });
 
@@ -56,7 +56,7 @@ var roleUpgrader = {
             }
         }
         
-        creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
+         creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
         
    
         

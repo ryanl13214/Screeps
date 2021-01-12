@@ -17,10 +17,27 @@ var roleharvester = {
             creep.harvest(sources[0]);
           
         } else {
-            const targets =Game.flags[creep.room.name + "container" + creep.memory.sourcetarget].pos.lookFor(LOOK_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK)  && structure.store[RESOURCE_ENERGY] < structure.store.getCapacity()
-                }});
+        
+                
+                
+             var   targets = creep.pos.findInRange(FIND_STRUCTURES,1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK) 
+                        ;
+                    }
+                });
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                 
             if (targets.length == 0) {
                 var constructionsites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1);
                   console.log(constructionsites[0] );

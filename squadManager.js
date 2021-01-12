@@ -16,7 +16,7 @@ var squadmanager = {
             delete Memory.squadObject[squadID];
         } else {
             const resourcevalues = Object.values(mainMemoryObject.SquadMembersGoal);
-            if (mainMemoryObject.SquadMembersCurrent.length < resourcevalues.length && Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true) {
+            if (mainMemoryObject.SquadMembersCurrent.length < resourcevalues.length &&( Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level >6 )     ) {
                 if (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "") {
                     Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = squadID;
                 }
@@ -32,9 +32,7 @@ var squadmanager = {
             }
 
             if (mainMemoryObject.squadisready) {
-                if (mainMemoryObject.squadType == "centerroomattacksquad") {
-                    this.centtersquad_controlFunction(squadID);
-                }
+          
                 if (mainMemoryObject.squadType == "solocenterdamager") {
                     this.solocenterSquad_controlFunction(squadID);
                 }
@@ -47,11 +45,7 @@ var squadmanager = {
                 }
             }
             
-            if (mainMemoryObject.SquadMembersCurrent.length != 0) {
-                if (mainMemoryObject.squadType == "dismantelrooms") {
-                    this.reclaimopperation(squadID);
-                }
-            }
+         
             
             
             
@@ -98,12 +92,15 @@ var squadmanager = {
             SquadRole: false
         };
         var spawnss = Game.spawns[squadHomeRoom];
+        var spawnss3 = Game.spawns[squadHomeRoom+"2"]; 
+        var spawnss2 = Game.spawns[squadHomeRoom+"1"];
         var mainMemoryObject = Memory.squadObject[squadID];
 
         const number = Game.time % Object.values(mainMemoryObject.SquadMembersGoal).length;
 
         const resourcevalues = Object.values(mainMemoryObject.SquadMembersGoal);
         const names = Object.keys(mainMemoryObject.SquadMembersGoal);
+        if(spawnss.spawning != true){
         spawnss.spawnCreep(resourcevalues[number], names[number] + "-" + squadID, {
             memory: {
                 role: 'multi',
@@ -111,6 +108,26 @@ var squadmanager = {
                 memstruct: memstruct
             }
         });
+        }else if(spawnss2 != undefined     && spawnss2.spawning != true ){
+        spawnss2.spawnCreep(resourcevalues[number], names[number] + "-" + squadID, {
+            memory: {
+                role: 'multi',
+                cpuUsed: 0,
+                memstruct: memstruct
+            }
+        });  
+        }else if(spawnss3 != undefined     && spawnss3.spawning != true){
+        spawnss3.spawnCreep(resourcevalues[number], names[number] + "-" + squadID, {
+            memory: {
+                role: 'multi',
+                cpuUsed: 0,
+                memstruct: memstruct
+            }
+        });   
+        }
+ 
+ 
+
 
     },
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,32 +234,34 @@ var squadmanager = {
 
         var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
 
-        if (target != undefined) {
+        if (target != undefined) 
+        {
             mainMemoryObject.squadposition = [target.pos.x, target.pos.y];
-        } else if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0]) {
-            if (mainMemoryObject.arrayOfSquadGoals.length > 1) {
-                console.log("before splice", mainMemoryObject.arrayOfSquadGoals);
+        } 
+        else if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0]) 
+        {
+            if (mainMemoryObject.arrayOfSquadGoals.length > 1) 
+            {
+                 
                 var tmp = mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
                 mainMemoryObject.arrayOfSquadGoals.push(tmp);
-                console.log("after splice", mainMemoryObject.arrayOfSquadGoals);
+               
             }
         }
+ 
+ 
+ 
+ 
 
-        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++) {
-
-            var creeper = rangers[c];
-
+            var creeper =Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]);
             var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             var range = creeper.pos.getRangeTo(targets);
-            const rangetohealer = creeper.pos.getRangeTo(healers[0]);
-            creeper.say(rangetohealer);
-
-            // error checking for room transition
+            
             if (creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) {
                 creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
             }
             if (range > 3 && creeper.hits == creeper.hitsMax) {
-                creeper.moveTo(newroomposition);
+                creeper.moveTo(targets);
             } else if (creeper.hits + 300 < creeper.hitsMax) {
                 //combatmove
             }
@@ -250,7 +269,7 @@ var squadmanager = {
                 creeper.rangedAttack(targets);
             }
 
-        }
+        creeper.heal(creeper);
 
     },
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

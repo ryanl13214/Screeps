@@ -173,7 +173,7 @@ var roleMover = {
                 {
                     targ = targets2;
                 }
-                else if (terminal != undefined)
+                else if (terminal != undefined &&  creep.room.controller.level < 6)
                 {
                     targ = terminal;
                 }
@@ -211,7 +211,7 @@ var roleMover = {
                         return (structure.structureType == STRUCTURE_TERMINAL);
                     }
                 });
-                if (terminalObject != undefined)
+                if (terminalObject != undefined && terminalObject.store.getFreeCapacity() !=0 )
                 {
                     targ = terminalObject;
                 }

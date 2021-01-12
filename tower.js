@@ -1,5 +1,5 @@
 var tower = {
-    run: function(roomname)
+    run: function(roomname , storagevalue)
     {
         var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
         {
@@ -8,16 +8,7 @@ var tower = {
                 return (s.structureType == STRUCTURE_TOWER);
             }
         });
-        
-        
-        
-        
-        
-        
-            var initalbuild = Game.rooms[roomname].find(FIND_STRUCTURES, 
-            {
-                filter: (structure) => (structure.hits < 100000 &&  structure.structureType == STRUCTURE_RAMPART) || ( structure.hits < 300000 &&    structure.structureType == STRUCTURE_WALL   )
-            });
+    
             var woundedCreeps = Game.rooms[roomname].find(FIND_MY_CREEPS,
             {
                 filter: (structure) => (structure.hits < structure.hitsMax) 
@@ -25,13 +16,21 @@ var tower = {
             
             var fullbuild = Game.rooms[roomname].find(FIND_STRUCTURES, 
             {
-                filter: (structure) => (structure.hits < structure.hitsMax*0.4  &&  structure.structureType == STRUCTURE_RAMPART)  || ( structure.hits < structure.hitsMax*0.4 &&    structure.structureType == STRUCTURE_WALL   )
+                filter: (structure) => (structure.hits < structure.hitsMax  &&  structure.structureType == STRUCTURE_RAMPART)  || ( structure.hits < structure.hitsMax  &&    structure.structureType == STRUCTURE_WALL   )
             });
         
-        
-        
-        
-         
+        var tmp=0;
+        var  value=9999999999999999999;
+          
+        for (var i = 0; i < fullbuild.length; i++)
+        {
+            if(fullbuild[i].hits <value)
+            {
+                value = fullbuild[i].hits;
+                tmp = i ;
+            }
+        }
+       
         
         for (var i = 0; i < towers.length; i++)
         {
@@ -42,28 +41,24 @@ var tower = {
             {
                 filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL
             });
-            
+             
           
             const range = towers[i].pos.getRangeTo(closestHostile);
-            if (closestHostile != undefined  )// make limiter to ensure tower draining doesnt work 
-            {
-                towers[i].attack(closestHostile);
-            }
-            else if (woundedCreeps.length != 0)
+             if (woundedCreeps.length != 0)
             {
                 towers[i].heal(woundedCreeps[0]);
+            }
+            else   if (closestHostile != undefined  )// make limiter to ensure tower draining doesnt work 
+            {
+                towers[i].attack(closestHostile);
             }
             else if (closestDamagedStructure.length != 0 && towers[i].store.getUsedCapacity() > 200 && towers[i].room.controller.level >3)
             {
                 towers[i].repair(closestDamagedStructure[0]);
             }
-            else if (initalbuild.length != 0  && towers[i].room.controller.level >3  && Game.rooms[roomname].storage != undefined )
+            else if (fullbuild.length != 0   && towers[i].room.controller.level >3  && Game.rooms[roomname].storage != undefined )
             {
-                towers[i].repair(initalbuild[0]);
-            }
-            else if (fullbuild.length != 0  && towers[i].room.controller.level >4  )
-            {
-                towers[i].repair(fullbuild[Math.floor(Math.random(fullbuild.length))]);
+                towers[i].repair(fullbuild[tmp]);
             }
            
             

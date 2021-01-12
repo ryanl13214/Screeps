@@ -12,58 +12,7 @@
 //total structures = 3 60 6 2 10 1 1 1 1 =85
 // all positions are from storage
 var core = [
-    [1, -3],
-    [-2, -2],
-    [-1, -2],
-    [0, -2],
-    [1, -2],
-    [2, -2],
-    [3, -2],
-    [-3, -1],
-    [-2, -1],
-    [-1, -1],
-    [0, -1],
-    [1, -1],
-    [2, -1],
-    [3, -1],
-    [-3, 0],
-    [-2, 0],
-    [-1, 0],
-    [0, 0],
-    [1, 0],
-    [2, 0],
-    [3, 0],
-    [-3, 1],
-    [-2, 1],
-    [-1, 1],
-    [0, 1],
-    [1, 1],
-    [2, 1],
-    [3, 1],
-    [-1, 2],
-    [0, 2],
-    [-2, 2],
-    [-1, -4],
-    [0, -4],
-    [-1, -3],
-    [0, -3],
-    [-3, -2],
-    [-3, 1],
-    [-4, -1],
-    [-3, -2],
-    [0, 2],
-    [1, 2],
-    [2, 2],
-    [1, 3],
-    [4, 1],
-    [4, 2],
-    [3, 3],
-    [3, 2],
-    [-3, 2],
-    [-4, 0],
-    [3, 3],
-    [4, 2],
-    [3, 2]
+  
 ];
 var arrayofextensionpositions = [
     [-5, -5],
@@ -138,7 +87,7 @@ var containers = [
     [3, 3]
 ];
 var observer = [0, -2];
-var spawnlocations =[ [-2, -1 ],[5, 5]];
+var spawnlocations =[ [-1, -2 ],[5, 5]];
  
 var powerspawn = [5, 0];
 var nuker = [-1, -1];
@@ -312,7 +261,7 @@ var basebuild = {
             {
                 try
                 {
-                    Game.rooms[roomname].createConstructionSite(storage_xpos + spawnlocations[i][0], storage_ypos + spawnlocations[i][1], STRUCTURE_SPAWN);
+                    Game.rooms[roomname].createConstructionSite(storage_xpos + spawnlocations[i][0], storage_ypos + spawnlocations[i][1], STRUCTURE_SPAWN,roomname+(i+1));
                 }
                 catch (e)
                 {

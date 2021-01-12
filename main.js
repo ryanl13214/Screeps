@@ -73,8 +73,60 @@ var ownedrooms = [];
             }
         }
     }
+    
+    
+    
+    
+    
+    /*
+    
+Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK], 'guard' + Game.time,
+                            {
+                                memory:
+                                {
+                                    role: 'guard',
+                                    attackrole: "ranger",
+                                    memstruct:
+                                    {
+                                        spawnRoom: "E28N5",
+                                        tasklist:  [["boost", "XGHO2",7],["boost", "XZHO2",10],["boost", "XKHO2",33],["moveToRoom","E28N5"]],
+                                        objectIDStorage: "",
+                                        boosted: false,
+                                        moveToRenew: false,
+                                        opportuniticRenew: false,
+                                        hastask: false
+                                    }
+                                }
+                            });
+    
+    
+    */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //------------------------------------------------------------------------------------------------
-    if (Game.cpu.bucket > 9000)
+    if (Game.cpu.bucket > 9990)
     {
         Game.cpu.generatePixel()
     }
@@ -93,7 +145,7 @@ var ownedrooms = [];
     for (var i = 0; i < resourcekeys.length; i++)
     {
         try{
-       squadmanage.run(resourcekeys[i]);
+    //   squadmanage.run(resourcekeys[i]);
         }catch(e){}
     }
     //------------------------------------------------------------------------------------------------
@@ -179,7 +231,7 @@ var ownedrooms = [];
         var startCpu = Game.cpu.getUsed();
         if (Game.time % 15 == 0 || defconlevel.defenceLevel < 10)
         {
-            squadgenerate.run(roomname,redflags);
+         //   squadgenerate.run(roomname,redflags);////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,9 +277,9 @@ var ownedrooms = [];
 //                                            towers
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         var startCpu = Game.cpu.getUsed();
-        if (Game.time % (15+ i) == 0 || defconlevel.defenceLevel < 10)
+        if (Game.time % (3+ i) == 0 || defconlevel.defenceLevel < 10 ||  storagevalue >700000)
         {
-           tower.run(roomname);
+            tower.run(roomname, storagevalue );
         }
         var tower_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
