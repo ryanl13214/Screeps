@@ -1,6 +1,14 @@
 var creepfunctions = require('prototype.creepfunctions');
 var roleUpgrader = {
     run: function(creep) {
+  var check =    creepfunctions.checkglobaltasks(creep);
+
+
+
+
+
+if(check){
+
 
         if (creep.memory.full && creep.carry.energy == 0) {
             creep.memory.full = false;
@@ -8,7 +16,8 @@ var roleUpgrader = {
         if (!creep.memory.full && creep.carry.energy == creep.carryCapacity) {
             creep.memory.full = true;
         }
-        if (creep.memory.full) {
+        if (creep.memory.full) 
+        {
             if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(Game.flags[creep.room.name + "controllerpos"].pos, {
                     visualizePathStyle: {
@@ -56,9 +65,15 @@ var roleUpgrader = {
             }
         }
         
-         creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
+    //     creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
         
    
+        
+}
+        
+        
+        
+        
         
         
         

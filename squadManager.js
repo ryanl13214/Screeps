@@ -767,7 +767,107 @@ var squadmanager = {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    serpentsquad_controlFunction: function(squadID) {
+        //  console.log("centtersquad_controlFunction");
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
+
+        var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+        if (target != undefined) 
+        {
+            mainMemoryObject.squadposition = [target.pos.x, target.pos.y];
+        } 
+        else if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0]) 
+        {
+            if (mainMemoryObject.arrayOfSquadGoals.length > 1) 
+            {
+                 
+                var tmp = mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
+                mainMemoryObject.arrayOfSquadGoals.push(tmp);
+               
+            }
+        }
+        
+        var serpentHead;
+        var serpentBody;
+        var serpentTail;
+        
+        
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++) {
+            var creepername = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name.substring(0, 4);
+            
+            if (creepername == "head") 
+            {
+                serpentHead.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+            if (creepername == "body") 
+            {
+                serpentBody.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+            if (creepername == "tail") 
+            {
+                serpentTail.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+        }
+        
+        
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////MOVEMENT///////////////////////////////////////////////////////////////////////////      
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////     
+        
+    var creepPositionStorageX;
+    var creepPositionStorageY;  
+        
+        
+    creepPositionStorageX=serpentHead.pos.x;
+    creepPositionStorageY=serpentHead.pos.y; 
+            
+        
+        
+        
+            var closesttarget = serpentHead.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            var targetlist = serpentHead.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            var rangetoclosestCreep = serpentHead.pos.getRangeTo(targets);
+            var highPrioryttargets=[];
+            var dangerousTargets=[];
+            
+            
+            /*
+            
+            
+            
+            if (creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) {
+                creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+            }
+            if (range > 3 && creeper.hits == creeper.hitsMax) {
+                creeper.moveTo(targets);
+            } else if (creeper.hits + 300 < creeper.hitsMax) {
+                //combatmove
+            }
+            if (range <= 3) {
+                creeper.rangedAttack(targets);
+            }
+        */
+        
+        
+        
+        
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+        
+    },
     
     
     

@@ -48,6 +48,15 @@ var roletowermover = {
                         return (structure.structureType == STRUCTURE_TOWER && structure.energy < 800) ;
                     }
                 });
+                var lowEnergySpawns = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_SPAWN && structure.energy < 300) ;
+                    }
+                });
+
+
 
              if (targets.length != 0)
             {
@@ -62,6 +71,20 @@ var roletowermover = {
                  
                creep.transfer(targets[0], RESOURCE_ENERGY,transverAmount);
             }
+        else     if (lowEnergySpawns.length != 0)
+            {
+                 
+                var transverAmount=lowEnergySpawns[0].store.getFreeCapacity() ;
+                
+                if(transverAmount> creep.store.getUsedCapacity())
+                {
+                    transverAmount = creep.store.getUsedCapacity();
+                }
+                 
+                 creep.say("spppaewn")
+               creep.transfer(lowEnergySpawns[0], RESOURCE_ENERGY,transverAmount);
+            }
+                
                 
                 
                 else

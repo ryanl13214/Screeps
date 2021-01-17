@@ -279,7 +279,7 @@ Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,
         var startCpu = Game.cpu.getUsed();
         if (Game.time % (3+ i) == 0 || defconlevel.defenceLevel < 10 ||  storagevalue >700000)
         {
-            tower.run(roomname, storagevalue );
+              tower.run(roomname, storagevalue );
         }
         var tower_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -231,64 +231,7 @@ var spwan = {
                             var tasklisttmp = [
                                 ["boost", "XKHO2", numberofparts * 2]
                             ];
-                            Game.spawns["E24N3"].spawnCreep([ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 'guard' + Game.time, {
-                                memory: {
-                                    role: 'guard',
-                                    attackrole: "archer",
-                                    memstruct: {
-                                        spawnRoom: "E28N5",
-                                        tasklist: [
-                                            ["boost", "XZHO2", 10],
-                                            ["boost", "XUH2O", 39],
-                                            ["attackMoveToRoom", "E28N5"]
-                                        ],
-                                        objectIDStorage: "",
-                                        boosted: false,
-                                        moveToRenew: false,
-                                        opportuniticRenew: false,
-                                        hastask: false
-                                    }
-                                }
-                            });
-                        } else {
-                            var numberofparts = Math.floor((energyavailable) / 530);
-                            var bodyparts = [];
-                            if (numberofparts > 8) {
-                                numberofparts = 8;
-                            }
-                            for (let j = 0; j < numberofparts; j++) {
-                                bodyparts.push(MOVE);
-                                bodyparts.push(MOVE);
-                                bodyparts.push(MOVE);
-                                bodyparts.push(ATTACK);
-                                bodyparts.push(RANGED_ATTACK);
-                                bodyparts.push(RANGED_ATTACK);
-                            }
-                            var tasklisttmp = [
-                                ["boost", "XUH2O", numberofparts],
-                                ["boost", "XKHO2", numberofparts * 2]
-                            ];
-                            Game.spawns["E24N3"].spawnCreep([ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 'guard' + Game.time, {
-                                memory: {
-                                    role: 'guard',
-                                    attackrole: "archer",
-                                    memstruct: {
-                                        spawnRoom: "E28N5",
-                                        tasklist: [
-                                            ["boost", "XZHO2", 10],
-                                            ["boost", "XUH2O", 39],
-                                            ["attackMoveToRoom", "E28N5"]
-                                        ],
-                                        objectIDStorage: "",
-                                        boosted: false,
-                                        moveToRenew: false,
-                                        opportuniticRenew: false,
-                                        hastask: false
-                                    }
-                                }
-                            });
-                        }
-                    } else {
+                /*
                         Game.spawns["E24N3"].spawnCreep([ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 'guard' + Game.time, {
                             memory: {
                                 role: 'guard',
@@ -308,6 +251,69 @@ var spwan = {
                                 }
                             }
                         });
+                        */
+                        } else {
+                            var numberofparts = Math.floor((energyavailable) / 530);
+                            var bodyparts = [];
+                            if (numberofparts > 8) {
+                                numberofparts = 8;
+                            }
+                            for (let j = 0; j < numberofparts; j++) {
+                                bodyparts.push(MOVE);
+                                bodyparts.push(MOVE);
+                                bodyparts.push(MOVE);
+                                bodyparts.push(ATTACK);
+                                bodyparts.push(RANGED_ATTACK);
+                                bodyparts.push(RANGED_ATTACK);
+                            }
+                            var tasklisttmp = [
+                                ["boost", "XUH2O", numberofparts],
+                                ["boost", "XKHO2", numberofparts * 2]
+                            ];
+                /*
+                        Game.spawns["E24N3"].spawnCreep([ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 'guard' + Game.time, {
+                            memory: {
+                                role: 'guard',
+                                attackrole: "archer",
+                                memstruct: {
+                                    spawnRoom: "E28N5",
+                                    tasklist: [
+                                        ["boost", "XZHO2", 10],
+                                        ["boost", "XUH2O", 39],
+                                        ["attackMoveToRoom", "E28N5"]
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: false,
+                                    hastask: false
+                                }
+                            }
+                        });
+                        */
+                        }
+                    } else {
+                        /*
+                        Game.spawns["E24N3"].spawnCreep([ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 'guard' + Game.time, {
+                            memory: {
+                                role: 'guard',
+                                attackrole: "archer",
+                                memstruct: {
+                                    spawnRoom: "E28N5",
+                                    tasklist: [
+                                        ["boost", "XZHO2", 10],
+                                        ["boost", "XUH2O", 39],
+                                        ["attackMoveToRoom", "E28N5"]
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: false,
+                                    hastask: false
+                                }
+                            }
+                        });
+                        */
                     }
                 } else {
                     standardspawning.run(roomname, defconstruct, storagevalue, roomExits, creepsinroom, energyavailable, energycurrentlyavailable, jacks, repairers, towermover, harvesters, movers, upgraders, resourcemover, extractor, nextroomharvester, scouts, numberofguardingcreeps, memstruct);

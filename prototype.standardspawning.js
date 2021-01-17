@@ -28,7 +28,7 @@ var Standardspwan = {
         }
         var ups = 0;
         if (roomname == "E28N5") {
-            multiplyrepairerrs = 6;
+        //    multiplyrepairerrs = 6;
             //ups=1;
         }
         for (var i = 0; i < spawnss.length; i++) {
@@ -181,8 +181,8 @@ var Standardspwan = {
             {
                 var numberofparts = Math.floor((energyavailable - 500) / 100);
                 var bodyparts = [];
-                if (numberofparts > 14) {
-                    numberofparts = 14;
+                if (numberofparts > 5) {
+                    numberofparts =5;
                 }
                 for (let i = 0; i < numberofparts; i++) {
                     bodyparts.push(WORK);
@@ -195,6 +195,15 @@ var Standardspwan = {
                 bodyparts.push(MOVE);
                 bodyparts.push(MOVE);
                 bodyparts.push(MOVE);
+                
+                
+                if(levelOfController>5 ){
+                   // memstruct.tasklist =[["boost", "GH2O", numberofparts]];
+                }
+                
+                
+                
+                
                 spawnss[i].spawnCreep(bodyparts, 'upgrader' + Game.time, {
                     memory: {
                         role: 'upgrader',

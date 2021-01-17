@@ -37,7 +37,7 @@ var roleguard = {
                         if (range < distance) {
                             distance = range;
                             index = i;
-                            console.log(distance);
+                           // console.log(distance);
                         }
                     }
                     creep.say(distance);
@@ -88,6 +88,132 @@ var roleguard = {
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (creep.memory.attackrole == "cavalry") 
             {
+     //  creep.say("f.length");
+    // console.log("d");
+      const closetarget = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var targetlist = creep.room.find(FIND_HOSTILE_CREEPS);
+    
+                if (closetarget != undefined) {
+                    var ramparts = closetarget.pos.findInRange(FIND_STRUCTURES, 2, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_RAMPART);
+                        }
+                    });
+     
+                    var freeRamparts = [];
+                    for (var i = 0; i < ramparts.length; i++) 
+                    {
+                        var psotiontaken = false;
+                        var targets2 = ramparts[i].pos.findInRange(FIND_MY_CREEPS, 0);// not itself
+                       // console.log(targets2);
+                        //  console.log(creep);
+                        //  creep.say(targets2 == creep);
+                        if (targets2.length != 0 && targets2 != creep) 
+                        {
+                            psotiontaken = true
+                        } 
+                        else 
+                        {
+                            freeRamparts.push(ramparts[i]);
+                        }
+                    }
+                    creep.say(freeRamparts.length);
+     
+         
+                    var distance = 999999;
+                    var index = 9999;
+                    for (var i = 0; i < freeRamparts.length; i++) {
+                        var range = freeRamparts[i].pos.getRangeTo(closetarget);
+                        if (range < distance) {
+                            distance = range;
+                            index = i;
+                            //console.log(distance);
+                        }
+                    }
+     
+      if(freeRamparts.length != 0){
+     
+      
+                    var targetsincurrrange = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 1);
+                    var targetsformove = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 2);
+                    
+                 var creepRangeToClosestsFreeRampart =    freeRamparts[index].pos.getRangeTo(creep);
+                 
+                      if ( targetsformove.length == 0 || creep.hits < creep.hitsMax) { // need to move to closest rampart this stops when in range 
+                            creep.moveTo(freeRamparts[index].pos);
+                        }
+                
+     
+                    
+     if(creep.hits == creep.hitsMax && creepRangeToClosestsFreeRampart<1){
+         creep.moveTo(closetarget);
+     }else{
+       creep.say("else");  
+     }
+     
+      if (targetsincurrrange != undefined) {
+       creep.attack(targetsincurrrange[0]);
+     
+      }
+      }
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+                }
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+               if (creep.room.name != creep.memory.memstruct.spawnRoom) {
+                    var targetRoomFlag = Game.flags[creep.memory.memstruct.spawnRoom];
+                    var pos1 = creep.pos;
+                    var pos2 = targetRoomFlag.pos;
+                    const range = creep.pos.getRangeTo(targetRoomFlag.pos);
+                    if (range > 23) { // might cause bug on nxt room wall 
+                        creep.moveTo(targetRoomFlag.pos);
+                    }
+                }
+     
+     
+     
      
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
