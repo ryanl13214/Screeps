@@ -50,7 +50,7 @@ var tower = {
             }
             else   if (closestHostile != undefined  )// make limiter to ensure tower draining doesnt work 
             {
-            //    towers[i].attack(closestHostile);
+                towers[i].attack(closestHostile);
             }
             else if (closestDamagedStructure.length != 0 && towers[i].store.getUsedCapacity() > 200 && towers[i].room.controller.level >3)
             {

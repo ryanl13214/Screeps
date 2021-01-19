@@ -10,7 +10,7 @@ var multi = {
      
      
      
-     try{   creep.heal(creep);}catch(e){}
+   //  try{   creep.heal(creep);}catch(e){}
      
      
        creepfunctions.checkglobaltasks(creep);

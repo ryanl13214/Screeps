@@ -18,14 +18,18 @@ var creepfunctions = {
         } else
         if (creep.memory.memstruct.tasklist[0] != undefined) {
             if (creep.memory.memstruct.tasklist[0][0] == "joinSquad") {
-                if (creep.ticksToLive == 1499) {
+                 
                     var tempid = creep.id;
                     console.log("adding creep to squad - " + tempid);
+                    try{
                     Memory.squadObject[creep.memory.memstruct.tasklist[0][1]].SquadMembersCurrent.push(tempid);
+                    }catch(e){
+                        creep.say("missing squad");
+                    }
                     //  creep.say(creep.memory.memstruct.tasklist[0][1]);
-                    // creep.say(creep.id);
+                     // creep.say(creep.id);
                     creep.memory.memstruct.tasklist.splice(0, 1);
-                }
+                
             } else if (creep.memory.memstruct.tasklist[0][0] == "claim") {
                 if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(creep.room.controller, {
@@ -39,6 +43,8 @@ var creepfunctions = {
                 var flagmid = Game.flags[creep.room.name];
                 var boosisready = false;
                 var boostlab;
+                creep.memory.memstruct.boosted=true;
+                 
                 var creeper = Game.creeps["resourcemover" + creep.room.name];
                 if (creep.pos.x == flagmid.pos.x - 2 && creep.pos.y == flagmid.pos.y - 3) {
                     if (creeper != undefined) {
@@ -50,6 +56,7 @@ var creepfunctions = {
                                     boostlab = temp[i];
                                     if (boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30) {
                                         // lab boos creep here
+                                        creep.say("hasboost");
                                         boostlab.boostCreep(creep, creep.memory.memstruct.tasklist[0][2])
                                         creep.memory.memstruct.tasklist.splice(0, 1);
                                         creeper.memory.neededBoost = "cleanup";
@@ -150,7 +157,113 @@ var creepfunctions = {
                 } else {
                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }
+            } else if (creep.memory.memstruct.tasklist[0][0] == "moveToLoose") {
+                var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.room.name);
+                var range = creep.pos.getRangeTo(targetposition);
+                if (range> 2) {
+                    creep.moveTo(targetposition);
+                    creep.say(range);
+                } else {
+                    creep.memory.memstruct.tasklist.splice(0, 1);
+                }
             }
+            else if (creep.memory.memstruct.tasklist[0][0] == "waituntil") {
+               
+                if (Game.time < creep.memory.memstruct.tasklist[0][1] ) {
+                    
+                    creep.say("wait");
+                } else {
+                    creep.memory.memstruct.tasklist.splice(0, 1);
+                }
+               
+               
+            }
+            
+              else if (creep.memory.memstruct.tasklist[0][0] == "renewfull") {
+               
+               
+               this.movehomeandrenew(creep);
+               
+                if (creep.ticksToLive > 1400) {
+                     creep.memory.memstruct.tasklist.splice(0, 1);
+                }
+               
+               
+            }     
+            
+                        else if (creep.memory.memstruct.tasklist[0][0] == "boosAllMax") // used only by combat will deal with dismantel attack heal ranged_attack tough and move only 
+                        {
+               
+               
+               
+                var numberOfHealParts =0;
+        var numberOfAttackParts=0;
+        var numberOfRangedParts = 0;
+        var numberOfMoveParts = 0;
+        var numberOfWorkParts = 0;
+        var numberOfToughParts = 0;   
+          var arraytopush = [] ;
+                for(var j = 0 ; j < creep.body.length ; j++)
+                {
+                    if(creep.body[j].type == HEAL){numberOfHealParts++;}
+                    if(creep.body[j].type == ATTACK){numberOfAttackParts++;}
+                    if(creep.body[j].type == RANGED_ATTACK){numberOfRangedParts++;}
+                    if(creep.body[j].type == WORK){numberOfWorkParts++;}
+                    if(creep.body[j].type == MOVE){numberOfMoveParts++;}     
+                    if(creep.body[j].type == TOUGH){numberOfToughParts++;}           
+                }
+               
+               
+               if(numberOfHealParts != 0){
+                   arraytopush.push(["boost","XLHO2",numberOfHealParts]);
+               }
+               
+               if(numberOfAttackParts != 0){
+                   arraytopush.push(["boost","XUH2O",numberOfAttackParts]);
+               }   
+               
+               
+               if(numberOfRangedParts != 0){
+                   arraytopush.push(["boost","XKHO2",numberOfRangedParts]);
+               }  
+               
+               if(numberOfWorkParts != 0){
+                   arraytopush.push(["boost","XZH2O",numberOfWorkParts]);
+               }   
+               if(numberOfMoveParts != 0){
+                   arraytopush.push(["boost","XZHO2",numberOfMoveParts]);
+               } 
+               if(numberOfToughParts != 0){
+                   arraytopush.push(["boost","XGHO2",numberOfToughParts]);
+               } 
+               
+               
+               
+                creep.memory.memstruct.tasklist.splice(0, 1);
+                
+                 for (var i = 0; i < creep.memory.memstruct.tasklist.length; i++) 
+                 {
+           
+           
+             arraytopush.push(creep.memory.memstruct.tasklist[i]);
+           
+                    
+                }
+                creep.memory.memstruct.tasklist=arraytopush;
+                
+               
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
         } else {
             return true;
         }

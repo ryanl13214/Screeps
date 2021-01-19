@@ -18,7 +18,11 @@ var Standardspwan = {
         if (levelOfController == 6) {
             moversneeded = 2;
         }
-        if (levelOfController > 6) {
+        if (levelOfController == 7) {
+            moversneeded = 2;
+        }
+        
+        if (levelOfController > 7) {
             moversneeded = 1;
         }
         var multiplyrepairerrs = 1;
@@ -33,15 +37,13 @@ var Standardspwan = {
         }
         for (var i = 0; i < spawnss.length; i++) {
             if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0) {
-                var bpodyparts = [WORK, WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE];
+                var bpodyparts = [  CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE];
                 if (storagevalue > 990000 && levelOfController > 4) {
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
+                  
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
                 }
-                if (roomname == "E28N5") {
+                if (roomname == "E28N5f") {
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
@@ -121,6 +123,10 @@ var Standardspwan = {
                 });
             } else if (scouts.length < 1 && levelOfController > 3) ///////////////////////////////////
             {
+        
+                
+                
+                
                 spawnss[i].spawnCreep([MOVE], 'scout' + roomname, {
                     memory: {
                         memstruct: memstruct,
@@ -129,6 +135,9 @@ var Standardspwan = {
                         prevRoom: roomname
                     }
                 });
+             
+                
+                
             } else if (repairers.length < 1 * multiplyrepairerrs && levelOfController > 2) {
                 var bodyparts = [];
                 var numberofparts = Math.floor(energyavailable / 350);
@@ -212,7 +221,7 @@ var Standardspwan = {
                         memstruct: memstruct
                     }
                 });
-            } else if (nextroomharvester.length < roomExits.length && levelOfController > 5 && 1 == 2) ////////////////////////////////////////////////
+            } else if (nextroomharvester.length < roomExits.length && levelOfController > 5 &&  Game.flags[roomname].memory.flagstruct.remoteMine) ////////////////////////////////////////////////
             {
                 var numberofparts = Math.floor(energyavailable / 350);
                 if (numberofparts > 50) {
@@ -252,6 +261,9 @@ var Standardspwan = {
                         for (var u = 0; u < nextroomharvester.length; u++) {
                             if (roomnames[q] === String(nextroomharvester[u].memory.target)) {
                                 found++;
+                            }
+                            if (roomnames[q] === "E29N5" ){
+                                found=2;
                             }
                         }
                         if (found < 2 && levelOfController < 7 || found < 1) {

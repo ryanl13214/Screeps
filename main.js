@@ -77,41 +77,7 @@ var ownedrooms = [];
     
     
     
-    
-    /*
-    
-Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK], 'guard' + Game.time,
-                            {
-                                memory:
-                                {
-                                    role: 'guard',
-                                    attackrole: "ranger",
-                                    memstruct:
-                                    {
-                                        spawnRoom: "E28N5",
-                                        tasklist:  [["boost", "XGHO2",7],["boost", "XZHO2",10],["boost", "XKHO2",33],["moveToRoom","E28N5"]],
-                                        objectIDStorage: "",
-                                        boosted: false,
-                                        moveToRenew: false,
-                                        opportuniticRenew: false,
-                                        hastask: false
-                                    }
-                                }
-                            });
-    
-    
-    */
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+   
     
     
     
@@ -144,9 +110,9 @@ Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,
 
     for (var i = 0; i < resourcekeys.length; i++)
     {
-        try{
-    //   squadmanage.run(resourcekeys[i]);
-        }catch(e){}
+      //  try{
+      squadmanage.run(resourcekeys[i]);
+    //    }catch(e){}
     }
     //------------------------------------------------------------------------------------------------
     //                    flag reset
@@ -183,6 +149,17 @@ Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,
         var roomname = ownedrooms[i];
         var mainflag = Game.flags[roomname];
  
+ 
+ 
+    if(Game.time % 1500 ==0 )
+        {
+         
+             mainflag.memory.flagstruct.squadspawning ="";
+        }
+ 
+ 
+ 
+ 
         if (mainflag == undefined)
         {
             var flagstruct = {
@@ -194,6 +171,8 @@ Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,
                 roomIsMyTeritory: false,
                 distancefromoom: 9999,
                 squadspawning:"",
+                remoteMine:false,
+                scoutlastspwned:Game.time,
                 claimedroomstuct:
                 {
                     MineRooms: [],
@@ -204,12 +183,7 @@ Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,
                     dismantelrooms:[]
                 }
             };
-            
-            
-            
-        if(Game.time % 1500 ==0 ){
-            mainflag.memory.flagstruct.squadspawning ="";
-        }
+      
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
           
           
@@ -231,7 +205,7 @@ Game.spawns["E24N3"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,
         var startCpu = Game.cpu.getUsed();
         if (Game.time % 15 == 0 || defconlevel.defenceLevel < 10)
         {
-         //   squadgenerate.run(roomname,redflags);////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //     squadgenerate.run(roomname,redflags);////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
