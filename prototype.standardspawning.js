@@ -3,13 +3,13 @@ var Standardspwan = {
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         var extractorneeded = false;
         if (spawnss.length != 0) {
-            var minerals = spawnss[0].room.MINERAL_REGEN_TIME; // will break spawns if there is no spawn in the room.
-            if (minerals != undefined) {
+            
+            var minerals = Game.rooms[roomname].find(FIND_MINERALS)[0].mineralAmount; // will break spawns if there is no spawn in the room.
+            if (minerals > 0) {
                 extractorneeded = true;
             }
-        }
-        //   console.log(extractorneeded);
-        //    console.log(minerals);
+            
+        } 
         var levelOfController = Game.rooms[roomname].controller.level;
         var moversneeded = 1;
         if (levelOfController < 6) {
@@ -52,6 +52,17 @@ var Standardspwan = {
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
                 }
+                if (roomname == "E24N3") {
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                }
+                
+                
                 // spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
                 spawnss[i].spawnCreep(bpodyparts, 'towermover' + roomname, {
                     memory: {
@@ -70,7 +81,7 @@ var Standardspwan = {
                     }
                 });
             } else if (harvesters.length < 2) {
-                var numberofparts = Math.floor((energyavailable - 350) / 100);
+                var numberofparts = Math.floor((energyavailable - 350) / 150);
                 var bodyparts = [CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 for (let j = 0; j < numberofparts; j++) {
                     bodyparts.push(WORK);
@@ -79,7 +90,7 @@ var Standardspwan = {
                     bodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 }
                 if (numberofparts > 12) {
-                    bodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+                    bodyparts = [ WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
                 }
                 if (harvesters.length == 0) {
                     spawnss[i].spawnCreep(bodyparts, 'harvester1' + roomname, {
@@ -165,6 +176,9 @@ var Standardspwan = {
                 });
             } else if (extractor.length < 1 && extractorneeded) {
                 var numberofparts = Math.floor(energyavailable / 350);
+           if (numberofparts > 8) {
+                    numberofparts = 8;
+                }
                 var bodyparts = [];
                 for (let i = 0; i < numberofparts; i++) {
                     bodyparts.push(WORK);
@@ -221,69 +235,7 @@ var Standardspwan = {
                         memstruct: memstruct
                     }
                 });
-            } else if (nextroomharvester.length < roomExits.length && levelOfController > 5 &&  Game.flags[roomname].memory.flagstruct.remoteMine) ////////////////////////////////////////////////
-            {
-                var numberofparts = Math.floor(energyavailable / 350);
-                if (numberofparts > 50) {
-                    numberofparts = Math.floor(50 / 6);
-                }
-                var bodyparts = [];
-                for (let i = 0; i < numberofparts; i++) {
-                    bodyparts.push(WORK);
-                    bodyparts.push(CARRY);
-                    bodyparts.push(CARRY);
-                    bodyparts.push(MOVE);
-                    bodyparts.push(MOVE);
-                    bodyparts.push(MOVE);
-                }
-                const roomExits = Game.map.describeExits(roomname);
-                const roomnames = Object.values(roomExits);
-                const resourcekeys = Object.keys(roomExits);
-                if (nextroomharvester.length == 0 && levelOfController > 3) {
-                    spawnss[i].spawnCreep(bodyparts, 'nextroom-' + roomname + "-" + roomnames[roomnames.length - 1], {
-                        memory: {
-                            role: 'nextroom',
-                            cpuUsed: 0,
-                            target: roomnames[roomnames.length - 1],
-                            home: roomname,
-                            sourcetarget: 0,
-                            full: false,
-                            memstruct: memstruct
-                        }
-                    });
-                } else {
-                    var takenrooms = []
-                    for (var u = 0; u < nextroomharvester.length; u++) {
-                        takenrooms += [nextroomharvester[u].memory.target];
-                    }
-                    for (var q = 0; q < roomnames.length; q++) {
-                        var found = 0;
-                        for (var u = 0; u < nextroomharvester.length; u++) {
-                            if (roomnames[q] === String(nextroomharvester[u].memory.target)) {
-                                found++;
-                            }
-                            if (roomnames[q] === "E29N5" ){
-                                found=2;
-                            }
-                        }
-                        if (found < 2 && levelOfController < 7 || found < 1) {
-                            spawnss[i].spawnCreep(bodyparts, 'nextroom-' + roomname + "-" + roomnames[q] + " " + found, {
-                                memory: {
-                                    role: 'nextroom',
-                                    cpuUsed: 0,
-                                    target: roomnames[q],
-                                    home: roomname,
-                                    sourcetarget: 0,
-                                    full: false,
-                                    memstruct: memstruct
-                                }
-                            });
-                        }
-                    }
-                }
-            } else {
-                /////////////// set squad spawnimng to true 
-            }
+            }  
         }
         //   console.log(Game.time%200);
         // end of spawns loop

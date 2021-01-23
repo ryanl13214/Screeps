@@ -4,10 +4,10 @@ var roleextractor = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
-        if ((creep.memory.extracting && creep.carryCapacity == _.sum(creep.carry) )|| creep.ticksToLive<50) {
+        if ((creep.memory.extracting && creep.carryCapacity == _.sum(creep.carry) )) {
             creep.memory.extracting = false;
         }
-        if (!creep.memory.extracting && 0 == _.sum(creep.carry)&& creep.ticksToLive>50) {
+        if (!creep.memory.extracting && 0 == _.sum(creep.carry)) {
             creep.memory.extracting = true;
         }
         

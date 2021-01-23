@@ -1,4 +1,4 @@
- /*
+3 /*
     total resouce distribution is 
     104,000  raw resources 
     105k finished resources
@@ -37,12 +37,30 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
  var terminalManager = {
      run: function(roomname, terminalActual, defcon, storagevalue)
      {
-         var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H", "O", "U", "L", "Z", "X", "G", "energy", "GO", "XKHO2","GH2O"]; // power and facory resources
-         var allValues = [20000, 20000, 20000, 5000, 5000, 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000, 3000, 25000,10000];
+         var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H", "O", "U", "L", "Z", "X", "G", "energy", "GO", "XKHO2","GH2O","power"]; // power and facory resources
+         var allValues = [20000, 20000, 20000, 5000, 5000, 36000, 28000, 4000, 4000, 8000, 20000, 4000, 60000, 3000, 25000,10000,8000];
 
          var listOfResourcesInsideTerminal = Game.rooms[roomname].terminal.store;
          var resourcekeys = Object.keys(listOfResourcesInsideTerminal);
          var resourcevalues = Object.values(listOfResourcesInsideTerminal);
+         
+         
+         /*
+         
+         
+         for(const id in Game.market.orders) {
+             if(Game.market.orders[id].remainingAmount ==0){
+    Game.market.cancelOrder(id);
+    console.log("cancellimng orders");
+             }
+}
+         */
+         
+          
+         
+         
+         
+         
          if (1 == 1) // defcon controll
          {
              for (var i = 0; i < resourcekeys.length; i++)
@@ -95,7 +113,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                      {
                          if (storagevalue > 999000 && resourcekeys[i] == "energy")
                          {
-
+ 
                              Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname); ///////////////////////////////////////////////////
 
                          }
@@ -103,11 +121,11 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                          {
                              Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname); /////////////////////////////////////////////////////////////////////////////////////////
                          }
-                         // console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
+                          
                      }
                  }
              }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
              for (var j = 0; j < allResources.length; j++) // fro all desired reources
              {
                  var itemfound = false;
@@ -185,13 +203,12 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
 
                      Game.market.deal(SellOrders[index].id, 100, roomname)
 
-                     //    Game.market.deal(buyOrders[buyOrders.length - 1].id, 1, roomname)
-
+                  
                  }
 
              }
 
-             if (storagevalue > 999000)
+             if (storagevalue > 999000)// sell energy
              {
                  let buyOrders = Game.market.getAllOrders(
                  {
@@ -201,26 +218,45 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                  _.sortBy(buyOrders, ['price']);
                  if (buyOrders.length != 0)
                  {
-                     //      Game.market.deal(buyOrders[buyOrders.length - 1].id, 1000, roomname);///////////////////////////////////////////////////
-                     // console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
+                           Game.market.deal(buyOrders[buyOrders.length - 1].id, 1000, roomname);///////////////////////////////////////////////////
+                       console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
                  }
              }
 
-             if (storagevalue < 50000 && terminalActual.store.getUsedCapacity("energy") < 65000 && Game.time % 50 == 0)
+             if (storagevalue < 50000 && terminalActual.store.getUsedCapacity(RESOURCE_ENERGY) < 65000 && Game.time % 2000 == 0)
              {
-
+ 
                  var hist = Game.market.getHistory(RESOURCE_ENERGY)
 
                  Game.market.createOrder(
                  {
                      type: ORDER_BUY,
                      resourceType: RESOURCE_ENERGY,
-                     price: (hist[0].avgPrice + (hist[0].stddevPrice)),
-                     totalAmount: 5000,
+                     price: (hist[0].avgPrice + (hist[0].stddevPrice) ),
+                     totalAmount: 100000,
                      roomName: roomname
                  });
 
              }
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
 
          }
      }

@@ -15,7 +15,7 @@ var multi = {
      
        creepfunctions.checkglobaltasks(creep);
        
-       creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,180);
+     //  creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,180);
        
        
      if(creep.memory.timer >10000){

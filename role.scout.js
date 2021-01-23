@@ -18,6 +18,7 @@ room considtions
               distancefromoom: 9999,
               squadspawning: "",
               claimedroomstuct: {
+                  roomIsStronghold:false,
                   MineRooms: [],
                   centerroomsinrange: [],
                   mineroomsProfitmargin: [],
@@ -78,10 +79,20 @@ room considtions
                       }
                   } else // ////////////////////////////////////////////////////////////////////                                                                                                       CREEP already scouted room
                   {
+                      
+                      
+                      
+                     flagForRoom.memory.flagstruct.numberOfSourcesInRoom = creep.room.find(FIND_SOURCES).length;
+                      
+                      
+                      
+                      
+                      
                       if (flagForRoom.memory.flagstruct.distancefromoom > 1500 - creep.ticksToLive) {
                           flagForRoom.memory.flagstruct.distancefromoom = 1500 - creep.ticksToLive;
                       }
-                      if (creep.ticksToLive > 1400) {
+                      if (creep.ticksToLive > 1200) {  
+                      
                           //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// put here due to inherent danger
                           //                                                   finding strongholds
                           //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
@@ -98,7 +109,7 @@ room considtions
                                   found = true;
                               }
                           }
-                          if (!found && creep.room.controller == undefined && listEnemyStructures.length > 4 &&1==2) {
+                          if (!found && creep.room.controller == undefined && listEnemyStructures.length > 4 && (creep.ticksToLive > 1400 ||  Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.roomIsStronghold)) {
                               // level 7 only 
                               squadmanage.initializeSquad(creep.room.name + "_stronghold_SERPENT", [creep.room.name], true, "serpent", creep.memory.memstruct.spawnRoom, {
                                   "head": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
@@ -108,6 +119,14 @@ room considtions
                               console.log("s");
                           }
                           //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                      
+                      
+                      
+                      }           
+                      
+                      
+                      if (creep.ticksToLive > 1400) {
+ 
                           //                                                     deciding what rooms to mine 
                           //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
                           var tmpvar = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.MineRooms;
@@ -118,7 +137,26 @@ room considtions
                               }
                           }
                           if (!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller != undefined) {
-                              Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.MineRooms.push(creep.room.name); /// this causes duplicates to need to remove dupes
+                              
+                                if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level < 7) {
+                              available = true;
+                          }
+                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 7 && tmpvar.length > 1) {
+                              available = true;
+                          }
+                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 8 && tmpvar.length > 4) {
+                              available = true;
+                          }
+                              
+                              
+                              
+                              
+                              if(!available && creep.ticksToLive > 1430){
+                              
+                              
+                              
+                              Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.MineRooms.push(creep.room.name); /// 
+                              }
                           }
                           //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                           //                                                        deciding what center rooms to mine 
@@ -133,7 +171,7 @@ room considtions
                           if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level < 7) {
                               found = true;
                           }
-                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 7 && tmpvar.length > 2) {
+                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 7 && tmpvar.length > 1) {
                               found = true;
                           }
                           if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 8 && tmpvar.length > 4) {

@@ -14,17 +14,35 @@
 var standardspawning = require('prototype.standardspawning');
 var spwan = {
     run: function(roomname, defconstruct, storagevalue, roomExits, creepsinroom) {
+        
+        
+        
+///////////////////////////////////////////////////////////
+        
+        
+        
+        
+/////////////////////////////////////////////////////////
+        
+        
+        
+        
+        
+        
+        
+        
         if (Game.spawns[roomname].spawning) {
             if (Game.spawns[roomname].spawning.name == 'towermover' + roomname) {
-                Game.spawns[roomname].spawning.setDirections([LEFT]);
+                Game.spawns[roomname].spawning.setDirections([BOTTOM_LEFT]);
             } else if (Game.rooms[roomname].controller.level < 8) {
-                Game.spawns[roomname].spawning.setDirections([RIGHT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, TOP]);
+                Game.spawns[roomname].spawning.setDirections([RIGHT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM, TOP]);
             } else {
                 Game.spawns[roomname].spawning.setDirections([RIGHT, TOP_RIGHT, BOTTOM_RIGHT]);
             }
         }
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         for (var i = 0; i < spawnss.length; i++) {
+            
             var ajacentcreepstorenew = spawnss[i].pos.findInRange(FIND_MY_CREEPS, 1, {
                 filter: (creep) => {
                     return (creep.memory.memstruct.boosted == false && (creep.memory.memstruct.opportuniticRenew == true || creep.memory.memstruct.moveToRenew == true) && creep.ticksToLive < 1450);
@@ -50,7 +68,7 @@ var spwan = {
                 objectIDStorage: "",
                 boosted: false,
                 moveToRenew: false,
-                opportuniticRenew: true,
+                opportuniticRenew: false,
                 hastask: false,
                 full: false,
                 wantsToJoinSquad: false,

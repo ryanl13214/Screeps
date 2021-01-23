@@ -18,18 +18,20 @@ var creepfunctions = {
         } else
         if (creep.memory.memstruct.tasklist[0] != undefined) {
             if (creep.memory.memstruct.tasklist[0][0] == "joinSquad") {
-                 
+                  if (creep.ticksToLive < 1500) {
                     var tempid = creep.id;
-                    console.log("adding creep to squad - " + tempid);
+                  //  console.log("adding creep to squad - " + tempid);
                     try{
                     Memory.squadObject[creep.memory.memstruct.tasklist[0][1]].SquadMembersCurrent.push(tempid);
+                       creep.memory.memstruct.tasklist.splice(0, 1);
+                       
                     }catch(e){
-                        creep.say("missing squad");
+                       console.log("missing squad");
                     }
                     //  creep.say(creep.memory.memstruct.tasklist[0][1]);
                      // creep.say(creep.id);
-                    creep.memory.memstruct.tasklist.splice(0, 1);
-                
+                   // creep.memory.memstruct.tasklist.splice(0, 1);
+                  }
             } else if (creep.memory.memstruct.tasklist[0][0] == "claim") {
                 if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(creep.room.controller, {
