@@ -29,7 +29,7 @@ var roleMover = {
             {
                 filter: (res) =>
                 {
-                    return (res.resourceType != RESOURCE_ENERGY) || (res.amount > 100);
+                    return (res.resourceType != RESOURCE_ENERGY) || (res.amount > 200);
                 }
             });
             if (droppedresources == undefined && creep.memory.target == "a")
@@ -45,7 +45,7 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800) || ((structure.structureType == STRUCTURE_LINK) && structure.store.energy > 500)
+                        return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800)  
                         ;
                     }
                 });

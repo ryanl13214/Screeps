@@ -52,7 +52,7 @@ var Standardspwan = {
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
                 }
-                if (roomname == "E24N3") {
+                if (roomname == "E2k4N3") {
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
@@ -219,10 +219,18 @@ var Standardspwan = {
                 bodyparts.push(MOVE);
                 bodyparts.push(MOVE);
                 
-                
-                if(levelOfController>5 ){
-                   // memstruct.tasklist =[["boost", "GH2O", numberofparts]];
+                if (roomname == "E24N3") {
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                    bpodyparts.push(WORK);
+                     memstruct.tasklist =[["boost", "GH2O", 12]];
                 }
+                
+          
                 
                 
                 

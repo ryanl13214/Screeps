@@ -219,7 +219,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                  if (buyOrders.length != 0)
                  {
                            Game.market.deal(buyOrders[buyOrders.length - 1].id, 1000, roomname);///////////////////////////////////////////////////
-                       console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
+                      // console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
                  }
              }
 

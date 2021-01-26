@@ -17,6 +17,9 @@ room considtions
               roomIsMyTeritory: false,
               distancefromoom: 9999,
               squadspawning: "",
+                    mineroomsProfitmargin:0,
+                              mineroomsCPU:0,
+                mineroomsCost:0,
               claimedroomstuct: {
                   roomIsStronghold:false,
                   MineRooms: [],
@@ -111,12 +114,16 @@ room considtions
                           }
                           if (!found && creep.room.controller == undefined && listEnemyStructures.length > 4 && (creep.ticksToLive > 1400 ||  Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.roomIsStronghold)) {
                               // level 7 only 
-                              squadmanage.initializeSquad(creep.room.name + "_stronghold_SERPENT", [creep.room.name], true, "serpent", creep.memory.memstruct.spawnRoom, {
-                                  "head": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
-                                  "body": [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL],
-                                  "tail": [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL],
-                              });
-                              console.log("s");
+                              /*
+                               console.log("ssceefgrout spawning serpent squad");
+                                squadmanage.initializeSquad(creep.room.name + "_stronghold_SERPENT", [creep.room.name], true, "serpent", creep.memory.memstruct.spawnRoom, {
+                                   "head": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
+                                   "body": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
+                                   "tail": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
+                                    }
+                                );
+                              console.log("sscout spawning serpent squad");
+                              */
                           }
                           //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                       
@@ -136,22 +143,23 @@ room considtions
                                   found = true;
                               }
                           }
+                          var available = true;
                           if (!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller != undefined) {
                               
                                 if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level < 7) {
-                              available = true;
+                           //   available = true;
                           }
-                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 7 && tmpvar.length > 1) {
-                              available = true;
+                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 7 && tmpvar.length <0) {
+                         //     available = true;
                           }
-                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 8 && tmpvar.length > 4) {
-                              available = true;
+                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 8 && tmpvar.length < 4) {
+                       //       available = true;
                           }
                               
                               
                               
-                              
-                              if(!available && creep.ticksToLive > 1430){
+                              creep.say(available);
+                              if(available && creep.ticksToLive > 1450){
                               
                               
                               
@@ -171,7 +179,7 @@ room considtions
                           if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level < 7) {
                               found = true;
                           }
-                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 7 && tmpvar.length > 1) {
+                          if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 7 && tmpvar.length >0) {
                               found = true;
                           }
                           if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 8 && tmpvar.length > 4) {

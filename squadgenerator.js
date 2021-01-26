@@ -28,7 +28,9 @@ var squadgenerator = {
                 if (!found) {
                     var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
                     squadmanage.initializeSquad(roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager", [mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l]], false, "solocenterdamager", roomname, {
-                        "solo": [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
+                        "solo":[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
+                        "solo2":[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
+                 
                     });
                 }
             }
@@ -51,11 +53,11 @@ var squadgenerator = {
                         
                         
                            if(currsquadspawning.includes(roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "centerMiningSquad")){
-                    if( Memory.squadObject[roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager"].SquadMembersCurrent.length ==1){
+                    if( Memory.squadObject[roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager"].SquadMembersCurrent.length >0){
                         
                     }else{
                         console.log("resetting squad spawn priority from mineing operations");
-                         Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning ="";
+                         Game.flags[roomname].memory.flagstruct.squadspawning ="";
                     }
                     
                     
@@ -84,8 +86,8 @@ var squadgenerator = {
                 if (!squadAlreadyExists && damagesquadready) {
                     var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
                     var numberofparts = Math.floor((energyavailable - 200) / 150);
-                      if (numberofparts > 14) {
-                        numberofparts = 14;
+                      if (numberofparts >9) {
+                        numberofparts = 9;
                     }
                     var bodypartsMINER = [CARRY, CARRY, MOVE, MOVE];
                     for (let j = 0; j < numberofparts; j++) {
@@ -112,7 +114,7 @@ var squadgenerator = {
                         "miner0": bodypartsMINER,
                         "miner1": bodypartsMINER,
                         "miner2": bodypartsMINER,
-                        "fixer": bodypartsfixer,
+      
                     });
                 }
             }
@@ -124,6 +126,32 @@ var squadgenerator = {
 ////////////////////////////////////////////////////////other mines////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 if(mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange.length <2){
+    
+    
+    if(mainflag.memory.flagstruct.claimedroomstuct.MineRooms.length ==0){//broken
+        
+           var roomExits = [0, 0, 0, 0];
+        roomExits[0] = Game.rooms[roomname].find(FIND_EXIT_TOP);
+        roomExits[1] = Game.rooms[roomname].find(FIND_EXIT_RIGHT);
+        roomExits[2] = Game.rooms[roomname].find(FIND_EXIT_BOTTOM);
+        roomExits[3] = Game.rooms[roomname].find(FIND_EXIT_LEFT);
+              for (l = 0; l <roomExits.length; l++) {
+              if(roomExits[l]!=0){
+              //    console.log(roomExits[l][0].room);
+          //         mainflag.memory.flagstruct.claimedroomstuct.MineRooms.push(roomExits[i]);
+                  
+              }
+              
+              }
+        
+    }
+    
+    
+    
+    
+    
+    
+    
                 var squads = Memory.squadObject;
             var squadnames = Object.keys(squads);
             for (l = 0; l < mainflag.memory.flagstruct.claimedroomstuct.MineRooms.length; l++) {

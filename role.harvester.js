@@ -23,7 +23,7 @@ var roleharvester = {
         if(targets.length == 0)
         {
             var constructionsites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 1);
-            console.log(constructionsites[0]);
+           // console.log(constructionsites[0]);
             if(constructionsites[0] != undefined)
             {
                 creep.say(creep.build(constructionsites[0]))

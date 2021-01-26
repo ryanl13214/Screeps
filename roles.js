@@ -5,10 +5,10 @@ var roleHarvester = require('role.harvester');
 var rolemover = require('role.mover');
 var roleupgrader = require('role.upgrader');
 var roletowermover = require('role.towermover');
-var roleclaimer = require('role.claimer');
+
 var roleresourcemover = require('role.resourcemover');
 var roleextractor = require('role.extractor');
-var rolenextroomharvester = require('role.nextroomharvester');
+
 var roleguard = require('role.basicroomguard');
 var rolescout = require('role.scout');
 var rolemulti = require('role.multi');
@@ -36,10 +36,8 @@ var roles =
             }else
             if(creep.memory.role=="harvesteralt"){
                 roleHarvester.run(creep);
-            }   else      
-            if(creep.memory.role=="claimer"){
-                roleclaimer.run(creep);
-            }  else
+            }      
+         else
             if(creep.memory.role=="mover"){
                 rolemover.run(creep);
             }else
@@ -55,9 +53,7 @@ var roles =
             if(creep.memory.role=="extractor"){
                 roleextractor.run(creep);
             }  
-            else if(creep.memory.role=="nextroom"){
-                rolenextroomharvester.run(creep);
-            }  else      
+        else      
             if(creep.memory.role=="guard"){
                 roleguard.run(creep);
             }  else           

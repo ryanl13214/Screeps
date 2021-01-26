@@ -8,7 +8,7 @@ var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
 var storecpu = 0;
 var ticks = 0;
-
+var counter=0;
 module.exports.loop = function()
 {
     
@@ -112,7 +112,7 @@ var ownedrooms = [];
     for (var i = 0; i < resourcekeys.length; i++)
     {
       //  try{
-      squadmanage.run(resourcekeys[i]);
+       squadmanage.run(resourcekeys[i]);
     //    }catch(e){}
     }
     //------------------------------------------------------------------------------------------------
@@ -174,7 +174,9 @@ var ownedrooms = [];
                 distancefromoom: 9999,
                 squadspawning:"",
                 remoteMine:false,
-                scoutlastspwned:Game.time,
+      mineroomsProfitmargin:0,
+                mineroomsCPU:0,
+                mineroomsCost:0,
                 claimedroomstuct:
                 {
                       roomIsStronghold:false,
@@ -208,7 +210,7 @@ var ownedrooms = [];
         var startCpu = Game.cpu.getUsed();
         if (Game.time % 15 == 0 || defconlevel.defenceLevel < 10)
         {
-         squadgenerate.run(roomname,redflags);////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        squadgenerate.run(roomname,redflags);////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
         
@@ -272,26 +274,82 @@ var ownedrooms = [];
         }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                            LINKS
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    var mainflags = Game.flags[roomname];
+    var flag1 = Game.flags[roomname + "container1"];
+    var flag0 = Game.flags[roomname + "container0"];
+    
+    
         var startCpu = Game.cpu.getUsed();
+        
         var linkto = Game.rooms[roomname].lookForAt('structure', mainflag.pos.x - 2  , mainflag.pos.y  ) ;
         linkto = _.filter(linkto, (structure) => structure.structureType == STRUCTURE_LINK);
+        
+        var harvesterlink0 = Game.rooms[roomname].lookForAt('structure', flag0.pos.x    , flag0.pos.y  ) ;
+        harvesterlink0 = _.filter(harvesterlink0, (structure) => structure.structureType == STRUCTURE_LINK);
+        
+        var harvesterlink1 = Game.rooms[roomname].lookForAt('structure', flag1.pos.x    , flag1.pos.y  ) ;
+        harvesterlink1 = _.filter(harvesterlink1, (structure) => structure.structureType == STRUCTURE_LINK);
         var links = Game.rooms[roomname].find(FIND_MY_STRUCTURES, {
             filter: {
                 structureType: STRUCTURE_LINK
             }
         });
-        for (var o = 0; o < links.length; o++) {
-            if (links[o].energy > 300) {
-                links[o].transferEnergy(linkto[0]);
+       
+       
+            if (harvesterlink0[0].energy > 300) {
+                harvesterlink0[0].transferEnergy(linkto[0]);
             }
+            if (harvesterlink1[0].energy > 300) {
+                harvesterlink1[0].transferEnergy(linkto[0]);
+            }
+        
+    
+     
+    for (var o = 0; o < links.length; o++) {
+        if(links[o].id != harvesterlink0[0].id &&  links[o].id != harvesterlink1[0].id &&  links[o].id != linkto[0].id  ){
+              
+            if (links[o].energy > 0) {
+                
+                
+                var suc = links[o].transferEnergy(linkto[0]);
+                
+                if(suc ==0){
+              mainflags.memory.flagstruct.mineroomsProfitmargin += links[o].energy ;
+                }
+            }
+            
         }
+        
+        
+        
+    }
+    
+    
+    
+    
+    
+    
         var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if(Game.time % 1== 0){
+     
+    console.log("room ",roomname," has harvested ",  mainflags.memory.flagstruct.mineroomsProfitmargin , " and used ",mainflags.memory.flagstruct.mineroomsCPU / counter, " and cost " ,mainflags.memory.flagstruct.mineroomsCost, " energy");
+//     mainflags.memory.flagstruct.mineroomsProfitmargin=0;
+  //  mainflags.memory.flagstruct.mineroomsCPU=0;
+ //  mainflags.memory.flagstruct.mineroomsCost=0;
+}
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
     } //end of rooms loop 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+counter++;
 }
 
 

@@ -201,7 +201,7 @@ var basebuild = {
             }
             catch (e)
             {
-                console.log("e");
+            //    console.log("e");
             }
         
         
@@ -221,10 +221,10 @@ var basebuild = {
             }
             catch (e)
             {
-                console.log(e);
+              //  console.log(e);
             }
         }
-        console.log(arrayofextensionpositions.length);
+    //    console.log(arrayofextensionpositions.length);
         
         for (var i = 0; i < arrayofextensionpositions.length; i++)
         {
@@ -234,7 +234,7 @@ var basebuild = {
             }
             catch (e)
             {
-                console.log(e);
+              //  console.log(e);
             }
         }
         
@@ -254,7 +254,7 @@ var basebuild = {
                 }
                 catch (e)
                 {
-                    console.log(e);
+                    //console.log(e);
                 }
             }
             for (var i = 0; i < spawnlocations.length; i++)
@@ -265,7 +265,7 @@ var basebuild = {
                 }
                 catch (e)
                 {
-                    console.log(e);
+             //       console.log(e);
                 }
             }
          
@@ -275,7 +275,7 @@ var basebuild = {
         }
         catch (e)
         {
-            console.log(e);
+           // console.log(e);
         }
             
             try
@@ -284,7 +284,7 @@ var basebuild = {
             }
             catch (e)
             {
-                console.log(e);
+               // console.log(e);
             }
             try
             {
@@ -293,7 +293,7 @@ var basebuild = {
             }
             catch (e)
             {
-                console.log(e);
+              //  console.log(e);
             }
             if (Game.rooms[roomname].controller.level > 6)
             {
@@ -305,7 +305,7 @@ var basebuild = {
                     }
                     catch (e)
                     {
-                        console.log(e);
+                 //       console.log(e);
                     }
                 }
             }
@@ -449,7 +449,7 @@ var basebuild = {
                 }
                 catch (e)
                 {
-                    console.log(e);
+                   // console.log(e);
                 }
             }
             
