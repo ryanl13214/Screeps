@@ -146,15 +146,28 @@ var roleMover = {
             if (creep.store[RESOURCE_ENERGY] == creep.store.getUsedCapacity())
             {
                 
+                
+                if(creep.room.controller.level <8){
+                
                 var targets2 = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
+                    }
+                });
+                }else{
+                    
+                        var targets2 = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
                         return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION || structure
                             .structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
                     }
-                });
-                
+                });  
+                    
+                }
                 var targets4 = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>

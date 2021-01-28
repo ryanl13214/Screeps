@@ -368,31 +368,20 @@ var creepfunctions = {
     
     */
     combatMove: function(creep, avoidarray, avoidclosest) {
-        var currX = creep.pos.x;
-        var currY = creep.pos.y;
-        var enemyX = avoidclosest.pos.x;
-        var enemyY = avoidclosest.pos.y;
-        if (currX > enemyX) {
-            var basicfleepositonX = 1;
-        } else if (currX == enemyX) {
-            var basicfleepositonX = 0;
-        } else {
-            var basicfleepositonX = -1;
-        }
-        if (currY > enemyY) {
-            var basicfleepositonY = 1;
-        } else if (currY == enemyY) {
-            var basicfleepositonY = 0;
-        } else {
-            var basicfleepositonY = -1;
-        }
-        try {
-            creep.moveTo(new RoomPosition(creep.pos.x + basicfleepositonX, creep.pos.y + basicfleepositonY, creep.room.name));
-        } catch (e) {
-            console.log("combatmovefail");
-        }
-        // to do make it avoid terrain 
-        // make it avoid more than one creep.
+        
+        
+        let patha = PathFinder.search(creep.pos, avoidarray.map(c=>{return{pos:c.pos,range:3}},{flee:true})).path;
+        
+        
+        
+        creep.moveByPath(patha);
+        
+         
+        
+        
+        
+        
+        
     },
     /*
     USED BY: 

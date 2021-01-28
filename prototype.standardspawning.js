@@ -31,9 +31,11 @@ var Standardspwan = {
             multiplyrepairerrs += Math.floor(constructionsites.length / 20);
         }
         var ups = 0;
-        if (roomname == "E28N5") {
+        if (roomname == "E24N3") {
         //    multiplyrepairerrs = 6;
-            //ups=1;
+        moversneeded++;
+        moversneeded++;
+            ups=3;
         }
         for (var i = 0; i < spawnss.length; i++) {
             if (towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0) {
@@ -43,26 +45,13 @@ var Standardspwan = {
                     bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
                 }
-                if (roomname == "E28N5f") {
+   
+                        if (roomname == "E24N3") {
+               bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
+                            bpodyparts.push(WORK);
                     bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                }
-                if (roomname == "E2k4N3") {
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                }
-                
-                
+        }
                 // spawnss[i].spawnCreep([WORK, CARRY, CARRY, MOVE, WORK, CARRY, CARRY, MOVE], 'towermover' + roomname,
                 spawnss[i].spawnCreep(bpodyparts, 'towermover' + roomname, {
                     memory: {
@@ -202,7 +191,7 @@ var Standardspwan = {
                 });
             } else if (upgraders.length < 1 + ups) // add condition that ensures the source and controller are close together
             {
-                var numberofparts = Math.floor((energyavailable - 500) / 100);
+                var numberofparts = Math.floor((energyavailable - 600) / 100);
                 var bodyparts = [];
                 if (numberofparts > 5) {
                     numberofparts =5;
@@ -210,6 +199,8 @@ var Standardspwan = {
                 for (let i = 0; i < numberofparts; i++) {
                     bodyparts.push(WORK);
                 }
+                bodyparts.push(CARRY);
+                bodyparts.push(CARRY);
                 bodyparts.push(CARRY);
                 bodyparts.push(CARRY);
                 bodyparts.push(MOVE);
@@ -220,14 +211,24 @@ var Standardspwan = {
                 bodyparts.push(MOVE);
                 
                 if (roomname == "E24N3") {
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                    bpodyparts.push(WORK);
-                     memstruct.tasklist =[["boost", "GH2O", 12]];
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                                        bodyparts.push(WORK);
+                    bodyparts.push(WORK);
+                    
+                    
+                     memstruct.tasklist =[["boost", "GH2O", 20]];
                 }
                 
           

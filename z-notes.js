@@ -441,7 +441,7 @@ Game.spawns["W16S52"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE   ,MOVE,RANG
 
 heal and attack pair 
 Game.spawns["W16S52"].spawnCreep([MOVE,MOVE,HEAL,HEAL], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicHealer", memstruct: {spawnRoom: "W16S52",  tasklist: [["moveToRoom",   "W14S52"],["moveToRoom",   "W14S53"] ],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
-Game.spawns["W16S52"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "roomAbuser", memstruct: {spawnRoom: "W16S52",  tasklist: [["moveToRoom",   "W14S52"],["moveToRoom",   "W14S53"] ],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+Game.spawns["E24N5"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,,RANGED_ATTACK,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "roomAbuser", memstruct: {spawnRoom: "W16S52",  tasklist: [["moveToRoom",   "W14S52"],["moveToRoom",   "W14S53"] ],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
 
 
 
@@ -455,7 +455,10 @@ Game.spawns["W16S52"].spawnCreep([TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,M
 
 
 attacking low spawn room 
-Game.spawns["W16S52"].spawnCreep([RANGED_ATTACK ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicranger", memstruct: {spawnRoom: "W16S52",  tasklist: [["moveToRoom",   "W17S53"],["moveToRoom",   "W17S54"]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+Game.spawns["E24N3"].spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicranger", memstruct: {spawnRoom: "E24N3",  tasklist: [["moveToRoom",   "E23N4"] ],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+
+
+
  Game.spawns["W16S52"].spawnCreep([ATTACK ,MOVE], 'guard' + Game.time,{memory:{role: 'guard', attackrole: "basicattacker", memstruct: {spawnRoom: "W16S52",  tasklist: [["moveToRoom",   "W17S53"],["moveToRoom",   "W17S54"]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
 
 

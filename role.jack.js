@@ -130,6 +130,22 @@ var rolejack = {
         if (creep.ticksToLive == 1) {
             console.log("jack cpu avg-" + (creep.memory.cpuUsed / 1500));
         }
+        
+        
+      
+        var target = creep.room.find(FIND_MY_CREEPS);
+        
+        
+        
+        if(creep.room.storage.store.getUsedCapacity("energy") > 300000 && target.length >6){
+            creep.suicide();
+        }
+        
+        
+        
+        
+        
+        
         try{
      //   creepfunctions.movehomeandrenew(creep,creep.room.name,100);
         }catch(e){}

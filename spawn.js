@@ -33,11 +33,9 @@ var spwan = {
         
         if (Game.spawns[roomname].spawning) {
             if (Game.spawns[roomname].spawning.name == 'towermover' + roomname) {
-                Game.spawns[roomname].spawning.setDirections([BOTTOM_LEFT]);
-            } else if (Game.rooms[roomname].controller.level < 8) {
-                Game.spawns[roomname].spawning.setDirections([RIGHT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM, TOP]);
-            } else {
-                Game.spawns[roomname].spawning.setDirections([RIGHT, TOP_RIGHT, BOTTOM_RIGHT]);
+                Game.spawns[roomname].spawning.setDirections([TOP_LEFT]);
+            } else   {
+                Game.spawns[roomname].spawning.setDirections([RIGHT, BOTTOM_RIGHT, BOTTOM]);
             }
         }
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);

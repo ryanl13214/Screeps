@@ -85,6 +85,16 @@ var squadmanager = {
             squaddisolvetime: Game.time + 1500
         };
     },
+    
+    
+     pathfinding: function(creep)
+    {
+       
+       
+    },   
+    
+    
+    
     spawnnewcreep: function(squadID, squadHomeRoom)
     { // add in function fpor broken squads to be reincorpirated
         var mainMemoryObject = Memory.squadObject[squadID];

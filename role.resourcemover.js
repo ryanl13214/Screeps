@@ -99,7 +99,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                      });
                      var ofloadcontainer;
                      var flagmain = Game.flags[creep.room.name];
-                     var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
+                     var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y);
                      for (var i = 0; i < temp.length; i++)
                      {
                          if (temp[i].structureType == STRUCTURE_CONTAINER)
@@ -181,7 +181,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                      });
                      var ofloadcontainer;
                      var flagmain = Game.flags[creep.room.name];
-                     var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 1, flagmain.pos.y);
+                     var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmain.pos.x - 2, flagmain.pos.y);
                      for (var i = 0; i < temp.length; i++)
                      {
                          if (temp[i].structureType == STRUCTURE_CONTAINER)
