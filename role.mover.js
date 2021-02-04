@@ -38,7 +38,7 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_STORAGE) && structure.store.energy > 500000;
+                        return (structure.structureType == STRUCTURE_STORAGE) && structure.store.energy >0;
                     }
                 });
                 containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
@@ -74,11 +74,11 @@ var roleMover = {
                 {
                     creep.memory.target = tombstones.id;
                 }
-                else if (containers != undefined)
+                else if (containers != undefined && creep.room.controller.level !=8)
                 {
                     creep.memory.target = containers.id;
                 }
-                else if (storagemain != undefined && creep.room.controller.level < 8)
+                else if (storagemain != undefined  )
                 {
                     creep.memory.target = storagemain.id;
                 }
@@ -257,7 +257,7 @@ var roleMover = {
         {
             console.log("mover cpu avg-" + (creep.memory.cpuUsed / 1500));
         }
-        creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
+   //     creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
         
     }
 };

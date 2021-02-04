@@ -41,22 +41,32 @@ var tower = {
             {
                 filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL
             });
-             
-          
+            var woundedPowerCreeps = Game.rooms[roomname].find(FIND_MY_POWER_CREEPS,
+            {
+                filter: (structure) => (structure.hits < structure.hitsMax) 
+            });
+            
             const range = towers[i].pos.getRangeTo(closestHostile);
              if (woundedCreeps.length != 0)
             {
                 towers[i].heal(woundedCreeps[0]);
             }
+            
+         else    if (woundedPowerCreeps.length != 0)
+            {
+                towers[i].heal(woundedPowerCreeps[0]);
+            }
+            
+            
             else   if (closestHostile != undefined  )// make limiter to ensure tower draining doesnt work 
             {
                 towers[i].attack(closestHostile);
             }
-            else if (closestDamagedStructure.length != 0 && towers[i].store.getUsedCapacity() > 200 && towers[i].room.controller.level >3)
+            else if (closestDamagedStructure.length != 0 && towers[i].store.getUsedCapacity() > 200 && towers[i].room.controller.level >3 && Game.rooms[roomname].storage.store.getUsedCapacity("energy")>10000)
             {
                 towers[i].repair(closestDamagedStructure[0]);
             }
-            else if (fullbuild.length != 0   && towers[i].room.controller.level >3  && Game.rooms[roomname].storage != undefined )
+            else if (fullbuild.length != 0   && towers[i].room.controller.level >3  && Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy")>10000)
             {
                 towers[i].repair(fullbuild[tmp]);
             }

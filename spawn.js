@@ -25,22 +25,33 @@ var spwan = {
 /////////////////////////////////////////////////////////
         
         
+        if(Game.spawns[roomname+"1"] != undefined){
+        
+              
+        if (Game.spawns[roomname+"1"].spawning) {
+            if (Game.spawns[roomname+"1"].spawning.name == 'resourcemover' + roomname) {
+                Game.spawns[roomname+"1"].spawning.setDirections([BOTTOM]);
+            } else   {
+                Game.spawns[roomname+"1"].spawning.setDirections([TOP_LEFT,TOP]);
+            }
+        }
         
         
-        
-        
+        }
         
         
         if (Game.spawns[roomname].spawning) {
             if (Game.spawns[roomname].spawning.name == 'towermover' + roomname) {
-                Game.spawns[roomname].spawning.setDirections([TOP_LEFT]);
+                Game.spawns[roomname].spawning.setDirections([TOP_LEFT ]);
             } else   {
                 Game.spawns[roomname].spawning.setDirections([RIGHT, BOTTOM_RIGHT, BOTTOM]);
             }
         }
+        
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        
         for (var i = 0; i < spawnss.length; i++) {
-            
+      //       try{
             var ajacentcreepstorenew = spawnss[i].pos.findInRange(FIND_MY_CREEPS, 1, {
                 filter: (creep) => {
                     return (creep.memory.memstruct.boosted == false && (creep.memory.memstruct.opportuniticRenew == true || creep.memory.memstruct.moveToRenew == true) && creep.ticksToLive < 1450);
@@ -49,10 +60,13 @@ var spwan = {
             if (ajacentcreepstorenew.length != 0 && storagevalue != 0) {
                 spawnss[i].renewCreep(ajacentcreepstorenew[0]);
             } else if (ajacentcreepstorenew.length != 0 && storagevalue == 0) {
-                ajacentcreepstorenew[0].memory.isrenweing = false;
-                ajacentcreepstorenew[0].memory.memstruct.opportuniticRenew = false;
+            //    ajacentcreepstorenew[0].memory.isrenweing = false;
+            //    ajacentcreepstorenew[0].memory.memstruct.opportuniticRenew = false;
             }
+      //       } catch(e){         }
         }
+        
+        
         var harvesters = _.filter(creepsinroom, (creep) => creep.memory.role == 'harvester');
         var movers = _.filter(creepsinroom, (creep) => creep.memory.role == 'mover');
         var claimflag = Game.flags[roomname + "cladim"];
@@ -156,6 +170,9 @@ var spwan = {
                 }
             }
         }
+        
+        
+        
         if (Game.time % 10 == 0 || defconstruct.defenceLevel < 10) {
             var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
             var energycurrentlyavailable = Game.rooms[roomname].energyAvailable;
@@ -173,7 +190,7 @@ var spwan = {
                 tasklist: [],
                 objectIDStorage: "",
                 boosted: false,
-                moveToRenew: false,
+                moveToRenew: true,
                 opportuniticRenew: true,
                 hastask: false,
                 full: false,
@@ -187,12 +204,13 @@ var spwan = {
             } else {
                 Game.flags[roomname].memory.flagstruct.spawnfree = false;
             }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
             if (((movers.length == 0 || harvesters.length == 0) && jacks.length < 6) || (Game.rooms[roomname].controller.level < 3 && jacks.length < 6)) {
-                if (jacks.length < 2) {
+                if (jacks.length <3) {
                     var numberofparts = Math.floor(energycurrentlyavailable / 350);
                 } else {
-                    var numberofparts = Math.floor(energyavailable / 350);
+                    var numberofparts = Math.floor(energycurrentlyavailable / 350);
                 }
                 if (numberofparts > 8) {
                     numberofparts = 8;

@@ -14,141 +14,147 @@ if not do the following oin order
 */
 var creepfunctions = require('prototype.creepfunctions');
 var rolejack = {
-
-    run: function(creep) {
+    run: function(creep)
+    {
+         
         var startCpujack = Game.cpu.getUsed();
-     var check =    creepfunctions.checkglobaltasks(creep);
+        var check = creepfunctions.checkglobaltasks(creep);
         //   checklocaltasks(creep);
-        if (check) {//move the global takslis t check here
-        if (creep.memory.full == true && creep.carry.energy == 0) {
+        if(check)
+        { //move the global takslis t check here
+       
+         
+          if(creep.memory.full  == undefined)// only runs after taslkist is empty sdo it can go to room and rthen set opperatrional room.
+          {
+             creep.memory.full =false;
+             creep.memory.sourcetarget=0;
+             creep.memory.roomtarg = creep.room.name;
+          }
+         
+         
+            if(creep.memory.full == true && creep.carry.energy == 0)
+            {
                 creep.memory.full = false;
             }
-            if (creep.memory.full != true && creep.carry.energy == creep.carryCapacity) {
+            if(creep.memory.full != true && creep.carry.energy == creep.carryCapacity)
+            {
                 creep.memory.full = true;
                 creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
             }
-            if (!creep.memory.full) {
-              
-              
+            if(creep.memory.full == false)
+            {
                 creep.memory.hastask = false;
-                 if (!creep.memory.hastask) {
-                    creepfunctions.findDroppedEnergy(creep);
+                if(!creep.memory.hastask)
+                {
+                  //  creepfunctions.findDroppedEnergy(creep);
                 }
-                
-                 if (!creep.memory.hastask) {
-                  
-                        var          containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                if(!creep.memory.hastask)
                 {
-                    filter: (structure) =>
+                    var containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
                     {
-                        return( ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800)||((structure.structureType == STRUCTURE_LINK) && structure.store.energy > 500)) ;
-                    }
-                });
-              
-                if (containers != undefined )
-                {
-                     var range = creep.pos.getRangeTo(containers);
-                if (range <= 1)
-                {
-                    creep.withdraw(containers,RESOURCE_ENERGY);
-                }
-                else
-                {
-                    creep.moveTo(containers,
-                    {
-                        reusePath: range,
-                        visualizePathStyle:
+                        filter: (structure) =>
                         {
-                            stroke: '#ffaa00'
+                            return (((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800) || ((structure.structureType == STRUCTURE_LINK) && structure.store.energy > 500) || ((structure.structureType == STRUCTURE_STORAGE) && structure.store.energy > 500));
                         }
                     });
-                }
-                    
-                    
-                    
-               creep.memory.hastask=true;
-                }
-                    
-             
-             
-                    
-                    
-                    
-                }
-            
-                if (!creep.memory.hastask) {
-                    var sources = creep.room.find(FIND_SOURCES);
-                    if (creep.harvest(sources[creep.memory.sourcetarget]) == ERR_NOT_IN_RANGE) {
-                        
-                         
-                        
-                       if ( creep.moveTo(sources[creep.memory.sourcetarget], {
-                            visualizePathStyle: {
-                                stroke: '#ffaa00'
-                            }
-                            
-                            
-                            
-                            
-                        }) == -2){
-                            creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
+                    if(containers != undefined)
+                    {
+                        var range = creep.pos.getRangeTo(containers);
+                        if(range <= 1)
+                        {
+                            creep.withdraw(containers, RESOURCE_ENERGY);
                         }
+                        else
+                        {
+                            creep.say("a");
+                            creep.moveTo(containers,
+                            {
+                                reusePath: range,
+                                visualizePathStyle:
+                                {
+                                    stroke: '#ffaa00'
+                                }
+                            });
+                        }
+                        creep.memory.hastask = true;
                     }
+                }
+                if(!creep.memory.hastask)
+                {
+                    var sources = creep.room.find(FIND_SOURCES);
+                    
+                      var range = creep.pos.getRangeTo(sources[creep.memory.sourcetarget]);
+                        if(range <= 1)
+                        {
+                           creep.harvest(sources[creep.memory.sourcetarget]);
+                        }
+                        else
+                        {
+                            creep.moveTo(sources[creep.memory.sourcetarget],
+                            {
+                                visualizePathStyle:
+                                {
+                                    stroke: '#ffaa00'
+                                }
+                            });
+                        }
+              
                 }
             }
-            if (creep.memory.full) {
-              
+            if(creep.memory.full == true)
+            {
                 creep.memory.lastpos = creep.room.pos;
                 creep.memory.hastask = false;
-                if (!creep.memory.hastask) {
-                    
-                    
-                     if (!creep.memory.hastask) {
-                        creepfunctions.stocktowerswithenergy(creep);
-                    }
-                    if (!creep.memory.hastask) {
+                if(!creep.memory.hastask)
+                {
+                    //    if (!creep.memory.hastask) {
+                    //      creepfunctions.stocktowerswithenergy(creep);
+                    //     }
+                    if(!creep.memory.hastask)
+                    {
                         creepfunctions.stockbuildingswithenergy(creep);
                     }
-                    if (!creep.memory.hastask) {
+                    if(!creep.memory.hastask)
+                    {
                         creepfunctions.repairbuildings(creep);
                     }
-                    if (!creep.memory.hastask) {
+                    if(!creep.memory.hastask)
+                    {
                         creepfunctions.buildstructs(creep);
                     }
-                    if (!creep.memory.hastask && creep.room.controller.ticksToDowngrade>3000) {
+                    if(!creep.memory.hastask && creep.room.controller.ticksToDowngrade > 3000 && creep.room.controller.level > 4)
+                    {
                         creepfunctions.stockstorage(creep);
                     }
-                
-                    
-                    if (!creep.memory.hastask) {
+                    if(!creep.memory.hastask)
+                    {
                         creepfunctions.upgradecontroller(creep);
                     }
                 }
             }
         }
         creep.memory.cpuUsed = creep.memory.cpuUsed + (Game.cpu.getUsed() - startCpujack);
-        if (creep.ticksToLive == 1) {
-            console.log("jack cpu avg-" + (creep.memory.cpuUsed / 1500));
+        if(creep.ticksToLive == 1)
+        {
+            // ?       console.log("jack cpu avg-" + (creep.memory.cpuUsed / 1500));
         }
-        
-        
-      
         var target = creep.room.find(FIND_MY_CREEPS);
-        
-        
-        
-        if(creep.room.storage.store.getUsedCapacity("energy") > 300000 && target.length >6){
-            creep.suicide();
+        try
+        {
+            if(creep.room.storage.store.getUsedCapacity("energy") > 10000 && target.length > 8 && creep.memory.memstruct.tasklist.length == 0)
+            {
+                creep.suicide();
+            }
         }
-        
-        
-        
-        
-        
-        
-        try{
-     //   creepfunctions.movehomeandrenew(creep,creep.room.name,100);
-        }catch(e){}
+        catch (e)
+        {}
+      //  creep.say(creep.memory.full);
+        try
+        {
+            //   creepfunctions.movehomeandrenew(creep,creep.room.name,100);
+        }
+        catch (e)
+        {}
     }
 };
 module.exports = rolejack;

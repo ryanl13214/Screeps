@@ -93,13 +93,18 @@ var creepfunctions = {
                     creep.moveTo(roompos);
                 }
             } else if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom") {
-                var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
+                
+             //   var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
+                var targposition = new RoomPosition(25,25, creep.memory.memstruct.tasklist[0][1]);
+              
+                 try{creep.heal(creep);}catch(e){}
+                  try{creep.rangedMassAttack();}catch(e){}
                 var pos1 = creep.pos;
-                var pos2 = targetRoomFlag.pos;
-                const range = creep.pos.getRangeTo(targetRoomFlag.pos);
+                var pos2 = targposition;
+                const range = creep.pos.getRangeTo(targposition);
                 if (range > 23) { // might cause bug on nxt room wall 
-                    creep.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creep.pos, targetRoomFlag.pos, {
+                    creep.moveTo(targposition);
+                    Game.map.visual.line(creep.pos, targposition, {
                         color: '#000000',
                         lineStyle: 'solid'
                     });
@@ -151,11 +156,12 @@ var creepfunctions = {
                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }
             } else if (creep.memory.memstruct.tasklist[0][0] == "moveTo") {
+                 try{creep.heal(creep);}catch(e){}
                 var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.room.name);
                 var range = creep.pos.getRangeTo(targetposition);
                 if (range != 0) {
                     creep.moveTo(targetposition);
-                    creep.say(range);
+                   // creep.say(range);
                 } else {
                     creep.memory.memstruct.tasklist.splice(0, 1);
                 }
@@ -303,6 +309,15 @@ var creepfunctions = {
      
      */
     movehomeandrenew: function(creep, homeroom, timeer) {
+        
+        
+        
+        // check iff the renew spot is free and room is able to renew
+        
+        
+        
+        
+        
         if (creep.memory.isrenweing == undefined) {
             creep.memory.isrenweing = false;
         }
@@ -370,7 +385,7 @@ var creepfunctions = {
     combatMove: function(creep, avoidarray, avoidclosest) {
         
         
-        let patha = PathFinder.search(creep.pos, avoidarray.map(c=>{return{pos:c.pos,range:3}},{flee:true})).path;
+        let patha = PathFinder.search(creep.pos, avoidarray.map(c=>{return{pos:c.pos,range:6}},{flee:true})).path;
         
         
         

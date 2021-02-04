@@ -309,6 +309,12 @@ var roleguard = {
         if (range < 3) {
             creepfunctions.combatMove(creep, targetArr, target);
         }
+        
+        
+        try{creep.heal(creep);}catch(e){}
+        
+        
+        
     },
     attacker: function(creep) {
         const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);

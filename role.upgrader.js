@@ -18,13 +18,22 @@ if(check){
         }
         if (creep.memory.full) 
         {
-            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+             creep.upgradeController(creep.room.controller) ;
+             
+             
+             
                 creep.moveTo(Game.flags[creep.room.name + "controllerpos"].pos, {
                     visualizePathStyle: {
                         stroke: '#ffaa00'
                     }
                 });
-            }
+            
+            
+            
+            
+            
+            
+            
         } else {
             var droppedresources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1, {
                 filter: (res) => {
