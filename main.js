@@ -46,12 +46,13 @@ module.exports.loop = function()
         catch (e)
         {}
     }
-    //------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------//////////////////////////////
     //                                  
     //------------------------------------------------------------------------------------------------
+     tickcode.run();
     try
     {
-     //   tickcode.run();
+    
     }
     catch (e)
     {}
@@ -104,7 +105,7 @@ module.exports.loop = function()
         }
     }
     //------------------------------------------------------------------------------------------------
-    if(Game.cpu.bucket > 10000)
+    if(Game.cpu.bucket == 10000)
     {
         console.log("pixel");
         Game.cpu.generatePixel()
@@ -120,10 +121,10 @@ module.exports.loop = function()
     const resourcevalues = Object.values(testingsquads);
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
-    {
+    {      squadmanage.run(resourcekeys[i]);
         try
         {
-            //  squadmanage.run(resourcekeys[i]);
+           
         }
         catch (e)
         {}
@@ -254,7 +255,12 @@ module.exports.loop = function()
             spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
         }
         catch (e)
-        {}
+        {
+            if(Game.time % 5 == 0)
+            {
+                Game.flags[roomname].remove();
+            }
+        }
         var spawnmain_cpu_used = +Game.cpu.getUsed() - startCpu;
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            basebuild
@@ -281,7 +287,7 @@ module.exports.loop = function()
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
-            //   terminalManager.run(roomname, Game.rooms[roomname].terminal, defconlevel, storagevalue);
+          //  terminalManager.run(roomname, Game.rooms[roomname].terminal, defconlevel, storagevalue);
             var Terminal_cpu_used = +Game.cpu.getUsed() - startCpu;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

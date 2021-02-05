@@ -141,7 +141,7 @@ var rolejack = {
         var target = creep.room.find(FIND_MY_CREEPS);
         try
         {
-            if(creep.room.storage.store.getUsedCapacity("energy") > 10000 && target.length > 8 && creep.memory.memstruct.tasklist.length == 0)
+            if(creep.room.storage.store.getUsedCapacity("energy") > 10000 && target.length > 11 && creep.memory.memstruct.tasklist.length == 0)
             {
                 creep.suicide();
             }

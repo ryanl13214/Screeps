@@ -69,109 +69,8 @@ var spwan = {
         
         var harvesters = _.filter(creepsinroom, (creep) => creep.memory.role == 'harvester');
         var movers = _.filter(creepsinroom, (creep) => creep.memory.role == 'mover');
-        var claimflag = Game.flags[roomname + "cladim"];
-        if (claimflag != undefined && movers.length != 0 && harvesters.length == 2) {
-            var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
-            var memstruct = {
-                spawnRoom: roomname,
-                tasklist: [
-                    ["moveToRoom", roomname + "claim"]
-                ],
-                objectIDStorage: "",
-                boosted: false,
-                moveToRenew: false,
-                opportuniticRenew: false,
-                hastask: false,
-                full: false,
-                wantsToJoinSquad: false,
-                spawntime: Game.time,
-                isInSquad: false,
-                SquadID: "claimer",
-                SquadRole: false
-            };
-            var guards = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
-            if (guards.length < 2) {
-                Game.spawns[roomname].spawnCreep([MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK, MOVE, RANGED_ATTACK, MOVE, MOVE, HEAL, HEAL], 'guard' + Game.time, {
-                    memory: {
-                        role: 'guard',
-                        attackrole: "basicranger",
-                        memstruct: {
-                            spawnRoom: "E24N3",
-                            tasklist: [
-                                ["attackMoveToRoom", roomname + "claim"]
-                                ["attackMoveToRoom", roomname],
-                                ["attackMoveToRoom", roomname + "claim"],
-                                ["attackMoveToRoom", roomname],
-                                ["attackMoveToRoom", roomname + "claim"]
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: true,
-                            hastask: false
-                        }
-                    }
-                });
-            } else if (jacks.length < 2) {
-                var numberofparts = Math.floor(energycurrentlyavailable / 350);
-                if (numberofparts > 4) {
-                    numberofparts = 4;
-                }
-                var bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
-                for (let i = 0; i < numberofparts; i++) {
-                    bodyparts.push(WORK);
-                    bodyparts.push(CARRY);
-                    bodyparts.push(CARRY);
-                    bodyparts.push(MOVE);
-                    bodyparts.push(MOVE);
-                    bodyparts.push(MOVE);
-                }
-                Game.spawns[roomname].spawnCreep(bodyparts, 'jack' + Game.time, {
-                    memory: {
-                        role: 'jack',
-                        cpuUsed: 0,
-                        roomtarg: roomname,
-                        sourcetarget: Game.time % 2,
-                        full: false,
-                        memstruct: memstruct
-                    }
-                });
-            } else {
-                var claimer = _.filter(creepsinroom, (creep) => creep.memory.role == 'multi' && creep.memory.memstruct.SquadID == "claimer");
-                var memstruct = {
-                    spawnRoom: roomname,
-                    tasklist: [
-                        ["moveToRoom", roomname + "claim"],
-                        ["claim"]
-                    ],
-                    objectIDStorage: "",
-                    boosted: false,
-                    moveToRenew: false,
-                    opportuniticRenew: true,
-                    hastask: false,
-                    full: false,
-                    wantsToJoinSquad: false,
-                    isInSquad: false,
-                    SquadID: "claimer",
-                    SquadRole: false
-                };
-                if (claimer.length == 0) {
-                    var bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CLAIM];
-                    Game.spawns[roomname].spawnCreep(bodyparts, 'multi' + Game.time, {
-                        memory: {
-                            role: 'multi',
-                            cpuUsed: 0,
-                            roomtarg: roomname,
-                            sourcetarget: Game.time % 2,
-                            full: false,
-                            memstruct: memstruct
-                        }
-                    });
-                }
-            }
-        }
-        
-        
+ 
+ 
         
         if (Game.time % 10 == 0 || defconstruct.defenceLevel < 10) {
             var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
@@ -206,6 +105,7 @@ var spwan = {
             }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
+            
             if (((movers.length == 0 || harvesters.length == 0) && jacks.length < 6) || (Game.rooms[roomname].controller.level < 3 && jacks.length < 6)) {
                 if (jacks.length <3) {
                     var numberofparts = Math.floor(energycurrentlyavailable / 350);
@@ -215,7 +115,10 @@ var spwan = {
                 if (numberofparts > 8) {
                     numberofparts = 8;
                 }
-                var bodyparts = [];
+                   var bodyparts = [];
+         
+                
+              
                 for (let i = 0; i < numberofparts; i++) {
                     bodyparts.push(WORK);
                     bodyparts.push(CARRY);
@@ -227,6 +130,7 @@ var spwan = {
                 if (numberofparts == 0) {
                     bodyparts = [WORK, MOVE, CARRY];
                 }
+           
                 Game.spawns[roomname].spawnCreep(bodyparts, 'jack' + Game.time, {
                     memory: {
                         role: 'jack',
@@ -354,6 +258,10 @@ var spwan = {
                 }
             }
         }
+        
+        
+        
+        
     }
 }
 module.exports = spwan;

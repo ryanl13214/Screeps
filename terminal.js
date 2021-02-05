@@ -90,7 +90,7 @@ var terminalManager = {
                 var excessResources = resourcevalues[i];
                 if(buyOrders.length != 0)
                 {
-                    Game.market.deal(buyOrders[buyOrders.length - 1].id, 1, roomname); /////////////////////////////////////////////////////////////////////////////////////////
+                    Game.market.deal(buyOrders[buyOrders.length - 1].id, 100, roomname); /////////////////////////////////////////////////////////////////////////////////////////
                 }
             }
         }

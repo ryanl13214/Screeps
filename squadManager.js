@@ -35,6 +35,8 @@ var squadmanager = {
                 mainMemoryObject.squadisready = true;
                 Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
             }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
             if(mainMemoryObject.squadisready) // group squads
             {
                 if(mainMemoryObject.squadType == "serpent" && mainMemoryObject.SquadMembersCurrent.length == 3) // add else here for retreating
@@ -42,12 +44,20 @@ var squadmanager = {
                     this.serpentsquad_controlFunction(squadID);
                 }
             }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////// 
             if(mainMemoryObject.SquadMembersCurrent.length != 0) //independant squads
             {
                 if(mainMemoryObject.squadType == "centerMiningSquad")
                 {
                     this.centerMiningOpteration(squadID);
                 }
+                if(mainMemoryObject.squadType == "SoloPatrol")
+                {
+                    this.SoloPatrol(squadID);
+                }
+                
+                
+                
                 if(mainMemoryObject.squadType == "solocenterdamager")
                 {
                     var startCpu = Game.cpu.getUsed();
@@ -61,11 +71,12 @@ var squadmanager = {
                     Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.mineroomsCPU += Game.cpu.getUsed() - startCpu;
                 }
             }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
     },
     initializeSquad: function(squadID, arrayOfSquadGoals, squadIsBoosted, squadType, squadHomeRoom, SquadMembers)
     {
-        //     console.log("creating squad");
+            console.log("creating squad");
         Memory.squadObject[squadID] = {
             arrayOfSquadGoals: arrayOfSquadGoals,
             squadIsBoosted: squadIsBoosted,
@@ -362,59 +373,36 @@ var squadmanager = {
             {
                 creeper.rangedMassAttack();
             }
-            
-            
-            
-            if(targets == undefined){
-                
-            
-               
-               
-               
-               
-                           var targets = creeper.room.find(FIND_HOSTILE_STRUCTURES,
+            if(targets == undefined)
             {
-                filter: function(object)
+                var targets = creeper.room.find(FIND_HOSTILE_STRUCTURES,
                 {
-                    return object.structureType == STRUCTURE_KEEPER_LAIR;
+                    filter: function(object)
+                    {
+                        return object.structureType == STRUCTURE_KEEPER_LAIR;
+                    }
+                });
+                var temp = 9;
+                var counter = 9999;
+                if(targets.length != 0)
+                {
+                    creeper.say(targets.length);
+                    for(var k = 0; k < targets.length; k++)
+                    {
+                        if(targets[k].ticksToSpawn < counter)
+                        {
+                            counter = targets[k].ticksToSpawn;
+                            temp = k;
+                        }
+                    }
+                    var range = creeper.pos.getRangeTo(targets[temp]);
+                    if(range > 3)
+                    {
+                        creeper.say("no one to fighhtr");
+                        creeper.moveTo(targets[temp]);
+                    }
                 }
-            });
-               
-               var temp=9;
-               var counter =9999;
-               
-               if(targets.length !=0){
-                 creeper.say( targets.length);
-               for(var k = 0 ; k < targets.length ; k++)
-               {
-                      
-                   if(targets[k].ticksToSpawn < counter){
-                       counter=targets[k].ticksToSpawn ;
-                       temp=k;
-                   }
-                   
-               }
-                 var range = creeper.pos.getRangeTo(targets[temp]);
-               
-               
-                if(range > 3)
-            {
-                     creeper.say("no one to fighhtr");
-                creeper.moveTo(targets[temp]);
             }
-               }
-                
-            }
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             creeper.heal(creeper);
         }
     },
@@ -899,48 +887,7 @@ var squadmanager = {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    bumRushSquad: function(squadID)
-    {
-        var mainMemoryObject = Memory.squadObject[squadID];
-        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
-        var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(target != undefined)
-        {
-            mainMemoryObject.squadposition = [target.pos.x, target.pos.y];
-        }
-        else if(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0])
-        {
-            if(mainMemoryObject.arrayOfSquadGoals.length > 1)
-            {
-                var tmp = mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
-                mainMemoryObject.arrayOfSquadGoals.push(tmp);
-            }
-        }
-        var healers = [];
-        var rangers = [];
-        var attackers = [];
-        var dismantlers = [];
-        for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        {
-            var nameOfCreep = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name.substring(0, 4);
-            if(nameOfCreep == "heal")
-            {
-                healers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
-            }
-            else if(nameOfCreep == "rang")
-            {
-                rangers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
-            }
-            else if(nameOfCreep == "atta")
-            {
-                attackers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
-            }
-            else if(nameOfCreep == "dism")
-            {
-                dismantlers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
-            }
-        }
-    },
+    bumRushSquad: function(squadID) {},
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1396,6 +1343,109 @@ var squadmanager = {
                     });
                 }
             }
+        }
+    },
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    SoloPatrol: function(squadID)
+    {
+        // console.log("test mineing op");
+        var mainMemoryObject = Memory.squadObject[squadID];
+        creep = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]);
+ var q = mainMemoryObject.arrayOfSquadGoals[0];
+        
+        var c = 0;
+        var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if(target == undefined) // if no enemy creeps in room. 
+        {
+            if(creep.room.name != mainMemoryObject.arrayOfSquadGoals[0])
+            {
+               creep.say("test to room");
+               
+                var targposition = new RoomPosition(25, 25,  mainMemoryObject.arrayOfSquadGoals[0] );
+                
+                creep.say("move  ");
+                try
+                {
+                    creep.heal(creep);
+                }
+                catch (e)
+                {}
+                var pos1 = creep.pos;
+                var pos2 = targposition;
+                const range = creep.pos.getRangeTo(targposition);
+                creep.say(range);
+                if(range > 23)
+                { // might cause bug on nxt room wall 
+                  
+                    creep.moveTo(targposition);
+                    Game.map.visual.line(creep.pos, targposition,
+                    {
+                        color: '#ff00ff',
+                        lineStyle: 'solid'
+                    });
+                }
+            }
+            else
+            {
+                  creep.say("room clear");
+                var tmp = mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
+                mainMemoryObject.arrayOfSquadGoals.push(tmp[0]);
+            }
+        }
+        else
+        {
+               creep.say("hostile");
+            const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
+            const targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+            if(targets.length > 0)
+            {
+                creep.rangedAttack(targets[0]);
+            }
+            const rangeg = creep.pos.getRangeTo(target);
+            if(rangeg > 2)
+            {
+                creep.moveTo(target);
+            }
+            if(rangeg < 3)
+            
+            { 
+                  let goals = _.map(target, function(source) {
+    // We can't actually walk on sources-- set `range` to 1 
+    // so we path next to it.
+    return { pos: source.pos, range: 3 };
+  });
+                
+                
+                let path = PathFinder.search(creep.pos, 
+                
+                
+                
+                
+                goals
+                
+                
+                
+                ,{flee:true}).path;
+                console.log(JSON.stringify(path));
+creep.moveByPath(path);
+             
+                
+                
+                
+                
+                
+                
+                 
+            }
+            try
+            {
+                creep.heal(creep);
+            }
+            catch (e)
+            {}
         }
     },
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
