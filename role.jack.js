@@ -16,7 +16,7 @@ var creepfunctions = require('prototype.creepfunctions');
 var rolejack = {
     run: function(creep)
     {
-         
+            
         var startCpujack = Game.cpu.getUsed();
         var check = creepfunctions.checkglobaltasks(creep);
         //   checklocaltasks(creep);
@@ -46,7 +46,7 @@ var rolejack = {
                 creep.memory.hastask = false;
                 if(!creep.memory.hastask)
                 {
-                  //  creepfunctions.findDroppedEnergy(creep);
+                   creepfunctions.findDroppedEnergy(creep);
                 }
                 if(!creep.memory.hastask)
                 {
@@ -103,16 +103,20 @@ var rolejack = {
             }
             if(creep.memory.full == true)
             {
+                
+             
+                
                 creep.memory.lastpos = creep.room.pos;
                 creep.memory.hastask = false;
                 if(!creep.memory.hastask)
                 {
-                    //    if (!creep.memory.hastask) {
-                    //      creepfunctions.stocktowerswithenergy(creep);
-                    //     }
+                     if (!creep.memory.hastask) {
+                        creepfunctions.stocktowerswithenergy(creep);
+                      }
                     if(!creep.memory.hastask)
                     {
                         creepfunctions.stockbuildingswithenergy(creep);
+                          
                     }
                     if(!creep.memory.hastask)
                     {
@@ -129,6 +133,12 @@ var rolejack = {
                     if(!creep.memory.hastask)
                     {
                         creepfunctions.upgradecontroller(creep);
+                             try
+                {
+                   creep.heal(creep);
+                }
+                catch (e)
+                {}
                     }
                 }
             }

@@ -5,7 +5,28 @@ var roleUpgrader = {
 
 
 
-
+   
+        if(Game.flags[creep.room.name + "controllerpos"] == undefined){
+          
+            const pathh = creep.pos.findPathTo(creep.room.controller,{ignoreCreeps:true});
+            if(pathh.length > 2){
+                    creep.moveTo(creep.room.controller);
+            }else if (pathh.length == 2){
+                   creep.room.createFlag(creep.pos.x  , creep.pos.y , creep.room.name + "controllerposcontainer");
+                   creep.moveTo(creep.room.controller);
+            }else if(pathh.length == 1){
+                 creep.room.createFlag(creep.pos.x  , creep.pos.y , creep.room.name + "controllerpos");
+            }
+            
+            
+                     
+               
+               
+            
+        }
+        
+        
+        
 
 if(check){
 

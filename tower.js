@@ -34,7 +34,7 @@ var tower = {
         
         for (var i = 0; i < towers.length; i++)
         {
-            Game.map.visual.rect(new RoomPosition(towers[i].pos.x - 5, towers[i].pos.y - 5, towers[i].pos.roomName),     11, 11,    {fill: 'transparent', stroke: '#ff0000'});
+            
             
             var closestHostile = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             var closestDamagedStructure = towers[i].pos.findInRange(FIND_STRUCTURES, 5,

@@ -35,8 +35,18 @@ var creepfunctions = {
             return true;
         }
         else
+        
+        
+     
+        
+        
+        
+        
         if(creep.memory.memstruct.tasklist[0] != undefined)
         {
+            
+            
+            
             if(creep.memory.memstruct.tasklist[0][0] == "joinSquad")
             {
                 if(creep.ticksToLive < 1500)
@@ -57,6 +67,69 @@ var creepfunctions = {
                     // creep.memory.memstruct.tasklist.splice(0, 1);
                 }
             }
+                
+          else if(creep.memory.memstruct.tasklist[0][0] == "basicrenew")
+            {
+                
+               
+                  var spawnss = creep.room.find(FIND_MY_SPAWNS);
+                    creep.moveTo(spawnss[0],
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+               
+               try{
+                    spawnss[0].renewCreep(creep);
+               }catch(e){}
+              console.log(  spawnss[0].renewCreep(creep));
+               
+                var found = false;
+                for(var ik = 0; ik < creep.body.length; ik++)
+                {
+                    if(creep.body[ik] == CLAIM)
+                    {
+                        found = true;
+                    }
+                }
+                var tmp = 1450;
+                if(found == true)
+                {
+                    tmp = 590;
+                }
+                if(creep.ticksToLive > tmp)
+                {
+                    creep.memory.memstruct.tasklist.splice(0, 1);
+                }
+            }
+        
+           else if(creep.memory.memstruct.tasklist[0][0] == " ")
+            {
+                
+                
+            }
+        
+           else if(creep.memory.memstruct.tasklist[0][0] == " ")
+            {
+                
+                
+            }
+        
+           else if(creep.memory.memstruct.tasklist[0][0] == " ")
+            {
+                
+                
+            }
+        
+           else if(creep.memory.memstruct.tasklist[0][0] == " ")
+            {
+                
+                
+            }
+            
+            
             else if(creep.memory.memstruct.tasklist[0][0] == "claim")
             {
                 if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE)

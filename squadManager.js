@@ -1409,6 +1409,17 @@ var squadmanager = {
             {
                 creep.moveTo(target);
             }
+            
+                 try
+            {
+                creep.heal(creep);
+            }
+            catch (e)
+            {}
+            
+            
+            
+            
             if(rangeg < 3)
             
             { 
@@ -1418,7 +1429,7 @@ var squadmanager = {
     return { pos: source.pos, range: 3 };
   });
                 
-                
+                  console.log(JSON.stringify(goals));
                 let path = PathFinder.search(creep.pos, 
                 
                 
@@ -1440,12 +1451,7 @@ creep.moveByPath(path);
                 
                  
             }
-            try
-            {
-                creep.heal(creep);
-            }
-            catch (e)
-            {}
+        
         }
     },
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

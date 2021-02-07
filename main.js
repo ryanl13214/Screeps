@@ -6,6 +6,7 @@ var defcon = require('defcon');
 var terminalManager = require('terminal');
 var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
+var visuals = require('visuals');
 var powerManager = require('powercreepManager');
 var tickcode = require('tickcode');
 var storecpu = 0;
@@ -49,7 +50,8 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------//////////////////////////////
     //                                  
     //------------------------------------------------------------------------------------------------
-     tickcode.run();
+  //  tickcode.run();
+      visuals.run();
     try
     {
     
@@ -121,10 +123,10 @@ module.exports.loop = function()
     const resourcevalues = Object.values(testingsquads);
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
-    {      squadmanage.run(resourcekeys[i]);
+    {   
         try
         {
-           
+              squadmanage.run(resourcekeys[i]);
         }
         catch (e)
         {}
@@ -150,6 +152,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     for(var i = 0; i < ownedrooms.length; i++)
     {
+    
         if(Game.time % 15 == 0)
         {
             //  if(Game.flags[roomname].memory.flagstruct.squadspawning  == undefined )
@@ -238,7 +241,7 @@ module.exports.loop = function()
         roomExits[1] = Game.rooms[roomname].find(FIND_EXIT_RIGHT);
         roomExits[2] = Game.rooms[roomname].find(FIND_EXIT_BOTTOM);
         roomExits[3] = Game.rooms[roomname].find(FIND_EXIT_LEFT);
-        Game.map.visual.circle(new RoomPosition(25, 25, roomname), 500);
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var storagevalue = 0;
         var defconlevel;
@@ -261,11 +264,12 @@ module.exports.loop = function()
                 Game.flags[roomname].remove();
             }
         }
+        
         var spawnmain_cpu_used = +Game.cpu.getUsed() - startCpu;
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            basebuild
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-        if(Game.time % (9000 + i) == 0)
+        if(Game.time % (9999) == 0)
         {
             var startCpu = Game.cpu.getUsed();
             buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
@@ -275,7 +279,7 @@ module.exports.loop = function()
         //                                            towers
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         var startCpu = Game.cpu.getUsed();
-        if(Game.time % (3 + i) == 0 || defconlevel.defenceLevel < 10 || storagevalue > 700000)
+        if(Game.time % (5) == 0 || defconlevel.defenceLevel < 10 || storagevalue > 700000)
         {
             tower.run(roomname, storagevalue);
         }
@@ -283,11 +287,11 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (15) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
-          //  terminalManager.run(roomname, Game.rooms[roomname].terminal, defconlevel, storagevalue);
+          terminalManager.run(roomname, Game.rooms[roomname].terminal, defconlevel, storagevalue);
             var Terminal_cpu_used = +Game.cpu.getUsed() - startCpu;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +299,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.rooms[roomname].controller.level > 3)
         {
+            try{
             var mainflags = Game.flags[roomname];
             var flag1 = Game.flags[roomname + "container1"];
             var flag0 = Game.flags[roomname + "container0"];
@@ -350,6 +355,7 @@ module.exports.loop = function()
                 }
             }
             var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
+            }catch(e){}
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var powerspawn = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
@@ -378,6 +384,7 @@ module.exports.loop = function()
             counter = 0;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+  
     } //end of rooms loop 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    

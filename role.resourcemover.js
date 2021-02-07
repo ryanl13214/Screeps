@@ -110,6 +110,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                              return (structure.structureType == STRUCTURE_LINK);
                          }
                      });
+                     if(sourcelink != undefined){
                      if(sourcelink.store.getUsedCapacity("energy") == 0 && overflowingterminal != undefined)
                      {
                          creep.withdraw(overflowingterminal, RESOURCE_ENERGY);
@@ -121,6 +122,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                      else
                      {
                          creep.withdraw(sourcelink, RESOURCE_ENERGY);
+                     }
                      }
                  }
              }

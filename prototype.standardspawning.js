@@ -73,7 +73,7 @@ var Standardspwan = {
                     }
                 });
             }
-            else if(resourcemover == 0)
+            else if(resourcemover == 0 &&  levelOfController >= 5)
             {
                 if(levelOfController == 8 && spawnss[i].name == roomname + "1")
                 {
@@ -230,7 +230,7 @@ var Standardspwan = {
                     }
                 });
             }
-            else if(extractor.length < 1 && extractorneeded)
+            else if(extractor.length < 1 && extractorneeded && levelOfController >= 6)
             {
                 var numberofparts = Math.floor(energyavailable / 350);
                 if(numberofparts > 8)

@@ -200,6 +200,7 @@
          {}
          if(Game.rooms[roomname].controller.level >= 3 && Game.rooms[roomname].controller.level < 6)
          {
+             
              var flag1 = Game.flags[roomname + "container1"];
              var flag0 = Game.flags[roomname + "container0"];
              var flag2 = Game.flags[roomname + "controllercontainer"];
@@ -217,7 +218,12 @@
              }
              catch (e)
              {}
+             try
+             {
              Game.rooms[roomname].createConstructionSite(flag2.pos.x, flag2.pos.y, STRUCTURE_CONTAINER);
+             }
+             catch (e)
+             {}
          }
          if(Game.rooms[roomname].controller.level > 5)
          {

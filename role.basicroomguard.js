@@ -225,6 +225,34 @@ var roleguard = {
                 this.ranger(creep);
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (creep.memory.attackrole == "healer") {
+             
+             
+             
+             
+             
+             const target = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
+    filter: function(object) {
+        return object.hits < object.hitsMax;
+    }
+});
+if(target) {
+    creep.moveTo(target);
+    if(creep.pos.isNearTo(target)) {
+        creep.heal(target);
+    }
+    else {
+        creep.rangedHeal(target);
+    }
+}
+             
+             
+             
+             
+             
+            }
+            
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (creep.memory.attackrole == "roomAbuser") {
                 var targetsinsquare = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, {
                     filter: (s) => {
