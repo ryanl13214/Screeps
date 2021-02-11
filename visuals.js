@@ -28,7 +28,12 @@ var visuals = {
         for(var i = 0; i < ownedrooms.length; i++)
         {
             try{
-            var roomname = ownedrooms[i];
+                
+                 var roomname = ownedrooms[i];
+             
+                
+                
+            
             Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
             var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
             {
@@ -46,6 +51,33 @@ var visuals = {
                 });
             }
             }catch(e){}
+                // nuker  
+                Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), 525, 525,
+                {
+                      fill:'#0000ff',
+                    stroke: '#0000ff',
+                    opacity:0.2
+                });
+                     Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), -525, 525,
+                {
+                     fill:'#0000ff',
+                    stroke: '#0000ff',
+                    opacity:0.2
+                });
+                     Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), 525, -525,
+                {
+                    fill:'#0000ff',
+                    stroke: '#0000ff',
+                    opacity:0.2
+                });
+                     Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), -525, -525,
+                {
+                      fill:'#0000ff',
+                    stroke: '#0000ff',
+                    opacity:0.2
+                });
+                
+                 
         }
         var allcreeps = Game.creeps;
         allcreeps = Object.keys(allcreeps);

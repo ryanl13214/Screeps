@@ -126,11 +126,12 @@ var powercreepManager = {
     
        roomManager: function(powerCreep)
     {
-////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////
         if(Game.time % 50 == 0)
         {
             powerCreep.usePower(PWR_GENERATE_OPS);
         }
+ 
 ////////////////////////////////////store ops//////////////////////////////////////////////////////////////////////////////////////////
         if(powerCreep.store.getFreeCapacity() <5) // creep is full
         {
@@ -196,11 +197,10 @@ var powercreepManager = {
    //       powerCreep.say(strongroom.energyCapacityAvailable);
         if(strongroom.energyAvailable *1.15< strongroom.energyCapacityAvailable  ){// add cooldown check and storage full check else termianl
             powerCreep.say("a");
-             var range = powerCreep.pos.getRangeTo(strongroom.storage);
-        
-         
-              
             
+            
+            if(strongroom.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 15000){
+             var range = powerCreep.pos.getRangeTo(strongroom.storage);
             if(range <= 3){
                powerCreep.usePower(PWR_OPERATE_EXTENSION ,strongroom.storage);
             }else
@@ -215,12 +215,130 @@ var powercreepManager = {
                 
             }
             
+            
+            }else if(strongroom.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 15000){
+                    var range = powerCreep.pos.getRangeTo(strongroom.terminal);
+            if(range <= 3){
+               powerCreep.usePower(PWR_OPERATE_EXTENSION ,strongroom.terminal);
+            }else
+            {
+                 powerCreep.moveTo(strongroom.terminal,
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffaa00'
+                    }
+                });
+                
+            }
+                
+                
+            }
+            
+            
         }
         
         
         
         
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+        
+        
+        
+        
+        
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+ 
+  var target = powerCreep.room.find(FIND_SOURCES);
+    var boolchecker = false;
+  powerCreep.say(target[1].effects.length);
+      if(target[0].effects.length !=0){
+       if(target[0].effects.length ==1  ){// source has an effect on it
+           if(target[0].effects[0].ticksRemaining < 20 || target[0].effects.length ==0 ){
+                 powerCreep.moveTo(target[0],
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffaa00'
+                    }
+                });
+                boolchecker = true;
+           }
+           
+           
+       }
+       
+       
+      }else if(target[0].effects.length == 0)
+      {  powerCreep.say("t0");
+             powerCreep.moveTo(target[0],
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffaa00'
+                    }
+                });  
+      } 
+       
+       if(target[1].effects.length !=0 && !boolchecker){
+         if(target[1].effects.length ==1  ){// source has an effect on it
+           if(target[1].effects[0].ticksRemaining < 20 || target[1].effects.length ==0 ){
+                 powerCreep.moveTo(target[1],
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffaa00'
+                    }
+                });
+           }
+           
+           
+       }
+    }else if(target[1].effects.length == 0)
+      {
+          powerCreep.say("t1");
+        powerCreep.moveTo(target[1],
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffaa00'
+                    }
+                });  
+      } 
+////////////////   
+       
+ var targets = powerCreep.pos.findInRange(FIND_SOURCES,3);
+if(targets.length != 0 ){
+    powerCreep.say("2ghde");
+     if(target[0].effects != undefined){
+    if(targets[0].effects.ticksRemaining <20 || target[0].effects.length ==0){
+         powerCreep.say("2de");
+           powerCreep.usePower(PWR_REGEN_SOURCE ,targets[0]);
+    }
+     }else{
+         powerCreep.say("2e");
+         powerCreep.usePower(PWR_REGEN_SOURCE ,targets[0]);
+     }
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////
+        if(Game.time % 50 == 0)
+        {
+            powerCreep.usePower(PWR_GENERATE_OPS);
+        }
     }, 
     
 }

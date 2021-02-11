@@ -39,10 +39,10 @@ module.exports.loop = function()
     var listnumbers = Object.keys(powerCreepList);
     var listvalues = Object.values(powerCreepList);
     for(var i = 0; i < listnumbers.length; i++)
-    {
+    {   powerManager.run(listvalues[i]);
         try
         {
-            powerManager.run(listvalues[i]);
+          
         }
         catch (e)
         {}
@@ -51,7 +51,7 @@ module.exports.loop = function()
     //                                  
     //------------------------------------------------------------------------------------------------
   //  tickcode.run();
-      visuals.run();
+    visuals.run();
     try
     {
     
@@ -109,7 +109,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     if(Game.cpu.bucket == 10000)
     {
-        console.log("pixel");
+        
         Game.cpu.generatePixel()
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     for(var i = 0; i < ownedrooms.length; i++)
     {
-    
+     try{
         if(Game.time % 15 == 0)
         {
             //  if(Game.flags[roomname].memory.flagstruct.squadspawning  == undefined )
@@ -223,9 +223,9 @@ module.exports.loop = function()
         var startCpu = Game.cpu.getUsed();
         if(Game.rooms[roomname].controller.level > 3)
         {
-            if(Game.time % 15 == 0 || defconlevel.defenceLevel < 10)
+            if(Game.time % 150== 0 || defconlevel.defenceLevel < 10)
             {
-                //    squadgenerate.run(roomname, redflags);
+                    squadgenerate.run(roomname, redflags);
             }
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
@@ -384,7 +384,9 @@ module.exports.loop = function()
             counter = 0;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-  
+    }catch(e){
+        console.log("error in room : ",roomname);
+    }
     } //end of rooms loop 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    

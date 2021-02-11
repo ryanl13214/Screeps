@@ -60,8 +60,12 @@ var roleharvester = {
             }
             else if(constructionsites.length == 0)
             {
-                creep.drop(RESOURCE_ENERGY, 20)
-                creep.say("drop");
+                          var flag1 = Game.flags[  creep.room.name + "container" + creep.memory.sourcetarget];
+           if(creep.room.controller.level <4){
+                 var flag1 = Game.flags[  creep.room.name + "container" + creep.memory.sourcetarget];
+                Game.rooms[ creep.room.name ].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
+           }
+              
             }
         }
         if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {}

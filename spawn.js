@@ -63,6 +63,14 @@ var spwan = {
         var harvesters = _.filter(creepsinroom, (creep) => creep.memory.role == 'harvester');
         var movers = _.filter(creepsinroom, (creep) => creep.memory.role == 'mover');
         
+         
+        
+        
+        
+        
+        
+        
+        
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.time % 25 == 0 || defconstruct.defenceLevel < 10)
         {
@@ -100,9 +108,10 @@ var spwan = {
                 Game.flags[roomname].memory.flagstruct.spawnfree = false;
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
        
             var jacks = _.filter(creepsinroom, (creep) => creep.memory.role == 'jack');
-            if(((movers.length == 0 || harvesters.length == 0) && jacks.length < 6) || (Game.rooms[roomname].controller.level < 3 && jacks.length < 8))
+            if(((movers.length == 0 || harvesters.length == 0) && jacks.length < 6) || (Game.rooms[roomname].controller.level < 4 && jacks.length < 8))
             {
                 
                 if(jacks.length < 4)
@@ -144,15 +153,76 @@ var spwan = {
                     }
                 });
             }
+            
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       
+            
             if(defconstruct.defenceLevel == 10)
             {
                 standardspawning.run(roomname, defconstruct, storagevalue, roomExits, creepsinroom, energyavailable, energycurrentlyavailable, jacks, repairers, towermover, harvesters, movers, upgraders, resourcemover, extractor, nextroomharvester, scouts, numberofguardingcreeps, memstruct);
             }
             else
             {
-                standardspawning.run(roomname, defconstruct, storagevalue, roomExits, creepsinroom, energyavailable, energycurrentlyavailable, jacks, repairers, towermover, harvesters, movers, upgraders, resourcemover, extractor, nextroomharvester, scouts, numberofguardingcreeps, memstruct);
-
                
+                var numberofparts = Math.floor(( Game.spawns[roomname].room.energyAvailable) / 180);
+                            var bodyparts = [];
+                            if (numberofparts > 8) {
+                                numberofparts = 8;
+                            }
+                                numberofparts = 2;
+                            for (let j = 0; j < numberofparts; j++) {
+                                bodyparts.push(MOVE);
+                                bodyparts.push(MOVE);
+                             
+                                 
+                            }
+                       
+                        for (let j = 0; j < numberofparts; j++) {
+                          bodyparts.push(ATTACK);
+                       
+                       
+            }
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                                               Game.spawns[roomname].spawnCreep(bodyparts, 'guard' + Game.time, {
+                            memory: {
+                                role: 'guard',
+                                attackrole: "attacker",
+                                memstruct: {
+                                    spawnRoom:roomname,
+                                    tasklist: [
+                                       
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: false,
+                                    hastask: false
+                                }
+                            }
+                        });
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
             }
         }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

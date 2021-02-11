@@ -165,10 +165,31 @@
      [-5, 3],
      [-4, 3]
  ];
- var roads = [];
+ var roads = [
+     [-1,1],[-2,2],[-3,2],[-2,3],[-3,3],[-4,4],[-1,4],[0,5],[1,4],[2,3],[3,3],
+     [4,4],[5,5],[3,2],[4,1],[5,0],[1,-1],[2,-2],[3,-2],[3,-3],[2,-3],
+     [4,-4],[5,-5],[1,-4],[0,-5],[-1,-4],[-2,-3],[-3,-3],[-3,-2],[-4,-4],[-5,-5],
+     [-4,-1],[-5,0],[-4,1]   
+     ];
  var basebuild = {
      run: function(roomname, storage_xpos, storage_ypos)
      {
+         if(Game.rooms[roomname].controller.level > 2)
+             {
+                 var terrain = Game.rooms[roomname].getTerrain();
+                 for(var i = 0; i < roads.length; i++)
+                 {
+                     try
+                     {
+                         if(terrain.get(storage_xpos + roads[i][0], storage_ypos + roads[i][1]) != 1)
+                         {
+                             Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
+                         }
+                     }
+                     catch (e)
+                     {}
+                 }
+             }
          for(var i = 0; i < arrayofextensionpositions.length; i++)
          {
              try
@@ -382,22 +403,7 @@
                  }
              }
              /////////////////////////////////////////////////////////////////////////////////////////////////////////              
-             if(Game.rooms[roomname].controller.level > 2)
-             {
-                 var terrain = Game.rooms[roomname].getTerrain();
-                 for(var i = 0; i < roads.length; i++)
-                 {
-                     try
-                     {
-                         if(terrain.get(storage_xpos + roads[i][0], storage_ypos + roads[i][1]) != 1)
-                         {
-                             Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
-                         }
-                     }
-                     catch (e)
-                     {}
-                 }
-             }
+              
          }
      }
  }

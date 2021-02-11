@@ -354,7 +354,7 @@ var creepfunctions = {
             {
                 this.movehomeandrenew(creep);
                 var found = false;
-                for(var ik = 0; ik < creep.body.length; IK++)
+                for(var ik = 0; ik < creep.body.length; ik++)
                 {
                     if(creep.body[ik] == CLAIM)
                     {

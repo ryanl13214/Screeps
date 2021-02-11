@@ -45,7 +45,7 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800)  
+                        return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1500)  
                         ;
                     }
                 });
