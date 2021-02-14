@@ -191,7 +191,7 @@ var terminalManager = {
                 {
                     type: ORDER_BUY,
                     resourceType: RESOURCE_ENERGY,
-                    price: (hist[0].avgPrice + (hist[0].stddevPrice)),
+                    price: (hist[0].avgPrice + (hist[0].stddevPrice * 1.2)),
                     totalAmount: 1000,
                     roomName: roomname
                 });

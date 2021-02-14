@@ -224,6 +224,14 @@ var roleguard = {
             if (creep.memory.attackrole == "ranger") {
                 this.ranger(creep);
             }
+            
+             
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (creep.memory.attackrole == "mineguard") {
+                this.MineGuard(creep);
+            }
+            
+            
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (creep.memory.attackrole == "healer") {
              
@@ -363,6 +371,37 @@ if(target) {
                     }
                 }
 
+    },
+    
+    MineGuard: function(creep) {
+        creep.say("mine");
+        const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                if (target) {
+                    if (creep.attack(target) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(target);
+                    }
+                } else {
+                    var targetst = creep.room.find(FIND_HOSTILE_STRUCTURES);
+                    if (targetst.length > 0) {
+                        
+                        
+                      
+                        if (creep.attack(targetst[0]) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(targetst[0]);
+                        }
+                     
+                        
+                    }
+                    
+                    
+                    
+                    
+ 
+                
+
     }
+    }
+    
+    
 };
 module.exports = roleguard;

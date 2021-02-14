@@ -12,7 +12,7 @@ var squadmanager = {
             }
         }
         mainMemoryObject.SquadMembersCurrent = numberOfLivingSqaudMembers;
-        if(mainMemoryObject.squadcreationtime + 500 < Game.time && numberOfLivingSqaudMembers.length == 0)
+        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 && Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
         {
             delete Memory.squadObject[squadID];
         }
@@ -47,29 +47,28 @@ var squadmanager = {
   ///////////////////////////////////////////////////////////////////////////////////////////////////////// 
             if(mainMemoryObject.SquadMembersCurrent.length != 0) //independant squads
             {
-                if(mainMemoryObject.squadType == "centerMiningSquad")
-                {
-                    this.centerMiningOpteration(squadID);
-                }
                 if(mainMemoryObject.squadType == "SoloPatrol")
                 {
                     this.SoloPatrol(squadID);
                 }
-                
-                
-                
+                    if(mainMemoryObject.squadType == "centerMiningSquad")
+                {
+                    this.centerMiningOpteration(squadID);
+                }
                 if(mainMemoryObject.squadType == "solocenterdamager")
                 {
                     var startCpu = Game.cpu.getUsed();
                     this.solocenterSquad_controlFunction(squadID);
                     Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.mineroomsCPU += Game.cpu.getUsed() - startCpu;
                 }
+                
                 if(mainMemoryObject.squadType == "MiningSquad")
                 {
                     var startCpu = Game.cpu.getUsed();
                     this.MiningOpteration(squadID);
                     Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.mineroomsCPU += Game.cpu.getUsed() - startCpu;
                 }
+                
             }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
@@ -194,111 +193,7 @@ var squadmanager = {
             }
         }
     },
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    centtersquad_controlFunction: function(squadID)
-    {
-        //  console.log("centtersquad_controlFunction");
-        var mainMemoryObject = Memory.squadObject[squadID];
-        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
-        var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(target != undefined)
-        {
-            mainMemoryObject.squadposition = [target.pos.x, target.pos.y];
-        }
-        else if(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).room.name == mainMemoryObject.arrayOfSquadGoals[0])
-        {
-            if(mainMemoryObject.arrayOfSquadGoals.length > 1)
-            {
-                var tmp = mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
-                mainMemoryObject.arrayOfSquadGoals.push(tmp);
-            }
-        }
-        var healers = [];
-        var rangers = [];
-        for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        {
-            if(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name.substring(0, 4) == "heal")
-            {
-                healers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
-            }
-            else
-            {
-                rangers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
-            }
-        }
-        for(var c = 0; c < rangers.length; c++)
-        {
-            var creeper = rangers[c];
-            var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            var range = creeper.pos.getRangeTo(targets);
-            const rangetohealer = creeper.pos.getRangeTo(healers[0]);
-            creeper.say(rangetohealer);
-            // error checking for room transition
-            if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0])
-            {
-                creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
-            }
-            if(range > 3 && creeper.hits == creeper.hitsMax)
-            {
-                creeper.moveTo(newroomposition);
-            }
-            else if(creeper.hits + 300 < creeper.hitsMax || (rangetohealer > 3 && creeper.hits != creeper.hitsMax))
-            {
-                creeper.moveTo(healers[0]);
-            }
-            if(range <= 3)
-            {
-                creeper.rangedAttack(targets);
-            }
-        }
-        for(var c = 0; c < healers.length; c++)
-        {
-            var creeper = healers[c];
-            if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0])
-            {
-                creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
-            }
-            var target = creeper.pos.findInRange(FIND_MY_CREEPS, 1,
-            {
-                filter: function(object)
-                {
-                    return object.hits < object.hitsMax;
-                }
-            });
-            if(target.length != 0)
-            {
-                creeper.heal(target[0]);
-            }
-            else
-            {
-                var target = creeper.pos.findInRange(FIND_MY_CREEPS, 3,
-                {
-                    filter: function(object)
-                    {
-                        return object.hits < object.hitsMax;
-                    }
-                });
-                if(target.length != 0)
-                {
-                    creeper.rangedHeal(target[0]);
-                }
-            }
-            var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            var range = creeper.pos.getRangeTo(targets);
-            if(range > 5)
-            {
-                creeper.moveTo(newroomposition);
-            }
-            if(range < 5)
-            {
-                const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
-                target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                creepfunctions.combatMove(creeper, targetArr, target);
-            }
-        }
-    },
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -993,8 +888,10 @@ var squadmanager = {
         if(headType == "ranger")
         {
             var listEnemyStructures = serpentHead.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+           serpentHead.rangedMassAttack();
             if(listEnemyStructures != undefined)
             {
+                   
                 var closesttarget = serpentHead.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
                 {
                     filter: (structure) => (structure.structureType == STRUCTURE_RAMPART) || (structure.structureType == STRUCTURE_TOWER) || (structure.structureType == STRUCTURE_INVADER_CORE)
@@ -1102,8 +999,16 @@ var squadmanager = {
         if(rangetoBodyhead > 1 && serpentHead.room.name == serpentBody.room.name) // if att room edge then it can move independantly
         {
             serpentHead.say("oor ")
-            serpentHead.moveTo(serpentHead);
+            serpentHead.moveTo(serpentBody);
         }
+        
+        var rangetohead = serpentHead.pos.getRangeTo(serpentTail);
+        if(rangetohead > 2 && serpentHead.room.name == serpentTail.room.name) 
+        {
+            serpentBody.say("rebuild");
+            serpentHead.moveTo(serpentTail);
+        } 
+        
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     },
@@ -1332,6 +1237,20 @@ var squadmanager = {
             }
             else
             {
+                
+                var targets = creeper.room.find(FIND_HOSTILE_STRUCTURES);
+                
+                if(targets.length !=0){
+                try{
+                    
+   Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep([MOVE,MOVE,MOVE,MOVE, MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK  ], 'roomguard' + squadID,{memory:{role: 'guard',attackrole:"mineguard",  memstruct:{spawnRoom: "E24N3", tasklist: [["moveToRoom",  mainMemoryObject.arrayOfSquadGoals[0]]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+
+ 
+                }catch(e){}
+                }
+                
+                
+                
                 if(creeper.reserveController(creeper.room.controller) == ERR_NOT_IN_RANGE)
                 {
                     creeper.moveTo(creeper.room.controller,
@@ -1341,7 +1260,18 @@ var squadmanager = {
                             stroke: '#ffaa00'
                         }
                     });
+                }else  if(creeper.reserveController(creeper.room.controller) == -7){
+                      if(creeper.attackController(creeper.room.controller) == ERR_NOT_IN_RANGE) {
+        creeper.moveTo(creep.room.controller);
+    }
+                    
                 }
+                
+                
+                
+                
+                
+                
             }
         }
     },

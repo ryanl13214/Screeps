@@ -24,6 +24,7 @@ var roles =
         for(var i = 0 ; i < creepsglobal.length; i++ )
         {
             var creep = Game.creeps[creepsglobal[i].name];
+            if(creep.spawning == false){
             if(creep.memory.role=="jack"){
                 rolejack.run(creep);
             }else
@@ -48,7 +49,20 @@ var roles =
                 roleupgrader.run(creep);
             }else
             if(creep.memory.role=="resmover"){
-                roleresourcemover.run(creep); 
+                
+                    try
+        {
+             roleresourcemover.run(creep); 
+        }
+        catch (e)
+        {
+            if(Game.time % 10 ==0){
+            console.log("res mover error");
+            }
+        }
+                
+                
+              
             }  else
             if(creep.memory.role=="extractor"){
                 roleextractor.run(creep);
@@ -63,6 +77,7 @@ var roles =
             if(creep.memory.role=="multi"){
                 rolemulti.run(creep);
             }    
+        }
         }
     }
 }
