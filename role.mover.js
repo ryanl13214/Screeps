@@ -147,7 +147,7 @@ var roleMover = {
             {
                 
                 
-                if(creep.room.controller.level <8){
+                if(creep.room.controller != undefined   && creep.room.controller.level <8 ){
                 
                 var targets2 = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
@@ -168,6 +168,7 @@ var roleMover = {
                 });  
                     
                 }
+                
                 var targets4 = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 {
                     filter: (structure) =>

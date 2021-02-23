@@ -41,6 +41,15 @@ var rolejack = {
                 creep.memory.full = true;
                 creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
             }
+            
+            
+            if(creep.memory.full != false && creep.carry.energy ==0 && Game.time % 250 == 0)
+            {
+                
+                creep.memory.sourcetarget = (creep.memory.sourcetarget + 1) % 2;
+            }
+            
+            
             if(creep.memory.full == false)
             {
                 creep.memory.hastask = false;

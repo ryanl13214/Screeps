@@ -178,7 +178,7 @@ var terminalManager = {
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(storagevalue < 50000 && terminalActual.store.getUsedCapacity(RESOURCE_ENERGY) < 65000)
+        if(storagevalue < 50000 && terminalActual.store.getUsedCapacity(RESOURCE_ENERGY) < 65000 && Game.time % (2000) == 0)
         {
             var hist = Game.market.getHistory(RESOURCE_ENERGY)
             for(const id in Game.market.orders)
@@ -191,8 +191,8 @@ var terminalManager = {
                 {
                     type: ORDER_BUY,
                     resourceType: RESOURCE_ENERGY,
-                    price: (hist[0].avgPrice + (hist[0].stddevPrice * 1.2)),
-                    totalAmount: 1000,
+                    price: (hist[0].avgPrice + (hist[0].stddevPrice * 1.6)),
+                    totalAmount: 300000,
                     roomName: roomname
                 });
             }

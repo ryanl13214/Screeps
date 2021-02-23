@@ -15,7 +15,7 @@ var Standardspwan = {
         var moversneeded = 1;
         if(levelOfController < 6)
         {
-            moversneeded = 4;
+            moversneeded =3;
         }
         if(levelOfController == 6)
         {
@@ -34,6 +34,12 @@ var Standardspwan = {
         if(constructionsites.length > 10)
         {
             multiplyrepairerrs += Math.floor(constructionsites.length / 20);
+        }
+        
+         
+        if(constructionsites.length == 0 && storagevalue < 150000)
+        {
+            multiplyrepairerrs =0;
         }
       //  multiplyrepairerrs=2;
         
@@ -56,7 +62,7 @@ var Standardspwan = {
         {
             if(towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0)
             {
-                var bpodyparts = [CARRY, CARRY,  WORK,  WORK, CARRY, CARRY,  WORK];
+                var bpodyparts = [CARRY, CARRY,  WORK,  CARRY, CARRY];
                 if(storagevalue > 990000 && levelOfController > 4)
                 {
                     bpodyparts.push(WORK);
@@ -80,7 +86,7 @@ var Standardspwan = {
                     }
                 });
             }
-            else if(resourcemover == 0 &&  levelOfController >= 5)
+            else if(resourcemover == 0 &&  levelOfController > 5)
             {
                 if(levelOfController == 8 && spawnss[i].name == roomname + "1")
                 {
@@ -284,9 +290,9 @@ var Standardspwan = {
             {
                 var numberofparts = Math.floor((energyavailable - 600) / 100);
                 var bodyparts = [];
-                if(numberofparts > 5)
+                if(numberofparts > 4)
                 {
-                    numberofparts = 5;
+                    numberofparts = 4;
                 }
                 if(levelOfController < 8)
                 {

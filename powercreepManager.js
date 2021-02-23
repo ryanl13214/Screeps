@@ -1,10 +1,12 @@
 var powercreepManager = {
     run: function(powerCreep)
     {
+        var r ;
         // for the ops gens move to some position and gen ops and transfer them into storage.
         // spawn only in a stronhold.
         //   console.log(powerCreep.spawnCooldownTime );
-        if(powerCreep.spawnCooldownTime != undefined) // creep is not in the world
+        
+        if(powerCreep.room  == undefined ) // creep is not in the world
         {
             if(!(powerCreep.spawnCooldownTime > Date.now()))
             {
@@ -139,6 +141,7 @@ var powercreepManager = {
         else
         {
             var mainflag = Game.flags[powerCreep.room.name];
+            powerCreep.say(mainflag);
             var range = powerCreep.pos.getRangeTo(new RoomPosition(mainflag.pos.x + 7, mainflag.pos.y + 7, mainflag.room.name));
             if(range > 2)
             {
@@ -282,6 +285,43 @@ var powercreepManager = {
         {
               powerCreep.usePower(PWR_REGEN_SOURCE, targets[0]);
         }
+        
+        //////////////////////////////////// operate power//////////////////////////////////////////////////////////////////////////////////////////
+         if(powerCreep.store.getUsedCapacity("ops") >210) // creep is full
+        {
+             var pwrspawn = powerCreep.room.find(FIND_MY_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_POWER_SPAWN);
+            }
+        })[0];
+           
+             if(pwrspawn.effects == undefined || pwrspawn.effects.length == 0)
+        {
+               powerCreep.moveTo(pwrspawn,
+            {
+                visualizePathStyle:
+                {
+                    stroke: '#ffaa00'
+                }
+            });
+                powerCreep.usePower(PWR_OPERATE_POWER, pwrspawn);
+            
+            
+        }
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         ////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////
         if(Game.time % 50 == 0)
         {

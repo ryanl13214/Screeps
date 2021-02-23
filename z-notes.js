@@ -1,3 +1,38 @@
+
+todo
+ned toom moivers need to pickup resources first
+
+container mine center rooms 
+extract center rooms
+
+call claimer only when needed in next rooms 
+
+reserve controller creep function
+
+creep functions from task list into seperate functions 
+
+task manager for moving resources in =room 
+
+
+remo9ve roles in the system
+
+
+
+
+
+
+visual storGE INDICATOR 
+
+EMPIRE CONTROLLER FOR STRONGHOLDS AND FACTORYS 
+
+
+power ops transfer to main creeeps
+
+
+
+
+
+
 types of rooms
 
 undefended 

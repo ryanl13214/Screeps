@@ -40,16 +40,18 @@ module.exports.loop = function()
     var listvalues = Object.values(powerCreepList);
     for(var i = 0; i < listnumbers.length; i++)
     {
-        powerManager.run(listvalues[i]);
+     
         try
-        {}
+        {   
+            powerManager.run(listvalues[i]); 
+        }
         catch (e)
         {}
     }
     //------------------------------------------------------------------------------------------------//////////////////////////////
     //                                  
     //------------------------------------------------------------------------------------------------
-    //  tickcode.run();
+     tickcode.run();
     visuals.run();
     try
     {}
@@ -99,7 +101,7 @@ module.exports.loop = function()
         {
             if(!Game.flags[name])
             {
-                delete Memory.flags[name];
+                //delete Memory.flags[name];
             }
         }
     }
@@ -122,7 +124,7 @@ module.exports.loop = function()
     {
         try
         {
-        //    squadmanage.run(resourcekeys[i]);
+           squadmanage.run(resourcekeys[i]);
         }
         catch (e)
         {}
@@ -148,8 +150,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     for(var i = 0; i < ownedrooms.length; i++)
     {
-        try
-        {
+       //  try{
             if(Game.time % 15 == 0)
             {
                 //  if(Game.flags[roomname].memory.flagstruct.squadspawning  == undefined )
@@ -201,7 +202,7 @@ module.exports.loop = function()
                     }
                 };
                 var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-                Game.rooms[roomname].createFlag(spawnss[0].pos.x - 2, spawnss[0].pos.y - 2, roomname);
+                Game.rooms[roomname].createFlag(Game.spawns[rooomname].pos.x - 2,Game.spawns[rooomname].pos.y - 2, roomname);
                 var mainflags = Game.flags[roomname];
                 mainflags.memory.flagstruct = flagstruct;
             }
@@ -275,7 +276,7 @@ module.exports.loop = function()
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                            basebuild
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-            if(Game.time % (9999) == 0)
+            if(Game.time % (9999 + i) == 0)
             {
                 var startCpu = Game.cpu.getUsed();
                 buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
@@ -293,7 +294,7 @@ module.exports.loop = function()
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                            terminals
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if((Game.time % (15) == 0 && Game.rooms[roomname].terminal != undefined))
+            if((Game.time % (20) == 0 && Game.rooms[roomname].terminal != undefined))
             {
                 //markets here
                 var startCpu = Game.cpu.getUsed();
@@ -383,7 +384,7 @@ module.exports.loop = function()
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(Game.time % 1 == 0)
+            if(Game.time % 111111 == 0)
             {
                 var mainflags = Game.flags[roomname];
                 console.log("room ", roomname, " has harvested ", mainflags.memory.flagstruct.mineroomsProfitmargin, " and used ", mainflags.memory.flagstruct.mineroomsCPU, " and cost ", mainflags.memory.flagstruct.mineroomsCost, " energy-- ", counter);
@@ -393,11 +394,7 @@ module.exports.loop = function()
                 counter = 0;
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-        }
-        catch (e)
-        {
-            console.log("error in room : ", roomname, " ", e);
-        }
+//       } catch (e)        {            console.log("error in room : ", roomname, " ", e);        }
     } //end of rooms loop 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    

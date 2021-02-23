@@ -151,7 +151,7 @@ var squadgenerator = {
                             found = true;
                         }
                     }
-                    if(!found)
+                    if(!found && l <3)
                     {
                         var squadAlreadyExists = false;
                         var damagesquadready = false;

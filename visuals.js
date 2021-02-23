@@ -31,7 +31,67 @@ var visuals = {
                 
                  var roomname = ownedrooms[i];
              
+               ///////////////////////// 
                 
+                
+                         var corridorRoomList = Game.flags[roomname].memory.flagstruct.claimedroomstuct.corridorRooms;
+     var MineRoomslist = Game.flags[roomname].memory.flagstruct.claimedroomstuct.MineRooms;
+     var centerroomsinrange = Game.flags[roomname].memory.flagstruct.claimedroomstuct.centerroomsinrange;
+                
+                        for(var iN = 0; iN < corridorRoomList.length; iN++)
+            {    
+                
+                
+                
+                
+                Game.map.visual.line(new RoomPosition(25  ,25  ,   roomname),new RoomPosition(25  ,25  ,    corridorRoomList[iN]),    {color: '#ffffff', lineStyle: 'dashed'});
+                
+                
+                    Game.map.visual.rect(new RoomPosition(0  ,0  ,    corridorRoomList[iN]), 50, 50,
+                {
+                      fill:'#0000ff',
+                    stroke: '#ff0000',
+                    opacity:0.1
+                });
+                
+            }   
+                
+                                        for(var iN = 0; iN < MineRoomslist.length; iN++)
+            {    
+                    Game.map.visual.line(new RoomPosition(25  ,25  ,   roomname),new RoomPosition(25  ,25  ,    MineRoomslist[iN]),    {color: '#ffffff', lineStyle: 'dashed'});
+                
+                    Game.map.visual.rect(new RoomPosition(0  ,0  ,    MineRoomslist[iN]), 50, 50,
+                {
+                      fill:'#0000ff',
+                    stroke: '#ff0000',
+                    opacity:0.1
+                });
+                
+            }   
+                
+                
+                                        for(var iN = 0; iN < centerroomsinrange.length; iN++)
+            {    
+                    Game.map.visual.line(new RoomPosition(25  ,25  ,   roomname),new RoomPosition(25  ,25  ,    centerroomsinrange[iN]),    {color: '#ffffff', lineStyle: 'dashed'});
+                
+                    Game.map.visual.rect(new RoomPosition(0  ,0  ,    centerroomsinrange[iN]), 50, 50,
+                {
+                      fill:'#0000ff',
+                    stroke: '#ff0000',
+                    opacity:0.1
+                });
+                
+            }   
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                /////////////////////////////////////////////////////////////////////////
                 
             
             Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
@@ -52,31 +112,32 @@ var visuals = {
             }
             }catch(e){}
                 // nuker  
+                if(1==2){
                 Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), 525, 525,
                 {
                       fill:'#0000ff',
                     stroke: '#0000ff',
-                    opacity:0.2
+                    opacity:0.05
                 });
                      Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), -525, 525,
                 {
                      fill:'#0000ff',
                     stroke: '#0000ff',
-                    opacity:0.2
+                    opacity:0.05
                 });
                      Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), 525, -525,
                 {
                     fill:'#0000ff',
                     stroke: '#0000ff',
-                    opacity:0.2
+                    opacity:0.05
                 });
                      Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), -525, -525,
                 {
                       fill:'#0000ff',
                     stroke: '#0000ff',
-                    opacity:0.2
+                    opacity:0.05
                 });
-                
+                }
                  
         }
         var allcreeps = Game.creeps;

@@ -37,7 +37,7 @@ var roleharvester = {
         {
             creep.memory.role = "harvesteralt";
         }
-        if(creep.ticksToLive > 1400)
+        if(creep.ticksToLive > 1300)
         {
             creep.moveTo(Game.flags[creep.room.name + "source" + creep.memory.sourcetarget].pos, { visualizePathStyle: { stroke: '#ffaa00' } });
         }
@@ -68,7 +68,7 @@ var roleharvester = {
               
             }
         }
-        if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {}
+        if(creep.transfer(targets[Game.time % targets.length ], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {}
         //creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
     }
 };
