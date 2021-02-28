@@ -99,13 +99,18 @@ var rolejack = {
                         }
                         else
                         {
-                            creep.moveTo(sources[creep.memory.sourcetarget],
+                          var checker =   creep.moveTo(sources[creep.memory.sourcetarget],
                             {
                                 visualizePathStyle:
                                 {
                                     stroke: '#ffaa00'
                                 }
                             });
+                            
+                            if(checker == -2){
+                                creep.say("blocked");
+                                creep.memory.sourcetarget = (creep.memory.sourcetarget  +1 ) % 2 ; 
+                            }
                         }
               
                 }

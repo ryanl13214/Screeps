@@ -94,7 +94,42 @@ var visuals = {
                 /////////////////////////////////////////////////////////////////////////
                 
             
-            Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
+          //  Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
+            
+            Game.map.visual.rect(new RoomPosition(0  ,0  ,   roomname), 50, 50,
+                {
+                      fill:'transparent',
+                    stroke: '#00FF00',
+                    strokeWidth:1,
+                      
+                });
+            
+            var storagev = Game.rooms[roomname].storage.store.getFreeCapacity();
+            
+            var fillv =Math.floor(( storagev / 1000000 )* 50);
+             
+                Game.map.visual.rect(new RoomPosition(40 ,0  ,   roomname), 10, 50,
+                {
+                      fill:'transparent',
+                    stroke: '#FFFF00',
+                    strokeWidth:2
+                      
+                });
+            
+                Game.map.visual.rect(new RoomPosition(40 , fillv ,   roomname), 10, 50-fillv ,
+                {
+                      fill:'#FFFF00',
+                    stroke: '#FFFF00',
+                    strokeWidth:1,
+                     opacity:0.4
+                      
+                });
+            
+                 
+            /////////////////////////////////////////////////////////////////////////
+            
+            
+            
             var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
             {
                 filter: (s) =>

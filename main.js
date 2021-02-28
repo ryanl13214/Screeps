@@ -209,6 +209,16 @@ module.exports.loop = function()
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                            defcon
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+            
+            
+                         
+            var storagevalue = 0;
+            var defconlevel;
+            if(Game.rooms[roomname].storage != undefined)
+            {
+                storagevalue = Game.rooms[roomname].storage.store.energy;
+            }
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             var startCpu = Game.cpu.getUsed();
             if(Game.rooms[roomname].controller.level > 3)
             {
@@ -236,7 +246,7 @@ module.exports.loop = function()
             //                                            SQUAD CREATION
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
             var startCpu = Game.cpu.getUsed();
-            if(Game.rooms[roomname].controller.level > 3)
+            if(Game.rooms[roomname].controller.level > 3 && storagevalue > 10000)
             {
                 if(Game.time % 150 == 0 || defconlevel.defenceLevel < 10)
                 {
@@ -250,13 +260,6 @@ module.exports.loop = function()
             roomExits[1] = Game.rooms[roomname].find(FIND_EXIT_RIGHT);
             roomExits[2] = Game.rooms[roomname].find(FIND_EXIT_BOTTOM);
             roomExits[3] = Game.rooms[roomname].find(FIND_EXIT_LEFT);
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            var storagevalue = 0;
-            var defconlevel;
-            if(Game.rooms[roomname].storage != undefined)
-            {
-                storagevalue = Game.rooms[roomname].storage.store.energy;
-            }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //                                            spawning
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
