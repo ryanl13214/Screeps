@@ -28,6 +28,28 @@ var creepfunctions = {
             squaddisolvetime: Game.time + 1500
         };
     },
+    
+    combatMove: function(creep, avoidarray, avoidclosest)
+    {
+        creep.say("e");
+        
+        
+        
+  let goals = _.map(avoidarray, function(host) {
+    // We can't actually walk on sources-- set `range` to 1 
+    // so we path next to it.
+    return { pos: host.pos, range: 3 };
+  });
+        
+        
+        
+   console.log( [avoidclosest].map(c=>{return{pos:c.pos,range:4}.length}));     
+let patha = PathFinder.search(creep.pos,goals ,{flee:true}).path;
+console.log(patha);
+creep.moveByPath(patha);
+    },
+    
+    
     loopTasks: function(creep)
     {
         //     console.log(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
@@ -727,27 +749,7 @@ var creepfunctions = {
             }
         }
     },
-    /*
-    USED BY: 
-        most eventually ranger primarily
-    
-    
-    
-    */
-    combatMove: function(creep, avoidarray, avoidclosest)
-    {
-        let patha = PathFinder.search(creep.pos, avoidarray.map(c =>
-        {
-            return {
-                pos: c.pos,
-                range: 6
-            }
-        },
-        {
-            flee: true
-        })).path;
-        creep.moveByPath(patha);
-    },
+  
     /*
     USED BY: 
         jack

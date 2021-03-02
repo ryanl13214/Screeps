@@ -15,7 +15,7 @@ var Standardspwan = {
         var moversneeded = 1;
         if(levelOfController < 6)
         {
-            moversneeded =3;
+            moversneeded =4;
         }
         if(levelOfController == 6)
         {
@@ -133,8 +133,10 @@ var Standardspwan = {
                 
                   if(roomname == "E24N3")
                 {
-                  numberofparts =12;
+                  numberofparts =16;
                    bodyparts.push(MOVE);
+                    bodyparts.push(MOVE);
+                    bodyparts.push(MOVE);
                     bodyparts.push(MOVE);
                 }
                 

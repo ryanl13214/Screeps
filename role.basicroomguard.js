@@ -235,7 +235,7 @@ var roleguard = {
                     const depo = creep.pos.findClosestByRange(FIND_DEPOSITS);
                     if(depo)
                     {
-                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
+                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE,MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
                         Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
                         {
                             memory:
@@ -508,34 +508,7 @@ var roleguard = {
         }
         else
         {
-            const depo = creep.pos.findClosestByRange(FIND_DEPOSITS);
-            if(depo)
-            {
-                var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE,MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
-                Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
-                {
-                    memory:
-                    {
-                        role: 'multi',
-                        memstruct:
-                        {
-                            spawnRoom: creep.memory.memstruct.spawnRoom,
-                            tasklist: [
-                                ["moveToRoom", creep.room.name],
-                                ["mineCoridor"],
-                                ["moveToRoom", creep.memory.memstruct.spawnRoom],
-                                ["deposit"],
-                                ["repeat", 4]
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: true,
-                            hastask: false
-                        }
-                    }
-                });
-            }
+ 
             var targetst = creep.room.find(FIND_HOSTILE_STRUCTURES);
             if(targetst.length > 0)
             {

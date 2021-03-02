@@ -90,8 +90,8 @@ var spwan = {
                 tasklist: [],
                 objectIDStorage: "",
                 boosted: false,
-                moveToRenew: true,
-                opportuniticRenew: true,
+                moveToRenew: false,
+                opportuniticRenew: false,
                 hastask: false,
                 full: false,
                 wantsToJoinSquad: false,
@@ -99,7 +99,7 @@ var spwan = {
                 SquadID: "0",
                 SquadRole: false
             };
-            if(movers.length != 0 && harvesters.length == 2)
+            if(movers.length != 0 && harvesters.length == 2 && upgraders.length != 0)
             {
                 Game.flags[roomname].memory.flagstruct.spawnfree = true;
             }

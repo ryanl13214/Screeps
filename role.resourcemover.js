@@ -100,6 +100,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                  {
                      creep.say("withd p");
                      creep.withdraw(creep.room.terminal, "power");
+                      
                  }
                  else
                  {
