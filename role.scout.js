@@ -201,7 +201,7 @@ room considtions
                                                 objectIDStorage: "",
                                                 boosted: false,
                                                 moveToRenew: false,
-                                                opportuniticRenew: true,
+                                                opportuniticRenew: false,
                                                 hastask: false
                                             }
                                         }
@@ -231,7 +231,7 @@ room considtions
                                                 objectIDStorage: "",
                                                 boosted: false,
                                                 moveToRenew: false,
-                                                opportuniticRenew: true,
+                                                opportuniticRenew: false,
                                                 hastask: false
                                             }
                                         }
@@ -298,6 +298,7 @@ room considtions
                             //                                                        deciding what center rooms to mine 
                             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                             var tmpvar = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.centerroomsinrange;
+                           var sources = Game.rooms[creep.room.name].find(FIND_SOURCES);
                             var found = false;
                             for(q = 0; q < tmpvar.length; q++)
                             {
@@ -318,7 +319,7 @@ room considtions
                             {
                                 found = true;
                             }
-                            if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller == undefined)
+                            if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller == undefined && sources.length !=0)
                             {
                                 Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.centerroomsinrange.push(creep.room.name); /// this causes duplicates to need to remove dupes
                             }

@@ -31,22 +31,11 @@ var creepfunctions = {
     
     combatMove: function(creep, avoidarray, avoidclosest)
     {
-        creep.say("e");
-        
-        
-        
-  let goals = _.map(avoidarray, function(host) {
-    // We can't actually walk on sources-- set `range` to 1 
-    // so we path next to it.
-    return { pos: host.pos, range: 3 };
-  });
-        
-        
-        
-   console.log( [avoidclosest].map(c=>{return{pos:c.pos,range:4}.length}));     
-let patha = PathFinder.search(creep.pos,goals ,{flee:true}).path;
-console.log(patha);
-creep.moveByPath(patha);
+        let goals = _.map(avoidarray, function(host) {
+            return { pos: host.pos, range: 3 };
+        });
+        let patha = PathFinder.search(creep.pos,goals ,{flee:true}).path;
+        creep.moveByPath(patha);
     },
     
     
@@ -208,6 +197,7 @@ creep.moveByPath(patha);
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "createslave") // used by master
             {
+                creep.say("create healer");
                 var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]; // add a function to caUTOBUILD
                 Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, creep.name + "'s heal slave",
                 {
@@ -223,7 +213,7 @@ creep.moveByPath(patha);
                             objectIDStorage: "",
                             boosted: false,
                             moveToRenew: false,
-                            opportuniticRenew: true,
+                            opportuniticRenew: false,
                             hastask: false
                         }
                     }
@@ -238,6 +228,7 @@ creep.moveByPath(patha);
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "findMaster") // used by slave
             {
+                 creep.say("find master");
                 const master = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
                 if(master != undefined && master != null)
                 {
@@ -321,6 +312,7 @@ creep.moveByPath(patha);
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "boost") // [0][0] boost [0][1] boosy mineral typ3e [0][2]number of bodyparts
             {
+                try{
                 var flagmid = Game.flags[creep.room.name];
                 var boosisready = false;
                 var boostlab;
@@ -386,6 +378,7 @@ creep.moveByPath(patha);
                     var roompos = new RoomPosition(flagmid.pos.x - 2, flagmid.pos.y - 3, creep.room.name);
                     creep.moveTo(roompos);
                 }
+                }catch(e){creep.say("boost fail");}
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
             {
@@ -915,7 +908,7 @@ creep.moveByPath(patha);
         {
             filter: (s) =>
             {
-                return (s.structureType == STRUCTURE_WALL && s.hits < s.hitsMax * 0.01) || (s.structureType == STRUCTURE_RAMPART && s.hits < s.hitsMax * 0.15);
+                return (s.structureType == STRUCTURE_WALL && s.hits < s.hitsMax * 0.1) || (s.structureType == STRUCTURE_RAMPART && s.hits < s.hitsMax * 0.5);
             }
         });
         if(repairtarg)

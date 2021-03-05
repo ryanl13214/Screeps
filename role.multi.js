@@ -7,17 +7,17 @@ var multi = {
          creep.memory.timer =0;
      }
      creep.memory.timer ++;
-     
+         if(creep.memory.timer >10000){
+         creep.suicide();
+     }
+       
      
    
      
        creepfunctions.checkglobaltasks(creep);
        
   
-     if(creep.memory.timer >10000){
-         creep.suicide();
-     }
-       
+ 
        
     }
 };

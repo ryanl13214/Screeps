@@ -44,6 +44,31 @@ var spwan = {
             }
         }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      
+      
+             if(Game.spawns[roomname + "2"] != undefined)
+        {
+            if(Game.spawns[roomname + "2"].spawning)
+            {
+               
+                    Game.spawns[roomname + "2"].spawning.setDirections([TOP_LEFT, BOTTOM_RIGHT]);
+               
+            }
+        }
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         for(var i = 0; i < spawnss.length; i++)
         {

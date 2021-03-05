@@ -1126,6 +1126,11 @@ var squadmanager = {
                         return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.energy > 1800);
                     }
                 });
+                var dropped = creeper.pos.findClosestByRange(FIND_DROPPED_RESOURCES); 
+                
+                if(containers == undefined){
+                    containers=dropped;
+                }
                 var range = creeper.pos.getRangeTo(containers);
                 if(range <= 1)
                 {
@@ -1142,6 +1147,13 @@ var squadmanager = {
                         }
                     });
                 }
+                
+                
+                
+                
+                
+                
+                
                 var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

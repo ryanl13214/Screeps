@@ -44,15 +44,27 @@ var Standardspwan = {
       //  multiplyrepairerrs=2;
         
         
-        
-        // check fro one source rooms 
-         var sources = Game.rooms[roomname].find(FIND_SOURCES);
-        var onesourcebodge = 0 ;
-        
-        if(sources.length ==1){
-            onesourcebodge=-1;
-       //     add flag indicator to controll high cost bulds 
+   
+   
+   
+   
+   
+   
+      if(storagevalue > 900000 && levelOfController <8){
+            ups = 2;
+            moversneeded=moversneeded + 2;
+            multiplyrepairerrs=3;
         }
+
+
+   
+   
+   
+   
+   
+   
+   
+   
         
         
         
