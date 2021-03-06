@@ -245,7 +245,7 @@ var squadmanager = {
             }
             if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0])
             {
-                creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+               creeper.moveTo(new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0] ));
             }
             else if(range > 3 && creeper.hits == creeper.hitsMax)
             {
@@ -423,7 +423,7 @@ var squadmanager = {
                 {
                     const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
                     target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+                    creeper.moveTo(new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0] ));
                 }
             }
         }
@@ -665,7 +665,7 @@ var squadmanager = {
                 {
                     const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
                     target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+                   creeper.moveTo(new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0] ));
                 }
             }
         }
@@ -830,8 +830,10 @@ var squadmanager = {
         if(serpentHead.room.name != mainMemoryObject.arrayOfSquadGoals[0])
         {
             if(tailfatigue == 0 && bodyfatigue == 0)
+            
             {
-                serpentHead.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+                 serpentHead.moveTo(new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0] ));
+              //  serpentHead.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
                 serpentBody.moveTo(new RoomPosition(serpentHeadPositionStorageX, serpentHeadPositionStorageY, currroomnamehead));
                 serpentTail.moveTo(new RoomPosition(serpentBodyPositionStorageX, serpentBodyPositionStorageY, currroomnamebody));
             }
@@ -1046,14 +1048,14 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    creep not in room
             if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+            
                 var pos1 = creeper.pos;
                 var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+                var range = creeper.pos.getRangeTo(    new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0]));
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo( new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0]));
+                    Game.map.visual.line(creeper.pos,  new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0]),
                     {
                         color: '#000000',
                         lineStyle: 'solid'
@@ -1108,7 +1110,7 @@ var squadmanager = {
                 {
                     const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
                     target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    creeper.moveTo(Game.flags[mainMemoryObject.arrayOfSquadGoals[0]]);
+                 creeper.moveTo(new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0] ));
                 }
             }
         }

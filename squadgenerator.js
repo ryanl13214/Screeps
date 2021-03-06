@@ -187,9 +187,7 @@ var squadgenerator = {
                                 bodypartsMOVER.push(MOVE);
                                 bodypartsMOVER.push(CARRY);
                             }
-                            var sourcenumbers = Game.flags[mainflag.memory.flagstruct.claimedroomstuct.MineRooms[l]].memory.flagstruct.numberOfSourcesInRoom;
-                            if(sourcenumbers == 1)
-                            {
+                        
                                 squadmanage.initializeSquad(roomname + mainflag.memory.flagstruct.claimedroomstuct.MineRooms[l] + "MiningSquad", [mainflag.memory.flagstruct.claimedroomstuct.MineRooms[l]], false, "MiningSquad", roomname,
                                 {
                                     "mover1": bodypartsMOVER,
@@ -197,8 +195,8 @@ var squadgenerator = {
                                     "miner0": bodypartsMINER,
                                     "claimer": [MOVE, CLAIM, MOVE, CLAIM]
                                 });
-                            }
-                            if(sourcenumbers == 2)
+                           
+                            if(1 == 2)
                             {
                                 squadmanage.initializeSquad(roomname + mainflag.memory.flagstruct.claimedroomstuct.MineRooms[l] + "MiningSquad", [mainflag.memory.flagstruct.claimedroomstuct.MineRooms[l]], false, "MiningSquad", roomname,
                                 {

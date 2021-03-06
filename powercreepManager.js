@@ -1,12 +1,11 @@
 var powercreepManager = {
     run: function(powerCreep)
     {
-        var r ;
+        var r;
         // for the ops gens move to some position and gen ops and transfer them into storage.
         // spawn only in a stronhold.
         //   console.log(powerCreep.spawnCooldownTime );
-        
-        if(powerCreep.room  == undefined ) // creep is not in the world
+        if(powerCreep.room == undefined) // creep is not in the world
         {
             if(!(powerCreep.spawnCooldownTime > Date.now()))
             {
@@ -178,154 +177,143 @@ var powercreepManager = {
             });
         }
         ////////////////////////////////////stock with energy//////////////////////////////////////////////////////////////////////////////////////////
-        var strongroom = powerCreep.room;
-        //       powerCreep.say(strongroom.energyCapacityAvailable);
-        if(strongroom.energyAvailable * 1.15 < strongroom.energyCapacityAvailable)
-        { // add cooldown check and storage full check else termianl
-            powerCreep.say("a");
-            if(strongroom.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 15000)
-            {
-                var range = powerCreep.pos.getRangeTo(strongroom.storage);
-                if(range <= 3)
+        if(powerCreep.powers[PWR_OPERATE_EXTENSION] != undefined)
+        {
+            var strongroom = powerCreep.room;
+            //       powerCreep.say(strongroom.energyCapacityAvailable);
+            if(strongroom.energyAvailable * 1.15 < strongroom.energyCapacityAvailable)
+            { // add cooldown check and storage full check else termianl
+                powerCreep.say("a");
+                if(strongroom.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 15000)
                 {
-                    powerCreep.usePower(PWR_OPERATE_EXTENSION, strongroom.storage);
-                }
-                else
-                {
-                    powerCreep.moveTo(strongroom.storage,
+                    var range = powerCreep.pos.getRangeTo(strongroom.storage);
+                    if(range <= 3)
                     {
-                        visualizePathStyle:
-                        {
-                            stroke: '#ffaa00'
-                        }
-                    });
-                }
-            }
-            else if(strongroom.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 15000)
-            {
-                var range = powerCreep.pos.getRangeTo(strongroom.terminal);
-                if(range <= 3)
-                {
-                    powerCreep.usePower(PWR_OPERATE_EXTENSION, strongroom.terminal);
-                }
-                else
-                {
-                    powerCreep.moveTo(strongroom.terminal,
+                        powerCreep.usePower(PWR_OPERATE_EXTENSION, strongroom.storage);
+                    }
+                    else
                     {
-                        visualizePathStyle:
+                        powerCreep.moveTo(strongroom.storage,
                         {
-                            stroke: '#ffaa00'
-                        }
-                    });
+                            visualizePathStyle:
+                            {
+                                stroke: '#ffaa00'
+                            }
+                        });
+                    }
+                }
+                else if(strongroom.terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 15000)
+                {
+                    var range = powerCreep.pos.getRangeTo(strongroom.terminal);
+                    if(range <= 3)
+                    {
+                        powerCreep.usePower(PWR_OPERATE_EXTENSION, strongroom.terminal);
+                    }
+                    else
+                    {
+                        powerCreep.moveTo(strongroom.terminal,
+                        {
+                            visualizePathStyle:
+                            {
+                                stroke: '#ffaa00'
+                            }
+                        });
+                    }
                 }
             }
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-        var target = powerCreep.room.find(FIND_SOURCES);
-        var boolchecker = false;
-        powerCreep.say(target[1].effects.length);
-        if(target[0].effects.length != 0)
+        if(powerCreep.powers[PWR_REGEN_SOURCE] != undefined)
         {
-            if(target[0].effects.length == 1)
-            { // source has an effect on it
-                if(target[0].effects[0].ticksRemaining < 20 || target[0].effects.length == 0)
-                {
-                    powerCreep.moveTo(target[0],
+            var target = powerCreep.room.find(FIND_SOURCES);
+            var boolchecker = false;
+            powerCreep.say(target[1].effects.length);
+            if(target[0].effects.length != 0)
+            {
+                if(target[0].effects.length == 1)
+                { // source has an effect on it
+                    if(target[0].effects[0].ticksRemaining < 20 || target[0].effects.length == 0)
                     {
-                        visualizePathStyle:
+                        powerCreep.moveTo(target[0],
                         {
-                            stroke: '#ffaa00'
-                        }
-                    });
-                    boolchecker = true;
+                            visualizePathStyle:
+                            {
+                                stroke: '#ffaa00'
+                            }
+                        });
+                        boolchecker = true;
+                    }
                 }
             }
-        }
-        else if(target[0].effects.length == 0)
-        {
-            powerCreep.say("t0");
-            powerCreep.moveTo(target[0],
+            else if(target[0].effects.length == 0)
             {
-                visualizePathStyle:
+                powerCreep.say("t0");
+                powerCreep.moveTo(target[0],
                 {
-                    stroke: '#ffaa00'
-                }
-            });
-        }
-        if(target[1].effects.length != 0 && !boolchecker)
-        {
-            if(target[1].effects.length == 1)
-            { // source has an effect on it
-                if(target[1].effects[0].ticksRemaining < 20 || target[1].effects.length == 0)
-                {
-                    powerCreep.moveTo(target[1],
+                    visualizePathStyle:
                     {
-                        visualizePathStyle:
+                        stroke: '#ffaa00'
+                    }
+                });
+            }
+            if(target[1].effects.length != 0 && !boolchecker)
+            {
+                if(target[1].effects.length == 1)
+                { // source has an effect on it
+                    if(target[1].effects[0].ticksRemaining < 20 || target[1].effects.length == 0)
+                    {
+                        powerCreep.moveTo(target[1],
                         {
-                            stroke: '#ffaa00'
-                        }
-                    });
+                            visualizePathStyle:
+                            {
+                                stroke: '#ffaa00'
+                            }
+                        });
+                    }
                 }
             }
-        }
-        else if(target[1].effects.length == 0)
-        {
-            powerCreep.say("t1");
-            powerCreep.moveTo(target[1],
+            else if(target[1].effects.length == 0)
             {
-                visualizePathStyle:
+                powerCreep.say("t1");
+                powerCreep.moveTo(target[1],
                 {
-                    stroke: '#ffaa00'
-                }
-            });
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffaa00'
+                    }
+                });
+            }
+            ////////////////   
+            var targets = powerCreep.pos.findInRange(FIND_SOURCES, 3);
+            if(targets.length != 0)
+            {
+                powerCreep.usePower(PWR_REGEN_SOURCE, targets[0]);
+            }
         }
-        ////////////////   
-        var targets = powerCreep.pos.findInRange(FIND_SOURCES, 3);
-        if(targets.length != 0)
-        {
-              powerCreep.usePower(PWR_REGEN_SOURCE, targets[0]);
-        }
-        
         //////////////////////////////////// operate power//////////////////////////////////////////////////////////////////////////////////////////
-         if(powerCreep.store.getUsedCapacity("ops") >210) // creep is full
+        if(powerCreep.powers[PWR_OPERATE_POWER] != undefined)
         {
-             var pwrspawn = powerCreep.room.find(FIND_MY_STRUCTURES,
-        {
-            filter: (structure) =>
+            if(powerCreep.store.getUsedCapacity("ops") > 210) // creep is full
             {
-                return (structure.structureType == STRUCTURE_POWER_SPAWN);
-            }
-        })[0];
-           
-             if(pwrspawn.effects == undefined || pwrspawn.effects.length == 0)
-        {
-               powerCreep.moveTo(pwrspawn,
-            {
-                visualizePathStyle:
+                var pwrspawn = powerCreep.room.find(FIND_MY_STRUCTURES,
                 {
-                    stroke: '#ffaa00'
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_POWER_SPAWN);
+                    }
+                })[0];
+                if(pwrspawn.effects == undefined || pwrspawn.effects.length == 0)
+                {
+                    powerCreep.moveTo(pwrspawn,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                    powerCreep.usePower(PWR_OPERATE_POWER, pwrspawn);
                 }
-            });
-                powerCreep.usePower(PWR_OPERATE_POWER, pwrspawn);
-            
-            
-        }
-            
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        ////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////
-        if(Game.time % 50 == 0)
-        {
-            powerCreep.usePower(PWR_GENERATE_OPS);
+            }
         }
     },
 }

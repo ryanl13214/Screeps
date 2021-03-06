@@ -9,7 +9,11 @@ var roleMover = {
     //     this role is for moving energy from full containers to other areas within the same room    
     run: function(creep)
     {
-        const startCpu = Game.cpu.getUsed();
+     var check =  creepfunctions.checkglobaltasks(creep);
+     
+     
+    if(check){ 
+     
         // creep logic goes here
         if (creep.store.getUsedCapacity() == 0)
         {
@@ -253,12 +257,10 @@ var roleMover = {
                 }
             }
         }
-        creep.memory.cpuUsed = creep.memory.cpuUsed + (Game.cpu.getUsed() - startCpu);
-        if (creep.ticksToLive == 1)
-        {
-            console.log("mover cpu avg-" + (creep.memory.cpuUsed / 1500));
-        }
-   //     creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
+      
+    }
+
+
         
     }
 };

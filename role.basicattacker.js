@@ -5,59 +5,7 @@ var roleguard = {
     {
         if(creepfunctions.checkglobaltasks(creep))
         {
-            if(creep.memory.attackrole == "chasedown")
-            {
-                const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                if(target)
-                {
-                    const range = creep.pos.getRangeTo(target);
-                    if(range < 2)
-                    {
-                        creep.attack(target);
-                        creep.moveTo(target);
-                        creep.rangedAttack(target);
-                    }
-                    else
-                    {
-                        var a = creep.heal(creep);
-                        creep.moveTo(target);
-                        creep.rangedAttack(target);
-                    }
-                }
-                if(creep.room.controller == undefined)
-                {
-                    const depo = creep.pos.findClosestByRange(FIND_DEPOSITS);
-                    if(depo)
-                    {
-                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
-                        Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
-                        {
-                            memory:
-                            {
-                                role: 'multi',
-                                memstruct:
-                                {
-                                    spawnRoom: creep.memory.memstruct.spawnRoom,
-                                    tasklist: [
-                                        ["moveToRoom", creep.room.name],
-                                        ["mineCoridor"],
-                                        ["moveToRoom", creep.memory.memstruct.spawnRoom],
-                                        ["deposit"],
-                                        ["repeat", 4]
-                                    ],
-                                    objectIDStorage: "",
-                                    boosted: false,
-                                    moveToRenew: false,
-                                    opportuniticRenew: true,
-                                    hastask: false
-                                }
-                            }
-                        });
-                    }
-                }
-                this.allowSlave(creep);
-            }
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creep.memory.attackrole == "basicRoomAttacker")
             {
@@ -85,14 +33,16 @@ var roleguard = {
                 {
                     filter: (res) =>
                     {
-                        return (res.structureType == STRUCTURE_SPAWN);
+                        return (res.structureType == STRUCTURE_SPAWN) ;
                     }
                 });
+                
                 var targetPos;
                 if(target != undefined)
                 {
                     targetPos = target.pos;
                 }
+                
                 let path = creep.room.findPath(creep.pos, targetPos,
                 {
                     maxOps: 200
@@ -124,6 +74,8 @@ var roleguard = {
                     }
                 }
             }
+            
+            
             if(creep.memory.attackrole == "archer")
             {
                 const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -329,7 +281,60 @@ var roleguard = {
             {
                 this.MineGuard(creep);
             }
-            //////////////////////////////////////USE ONLY FOR CORRIDOR MINES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if(creep.memory.attackrole == "chasedown")
+            {
+                const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                if(target)
+                {
+                    const range = creep.pos.getRangeTo(target);
+                    if(range < 2)
+                    {
+                        creep.attack(target);
+                        creep.moveTo(target);
+                        creep.rangedAttack(target);
+                    }
+                    else
+                    {
+                        var a = creep.heal(creep);
+                        creep.moveTo(target);
+                        creep.rangedAttack(target);
+                    }
+                }
+                if(creep.room.controller == undefined)
+                {
+                    const depo = creep.pos.findClosestByRange(FIND_DEPOSITS);
+                    if(depo)
+                    {
+                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE,MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
+                        Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
+                        {
+                            memory:
+                            {
+                                role: 'multi',
+                                memstruct:
+                                {
+                                    spawnRoom: creep.memory.memstruct.spawnRoom,
+                                    tasklist: [
+                                        ["moveToRoom", creep.room.name],
+                                        ["mineCoridor"],
+                                        ["moveToRoom", creep.memory.memstruct.spawnRoom],
+                                        ["deposit"],
+                                        ["repeat", 4]
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: true,
+                                    hastask: false
+                                }
+                            }
+                        });
+                    }
+                }
+                this.allowSlave(creep);
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creep.memory.attackrole == "healer")
             {
                 const target = creep.pos.findClosestByRange(FIND_MY_CREEPS,
@@ -440,6 +445,7 @@ var roleguard = {
                     }
                 }
             }
+ 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
     },
@@ -509,6 +515,7 @@ var roleguard = {
         }
         else
         {
+ 
             var targetst = creep.room.find(FIND_HOSTILE_STRUCTURES);
             if(targetst.length > 0)
             {

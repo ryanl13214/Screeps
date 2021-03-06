@@ -8,20 +8,10 @@ var roletowermover = {
             }
         });
         if (creep.carry.energy == 0) {
-            creep.memory.working = false;
-        } else if (creep.memory.working == false && creep.carry.energy == creep.carryCapacity) {
-            creep.memory.working = true;
-        }
-        if (creep.memory.working == false) {
-            if (creep.withdraw(creep.pos.findClosestByRange(sources), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.pos.findClosestByRange(sources), {
-                    visualizePathStyle: {
-                        stroke: '#ffaa00'
-                    }
-                });
-            }
-        }
-        if (creep.memory.working == true) {
+           creep.withdraw(creep.pos.findClosestByRange(sources), RESOURCE_ENERGY);
+        } 
+    
+       
             var constructionsites = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 3);
             if (constructionsites.length != 0) {
                 creep.build(constructionsites[0]);
@@ -53,7 +43,7 @@ var roletowermover = {
                         filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL
                     });
                     var tmp = 0;
-                    var value = 9999999999999999999;
+                    var value = 300000000;
                     for (var i = 0; i < closestDamagedStructure.length; i++) {
                         if (closestDamagedStructure[i].hits < value) {
                             value = closestDamagedStructure[i].hits;
@@ -65,7 +55,7 @@ var roletowermover = {
                     }
                 }
             }
-        }
+        
     }
 };
 module.exports = roletowermover;
