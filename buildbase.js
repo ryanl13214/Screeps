@@ -1,4 +1,4 @@
-/*
+ /*
 0	  5 Containers
 1     5 Containers, 1 Spawn
 2	  5 Containers, 1 Spawn , 5  Extensions (50 capacity) , Ramparts (300K max hits), Walls
@@ -9,493 +9,444 @@
 7	  5 Containers, 2 Spawns, 50 Extensions (100 capacity), Ramparts (100M max hits), Walls, 3 Towers, Storage, 4 Links, Extractor, 6 Labs, Terminal
 8	  5 Containers, 3 Spawns, 60 Extensions (200 capacity), Ramparts (300M max hits), Walls, 6 Towers, Storage, 6 Links, Extractor, 10 Labs, Terminal, Observer, Power Spawn
 */
-//total structures = 3 60 6 2 10 1 1 1 1 =85
-// all positions are from storage
-var core = [
-    [1, -3],
-    [-2, -2],
-    [-1, -2],
-    [0, -2],
-    [1, -2],
-    [2, -2],
-    [3, -2],
-    [-3, -1],
-    [-2, -1],
-    [-1, -1],
-    [0, -1],
-    [1, -1],
-    [2, -1],
-    [3, -1],
-    [-3, 0],
-    [-2, 0],
-    [-1, 0],
-    [0, 0],
-    [1, 0],
-    [2, 0],
-    [3, 0],
-    [-3, 1],
-    [-2, 1],
-    [-1, 1],
-    [0, 1],
-    [1, 1],
-    [2, 1],
-    [3, 1],
-    [-1, 2],
-    [0, 2],
-    [-2, 2],
-    [-1, -4],
-    [0, -4],
-    [-1, -3],
-    [0, -3],
-    [-3, -2],
-    [-3, 1],
-    [-4, -1],
-    [-3, -2],
-    [0, 2],
-    [1, 2],
-    [2, 2],
-    [1, 3],
-    [4, 1],
-    [4, 2],
-    [3, 3],
-    [3, 2],
-    [-3, 2],
-    [-4, 0],
-    [3, 3],
-    [4, 2],
-    [3, 2]
-];
-var arrayofextensionpositions = [
-    [-5, -5],
-    [-4, -5],
-    [-3, -5],
-    [-2, -5],
-    [1, -5],
-    [2, -5],
-    [3, -5],
-    [4, -5],
-    [-5, -4],
-    [-3, -4],
-    [-1, -4],
-    [0, -4],
-    [2, -4],
-    [3, -4],
-    [5, -4],
-    [-5, -3],
-    [-4, -3],
-    [-1, -3],
-    [0, -3],
-    [4, -3],
-    [5, -3],
-    [-5, -2],
-    [-4, -2],
-     
-     
-    [1, -3],
-    [1, -2],
-    [2, -2],
-    [3, -2],
-    [5, -2],
-    [-5, -1],
-    [-3, -1],
-    [3, -1],
-    [5, -1],
-    [-5, 0],
-    [-3, 0],
-    [4, 0],
-    [-5, 1],
-    [-5, 2],
-    [-4, 1],
-    [-5, 5],
-    [-3, 5],
-    [-2, 5],
-    [3, 1],
-    [5, 1],
-    [5, 2],
-    [5, 3],
-    [5, 4],
-    [4, 3],
-    [4, 5],
-    [3, 5],
-    [2, 5],
-    [1, 5],
-    [0, 4],
-    [0, 3],
-    [1, 2],
-    [3, 2],
-    [2, 3],
-    [2, 4],
-    [3, 4]
-];
-var arrayoftowers = [
-    [0, -1],
-    [1, -1],
-    [2, -1],
-    [0, 1],
-    [1, 1],
-    [2, 1]
-];
-var containers = [
-    [1, -4],
-    [3, 3]
-];
-var observer = [0, -2];
-var spawnlocations =[ [-2, -1 ],[5, 5]];
- 
-var powerspawn = [5, 0];
-var nuker = [-1, -1];
-var arrayoflabs = [
-    [-2, -2],
-    [-4, 4],
-    [-3, 2],
-    [-3, 3],
-    [-3, 4],
-    [-2, 2],
-    [-2, 3],
-    [-2, 4],
-    [-1, 3],
-    [-1, 4]
-];
-var roads = [
-    [-5, -6],
-    [-4, -6],
-    [-3, -6],
-    [-2, -6],
-    [1, -6],
-    [2, -6],
-    [3, -6],
-    [4, -6],
-    [-6, -5],
-    [-1, -5],
-    [0, -5],
-    [-6, -4],
-    [-4, -4],
-    [-2, -4],
-    [1, -4],
-    [4, -4],
-    [6, -4],
-    [-6, -3],
-    [-3, -3],
-    [-2, -3],
-    [5, -5],
-    [2, -3],
-    [3, -3],
-    [6, -3],
-    [-6, -2],
-    [-3, -2],
-    [4, -2],
-    [6, -2],
-    [-6, -1],
-    [-4, -1],
-    [4, -1],
-    [6, -1],
-    [-6, 0],
-    [-4, 0],
-    [3, 0],
-    [6, 0],
-    [-6, 1],
-    [-3, 1],
-    [-2, 1],
-    [4, 1],
-    [6, 1],
-    [-6, 2],
-    [-4, 2],
-    [-1, 2],
-    [0, 2],
-    [2, 2],
-    [4, 2],
-    [6, 2],
-    [-5, 3],
-    [1, 3],
-    [3, 3],
-    [6, 3],
-    [-5, 4],
-    [1, 4],
-    [4, 4],
-    [6, 4],
-    [-4, 5],
-    [-1, 5],
-    [0, 5],
-    [6, 5],
-    [-3, 6],
-    [-2, 6],
-    [1, 6],
-    [2, 6],
-    [3, 6],
-    [4, 6],
-    [5, 6]
-];
-var basebuild = {
-    run: function(roomname, storage_xpos, storage_ypos)
-    {
-        
-               if (Game.rooms[roomname].controller.level >= 3 && Game.rooms[roomname].controller.level <6 )
-            {
-                       var flag1 = Game.flags[roomname + "container1"];
-                var flag0 = Game.flags[roomname + "container0"];     
-                var flag2 = Game.flags[roomname + "controllercontainer"];
-                
-            
-                            Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_RAMPART);
-                Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
-                Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_RAMPART);
-                Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_CONTAINER);
-                        Game.rooms[roomname].createConstructionSite(flag2.pos.x, flag2.pos.y, STRUCTURE_CONTAINER);       
-                
-                
-            }
-        
-        
-        
-        
-        
-         for (var i = 0; i < arrayoftowers.length; i++)
-        {
-            try
-            {
-                Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_TOWER);
-                
-                if(Game.rooms[roomname].controller.level > 4){
-                   Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_RAMPART);
-                 
-                }
-                
-                
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
-        }
-        for (var i = 0; i < arrayofextensionpositions.length; i++)
-        {
-            try
-            {
-                Game.rooms[roomname].createConstructionSite(storage_xpos + arrayofextensionpositions[i][0], storage_ypos + arrayofextensionpositions[i][1], STRUCTURE_EXTENSION);
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
-        }
-        
-       
-        if (Game.rooms[roomname].controller.level > 3)
-        {
-            Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
-            Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_RAMPART); 
-               Game.rooms[roomname].createConstructionSite(storage_xpos + 1, storage_ypos, STRUCTURE_RAMPART); 
-            for (var i = 0; i < arrayoflabs.length; i++)
-            {
-                try
-                {
-                    Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoflabs[i][0], storage_ypos + arrayoflabs[i][1], STRUCTURE_LAB);
-                }
-                catch (e)
-                {
-                    console.log(e);
-                }
-            }
-            for (var i = 0; i < spawnlocations.length; i++)
-            {
-                try
-                {
-                    Game.rooms[roomname].createConstructionSite(storage_xpos + spawnlocations[i][0], storage_ypos + spawnlocations[i][1], STRUCTURE_SPAWN);
-                }
-                catch (e)
-                {
-                    console.log(e);
-                }
-            }
+ //total structures = 3 60 6 2 10 1 1 1 1 =85
+ // all positions are from storage
+ var core = [
+     [0, -5],
+     [-1, -4],
+     [0, -4],
+     [1, -4],
+     [-1, -3],
+     [-2, -3],
+     [0, -3],
+     [1, -3],
+     [2, -3],
+     [3, -2],
+     [2, -2],
+     [1, -2],
+     [0, -2],
+     [-1, -2],
+     [-2, -2],
+     [-3, -2],
+     [-4, -1],
+     [-3, -1],
+     [-2, -1],
+     [-1, -1],
+     [0, -1],
+     [1, -1],
+     [2, -1],
+     [3, -1],
+     [4, -1],
+     [-5, 0],
+     [-4, 0],
+     [-3, 0],
+     [-2, 0],
+     [-1, 0],
+     [0, 0],
+     [1, 0],
+     [2, 0],
+     [3, 0],
+     [4, 0],
+     [5, 0],
+     [-4, 1],
+     [-3, 1],
+     [-2, 1],
+     [-1, 1],
+     [0, 1],
+     [1, 1],
+     [2, 1],
+     [3, 1],
+     [4, 1],
+     [-3, 2],
+     [-2, 2],
+     [-1, 2],
+     [0, 2],
+     [1, 2],
+     [2, 2],
+     [3, 2],
+     [-2, 3],
+     [-1, 3],
+     [0, 3],
+     [1, 3],
+     [2, 3],
+     [],
+     [],
+     [-1, 4],
+     [0, 4],
+     [1, 4],
+     [0, 5]
+ ];
+ var arrayofextensionpositions = [
+     [1, 3],
+     [3, 1],
+     [3, 0],
+     [4, 0],
+     [2, -1],
+     [3, -1],
+     [0, 3],
+     [0, 4],
+     [-1, 3],
+     [-1, 2],
+     [-2, 1],
+     [1, -2],
+     [1, -3],
+     [0, -3],
+     [0, -4],
+     [5, 1],
+     [5, 2],
+     [5, 3],
+     [5, 4],
+     [4, 2],
+     [4, 3],
+     [2, 4],
+     [3, 4],
+     [1, 5],
+     [2, 5],
+     [3, 5],
+     [4, 5],
+     [-5, 4],
+     [-5, 5],
+     [-4, 5],
+     [-3, 4],
+     [-2, 4],
+     [-3, 5],
+     [-2, 5],
+     [-1, 5],
+     [-5, -1],
+     [-5, -2],
+     [-5, -3],
+     [-5, -4],
+     [-4, -2],
+     [-4, -3],
+     [-4, -5],
+     [-3, -5],
+     [-2, -5],
+     [-1, -5],
+     [-3, -4],
+     [-2, -4],
+     [1, -5],
+     [2, -5],
+     [3, -5],
+     [0, -6],
+     [2, -4],
+     [3, -4],
+     [4, -5],
+     [4, -3],
+     [4, -2],
+     [4, -4],
+     [5, -3],
+     [5, -2],
+     [5, -1]
+ ];
+ var arrayoftowers = [
+     [1, 0],
+     [2, 0],
+     [2, 1],
+     [2, 2],
+     [0, 2],
+     [0, 1]
+ ];
+ var containers = [
+     [2, -2],
+     [-2, 2]
+ ];
+ var observer = [6, 0];
+ var spawnlocations = [];
+ var powerspawn = [-2, 0];
+ var nuker = [-3, 0];
+ var arrayoflabs = [
+     [-2, -2],
+     [-3, -1],
+     [-4, 0],
+     [-3, 1],
+     [-5, 1],
+     [-5, 2],
+     [-4, 2],
+     [-5, 3],
+     [-4, 3]
+ ];
+ var roads = [
+     [-1,1],[-2,2],[-3,2],[-2,3],[-3,3],[-4,4],[-1,4],[0,5],[1,4],[2,3],[3,3],
+     [4,4],[5,5],[3,2],[4,1],[5,0],[1,-1],[2,-2],[3,-2],[3,-3],[2,-3],
+     [4,-4],[5,-5],[1,-4],[0,-5],[-1,-4],[-2,-3],[-3,-3],[-3,-2],[-4,-4],[-5,-5],
+     [-4,-1],[-5,0],[-4,1] ,[4,-1]  
+     ];
+ var basebuild = {
+     run: function(roomname, storage_xpos, storage_ypos)
+     {
+         if(Game.rooms[roomname].controller.level > 2)
+             {
+                 var terrain = Game.rooms[roomname].getTerrain();
+                 for(var i = 0; i < roads.length; i++)
+                 {
+                     try
+                     {
+                         if(terrain.get(storage_xpos + roads[i][0], storage_ypos + roads[i][1]) != 1)
+                         {
+                             Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
+                         }
+                     }
+                     catch (e)
+                     {}
+                 }
+             }
+             
+             
+             
+             
+             
+         for(var i = 0; i < arrayofextensionpositions.length; i++)
+         {
+             try
+             {
+                 Game.rooms[roomname].createConstructionSite(storage_xpos + arrayofextensionpositions[i][0], storage_ypos + arrayofextensionpositions[i][1], STRUCTURE_EXTENSION);
+             }
+             catch (e)
+             {}
+         }
          
-   try
-        {
-            Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
-        }
-        catch (e)
-        {
-            console.log(e);
-        }
-            try
-            {
-                Game.rooms[roomname].createConstructionSite(storage_xpos + -2, storage_ypos , STRUCTURE_LINK);
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
-            try
-            {
-                Game.rooms[roomname].createConstructionSite(storage_xpos - 2, storage_ypos - 1 , STRUCTURE_TERMINAL);
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
-            try
-            {
-                var temp = Game.rooms[roomname].find(FIND_MINERALS)[0].pos;
-                Game.rooms[roomname].createConstructionSite(temp.x, temp.y, STRUCTURE_EXTRACTOR);
-            }
-            catch (e)
-            {
-                console.log(e);
-            }
-            if (Game.rooms[roomname].controller.level >= 6)
-            {
-                for (var i = 0; i < core.length; i++)
-                {
-                    try
-                    {
-                        Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
-                    }
-                    catch (e)
-                    {
-                        console.log(e);
-                    }
-                }
-            }
-            
-           
-            if (Game.rooms[roomname].controller.level > 5)
-            {
-                var flag1 = Game.flags[roomname + "container1"];
-                var flag0 = Game.flags[roomname + "container0"];
-                const found = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag1.pos,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_CONTAINER);
-                    }
-                });
-                const found1 = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag0.pos,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_CONTAINER);
-                    }
-                });
-                if (found1.length != 0)
-                {
-                    if (found1[0].structureType == STRUCTURE_CONTAINER)
-                    {
-                        found1[0].destroy();
-                    }
-                }
-                if (found.length != 0)
-                {
-                    if (found[0].structureType == STRUCTURE_CONTAINER)
-                    {
-                        found[0].destroy();
-                    }
-                }
-                Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_RAMPART);
-                Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_LINK);
-                Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_RAMPART);
-                Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_LINK);
-                Game.rooms[roomname].createConstructionSite(storage_xpos - 1, storage_ypos , STRUCTURE_CONTAINER);
-                //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
-                //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
-            }
-            for (var i = 0; i < 18; i++)
-            {
-                if (i % 3 == 0)
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos - 9, STRUCTURE_RAMPART);
-                }
-                else
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos  - i) + 9, storage_ypos - 9, STRUCTURE_WALL);
-                }
-            }
-            for (var i = 0; i < 18; i++)
-            {
-               
-               
-               
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         
+         for(var i = 0; i < arrayoftowers.length; i++)
+         {
+             try
+             {
+                 Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_TOWER);
+                 if(Game.rooms[roomname].controller.level > 4)
+                 {
+                     Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_RAMPART);
+                 }
+             }
+             catch (e)
+             {}
+         }
+         
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         
+         
+         try
+         {
+             Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
+             Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_RAMPART);
+         }
+         catch (e)
+         {}
+         
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         
+         if(Game.rooms[roomname].controller.level >= 3 && Game.rooms[roomname].controller.level < 6)
+         {
+             
+             var flag1 = Game.flags[roomname + "container1"];
+             var flag0 = Game.flags[roomname + "container0"];
+             var flag2 = Game.flags[roomname + "controllercontainer"];
+             try
+             {
+                 Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_RAMPART);
+                 Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
+             }
+             catch (e)
+             {}
+             try
+             {
+                 Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_RAMPART);
+                 Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_CONTAINER);
+             }
+             catch (e)
+             {}
+             try
+             {
+             Game.rooms[roomname].createConstructionSite(flag2.pos.x, flag2.pos.y, STRUCTURE_CONTAINER);
+             }
+             catch (e)
+             {}
+         }
+         
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+                 try
+                 {
+                     Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
+                 }
+                 catch (e)
+                 {}
+         
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         
+         
+         if(Game.rooms[roomname].controller.level > 4)
+         {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+             try
+             {
+                 Game.rooms[roomname].createConstructionSite(storage_xpos - 1, storage_ypos, STRUCTURE_LINK);
+                 
+             }
+             catch (e)
+             {}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          
+             
+                 
+                 for(var i = 0; i < arrayoflabs.length; i++)
+                 {
+                     try
+                     {
+                         Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoflabs[i][0], storage_ypos + arrayoflabs[i][1], STRUCTURE_LAB);
+                     }
+                     catch (e)
+                     {}
+                 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                 for(var i = 0; i < spawnlocations.length; i++)
+                 {
+                     try
+                     {
+                         Game.rooms[roomname].createConstructionSite(storage_xpos + spawnlocations[i][0], storage_ypos + spawnlocations[i][1], STRUCTURE_SPAWN, roomname + (i + 1));
+                     }
+                     catch (e)
+                     {}
+                 }
+                 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+                 try
+                 {
+                     Game.rooms[roomname].createConstructionSite(storage_xpos - 2, storage_ypos - 1, STRUCTURE_TERMINAL);
+                 }
+                 catch (e)
+                 {}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                 try
+                 {
+                     var temp = Game.rooms[roomname].find(FIND_MINERALS)[0].pos;
+                     Game.rooms[roomname].createConstructionSite(temp.x, temp.y, STRUCTURE_EXTRACTOR);
+                 }
+                 catch (e)
+                 {}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                 if(Game.rooms[roomname].controller.level > 6)
+                 {
+                     for(var i = 0; i < core.length; i++)
+                     {
+                         try
+                         {
+                             Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
+                         }
+                         catch (e)
+                         {}
+                     }
+                 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                 var flag1 = Game.flags[roomname + "container1"];
+                 var flag0 = Game.flags[roomname + "container0"];
+                 const found = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag1.pos,
+                 {
+                     filter: (structure) =>
+                     {
+                         return (structure.structureType == STRUCTURE_CONTAINER);
+                     }
+                 });
+                 const found1 = Game.rooms[roomname].lookForAt(LOOK_STRUCTURES, flag0.pos,
+                 {
+                     filter: (structure) =>
+                     {
+                         return (structure.structureType == STRUCTURE_CONTAINER);
+                     }
+                 });
+                 if(Game.rooms[roomname].controller.level > 6){
+                 if(found1.length != 0)
+                 {
+                     if(found1[0].structureType == STRUCTURE_CONTAINER)
+                     {
+                         found1[0].destroy();
+                     }
+                 }
+                 if(found.length != 0)
+                 {
+                     if(found[0].structureType == STRUCTURE_CONTAINER)
+                     {
+                         found[0].destroy();
+                     }
+                 }
+                 }
+                 try
+                 {
+                     Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_RAMPART);
+                     Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_LINK);
+                 }
+                 catch (e)
+                 {}
+                 try
+                 {
+                     Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_RAMPART);
+                     Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_LINK);
+                 }
+                 catch (e)
+                 {}
+                 //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
+                 //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
+             
+             /////////////////////////////////////////////////////////////////////////////////////////////////////////                   
+             //                                  walls
+             /////////////////////////////////////////////////////////////////////////////////////////////////////////          
+             for(var i = 0; i < 18; i++)
+             {
+                 if(i % 3 == 0)
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos - 9, STRUCTURE_RAMPART);
+                 }
+                 else
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos - 9, STRUCTURE_WALL);
+                 }
+             }
+             for(var i = 0; i < 18; i++)
+             {
+                 if(i % 3 == 0)
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos + 9, STRUCTURE_RAMPART);
+                 }
+                 else
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos + 9, STRUCTURE_WALL);
+                 }
+             }
+             for(var i = 0; i < 18; i++)
+             {
+                 if(i % 3 == 0)
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos) + 9, (storage_ypos - i) + 9, STRUCTURE_RAMPART);
+                 }
+                 else
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos) + 9, (storage_ypos - i) + 9, STRUCTURE_WALL);
+                 }
+             }
+             for(var i = 0; i < 19; i++)
+             {
+                 if(i % 3 == 0)
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos) - 9, (storage_ypos - i) + 9, STRUCTURE_RAMPART);
+                 }
+                 else
+                 {
+                     Game.rooms[roomname].createConstructionSite((storage_xpos) - 9, (storage_ypos - i) + 9, STRUCTURE_WALL);
+                 }
+             }
+             /////////////////////////////////////////////////////////////////////////////////////////////////////////              
               
-               
-                   if (i % 3 == 0)
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos + 9, STRUCTURE_RAMPART);
-                }
-                else
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos  - i) + 9, storage_ypos + 9, STRUCTURE_WALL);
-                }
-               
-               
-               
-               
-               
-               
-               
-            }
-            for (var i = 0; i < 18; i++)
-            {
-                if (i % 3 == 0)
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos  ) + 9, (storage_ypos - i) + 9, STRUCTURE_RAMPART);
-                }
-                else
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos   ) + 9, (storage_ypos - i) + 9, STRUCTURE_WALL);
-                }
-               
-            }
-            for (var i = 0; i < 19; i++)
-            {
-                if (i % 3 == 0)
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos  ) - 9, (storage_ypos - i) + 9, STRUCTURE_RAMPART);
-                }
-                else
-                {
-                    Game.rooms[roomname].createConstructionSite((storage_xpos   ) - 9, (storage_ypos - i) + 9, STRUCTURE_WALL);
-                }
-               
-            }
-            
-            
-            
-            
-            if ( Game.rooms[roomname].controller.level > 2)
-                {
-                     Game.rooms[roomname].createConstructionSite((storage_xpos  ) + 2, storage_ypos  , STRUCTURE_RAMPART);
-                    
-                     Game.rooms[roomname].createConstructionSite((storage_xpos  )  , storage_ypos - 1, STRUCTURE_RAMPART);
-                    
-                    
-                }
-            
-            if ( Game.rooms[roomname].controller.level > 2)
-                {
-            
-                        for (var i = 0; i < roads.length; i++)
-            {
-                try
-                {
-                   Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
-                }
-                catch (e)
-                {
-                    console.log(e);
-                }
-            }
-            
-            
-            
-            
-            
-                }
-            
-            
-            
-            
-            
-            
-            
-        }
-    }
-}
-module.exports = basebuild;
+         }
+         
+         
+         
+         
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         
+         
+         
+         
+         
+         
+     }
+ }
+ module.exports = basebuild;
