@@ -29,7 +29,7 @@ var roleguard = {
                     const depo = creep.pos.findClosestByRange(FIND_DEPOSITS);
                     if(depo)
                     {
-                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
+                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
                         Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
                         {
                             memory:
@@ -59,7 +59,7 @@ var roleguard = {
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(creep.memory.attackrole == "basicRoomAttacker")
+            if(creep.memory.attackrole == "basicRoomRangedAttacker")
             {
                 creep.heal(creep);
                 var found = [];
@@ -69,18 +69,92 @@ var roleguard = {
                     found = creep.room.lookForAt(LOOK_STRUCTURES, flagsinrange[0].pos);
                     if(found.length != 0)
                     {
-                        found = creep.room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsinrange[0].pos);
+                        //       found = creep.room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsinrange[0].pos);
                     }
                 }
                 if(found.length != 0)
                 {
-                    creep.say(found);
-                    creep.rangedAttack(found[0]);
+                    var range = creep.pos.getRangeTo(found[0]);
+                    if(range < 2)
+                    {
+                        creep.rangedMassAttack();
+                    }
+                    else
+                    {
+                        creep.rangedAttack(found[0]);
+                    }
                 }
                 else
                 {
                     creep.rangedMassAttack();
+                    const target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                    {
+                        filter: (res) =>
+                        {
+                            return (res.structureType == STRUCTURE_SPAWN);
+                        }
+                    });
+                    var targetPos;
+                    if(target != undefined)
+                    {
+                        targetPos = target.pos;
+                    }
+                    let path = creep.room.findPath(creep.pos, targetPos,
+                    {
+                        maxOps: 200
+                    });
+                    if(targetPos != undefined && target != undefined)
+                    {
+                        if(!path.length || !targetPos.isEqualTo(path[path.length - 1]))
+                        {
+                            path = creep.room.findPath(creep.pos, targetPos,
+                            {
+                                maxOps: 1000,
+                                ignoreDestructibleStructures: true,
+                                ignoreCreeps: true
+                            });
+                        }
+                        if(path.length)
+                        {
+                            creep.move(path[0].direction);
+                        }
+                        let patha = creep.room.findPath(creep.pos, targetPos,
+                        {
+                            maxOps: 200
+                        });
+                        if(patha.length > 2)
+                        {
+                            creep.move(patha[0].direction);
+                        }
+                    }
                 }
+                //override mass attack to target creeps
+                var hostilecreeps = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+                for(var i = 0; i < hostilecreeps.length; i++)
+                {
+                    var ramparts = hostilecreeps[i].pos.findInRange(FIND_HOSTILE_STRUCTURES, 0);
+                    if(ramparts.length == 0)
+                    {
+                        creep.rangedAttack(hostilecreeps[i]);
+                    }
+                }
+                this.allowSlave(creep);
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if(creep.memory.attackrole == "basicRoomDIS")
+            {
+                
+                if(creep.hits +500 < creep.hitsMax){
+                    creep.heal(creep);
+                }
+                 
+                
+                
+                
+                
+                
+                
                 const target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
                 {
                     filter: (res) =>
@@ -101,7 +175,7 @@ var roleguard = {
                 {
                     if(!path.length || !targetPos.isEqualTo(path[path.length - 1]))
                     {
-                        creep.say("?");
+                        //     creep.say("?");
                         path = creep.room.findPath(creep.pos, targetPos,
                         {
                             maxOps: 1000,
@@ -109,7 +183,7 @@ var roleguard = {
                             ignoreCreeps: true
                         });
                     }
-                    creep.say(path.length);
+                    //creep.say(path.length);
                     if(path.length)
                     {
                         creep.move(path[0].direction);
@@ -123,6 +197,46 @@ var roleguard = {
                         creep.move(patha[0].direction);
                     }
                 }
+                var found = [];
+                var flagsinrange = creep.room.find(FIND_FLAGS);
+                if(flagsinrange.length != 0)
+                {
+                    found = creep.room.lookForAt(LOOK_STRUCTURES, flagsinrange[0].pos);
+                    creep.say(found.length);
+                    if(found.length != 0)
+                    {
+                        //     found = creep.room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsinrange[0].pos);
+                        //   creep.say(found.length);
+                    }
+                }
+                // creep.say("a");
+                if(found.length != 0)
+                {
+                    //    creep.say(flagsinrange.length);
+                    if(creep.dismantle(found[0]) == ERR_NOT_IN_RANGE)
+                    {
+                        creep.moveTo(found[0]);
+                    }
+                }
+                else
+                {
+                    var enstructs = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+                    if(enstructs.length != 0)
+                    {
+                        var curr = 300000001
+                        var count = 0;
+                        for(var i = 0; i < enstructs.length; i++)
+                        {
+                            if(enstructs[i].hits < curr)
+                            {
+                                curr = enstructs[i].hits;
+                                count = i;
+                            }
+                        }
+                        creep.dismantle(enstructs[count]);
+                    }
+                }
+                this.allowSlave(creep);
             }
             if(creep.memory.attackrole == "archer")
             {
@@ -528,7 +642,7 @@ var roleguard = {
             var counter = 1;
             if(slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
             {
-                counter = 2;
+                counter = 3;
             }
             if(range > counter && creep.room.name == slave.room.name)
             {

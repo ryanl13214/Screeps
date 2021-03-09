@@ -129,11 +129,11 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
              }
              if(creep.memory.creepIsFull == true)
              {
-                                  var lowPowerSpawns = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                  var lowPowerSpawns = creep.pos.findInRange(FIND_STRUCTURES, 1,
                  {
                      filter: (structure) =>
                      {
-                         return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 10);
+                         return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 20);
                      }
                  });
                    //creep.say(creep.store.getUsedCapacity("power")  );
@@ -199,6 +199,14 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                          return (structure.structureType == STRUCTURE_SPAWN && structure.energy < 300);
                      }
                  });
+                 var lowEnergylab = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                 {
+                     filter: (structure) =>
+                     {
+                         return (structure.structureType == STRUCTURE_LAB && structure.energy < 2000);
+                     }
+                 });
+                 
                  var lowEnergyPowerSpawns = creep.pos.findInRange(FIND_STRUCTURES, 1,
                  {
                      filter: (structure) =>
@@ -206,7 +214,20 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                          return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.energy < 4200);
                      }
                  });
-                 if(lowEnergySpawns.length != 0)
+                 
+                 
+                 
+                 
+                if(lowEnergylab.length != 0   )// bodge for renewing 
+                 {
+                     var transverAmount = lowEnergylab[0].store.getFreeCapacity();
+                     if(transverAmount > creep.store.getUsedCapacity())
+                     {
+                         transverAmount = creep.store.getUsedCapacity();
+                     }
+                     creep.transfer(lowEnergylab[0], RESOURCE_ENERGY, transverAmount);
+                 }
+                 else if(lowEnergySpawns.length != 0 && Game.time %2 ==0 )// bodge for renewing 
                  {
                      var transverAmount = lowEnergySpawns[0].store.getFreeCapacity();
                      if(transverAmount > creep.store.getUsedCapacity())

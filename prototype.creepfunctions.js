@@ -1,4 +1,4 @@
-var creepfunctions = {
+ var creepfunctions = {
     /*
     USED BY: 
         memstruct function
@@ -175,26 +175,92 @@ var creepfunctions = {
             else if(creep.memory.memstruct.tasklist[0][0] == "mineCoridor")
             {
                 var deposoits = creep.room.find(FIND_DEPOSITS);
-                creep.say(deposoits.length);
-                if(deposoits.length != 0)
+                var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES,
                 {
-                    if(creep.harvest(deposoits[0]) == ERR_NOT_IN_RANGE)
+                    filter: (res) =>
                     {
-                        creep.moveTo(deposoits[0]);
+                        return (res.resourceType != RESOURCE_ENERGY);
+                    }
+                });
+                var tombstones = creep.pos.findClosestByPath(FIND_TOMBSTONES,
+                {
+                    filter: (tomb) =>
+                    {
+                        return (tomb.store.getUsedCapacity() != tomb.store.getUsedCapacity(RESOURCE_ENERGY)) || (tomb.store.getUsedCapacity(
+                            RESOURCE_ENERGY) > 30000000);
+                    }
+                });
+                if(creep.store.getUsedCapacity(RESOURCE_ENERGY) != 0)
+                {
+                    creep.drop(RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
+                }
+                if(droppedresources != undefined)
+                {
+                    var range = creep.pos.getRangeTo(droppedresources);
+                    if(range <= 1)
+                    {
+                        creep.pickup(droppedresources);
+                    }
+                    else
+                    {
+                        creep.moveTo(droppedresources,
+                        {
+                            reusePath: range,
+                            visualizePathStyle:
+                            {
+                                stroke: '#ffaa00'
+                            }
+                        });
                     }
                 }
-                if(deposoits.length > 1)
+                else if(tombstones != undefined)
                 {
-                    if(deposoits[0].cooldown > 25)
+                    creep.say("tomb");
+                    var object = Game.getObjectById(tombstones);
+                    var resourcekeys = [RESOURCE_ENERGY];
+                    var range = creep.pos.getRangeTo(tombstones);
+                    if(range <= 1)
                     {
-                        if(creep.harvest(deposoits[1]) == ERR_NOT_IN_RANGE)
+                        creep.withdraw(tombstones, resourcekeys[0]);
+                    }
+                    else
+                    {
+                        creep.moveTo(tombstones,
                         {
-                            creep.moveTo(deposoits[1]);
+                            reusePath: range,
+                            visualizePathStyle:
+                            {
+                                stroke: '#ffaa00'
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    if(deposoits.length != 0)
+                    {
+                        if(creep.harvest(deposoits[0]) == ERR_NOT_IN_RANGE)
+                        {
+                            creep.moveTo(deposoits[0]);
                         }
                     }
+                    if(deposoits.length > 1)
+                    {
+                        if(deposoits[0].cooldown > 25)
+                        {
+                            if(creep.harvest(deposoits[1]) == ERR_NOT_IN_RANGE)
+                            {
+                                creep.moveTo(deposoits[1]);
+                            }
+                        }
+                    }
+                    var hostile = creep.room.find(FIND_HOSTILE_CREEPS);
+                    if(creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200 || hostile.length != 0 && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
+                    {
+                        this.loopTasks(creep);
+                    }
                 }
-                var hostile = creep.room.find(FIND_HOSTILE_CREEPS);
-                if(creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200 || hostile.length != 0)
+                if(creep.store.getFreeCapacity() == 0 && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
                 {
                     this.loopTasks(creep);
                 }
@@ -230,10 +296,57 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
+            else if(creep.memory.memstruct.tasklist[0][0] == "createslaveBOOST") // used by master// only rcl8
+            {
+                creep.say("create healer");
+                var bgodyparts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]; // add a function to caUTOBUILD
+                Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, creep.name + "'s heal slave",
+                {
+                    memory:
+                    {
+                        role: 'multi',
+                        memstruct:
+                        {
+                            spawnRoom: creep.memory.memstruct.spawnRoom,
+                            tasklist: [
+                                ["boosAllMax"],
+                                ["findMaster", creep.id]
+                            ],
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: false,
+                            hastask: false
+                        }
+                    }
+                });
+                if(creep.memory.duoId == undefined)
+                {}
+                else
+                {
+                    creep.say("a");
+                    this.loopTasks(creep);
+                }
+            }
+            
             else if(creep.memory.memstruct.tasklist[0][0] == "findMaster") // used by slave
             {
-                creep.say("find master");
+               
                 const master = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
+                  
+                
+                  if(master == null){
+                          creep.suicide();  
+                  }
+                
+                
+                try{
+                     creep.moveTo(master);
+                    
+                }catch(e){}
+                
+                
+                
                 if(master != undefined && master != null)
                 {
                     if(master.memory.duoId == undefined)
@@ -242,7 +355,11 @@ var creepfunctions = {
                     }
                     else
                     {
-                        creep.moveTo(master);
+                        
+                        
+                        
+                        
+                      
                         if(creep.hits == creep.hitsMax)
                         {
                             creep.heal(master);
@@ -309,7 +426,6 @@ var creepfunctions = {
                 });
                 if(droppedresources != undefined || tombstones != undefined)
                 {
-                  
                     this.summonHauler(creep.room.name, creep.memory.memstruct.spawnRoom);
                 }
             }
@@ -344,16 +460,17 @@ var creepfunctions = {
                     }
                     else if(tombstones != undefined)
                     {
+                        creep.say("tomb");
                         var object = Game.getObjectById(tombstones);
                         var resourcekeys = [RESOURCE_ENERGY];
-                        var range = creep.pos.getRangeTo(object);
+                        var range = creep.pos.getRangeTo(tombstones);
                         if(range <= 1)
                         {
-                            creep.withdraw(object, resourcekeys[0]);
+                            creep.withdraw(tombstones, resourcekeys[0]);
                         }
                         else
                         {
-                            creep.moveTo(object,
+                            creep.moveTo(tombstones,
                             {
                                 reusePath: range,
                                 visualizePathStyle:
@@ -396,7 +513,7 @@ var creepfunctions = {
                     var boostlab;
                     creep.memory.memstruct.boosted = true;
                     var creeper = Game.creeps["resourcemover" + creep.room.name];
-                    if(creep.pos.x == flagmid.pos.x - 2 && creep.pos.y == flagmid.pos.y - 3)
+                    if((creep.pos.x == flagmid.pos.x - 2 && creep.pos.y == flagmid.pos.y - 3) ||(creep.pos.x == flagmid.pos.x - 1 && creep.pos.y == flagmid.pos.y - 3)||(creep.pos.x == flagmid.pos.x - 3 && creep.pos.y == flagmid.pos.y - 3) ||(creep.pos.x == flagmid.pos.x - 3 && creep.pos.y == flagmid.pos.y - 2) )
                     {
                         if(creeper != undefined)
                         {
@@ -409,7 +526,13 @@ var creepfunctions = {
                                     if(temp[i].structureType == STRUCTURE_LAB)
                                     {
                                         boostlab = temp[i];
-                                        if(boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30)
+                                        
+                                        if( boostlab.store.getUsedCapacity("energy") <1500){
+                                            creeper.memory.neededBoost = "";
+                                            creeper.say("lab E");
+                                            
+                                            
+                                        }else  if(boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30)
                                         {
                                             // lab boos creep here
                                             creep.say("hasboost");
@@ -417,22 +540,23 @@ var creepfunctions = {
                                             this.loopTasks(creep);
                                             creeper.memory.neededBoost = "cleanup";
                                         }
-                                        else if(boostlab.store.getUsedCapacity() - boostlab.store.getUsedCapacity("energy") == 0) // minus energy mayby
+                                        
+                                        else if(boostlab.store.getUsedCapacity() - boostlab.store.getUsedCapacity("energy") == 0 &&  Game.creeps["resourcemover" + creep.room.name].store.getUsedCapacity("power") == 0) // minus energy mayby
                                         {
                                             var creeper = Game.creeps["resourcemover" + creep.room.name];
-                                            creeper.say("fill");
+                                            creeper.say("fi1ll");
                                             if(creeper != undefined)
                                             {
                                                 if(creeper.memory.neededBoost == "" || creeper.memory.neededBoost == undefined || creeper.memory.neededBoost == null)
                                                 {
                                                     creeper.memory.neededBoost += creep.memory.memstruct.tasklist[0][1];
                                                 }
-                                            }
+                                             }
                                         }
-                                        else if(boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) < creep.memory.memstruct.tasklist[0][2] * 30 && creeper.memory.neededBoost != "cleanup") // minus energy mayby
+                                        else if(boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) < creep.memory.memstruct.tasklist[0][2] * 30 && creeper.memory.neededBoost != "cleanup"&&  creeper.store.getUsedCapacity("power") == 0) // minus energy mayby
                                         {
                                             var creeper = Game.creeps["resourcemover" + creep.room.name];
-                                            creeper.say("fill");
+                                            creeper.say("fill2");
                                             if(creeper != undefined)
                                             {
                                                 if(creeper.memory.neededBoost == "" || creeper.memory.neededBoost == undefined || creeper.memory.neededBoost == null)
@@ -453,7 +577,7 @@ var creepfunctions = {
                     }
                     else
                     {
-                        var roompos = new RoomPosition(flagmid.pos.x - 2, flagmid.pos.y - 3, creep.room.name);
+                        var roompos = new RoomPosition(flagmid.pos.x - 2, flagmid.pos.y - 2, creep.room.name);
                         creep.moveTo(roompos);
                     }
                 }
@@ -706,7 +830,6 @@ var creepfunctions = {
     },
     summonHauler: function(targroom, haulerHome)
     {
-      console.log("h hauler");
         var haulersFREE = Game.rooms[haulerHome].find(FIND_MY_CREEPS,
         {
             filter: (creep) =>
@@ -719,13 +842,9 @@ var creepfunctions = {
         {
             homeflag.memory.flagstruct.haulerOUT = Game.time;
         }
-        
-        console.log(Game.time - homeflag.memory.flagstruct.haulerOUT);
-        
-        
-        if(Game.time - homeflag.memory.flagstruct.haulerOUT > 150 && haulersFREE.length != 0)
+        if(Game.time - homeflag.memory.flagstruct.haulerOUT > 80 && haulersFREE.length != 0)
         { // if a mover was NOT recently sent out
-           console.log("summoning hauler");
+            console.log("summoning hauler");
             haulersFREE[0].memory.memstruct.tasklist = [
                 ["deposit"],
                 ["moveToRoom", targroom],

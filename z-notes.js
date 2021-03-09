@@ -618,7 +618,39 @@ Game.spawns["E24N3"].spawnCreep([RANGED_ATTACK ,MOVE,RANGED_ATTACK ,MOVE,RANGED_
 
 
 
-
+var roleAttacker = {
+    /** @param {Creep} creep **/
+    run: function(creep)
+    {
+        creep.moveTo(new RoomPosition(2, 9, 'W3S27'));
+        var  target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if(target  != undefined)
+        {
+            if(creep.attack(target) == ERR_NOT_IN_RANGE)
+            {
+                creep.moveTo(target);
+            }
+        }
+        else
+        {
+            var target = creep.room.find(FIND_HOSTILE_STRUCTURES,
+            {
+                filter: (s) =>
+                {
+                    return (s.structureType == STRUCTURE_SPAWN);
+                }
+            });
+            if(target != undefined)
+            {
+                if(creep.attack(target) == ERR_NOT_IN_RANGE)
+                {
+                    creep.moveTo(target);
+                }
+            }
+        }
+    }
+}
+module.exports = roleAttacker;
 
 
 

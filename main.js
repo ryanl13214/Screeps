@@ -58,7 +58,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------//////////////////////////////
     //                                  
     //------------------------------------------------------------------------------------------------
-    //  tickcode.run();
+    //tickcode.run();
     visuals.run();
     //------------------------------------------------------------------------------------------------
     //                                  
@@ -155,9 +155,10 @@ module.exports.loop = function()
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
+        squadmanage.run(resourcekeys[i]);
         try
         {
-       //     squadmanage.run(resourcekeys[i]);
+          
         }
         catch (e)
         {}
@@ -338,7 +339,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(Game.rooms[roomname].controller.level > 3 && Game.time % 9 ==0)
+        if(Game.rooms[roomname].controller.level > 3  )
         {
            
                 var mainflags = Game.flags[roomname];

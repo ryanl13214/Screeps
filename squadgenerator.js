@@ -9,7 +9,7 @@ var squadgenerator = {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000)
         {
-            if(mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange.length != 0)
+            if(mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange.length != 0 && Game.rooms[roomname].controller.level ==8)
             {
                 var squads = Memory.squadObject;
                 var squadnames = Object.keys(squads);
@@ -28,10 +28,7 @@ var squadgenerator = {
                     }
                     var centerxposition = mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l].substring(1, 3);
                     var centeryposition = mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l].substring(4, 5);
-                    if(centerxposition == "25" && centeryposition == "5")
-                    {
-                        found = true;
-                    }
+                 
                     if(!found)
                     {
                         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;

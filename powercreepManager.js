@@ -30,7 +30,7 @@ var powercreepManager = {
                     {
                         visualizePathStyle:
                         {
-                            stroke: '#ffaa00'
+                            stroke: '#ff0000'
                         }
                     });
                 }
@@ -64,7 +64,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -83,7 +83,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -106,7 +106,7 @@ var powercreepManager = {
             {
                 visualizePathStyle:
                 {
-                    stroke: '#ffaa00'
+                    stroke: '#ff0000'
                 }
             });
         }
@@ -128,7 +128,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -148,7 +148,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -172,7 +172,7 @@ var powercreepManager = {
             {
                 visualizePathStyle:
                 {
-                    stroke: '#ffaa00'
+                    stroke: '#ff0000'
                 }
             });
         }
@@ -197,7 +197,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                     }
@@ -215,7 +215,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                     }
@@ -238,7 +238,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                         boolchecker = true;
@@ -252,7 +252,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -266,7 +266,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                     }
@@ -279,7 +279,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -308,7 +308,7 @@ var powercreepManager = {
                     {
                         visualizePathStyle:
                         {
-                            stroke: '#ffaa00'
+                            stroke: '#ff0000'
                         }
                     });
                     powerCreep.usePower(PWR_OPERATE_POWER, pwrspawn);

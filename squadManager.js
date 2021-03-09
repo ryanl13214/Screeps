@@ -334,14 +334,15 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                
+                var roomPosition = new RoomPosition(25,25 ,mainMemoryObject.arrayOfSquadGoals[0] );
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+            
+                var range = creeper.pos.getRangeTo(roomPosition);
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo(roomPosition);
+                    Game.map.visual.line(creeper.pos, roomPosition,
                     {
                         color: '#000000',
                         lineStyle: 'solid'
@@ -381,14 +382,14 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                var roomPosition = new RoomPosition(25,25 ,mainMemoryObject.arrayOfSquadGoals[0] );
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+            
+                var range = creeper.pos.getRangeTo(roomPosition);
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo(roomPosition);
+                    Game.map.visual.line(creeper.pos, roomPosition,
                     {
                         color: '#000000',
                         lineStyle: 'solid'
@@ -582,14 +583,14 @@ var squadmanager = {
             if(creeper.store.getUsedCapacity() < 1 && creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
                 // console.log(creeper.room.name,"creep moving",mainMemoryObject.arrayOfSquadGoals[0]);
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                var roomPosition = new RoomPosition(25,25 ,mainMemoryObject.arrayOfSquadGoals[0] );
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+            
+                var range = creeper.pos.getRangeTo(roomPosition);
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo(roomPosition);
+                    Game.map.visual.line(creeper.pos, roomPosition,
                     {
                         color: '#000000',
                         lineStyle: 'solid'
@@ -627,14 +628,14 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                var roomPosition = new RoomPosition(25,25 ,mainMemoryObject.arrayOfSquadGoals[0] );
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+            
+                var range = creeper.pos.getRangeTo(roomPosition);
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo(roomPosition);
+                    Game.map.visual.line(creeper.pos, roomPosition,
                     {
                         color: '#000000',
                         lineStyle: 'solid'
@@ -762,14 +763,14 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.store.getUsedCapacity() != creeper.store.getCapacity() && creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                var roomPosition = new RoomPosition(25,25 ,mainMemoryObject.arrayOfSquadGoals[0] );
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+            
+                var range = creeper.pos.getRangeTo(roomPosition);
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo(roomPosition);
+                    Game.map.visual.line(creeper.pos, roomPosition,
                     {
                         color: '#000000',
                         lineStyle: 'solid'
@@ -1050,7 +1051,7 @@ var squadmanager = {
             {
             
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
+                
                 var range = creeper.pos.getRangeTo(    new RoomPosition(25,25,mainMemoryObject.arrayOfSquadGoals[0]));
                 if(range > 23)
                 { // might cause bug on nxt room wall 
@@ -1213,14 +1214,14 @@ var squadmanager = {
             if(creeper.store.getUsedCapacity() < 1 && creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
                 // console.log(creeper.room.name,"creep moving",mainMemoryObject.arrayOfSquadGoals[0]);
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                  var roomPosition = new RoomPosition(25,25 ,mainMemoryObject.arrayOfSquadGoals[0] );
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+            
+                var range = creeper.pos.getRangeTo(roomPosition);
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo(roomPosition);
+                    Game.map.visual.line(creeper.pos, roomPosition,
                     {
                         color: '#000000',
                         lineStyle: 'solid'
@@ -1235,14 +1236,14 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    creep not in room
             if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
             {
-                var targetRoomFlag = Game.flags[mainMemoryObject.arrayOfSquadGoals[0]];
+                var roomPosition = new RoomPosition(25,25 ,mainMemoryObject.arrayOfSquadGoals[0] );
                 var pos1 = creeper.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creeper.pos.getRangeTo(targetRoomFlag.pos);
+            
+                var range = creeper.pos.getRangeTo(roomPosition);
                 if(range > 23)
                 { // might cause bug on nxt room wall 
-                    creeper.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creeper.pos, targetRoomFlag.pos,
+                    creeper.moveTo(roomPosition);
+                    Game.map.visual.line(creeper.pos, roomPosition,
                     {
                         color: '#000000',
                         lineStyle: 'solid'

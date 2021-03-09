@@ -37,19 +37,25 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
 var terminalManager = {
     run: function(roomname, terminalActual, defcon, storagevalue)
     {
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H"  , "O"  , "U" , "L" , "Z" , "X"  , "G" , "energy",  "XKHO2", "power"]; // power and facory resources
-        var allValues    = [15000  , 15000  , 15000  , 5000   , 5000   , 36000, 28000, 4000, 4000, 8000, 20000, 8000, 60000   , 25000   , 5000];
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H"  , "O"  , "U" , "L" , "Z" , "X"  , "G" , "energy",  "XKHO2", "power","silicon","metal","mist","biomass","machine","organism","essence","device","ops"]; // power and facory resources
+        var allValues    = [20000  , 20000  , 20000  , 5000   , 5000   , 10000, 10000, 4000, 4000, 8000, 10000, 8000, 60000   , 20000   ,  10000 ,3000     ,3000   ,3000  ,3000 ,0,0,0,0,10000    ];
+        var neverSell = ["power", 'utrium_bar','lemergium_bar','zynthium_bar','keanium_bar','ghodium_melt','oxidant','reductant','purifier','battery','composite','crystal','liquid','wire','switch','transistor','microchip','circuit','cell','phlegm','tissue','muscle','organoid','alloy','tube','fixtures','frame','hydraulics','condensate','concentrate','extract','spirit','emanation'];        
+        var neverBuy = [ "ops","silicon","metal","mist","biomass"];        
+       
+        
+        
+        
         var listOfResourcesInsideTerminal = Game.rooms[roomname].terminal.store;
         var resourcekeys = Object.keys(listOfResourcesInsideTerminal);
         var resourcevalues = Object.values(listOfResourcesInsideTerminal);
          
          
-      
-         
-        for(var i = 0; i < resourcekeys.length; i++)
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        for(var i = 0; i < resourcekeys.length; i++) // SELL // SELL // SELL // SELL // SELL // SELL // SELL // SELL // SELL // SELL // SELL // SELL // SELL // SELL
         {
             var itemfound = false;
-            for(var j = 0; j < allResources.length; j++) // resource in terminal but under half od goal amount
+            for(var j = 0; j < allResources.length; j++) // resource in terminal but under half od goal amount                    // SELL
             {
                 if(resourcekeys[i] == allResources[j])
                 {
@@ -64,13 +70,31 @@ var terminalManager = {
                     });
                     _.sortBy(buyOrders, ['price']);
                     var excessResources = resourcevalues[i] - allValues[j];
-                    if(buyOrders.length > 1 && excessResources > 200)
+                    if(buyOrders.length > 1 && (excessResources > 200 || allValues[j] ==0))
                     {
                         if(resourcekeys[i] != "energy") // sell excess level   // ignores energy as it is handeled elsehwere
                         {
                             var hist = Game.market.getHistory(resourcekeys[i]);
-                            console.log((hist[0].stddevPrice));
-                            if(hist[0].avgPrice)
+                            
+                            
+                            
+                            
+                            // check if the item is on the never sell list
+                         var found = false;
+                         for(q = 0; q < neverSell.length; q++)
+                         {
+                             if(neverSell[q] == resourcekeys[i])
+                             {
+                                 found = true;
+                             }
+                         }
+                            
+                            
+                            
+                            
+                          
+                            
+                            if(!found)
                             {
                                 Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname); ////////////////////////////////////////
                             }
@@ -79,24 +103,10 @@ var terminalManager = {
                     }
                 }
             }
-            if(!itemfound) // resource in terminal but not on res list
-            {
-                let buyOrders = Game.market.getAllOrders(
-                {
-                    resourceType: resourcekeys[i],
-                    type: ORDER_BUY
-                });
-                _.sortBy(buyOrders, ['price']);
-                var excessResources = resourcevalues[i];
-                if(buyOrders.length != 0)
-                {
-                    Game.market.deal(buyOrders[buyOrders.length - 1].id, 100, roomname); /////////////////////////////////////////////////////////////////////////////////////////
-                }
-            }
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        for(var j = 0; j < allResources.length; j++) // fro all desired reources  buy
+        for(var j = 0; j < allResources.length; j++) // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY // BUY
         {
             var itemfound = false;
             var valueneede = 0;
@@ -128,7 +138,31 @@ var terminalManager = {
                                     maxvalue = SellOrders[tmpresourcekeys[0]].price;
                                 }
                             }
-                            if(tmpresourcekeys.length != 0)
+                            
+                            
+                            
+                            
+                            
+                                                     var found = false;
+                         for(q = 0; q < neverBuy.length; q++)
+                         {
+                             if(neverBuy[q] == resourcekeys[i])
+                             {
+                                 found = true;
+                             }
+                         }
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            if(tmpresourcekeys.length != 0 && !found)
                             {
                                 Game.market.deal(SellOrders[index].id, allValues[j] * 0.1, roomname)
                             }
@@ -136,7 +170,7 @@ var terminalManager = {
                     }
                 }
             }
-            if(!itemfound)
+            if(!itemfound  && allValues[j] != 0 )
             {
                 let SellOrders = Game.market.getAllOrders(
                 {
@@ -155,14 +189,16 @@ var terminalManager = {
                         maxvalue = SellOrders[tmpresourcekeys[0]].price;
                     }
                 }
-                Game.market.deal(SellOrders[index].id, 100, roomname)
+                if(index != 999999){
+       Game.market.deal(SellOrders[index].id, 1, roomname);
+                }
             }
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(storagevalue > 999000 && 1==2) // sell energy
+        if(storagevalue > 999000 && Game.rooms[roomname].controller.level ==8) // sell energy
         {
             let buyOrders = Game.market.getAllOrders(
             {
@@ -177,7 +213,7 @@ var terminalManager = {
             }
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////// BUY ENERGY ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(storagevalue < 50000 && terminalActual.store.getUsedCapacity(RESOURCE_ENERGY) < 65000 && Game.time % (2000) == 0)
         {
             var hist = Game.market.getHistory(RESOURCE_ENERGY)
@@ -192,7 +228,7 @@ var terminalManager = {
                     type: ORDER_BUY,
                     resourceType: RESOURCE_ENERGY,
                     price: (hist[0].avgPrice + (hist[0].stddevPrice * 1.6)),
-                    totalAmount: 300000,
+                    totalAmount: 200000,
                     roomName: roomname
                 });
             }

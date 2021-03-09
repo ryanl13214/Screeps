@@ -13,7 +13,7 @@
                 }
                 else
                 {
-                    Game.spawns[roomname + "1"].spawning.setDirections([TOP_LEFT, TOP]);
+                    Game.spawns[roomname + "1"].spawning.setDirections([TOP,TOP_LEFT]);
                 }
             }
         }
@@ -76,7 +76,7 @@
                 objectIDStorage: "",
                 boosted: false,
                 moveToRenew: false,
-                opportuniticRenew: false,
+                opportuniticRenew: true,
                 hastask: false,
                 full: false,
                 wantsToJoinSquad: false,
@@ -138,8 +138,8 @@
             //  multiplyrepairerrs=2;
             if(storagevalue > 900000 && levelOfController < 8)
             {
-                ups = 2;
-                moversneeded = moversneeded + 4;
+                ups = 1;
+                moversneeded = moversneeded + 2;
                 multiplyrepairerrs = 1;
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,8 +199,9 @@
                 if(towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0)
                 {
                     var bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY];
-                    if(storagevalue > 990000 && levelOfController > 4)
+                    if(storagevalue > 990000 && levelOfController > 5)
                     {
+                        bpodyparts.push(WORK);
                         bpodyparts.push(WORK);
                         bpodyparts.push(WORK);
                         bpodyparts.push(WORK);
@@ -436,7 +437,7 @@
                 {
                     var numberofparts = Math.floor((energyavailable - 600) / 100);
                     var bodyparts = [];
-                    if(numberofparts > 4 && storagevalue > 900000) // cUYSES ERROR MAYBE 
+                    if(numberofparts > 4 ) // cUYSES ERROR MAYBE 
                     {
                         numberofparts = 4;
                     }
@@ -451,8 +452,7 @@
                     {
                         bodyparts.push(WORK);
                     }
-                    if(bodyparts.length == 1 || bodyparts.length == numberofparts || numberofparts == 4)
-                    {
+                 
                         bodyparts.push(CARRY);
                         bodyparts.push(CARRY);
                         bodyparts.push(CARRY);
@@ -463,7 +463,7 @@
                         bodyparts.push(MOVE);
                         bodyparts.push(MOVE);
                         bodyparts.push(MOVE);
-                    }
+                   
                     if(levelOfController == 6 && storagevalue > 900000)
                     {
                         bodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY];
@@ -472,6 +472,13 @@
                     {
                         bodyparts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY];
                     }
+                    if(levelOfController < 3)
+                    {
+                        bodyparts = [MOVE,WORK,WORK,CARRY];
+                    }
+                    
+                    
+                    
                     spawnss[i].spawnCreep(bodyparts, 'upgrader' + Game.time,
                     {
                         memory:
