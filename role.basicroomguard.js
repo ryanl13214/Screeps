@@ -559,19 +559,34 @@ var roleguard = {
     },
     ranger: function(creep)
     {
-        const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
+        const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
+        {
+            
+             filter: (c) =>
+                    {
+                        return (c.pos.x > 2 && c.pos.x < 48 &&   c.pos.y < 49  && c.pos.y > 1  );
+                    }
+            
+            
+            
+        });
+        const targetArr = creep.room.find(FIND_HOSTILE_CREEPS );
         const targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
         if(targets.length > 0)
         {
             creep.rangedAttack(targets[0]);
         }
-        const range = creep.pos.getRangeTo(target);
+        const range = creep.pos.getRangeTo(targetArr[0]);
         if(range > 2)
         {
-            creep.moveTo(target);
+            creep.moveTo(targetArr[0],
+            {
+                reusePath:10
+            }
+            
+            );
         }
-        if(range < 3)
+        if(range < 2)
         {
             creepfunctions.combatMove(creep, targetArr, target);
         }

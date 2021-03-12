@@ -28,7 +28,7 @@
             squaddisolvetime: Game.time + 1500
         };
     },
-    combatMove: function(creep, avoidarray, avoidclosest)
+    combatMove: function(creep, avoidarray, avoidclosest)// check if creep has damage parts
     {
         let goals = _.map(avoidarray, function(host)
         {
@@ -489,8 +489,19 @@
             }
             else if(creep.memory.memstruct.tasklist[0][0] == " ")
             {}
-            else if(creep.memory.memstruct.tasklist[0][0] == " ")
-            {}
+            else if(creep.memory.memstruct.tasklist[0][0] == "downgrade")
+            {
+                if(creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE)
+                {
+                    creep.moveTo(creep.room.controller,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                }
+            }
             else if(creep.memory.memstruct.tasklist[0][0] == "claim")
             {
                 if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE)

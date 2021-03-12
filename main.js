@@ -12,7 +12,7 @@ var tickcode = require('tickcode');
 var storecpu = 0;
 var ticks = 0;
 var counter = 0;
-var debug = true;
+var debug = false;
 var debugTime = 1500;
 module.exports.loop = function()
 {
@@ -38,18 +38,20 @@ module.exports.loop = function()
     //                                  
     //------------------------------------------------------------------------------------------------
     var startCpu = Game.cpu.getUsed();
+     try
+        {
     var powerCreepList = Game.powerCreeps;
     var listnumbers = Object.keys(powerCreepList);
     var listvalues = Object.values(powerCreepList);
     for(var i = 0; i < listnumbers.length; i++)
     {
-        try
-        {
+      
             powerManager.run(listvalues[i]);
+ 
+    }
         }
         catch (e)
         {}
-    }
     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
     if(debug)
     {
@@ -58,7 +60,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------//////////////////////////////
     //                                  
     //------------------------------------------------------------------------------------------------
-    //tickcode.run();
+     tickcode.run();
     visuals.run();
     //------------------------------------------------------------------------------------------------
     //                                  
@@ -155,7 +157,7 @@ module.exports.loop = function()
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-        squadmanage.run(resourcekeys[i]);
+       /// squadmanage.run(resourcekeys[i]);
         try
         {
           
@@ -173,7 +175,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     for(var i = 0; i < ownedrooms.length; i++)
     {
-        //       try{
+       
         var roomname = ownedrooms[i];
         var creepsInRoom = _.filter(Game.creeps, (creep) => (creep.memory.memstruct != undefined && creep.memory.memstruct.spawnRoom === ownedrooms[i]));
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,6 +223,7 @@ module.exports.loop = function()
                 }
             };
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+            console.log(roomname);
             Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x - 2, Game.spawns[roomname].pos.y - 2, roomname);
             var mainflags = Game.flags[roomname];
             mainflags.memory.flagstruct = flagstruct;
@@ -427,7 +430,7 @@ module.exports.loop = function()
             counter = 0;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-        //   } catch (e)        {            console.log("error in room : ", roomname, " ", e);        }
+       // } catch (e)        {            console.log("error in room : ", roomname, " ", e);        }
     } //end of rooms loop 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if(debug && Game.time % debugTime == 0)

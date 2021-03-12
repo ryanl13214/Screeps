@@ -324,7 +324,8 @@
                  catch (e)
                  {}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                 if(Game.rooms[roomname].controller.level > 6)
+var flgmain1 = Game.flags[roomname];//flgmain1.memory.flagstruct.claimedroomstuct.roomIsStronghold
+                 if(Game.rooms[roomname].controller.level > 6 &&  flgmain1.memory.flagstruct.claimedroomstuct.roomIsStronghold == true)
                  {
                      for(var i = 0; i < core.length; i++)
                      {
@@ -383,8 +384,7 @@
                  }
                  catch (e)
                  {}
-                 //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
-                 //    Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
+     
              
              /////////////////////////////////////////////////////////////////////////////////////////////////////////                   
              //                                  walls

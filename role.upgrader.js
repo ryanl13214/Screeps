@@ -5,7 +5,7 @@ var roleUpgrader = {
         var check = creepfunctions.checkglobaltasks(creep);
         var conflag = Game.flags[creep.room.name + "controllerpos"];
         var conflag2 = Game.flags[creep.room.name + "controllerposcontainer"];
-        if(conflag == undefined || conflag2 == undefined)
+        if(conflag == undefined || conflag2 == undefined && check)
         {
             const pathh = creep.pos.findPathTo(creep.room.controller,
             {
@@ -27,6 +27,23 @@ var roleUpgrader = {
         }
         if(check && conflag != undefined)
         {
+            
+            if(Game.time % 10000){
+                
+                
+                     if(creep.room.controller.level < 8 )
+                    {
+                        var flag1 = Game.flags[creep.room.name + "controllerposcontainer" ];
+                        Game.rooms[creep.room.name].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
+                    }
+            }
+            
+            
+            
+            
+            
+            
+            
             if(creep.memory.full && creep.carry.energy == 0)
             {
                 creep.memory.full = false;

@@ -1254,12 +1254,19 @@ var squadmanager = {
             {
                 
                 var targets = creeper.room.find(FIND_HOSTILE_STRUCTURES);
-                
+                    if(targets.length =0){
+                var targets = creeper.room.find(FIND_HOSTILE_CREEPS); // todo make bodypart tracker 
+                }
                 if(targets.length !=0){
                 try{
-                    
-   Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep([MOVE,MOVE,MOVE,MOVE, MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK  ], 'roomguard' + squadID,{memory:{role: 'guard',attackrole:"mineguard",  memstruct:{spawnRoom: "E24N3", tasklist: [["moveToRoom",  mainMemoryObject.arrayOfSquadGoals[0]]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
-
+                    var levelofcontrollerinhomeroom = Game.rooms[mainMemoryObject.squadHomeRoom].controller.level;
+                  
+                    if(levelofcontrollerinhomeroom ==5 ){
+   Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL], 'roomguard' + squadID,{memory:{role: 'guard',attackrole:"mineguard",  memstruct:{spawnRoom: "E24N3", tasklist: [["moveToRoom",  mainMemoryObject.arrayOfSquadGoals[0]]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+}else  {
+    Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,HEAL], 'roomguard' + squadID,{memory:{role: 'guard',attackrole:"mineguard",  memstruct:{spawnRoom: "E24N3", tasklist: [["moveToRoom",  mainMemoryObject.arrayOfSquadGoals[0]]],objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+   
+}
  
                 }catch(e){}
                 }

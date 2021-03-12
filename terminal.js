@@ -38,7 +38,7 @@ var terminalManager = {
     run: function(roomname, terminalActual, defcon, storagevalue)
     {
         var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H"  , "O"  , "U" , "L" , "Z" , "X"  , "G" , "energy",  "XKHO2", "power","silicon","metal","mist","biomass","machine","organism","essence","device","ops"]; // power and facory resources
-        var allValues    = [20000  , 20000  , 20000  , 5000   , 5000   , 10000, 10000, 4000, 4000, 8000, 10000, 8000, 60000   , 20000   ,  10000 ,3000     ,3000   ,3000  ,3000 ,0,0,0,0,10000    ];
+        var allValues    = [20000  , 20000  , 20000  , 5000   , 5000   , 10000, 10000, 4000, 4000, 8000, 10000, 8000, 60000   , 20000   ,  10000 ,3000     ,1000   ,3000  ,3000 ,0,0,0,0,10000    ];
         var neverSell = ["power", 'utrium_bar','lemergium_bar','zynthium_bar','keanium_bar','ghodium_melt','oxidant','reductant','purifier','battery','composite','crystal','liquid','wire','switch','transistor','microchip','circuit','cell','phlegm','tissue','muscle','organoid','alloy','tube','fixtures','frame','hydraulics','condensate','concentrate','extract','spirit','emanation'];        
         var neverBuy = [ "ops","silicon","metal","mist","biomass"];        
        
@@ -68,13 +68,36 @@ var terminalManager = {
                         resourceType: resourcekeys[i],
                         type: ORDER_BUY
                     });
-                    _.sortBy(buyOrders, ['price']);
+                   
                     var excessResources = resourcevalues[i] - allValues[j];
                     if(buyOrders.length > 1 && (excessResources > 200 || allValues[j] ==0))
                     {
                         if(resourcekeys[i] != "energy") // sell excess level   // ignores energy as it is handeled elsehwere
                         {
                             var hist = Game.market.getHistory(resourcekeys[i]);
+                            
+                            
+                            
+                            
+                            
+                            var tmpresourcekeys = Object.keys(buyOrders);
+                            var tmpresourcevalues = Object.values(buyOrders);
+                            var maxvalue = 0;
+                            var index = 999999;
+                            for(var q = 0; q < tmpresourcekeys.length; q++)
+                            {
+                                if(buyOrders[tmpresourcekeys[q]].price > maxvalue)
+                                {
+                                    index = q;
+                                    maxvalue = buyOrders[tmpresourcekeys[0]].price;
+                                }
+                            }
+                            
+                            
+                            
+                            
+                            
+                            
                             
                             
                             
@@ -96,7 +119,7 @@ var terminalManager = {
                             
                             if(!found)
                             {
-                                Game.market.deal(buyOrders[buyOrders.length - 1].id, excessResources, roomname); ////////////////////////////////////////
+                                Game.market.deal(buyOrders[index].id, excessResources, roomname); ////////////////////////////////////////
                             }
                         }
                         //  console.log(JSON.stringify(buyOrders[buyOrders.length - 1]));
@@ -179,7 +202,7 @@ var terminalManager = {
                 });
                 var tmpresourcekeys = Object.keys(SellOrders);
                 var tmpresourcevalues = Object.values(SellOrders);
-                var maxvalue = 9999999;
+                var maxvalue = 0;
                 var index = 999999;
                 for(var q = 0; q < tmpresourcekeys.length; q++)
                 {
@@ -194,6 +217,19 @@ var terminalManager = {
                 }
             }
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            

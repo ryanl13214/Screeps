@@ -84,14 +84,9 @@
                 SquadID: "0",
                 SquadRole: false
             };
-            if(movers.length != 0 && harvesters.length == 2 && upgraders.length != 0)
-            {
-                Game.flags[roomname].memory.flagstruct.spawnfree = true;
-            }
-            else
-            {
+         
                 Game.flags[roomname].memory.flagstruct.spawnfree = false;
-            }
+          
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,17 +131,14 @@
             }
             var ups = 0;
             //  multiplyrepairerrs=2;
-            if(storagevalue > 900000 && levelOfController < 8)
-            {
-                ups = 1;
-                moversneeded = moversneeded + 2;
-                multiplyrepairerrs = 1;
-            }
+          
+          
+        //    console.log(roomname +"   storagevalue "+ storagevalue +  "  movers  "+ movers.length   + " harvesters "+ harvesters.length + " energycurrentlyavailable "+  energycurrentlyavailable );
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(storagevalue > 10000 && movers.length == 0 && energycurrentlyavailable < 3500)
             {
-                Game.spawns[roomname].spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN',
+                Game.spawns[roomname].spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN'+roomname,
                 {
                     memory:
                     {
@@ -159,9 +151,9 @@
                     }
                 });
             }
-            if(storagevalue < 10000 && movers.length == 0 && harvesters.length == 0 && energycurrentlyavailable < 3500)
+            else  if(storagevalue < 10000 && (  movers.length == 0 || harvesters.length <2 ) && energycurrentlyavailable < 3500)
             {
-                Game.spawns[roomname].spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN',
+                Game.spawns[roomname].spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN'+roomname,
                 {
                     memory:
                     {
@@ -173,7 +165,30 @@
                         memstruct: memstruct
                     }
                 });
-                Game.spawns[roomname].spawnCreep([MOVE, WORK, WORK, CARRY], 'harvesterMIN0',
+                
+                if(levelOfController < 3){
+                                    Game.spawns[roomname].spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN2'+roomname,
+                {
+                    memory:
+                    {
+                        role: 'mover',
+                        cpuUsed: 0,
+                        roomtarg: roomname,
+                        target: "a",
+                        full: false,
+                        memstruct: memstruct
+                    }
+                });
+                
+                }
+                
+                if(movers.length >0){
+                
+                
+                
+                
+                
+                Game.spawns[roomname].spawnCreep([MOVE, WORK, WORK, CARRY], 'harvesterMIN0'+roomname,
                 {
                     memory:
                     {
@@ -182,7 +197,7 @@
                         memstruct: memstruct
                     }
                 });
-                Game.spawns[roomname].spawnCreep([MOVE, WORK, WORK, CARRY], 'harvesterMIN1',
+                Game.spawns[roomname].spawnCreep([MOVE, WORK, WORK, CARRY], 'harvesterMIN1'+roomname,
                 {
                     memory:
                     {
@@ -191,7 +206,27 @@
                         memstruct: memstruct
                     }
                 });
-            }
+                Game.spawns[roomname].spawnCreep([MOVE, WORK, MOVE,CARRY, CARRY], 'up1'+roomname,
+                {
+                    memory:
+                    {
+                        role: 'upgrader',
+                        sourcetarget: 0,
+                        memstruct: memstruct
+                    }
+                });    
+                 Game.spawns[roomname].spawnCreep([MOVE, WORK, MOVE,CARRY, CARRY], 'rep'+roomname,
+                {
+                    memory:
+                    {
+                        role: 'repair',
+                        sourcetarget: 0,
+                        memstruct: memstruct
+                    }
+                });   
+                }
+                
+            }else  if(levelOfController > 3  ){
             //////////////////////end low energy management/////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             for(var i = 0; i < spawnss.length; i++)
@@ -437,9 +472,13 @@
                 {
                     var numberofparts = Math.floor((energyavailable - 600) / 100);
                     var bodyparts = [];
-                    if(numberofparts > 4 ) // cUYSES ERROR MAYBE 
+                    if(numberofparts > 4 && storagevalue > 400000)  
                     {
                         numberofparts = 4;
+                    }
+                    else if(numberofparts > 4 && storagevalue < 400000)  
+                    {
+                          numberofparts = 3;
                     }
                     if(levelOfController < 8)
                     {
@@ -463,10 +502,14 @@
                         bodyparts.push(MOVE);
                         bodyparts.push(MOVE);
                         bodyparts.push(MOVE);
+                        bodyparts.push(MOVE);
+                        bodyparts.push(MOVE);
+                        bodyparts.push(MOVE);           
                    
                     if(levelOfController == 6 && storagevalue > 900000)
                     {
-                        bodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY];
+                        console.log("boosted up");
+                        bodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY];
                     }
                     if(levelOfController == 7 && storagevalue > 900000)
                     {
@@ -490,7 +533,15 @@
                         }
                     });
                 }
+                else{
+                    //
+                    Game.flags[roomname].memory.flagstruct.spawnfree = true; 
+                    
+                   // 
+                }
             }
+        }
+            
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
