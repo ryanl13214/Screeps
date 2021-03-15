@@ -117,7 +117,7 @@ var terminalManager = {
                             
                           
                             
-                            if(!found)
+                            if(!found || ( found && terminalActual.store.getFreeCapacity() < 1000))
                             {
                                 Game.market.deal(buyOrders[index].id, excessResources, roomname); ////////////////////////////////////////
                             }

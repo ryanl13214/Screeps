@@ -83,7 +83,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                  {
                      filter: (structure) =>
                      {
-                         return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 10);
+                         return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 30);
                      }
                  });
                  if(storagemain != undefined && creep.room.terminal.store.getFreeCapacity() > 5000)
@@ -133,7 +133,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                  {
                      filter: (structure) =>
                      {
-                         return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 20);
+                         return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 30);
                      }
                  });
                    //creep.say(creep.store.getUsedCapacity("power")  );
@@ -166,7 +166,7 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                      {
                          filter: (structure) =>
                          {
-                             return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 10);
+                             return (structure.structureType == STRUCTURE_POWER_SPAWN && structure.store.getUsedCapacity("power") < 30);
                          }
                      });
                      //   creep.say("w d p");

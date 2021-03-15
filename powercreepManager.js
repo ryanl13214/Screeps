@@ -313,6 +313,13 @@ var powercreepManager = {
                     });
                     powerCreep.usePower(PWR_OPERATE_POWER, pwrspawn);
                 }
+            }else{
+                 
+                if(powerCreep.withdraw(powerCreep.room.terminal, RESOURCE_OPS ) == ERR_NOT_IN_RANGE) {
+    powerCreep.moveTo(powerCreep.room.terminal);powerCreep.say("wit term");
+}
+                
+                
             }
         }
     },

@@ -166,7 +166,7 @@ var roleMover = {
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION || structure
+                        return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION  || structure.structureType == STRUCTURE_POWER_SPAWN || structure
                             .structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
                     }
                 });  

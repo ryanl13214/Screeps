@@ -60,7 +60,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------//////////////////////////////
     //                                  
     //------------------------------------------------------------------------------------------------
-     tickcode.run();
+ //    tickcode.run();
     visuals.run();
     //------------------------------------------------------------------------------------------------
     //                                  
@@ -139,6 +139,13 @@ module.exports.loop = function()
             }
         }
     }
+  
+  
+   
+  
+  
+  
+  
     //------------------------------------------------------------------------------------------------
     if(Game.cpu.bucket == 10000)
     {
@@ -157,7 +164,7 @@ module.exports.loop = function()
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-       /// squadmanage.run(resourcekeys[i]);
+      squadmanage.run(resourcekeys[i]);
         try
         {
           
