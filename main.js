@@ -58,9 +58,29 @@ module.exports.loop = function()
         Memory.cpuUsage.powercreeps += powerManager_cpu_used;
     }
     //------------------------------------------------------------------------------------------------//////////////////////////////
-    //                                  
+    //             
+    
+    
+    
+    
+    
+    
+    
+    
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //------------------------------------------------------------------------------------------------
- //    tickcode.run();
+   tickcode.run();
     visuals.run();
     //------------------------------------------------------------------------------------------------
     //                                  
@@ -335,7 +355,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (20) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
@@ -351,7 +371,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.rooms[roomname].controller.level > 3  )
         {
-           
+       try{
                 var mainflags = Game.flags[roomname];
                 var flag1 = Game.flags[roomname + "container1"];
                 var flag0 = Game.flags[roomname + "container0"];
@@ -408,7 +428,7 @@ module.exports.loop = function()
                 }
                 var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
           
-         
+       }catch(e){}
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var powerspawn = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
@@ -420,7 +440,7 @@ module.exports.loop = function()
         });
         if(powerspawn.length == 1)
         {
-            if(Game.time % 1 == 0)
+            if(Game.time % 8 == 0)
             {
                 powerspawn[0].processPower();
             }

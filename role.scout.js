@@ -6,17 +6,20 @@ room considtions
   13*13 area
   sources with 2 accessable areas
  */
-     var squadmanage = require('squadManager');
+ var creepfunctions = require('prototype.creepfunctions');
+      
      var rolescout = {
          run: function(creep)
          {
+             if(creep.memory.roomhistory == undefined){
+               creep.memory.roomhistory =[];  
+             }
+             
+             
+             
+             
              var flagstruct = {
-                 roomissafe: false,
                  roomsuitableforClaiming: false,
-                 numberOfSourcesInRoom: 0,
-                 roomIsFightTeritory: false,
-                 roomIsMyTeritory: false,
-                 distancefromoom: 9999,
                  squadspawning: "",
                  mineroomsProfitmargin: 0,
                  mineroomsCPU: 0,
@@ -28,8 +31,7 @@ room considtions
                      centerroomsinrange: [],
                      mineroomsProfitmargin: [],
                      cpuUsedlastTick: 99,
-                     roomdefconstruct:
-                     {},
+                     roomdefconstruct:{},
                      dismantelrooms: []
                  }
              };
@@ -59,11 +61,10 @@ room considtions
                  });
                  /////////////////////////////////////////////////////////////////////
              }
-             else
+             else if(creep.memory.exitchosen != "a" && creep.room.name != creep.memory.prevRoom) // if ceep has moved into new room
              {
-                 if(creep.memory.exitchosen != "a" && creep.room.name != creep.memory.prevRoom) // if ceep has moved into new room
-                 {
-                     creep.moveTo(new RoomPosition(25, 25, creep.room.name),
+                 
+                     creep.moveTo(new RoomPosition(25, 25, creep.room.name),// move away from room edge
                      {
                          reusePath: 3,
                          visualizePathStyle:
@@ -78,137 +79,29 @@ room considtions
                      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
                      if(creep.ticksToLive > 800 && creep.room.name != creep.memory.home && creep.room.controller != undefined && creep.room.controller.owner == "Q13214")
                      {
+                         //    creep.memory.roomhistory =[]; 
+                      //   [roominrange(spawnroom , roomdistance , roomlist)]
+                      
                          var tmpvar = Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange;
                          var found = false;
                          for(q = 0; q < tmpvar.length; q++)
                          {
-                             if(tmpvar[q] == creep.memory.memstruct.spawnRoom)
+                             if(tmpvar[q][0] == creep.memory.memstruct.spawnRoom)
                              {
                                  found = true;
                              }
                          }
                          if(found == false)
                          {
-                             Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange.push(creep.memory.memstruct.spawnRoom);
+                             Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange.push([creep.memory.memstruct.spawnRoom , 1500 - creep.ticksToLive , creep.memory.roomhistory ]);
                          }
-                     }
-
-                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-                     if(creep.ticksToLive > 1200)
-                     {
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// put here due to inherent danger
-                         //                                                   finding strongholds
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-                         var testingsquads = Memory.squadObject;
-                         if(testingsquads == undefined)
-                         {
-                             Memory.squadObject = {};
-                         }
-                         const resourcekeys = Object.keys(testingsquads);
-                         var listEnemyStructures = creep.room.find(FIND_HOSTILE_STRUCTURES);
-                         var tmpvar = resourcekeys;
-                         var found = false;
-                         for(q = 0; q < tmpvar.length; q++)
-                         {
-                             if(tmpvar[q] == creep.room.name + "_stronghold_SERPENT")
-                             {
-                                 found = true;
-                             }
-                         }
-                         if(!found && creep.room.controller == undefined && listEnemyStructures.length > 4 && (creep.ticksToLive > 1300 || Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.roomIsStronghold))
-                         {
-                             // level 7 only 
-                             /*
-                              console.log("ssceefgrout spawning serpent squad");
-                               squadmanage.initializeSquad(creep.room.name + "_stronghold_SERPENT", [creep.room.name], true, "serpent", creep.memory.memstruct.spawnRoom, {
-                                  "head": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
-                                  "body": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
-                                  "tail": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
-                                   }
-                               );
-                             console.log("sscout spawning serpent squad");
-                              
-                             console.log("ssceefgrout spawning serpent squad");
-                             squadmanage.initializeSquad(creep.room.name + "_stronghold_SERPENT", [creep.room.name], true, "serpent", creep.memory.memstruct.spawnRoom,
-                             {
-                                 "head": [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL],
-                                 "body": [TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL],
-                                 "tail": [TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]
-                             });
-                               */
-                         }
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                      }
                      if(creep.ticksToLive > 1400)
                      {
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                          //                                               ADD CORRIDOR MINING ROOMS
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                         const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                         var deposoits = creep.room.find(FIND_DEPOSITS);
-                         if(deposoits.length != 0 && Game.rooms[creep.memory.memstruct.spawnRoom].controller.level > 4)
-                         {
-                             if(!target)
-                             {
-                                 var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
-                                 Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
-                                 {
-                                     memory:
-                                     {
-                                         role: 'multi',
-                                         memstruct:
-                                         {
-                                             spawnRoom: creep.memory.memstruct.spawnRoom,
-                                             tasklist: [
-                                                 ["moveToRoom", creep.room.name],
-                                                 ["mineCoridor"],
-                                                 ["moveToRoom", creep.memory.memstruct.spawnRoom],
-                                                 ["deposit"],
-                                                 ["repeat", 4]
-                                             ],
-                                             objectIDStorage: "",
-                                             boosted: false,
-                                             moveToRenew: false,
-                                             opportuniticRenew: false,
-                                             hastask: false
-                                         }
-                                     }
-                                 });
-                             }
-                             else
-                             {
-                                 var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK];
-                                 var corridorRoomList = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms;
-                                 var tmptasklist = [];
-                                 if(corridorRoomList == undefined){
-                                      Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms=[];
-                                 }
-                                 tmptasklist.push(["createslave", "healer"]);
-                                 for(var c = 0; c < corridorRoomList.length; c++)
-                                 {
-                                     tmptasklist.push(["patrolroom", corridorRoomList[c]]);
-                                 }
-                                 tmptasklist.push(["repeat", corridorRoomList.length]);
-                                 Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor guard' + creep.memory.memstruct.spawnRoom,
-                                 {
-                                     memory:
-                                     {
-                                         role: 'guard',
-                                         attackrole: "chasedown",
-                                         memstruct:
-                                         {
-                                             spawnRoom: creep.memory.memstruct.spawnRoom,
-                                             tasklist: tmptasklist,
-                                             objectIDStorage: "",
-                                             boosted: false,
-                                             moveToRenew: false,
-                                             opportuniticRenew: false,
-                                             hastask: false
-                                         }
-                                     }
-                                 });
-                             }
-                         }
+                         creepfunctions.mineCorridor(creep);
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                          //                                                     deciding what corridor rooms to mine 
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
@@ -295,19 +188,12 @@ room considtions
                          {
                              Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.centerroomsinrange.push(creep.room.name); /// this causes duplicates to need to remove dupes
                          }
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                         //                                                          teritory managment
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.roomIsFightTeritory = true;
-                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.roomIsMyTeritory = true;
+                        
+                     
                      }
-                     if(creep.ticksToLive > 1300)
-                     {
-                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.roomIsMyTeritory = true;
-                     }
+                    
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                 }
+                 
              }
              creep.memory.prevRoom = creep.room.name;
          }

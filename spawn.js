@@ -125,15 +125,13 @@
             {
                 multiplyrepairerrs += Math.floor(constructionsites.length / 20);
             }
-            else if(constructionsites.length == 0 && storagevalue < 150000)
-            {
-                multiplyrepairerrs = 0;
-            }
+         
             var ups = 0;
-            //  multiplyrepairerrs=2;
+            
+            
+            
           
           
-        //    console.log(roomname +"   storagevalue "+ storagevalue +  "  movers  "+ movers.length   + " harvesters "+ harvesters.length + " energycurrentlyavailable "+  energycurrentlyavailable );
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(storagevalue > 10000 && movers.length == 0 && energycurrentlyavailable < 3500)
@@ -256,7 +254,7 @@
                         }
                     });
                 }
-                else if(resourcemover == 0 && levelOfController > 5)
+                else if(resourcemover == 0 && levelOfController > 5 && Game.rooms[roomname].terminal != undefined)
                 {
                     if(levelOfController == 8 && spawnss[i].name == roomname + "1")
                     {
@@ -479,6 +477,7 @@
                     else if(numberofparts > 4 && storagevalue < 400000)  
                     {
                           numberofparts = 3;
+                          
                     }
                     if(levelOfController < 8)
                     {
@@ -519,6 +518,14 @@
                     {
                         bodyparts = [MOVE,WORK,WORK,CARRY];
                     }
+                    
+                    
+                    
+                    
+                         bodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY];
+                    
+                    
+                memstruct.tasklist.push(["BOOST","GH2O",10]);
                     
                     
                     

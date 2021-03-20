@@ -303,36 +303,8 @@ var roleguard = {
                 }
                 if(creep.room.controller == undefined)
                 {
-                    const depo = creep.pos.findClosestByRange(FIND_DEPOSITS);
-                    if(depo)
-                    {
-                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE,MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
-                        Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
-                        {
-                            memory:
-                            {
-                                role: 'multi',
-                                memstruct:
-                                {
-                                    spawnRoom: creep.memory.memstruct.spawnRoom,
-                                    tasklist: [
-                                        ["moveToRoom", creep.room.name],
-                                        ["mineCoridor"],
-                                        ["moveToRoom", creep.memory.memstruct.spawnRoom],
-                                        ["deposit"],
-                                        ["repeat", 4]
-                                    ],
-                                    objectIDStorage: "",
-                                    boosted: false,
-                                    moveToRenew: false,
-                                    opportuniticRenew: true,
-                                    hastask: false
-                                }
-                            }
-                        });
-                    }
+                    creepfunctions.mineCorridor(creep);
                 }
-               
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creep.memory.attackrole == "healer")

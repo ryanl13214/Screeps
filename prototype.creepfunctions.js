@@ -50,7 +50,7 @@
         //     console.log(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
         if(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0] == "repeat")
         {
-            creep.say(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
+         //   creep.say(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
             if(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][1] + 1 == creep.memory.memstruct.tasklist.length)
             {
                 var tmpstore = creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1]
@@ -569,7 +569,7 @@
                     {
                         creep.say("tomb");
                         var object = Game.getObjectById(tombstones);
-                        var resourcekeys = [RESOURCE_ENERGY];
+                        var resourcekeys = Object.keys(tombstones.store);
                         var range = creep.pos.getRangeTo(tombstones);
                         if(range <= 1)
                         {
@@ -1437,6 +1437,106 @@
     
     
     */
+    
+    
+    
+    
+        
+    mineCorridor: function(creep)
+    {
+    
+    
+    
+                             const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                         var deposoits = creep.room.find(FIND_DEPOSITS,
+        {
+            filter: (dep) =>
+            {
+                return (dep.cooldown <10 );
+            }
+        });
+                         if(deposoits.length != 0 && Game.rooms[creep.memory.memstruct.spawnRoom].controller.level > 4)
+                         {
+                             if(!target)
+                             {
+                                 var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
+                                 Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
+                                 {
+                                     memory:
+                                     {
+                                         role: 'multi',
+                                         memstruct:
+                                         {
+                                             spawnRoom: creep.memory.memstruct.spawnRoom,
+                                             tasklist: [
+                                                 ["moveToRoom", creep.room.name],
+                                                 ["mineCoridor"],
+                                                 ["moveToRoom", creep.memory.memstruct.spawnRoom],
+                                                 ["deposit"],
+                                                 ["repeat", 4]
+                                             ],
+                                             objectIDStorage: "",
+                                             boosted: false,
+                                             moveToRenew: false,
+                                             opportuniticRenew: false,
+                                             hastask: false
+                                         }
+                                     }
+                                 });
+                             }
+                             else
+                             {
+                                 var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK];
+                                 var corridorRoomList = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms;
+                                 var tmptasklist = [];
+                                 if(corridorRoomList == undefined){
+                                      Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms=[];
+                                 }
+                                 tmptasklist.push(["createslave", "healer"]);
+                                 for(var c = 0; c < corridorRoomList.length; c++)
+                                 {
+                                     tmptasklist.push(["patrolroom", corridorRoomList[c]]);
+                                 }
+                                 tmptasklist.push(["repeat", corridorRoomList.length]);
+                                 Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor guard' + creep.memory.memstruct.spawnRoom,
+                                 {
+                                     memory:
+                                     {
+                                         role: 'guard',
+                                         attackrole: "chasedown",
+                                         memstruct:
+                                         {
+                                             spawnRoom: creep.memory.memstruct.spawnRoom,
+                                             tasklist: tmptasklist,
+                                             objectIDStorage: "",
+                                             boosted: false,
+                                             moveToRenew: false,
+                                             opportuniticRenew: false,
+                                             hastask: false
+                                         }
+                                     }
+                                 });
+                             }
+                         }
+    
+    
+    
+    
+    
+ },
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     buildstructs: function(creep)
     {
         var constructionsites = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);

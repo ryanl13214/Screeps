@@ -8,6 +8,7 @@ var roleguard = {
             if(creep.memory.attackrole == "chasedown")
             {
                 const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                
                 if(target)
                 {
                     const range = creep.pos.getRangeTo(target);
@@ -19,42 +20,23 @@ var roleguard = {
                     }
                     else
                     {
-                        var a = creep.heal(creep);
+                                        
+        if(creep.body.find(elem => elem.type === "heal") != undefined  ){
+            creep.heal(creep);
+            
+        }
+                        
                         creep.moveTo(target);
                         creep.rangedAttack(target);
                     }
                 }
-                if(creep.room.controller == undefined)
-                {
-                    const depo = creep.pos.findClosestByRange(FIND_DEPOSITS);
-                    if(depo)
-                    {
-                        var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
-                        Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor miner' + creep.room.name,
-                        {
-                            memory:
-                            {
-                                role: 'multi',
-                                memstruct:
-                                {
-                                    spawnRoom: creep.memory.memstruct.spawnRoom,
-                                    tasklist: [
-                                        ["moveToRoom", creep.room.name],
-                                        ["mineCoridor"],
-                                        ["moveToRoom", creep.memory.memstruct.spawnRoom],
-                                        ["deposit"],
-                                        ["repeat", 4]
-                                    ],
-                                    objectIDStorage: "",
-                                    boosted: false,
-                                    moveToRenew: false,
-                                    opportuniticRenew: true,
-                                    hastask: false
-                                }
-                            }
-                        });
-                    }
-                }
+     
+       if(creep.body.find(elem => elem.type === "heal") != undefined &&  creep.hits < creep.hitsMax && !target   ){
+            creep.heal(creep);
+            
+        }
+                
+                
                 this.allowSlave(creep);
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

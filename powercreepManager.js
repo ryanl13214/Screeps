@@ -1,7 +1,26 @@
+var creepfunctions = require('prototype.creepfunctions');
 var powercreepManager = {
     run: function(powerCreep)
-    {
+    {  
         var r;
+                    if(powerCreep.memory.memstruct == undefined){
+                 powerCreep.memory.memstruct= {
+                spawnRoom:  "E24N3",
+                tasklist: [],
+                objectIDStorage: "",
+                boosted: false,
+                moveToRenew: false,
+                opportuniticRenew: true,
+                hastask: false,
+                full: false,
+                wantsToJoinSquad: false,
+                isInSquad: false,
+                SquadID: "0",
+                SquadRole: false
+            };
+         
+            }
+     
         // for the ops gens move to some position and gen ops and transfer them into storage.
         // spawn only in a stronhold.
         //   console.log(powerCreep.spawnCooldownTime );
@@ -22,6 +41,24 @@ var powercreepManager = {
         }
         else // creep is in the world
         {
+            
+ 
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            var check =  creepfunctions.checkglobaltasks(powerCreep);
+         
+            if(check){
+            
+            
+            
             if(powerCreep.room.controller.isPowerEnabled == false)
             {
                 if(powerCreep.enableRoom(powerCreep.room.controller) == -9)
@@ -47,6 +84,10 @@ var powercreepManager = {
             {
                 this.roomManager(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
             }
+            
+            }
+            
+            
         }
     },
     opsharvester: function(powerCreep)
@@ -140,7 +181,7 @@ var powercreepManager = {
         else
         {
             var mainflag = Game.flags[powerCreep.room.name];
-            powerCreep.say(mainflag);
+             
             var range = powerCreep.pos.getRangeTo(new RoomPosition(mainflag.pos.x + 7, mainflag.pos.y + 7, mainflag.room.name));
             if(range > 2)
             {
@@ -180,10 +221,10 @@ var powercreepManager = {
         if(powerCreep.powers[PWR_OPERATE_EXTENSION] != undefined)
         {
             var strongroom = powerCreep.room;
-            //       powerCreep.say(strongroom.energyCapacityAvailable);
+        
             if(strongroom.energyAvailable * 1.15 < strongroom.energyCapacityAvailable)
             { // add cooldown check and storage full check else termianl
-                powerCreep.say("a");
+         
                 if(strongroom.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 15000)
                 {
                     var range = powerCreep.pos.getRangeTo(strongroom.storage);
@@ -227,7 +268,7 @@ var powercreepManager = {
         {
             var target = powerCreep.room.find(FIND_SOURCES);
             var boolchecker = false;
-            powerCreep.say(target[1].effects.length);
+             
             if(target[0].effects.length != 0)
             {
                 if(target[0].effects.length == 1)
@@ -247,7 +288,7 @@ var powercreepManager = {
             }
             else if(target[0].effects.length == 0)
             {
-                powerCreep.say("t0");
+                
                 powerCreep.moveTo(target[0],
                 {
                     visualizePathStyle:
@@ -274,7 +315,7 @@ var powercreepManager = {
             }
             else if(target[1].effects.length == 0)
             {
-                powerCreep.say("t1");
+           
                 powerCreep.moveTo(target[1],
                 {
                     visualizePathStyle:

@@ -37,9 +37,10 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
 var terminalManager = {
     run: function(roomname, terminalActual, defcon, storagevalue)
     {
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H"  , "O"  , "U" , "L" , "Z" , "X"  , "G" , "energy",  "XKHO2", "power","silicon","metal","mist","biomass","machine","organism","essence","device","ops"]; // power and facory resources
-        var allValues    = [20000  , 20000  , 20000  , 5000   , 5000   , 10000, 10000, 4000, 4000, 8000, 10000, 8000, 60000   , 20000   ,  10000 ,3000     ,1000   ,3000  ,3000 ,0,0,0,0,10000    ];
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "H"  , "O"  , "U" , "L" , "Z" , "X"  , "G" , "energy",  "XKHO2", "power","silicon","metal","mist","biomass","machine","organism","essence","device","ops", 'utrium_bar','lemergium_bar','zynthium_bar','keanium_bar','ghodium_melt','oxidant','reductant','purifier','battery','composite','crystal','liquid','wire','switch','transistor','microchip','circuit','cell','phlegm','tissue','muscle','organoid','alloy','tube','fixtures','frame','hydraulics','condensate','concentrate','extract','spirit','emanation' ]; // power and facory resources
+        var allValues    = [20000  , 20000  , 20000  , 5000   , 5000   , 5000 , 5000 , 5000, 5000, 5000, 5000 , 5000, 60000   , 20000   ,  5000  ,1000     ,1000   ,1000  ,1000     ,0        ,0         ,0        ,0       ,0    ,     0       ,0              ,0             ,0            ,0             ,0        ,0          ,0         ,5000     ,0          ,0        ,0       ,0     ,0       ,0           ,0          ,0        ,0     ,0       ,0       ,0       ,0         ,0      ,0     ,0         ,0      ,0           ,0           ,0            ,0        ,0       ,0           ];
         var neverSell = ["power", 'utrium_bar','lemergium_bar','zynthium_bar','keanium_bar','ghodium_melt','oxidant','reductant','purifier','battery','composite','crystal','liquid','wire','switch','transistor','microchip','circuit','cell','phlegm','tissue','muscle','organoid','alloy','tube','fixtures','frame','hydraulics','condensate','concentrate','extract','spirit','emanation'];        
+        var neverSell = ["power"];
         var neverBuy = [ "ops","silicon","metal","mist","biomass"];        
        
         
