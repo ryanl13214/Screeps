@@ -45,7 +45,7 @@ var roles = {
                         Memory.roleCPU.harvester += powerManager_cpu_used;
                     }
                 }
-                else if(creep.memory.role == "mover")
+                else if(creep.memory.role == "mover" ||creep.memory.role == "moveralt"  )
                 {
                     rolemover.run(creep);
                     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;

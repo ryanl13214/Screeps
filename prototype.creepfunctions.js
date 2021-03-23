@@ -114,10 +114,38 @@
                     }
                 
                 
-           //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue"]
+           //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue",optional value]
+           
+           // ad factory terminal storoage indicators
+         
+           
+           
+           
+           
+           
+           
+           
+           
+           
                 const targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
                 
+                if(creep.memory.memstruct.tasklist[0].length == 3){
                var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2]);
+                }else{
+                    
+                    if( creep.memory.memstruct.tasklist[0][3] > creep.store.getFreeCapacity()){
+                         creep.memory.memstruct.tasklist[0][3] = creep.store.getFreeCapacity();
+                    }
+                    
+                    
+                    
+                    
+                    
+                     var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2] , creep.memory.memstruct.tasklist[0][3] );
+                }
+               
+               
+               
                 if(a == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targ);
                 }else if(a == 0){
@@ -134,7 +162,17 @@
            //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue"]
                 const targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
                 
-               var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2]);
+                
+                
+                              if(creep.memory.memstruct.tasklist[0].length == 3){
+              var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2]);
+                }else{
+                    var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3] );
+                }
+               
+                
+                
+                 
                 if(a == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targ);
                 }else if(a == 0){

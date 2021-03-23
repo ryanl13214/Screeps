@@ -79,21 +79,58 @@ room considtions
                      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
                      if(creep.ticksToLive > 800 && creep.room.name != creep.memory.home && creep.room.controller != undefined && creep.room.controller.owner == "Q13214")
                      {
-                         //    creep.memory.roomhistory =[]; 
-                      //   [roominrange(spawnroom , roomdistance , roomlist)]
-                      
-                         var tmpvar = Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange;
-                         var found = false;
-                         for(q = 0; q < tmpvar.length; q++)
+                  
+                         if(creep.memory.memstruct.spawnRoom !=  creep.memory.home  )
                          {
-                             if(tmpvar[q][0] == creep.memory.memstruct.spawnRoom)
+                             
+                             
+                             
+                             
+                             var tempvar = Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange;
+                             
+                                  var found = false;
+                         for(q = 0; q < tempvar.length; q++)
+                         {
+                             if(tempvar[q][0] == creep.memory.memstruct.spawnRoom)
                              {
                                  found = true;
                              }
                          }
-                         if(found == false)
+                             
+                             if(!found){
+                                    Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange.push([creep.memory.memstruct.spawnRoom , 1500 - creep.ticksToLive , creep.memory.roomhistory ]);
+                             }
+                             
+                             
+                             
+                             
+                        if(found){
+                           
+                              for(q = 0; q < tempvar.length; q++)
                          {
-                             Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange.push([creep.memory.memstruct.spawnRoom , 1500 - creep.ticksToLive , creep.memory.roomhistory ]);
+                             if(tempvar[q][0] == creep.memory.memstruct.spawnRoom && tempvar[q][1] > 1500 - creep.ticksToLive   )
+                             {
+                                  Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange[q][1] = 1500 - creep.ticksToLive;
+                                 Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange[q][2] =creep.memory.roomhistory ;
+                                 
+                             }
+                             
+                         }
+                            
+                               
+                             }
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                           
                          }
                      }
                      if(creep.ticksToLive > 1400)

@@ -14,6 +14,9 @@ var tickcode = {
                         spawnRoom: "E19S4",
                         tasklist: [
                             ["moveToRoom", "E21S4"],
+                                                        ["withdraw", "5f458f760145028e098f70f2", "muscle"],
+                            ["withdraw", "5f458f760145028e098f70f2", "frame"],
+                            ["withdraw", "5f458f760145028e098f70f2", "microchip"],
                             ["withdraw", "5f458f760145028e098f70f2", "spirit"],
                             ["withdraw", "5f4e3d6138522b1096393b7d", "muscle"],
                             ["withdraw", "5f4e3d6138522b1096393b7d", "frame"],
@@ -27,9 +30,12 @@ var tickcode = {
                             ["withdraw", "5f4e3d6138522b1096393b7d", "concentrate"],
                             ["withdraw", "5f4e3d6138522b1096393b7d", "wire"],
                             ["withdraw", "5f458f760145028e098f70f2", "alloy"],
+                            
+ 
+                            
                             ["forcemoveToRoom", "E19S4"],
                             ["deposit"],
-                            ["repeat", 16]
+                            ["repeat", 19]
                         ],
                         objectIDStorage: "",
                         boosted: false,
@@ -44,40 +50,7 @@ var tickcode = {
             
             
             
-            
-                   Game.spawns["E19S4"].spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY,MOVE, MOVE, MOVE, CARRY, CARRY, CARRY],
-            'E13S6theift',
-            {
-                memory:
-                {
-                    role: 'multi',
-                    memstruct:
-                    {
-                        spawnRoom: "E19S4",
-                        tasklist: [
-                            ["moveToRoom", "E14S3"],
-                            ["withdraw", "6001f6da051de0625375ca8c", "condensate"],
-                            ["withdraw", "6001f6da051de0625375ca8c", "silicon"],
-                            ["withdraw", "6001f6da051de0625375ca8c", "wire"],
-                            ["withdraw", "6001f6da051de0625375ca8c", "alloy"],
-                            ["withdraw", "6001f6da051de0625375ca8c", "XGH2O"],
-                            ["forcemoveToRoom", "E19S4"],
-                            ["deposit"],
-                            ["repeat", 8]
-                        ],
-                        objectIDStorage: "",
-                        boosted: false,
-                        moveToRenew: false,
-                        opportuniticRenew: true,
-                        hastask: false
-                    }
-                }
-            });
-            
-            
-            
-            
-            
+ 
             
             
             

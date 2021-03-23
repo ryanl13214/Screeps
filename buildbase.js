@@ -12,159 +12,30 @@
  //total structures = 3 60 6 2 10 1 1 1 1 =85
  // all positions are from storage
  var core = [
-     [0, -5],
-     [-1, -4],
-     [0, -4],
-     [1, -4],
-     [-1, -3],
-     [-2, -3],
-     [0, -3],
-     [1, -3],
-     [2, -3],
-     [3, -2],
-     [2, -2],
-     [1, -2],
-     [0, -2],
-     [-1, -2],
-     [-2, -2],
-     [-3, -2],
-     [-4, -1],
-     [-3, -1],
-     [-2, -1],
-     [-1, -1],
-     [0, -1],
-     [1, -1],
-     [2, -1],
-     [3, -1],
-     [4, -1],
-     [-5, 0],
-     [-4, 0],
-     [-3, 0],
-     [-2, 0],
-     [-1, 0],
-     [0, 0],
-     [1, 0],
-     [2, 0],
-     [3, 0],
-     [4, 0],
-     [5, 0],
-     [-4, 1],
-     [-3, 1],
-     [-2, 1],
-     [-1, 1],
-     [0, 1],
-     [1, 1],
-     [2, 1],
-     [3, 1],
-     [4, 1],
-     [-3, 2],
-     [-2, 2],
-     [-1, 2],
-     [0, 2],
-     [1, 2],
-     [2, 2],
-     [3, 2],
-     [-2, 3],
-     [-1, 3],
-     [0, 3],
-     [1, 3],
-     [2, 3],
-     [],
-     [],
-     [-1, 4],
-     [0, 4],
-     [1, 4],
-     [0, 5]
+     [0, -5],[-1, -4],[0, -4],[1, -4],[-1, -3],[-2, -3],[0, -3],[1, -3],
+     [2, -3],[3, -2],[2, -2],[1, -2],[0, -2],[-1, -2],[-2, -2],[-3, -2],
+     [-4, -1],[-3, -1],[-2, -1],[-1, -1],[0, -1],[1, -1],[2, -1],[3, -1],
+     [4, -1],[-5, 0],[-4, 0],[-3, 0],[-2, 0],[-1, 0],[0, 0],[1, 0],
+     [2, 0], [3, 0],[4, 0],[5, 0],[-4, 1],[-3, 1],[-2, 1],[-1, 1],
+     [0, 1],[1, 1],[2, 1],[3, 1],[4, 1],[-3, 2],[-2, 2],[-1, 2],
+     [0, 2],[1, 2],[2, 2],[3, 2],[-2, 3],[-1, 3],[0, 3],[1, 3],
+     [2, 3],[-1, 4],[0, 4],[1, 4],[0, 5]
  ];
  var arrayofextensionpositions = [
-     [1, 3],
-     [3, 1],
-     [3, 0],
-     [4, 0],
-     [2, -1],
-     [3, -1],
-     [0, 3],
-     [0, 4],
-     [-1, 3],
-     [-1, 2],
-     [-2, 1],
-     [1, -2],
-     [1, -3],
-     [0, -3],
-     [0, -4],
-     [5, 1],
-     [5, 2],
-     [5, 3],
-     [5, 4],
-     [4, 2],
-     [4, 3],
-     [2, 4],
-     [3, 4],
-     [1, 5],
-     [2, 5],
-     [3, 5],
-     [4, 5],
-     [-5, 4],
-     [-5, 5],
-     [-4, 5],
-     [-3, 4],
-     [-2, 4],
-     [-3, 5],
-     [-2, 5],
-     [-1, 5],
-     [-5, -1],
-     [-5, -2],
-     [-5, -3],
-     [-5, -4],
-     [-4, -2],
-     [-4, -3],
-     [-4, -5],
-     [-3, -5],
-     [-2, -5],
-     [-1, -5],
-     [-3, -4],
-     [-2, -4],
-     [1, -5],
-     [2, -5],
-     [3, -5],
-     [0, -6],
-     [2, -4],
-     [3, -4],
-     [4, -5],
-     [4, -3],
-     [4, -2],
-     [4, -4],
-     [5, -3],
-     [5, -2],
-     [5, -1]
+     [1, 3],[3, 1],[3, 0], [4, 0],[2, -1],[3, -1],[0, 3],[0, 4],[-1, 3],[-1, 2],
+     [-2, 1],[1, -2],[1, -3],[0, -3],[0, -4],[5, 1],[5, 2],
+     [5, 3],[5, 4],[4, 2],[4, 3],[2, 4],[3, 4],[1 , 5],[2 , 5], [3, 5],[4, 5], [-5, 4], [-5, 5],
+     [-4, 5],[-3, 4],[-2, 4],[-3, 5],[-2, 5],[-1, 5],
+     [-5, -1],[-5, -2],[-5, -3], [-5, -4],[-4, -2],[-4, -3],[-4, -5],[-3, -5],[-2, -5],[-1, -5],
+     [-3, -4],[-2, -4], [1, -5],[2, -5],[3, -5],[0, -6],[2, -4],[3, -4],[4, -5],[4, -3],
+     [4, -2],[4, -4],[5, -3],[5, -2],[5, -1]
  ];
- var arrayoftowers = [
-     [1, 0],
-     [2, 0],
-     [2, 1],
-     [2, 2],
-     [0, 2],
-     [0, 1]
- ];
- var containers = [
-     [2, -2],
-     [-2, 2]
- ];
+ var arrayoftowers = [[1, 0],[2, 0],[2, 1],[2, 2], [0, 2],[0, 1]];
+ var containers = [];
  var observer = [6, 0];
- var spawnlocations = [];
  var powerspawn = [-2, 0];
  var nuker = [-3, 0];
- var arrayoflabs = [
-     [-2, -2],
-     [-3, -1],
-     [-4, 0],
-     [-3, 1],
-     [-5, 1],
-     [-5, 2],
-     [-4, 2],
-     [-5, 3],
-     [-4, 3]
- ];
+ var arrayoflabs = [[-2, -2],[-3, -1],[-4, 0],[-3, 1],[-5, 1],[-5, 2],[-4, 2],[-5, 3],[-4, 3]];
  var roads = [
      [-1,1],[-2,2],[-3,2],[-2,3],[-3,3],[-4,4],[-1,4],[0,5],[1,4],[2,3],[3,3],
      [4,4],[5,5],[3,2],[4,1],[5,0],[1,-1],[2,-2],[3,-2],[3,-3],[2,-3],
@@ -174,22 +45,22 @@
  var basebuild = {
      run: function(roomname, storage_xpos, storage_ypos)
      {
-         if(Game.rooms[roomname].controller.level > 2)
-             {
-                 var terrain = Game.rooms[roomname].getTerrain();
+         var goalroom = Game.rooms[roomname];
+ 
+                 var terrain =goalroom.getTerrain();
                  for(var i = 0; i < roads.length; i++)
                  {
                      try
                      {
                          if(terrain.get(storage_xpos + roads[i][0], storage_ypos + roads[i][1]) != 1)
                          {
-                             Game.rooms[roomname].createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
+                             goalroom.createConstructionSite(storage_xpos + roads[i][0], storage_ypos + roads[i][1], STRUCTURE_ROAD);
                          }
                      }
                      catch (e)
                      {}
                  }
-             }
+            
              
              
              
@@ -199,7 +70,7 @@
          {
              try
              {
-                 Game.rooms[roomname].createConstructionSite(storage_xpos + arrayofextensionpositions[i][0], storage_ypos + arrayofextensionpositions[i][1], STRUCTURE_EXTENSION);
+                 goalroom.createConstructionSite(storage_xpos + arrayofextensionpositions[i][0], storage_ypos + arrayofextensionpositions[i][1], STRUCTURE_EXTENSION);
              }
              catch (e)
              {}
@@ -211,10 +82,10 @@
          {
              try
              {
-                 Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_TOWER);
-                 if(Game.rooms[roomname].controller.level > 4)
+                 goalroom.createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_TOWER);
+                 if(goalroom.controller.level > 4)
                  {
-                     Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_RAMPART);
+                     goalroom.createConstructionSite(storage_xpos + arrayoftowers[i][0], storage_ypos + arrayoftowers[i][1], STRUCTURE_RAMPART);
                  }
              }
              catch (e)
@@ -224,114 +95,67 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
          
          
-         try
-         {
-             Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
-             Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_RAMPART);
-         }
-         catch (e)
-         {}
-         
+       if(goalroom.storage == undefined){
+             goalroom.createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
+       }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
          
-         if(Game.rooms[roomname].controller.level >= 3 && Game.rooms[roomname].controller.level < 6)
+         if(goalroom.controller.level >= 3 && goalroom.controller.level < 6)
          {
              
              var flag1 = Game.flags[roomname + "container1"];
              var flag0 = Game.flags[roomname + "container0"];
              var flag2 = Game.flags[roomname + "controllercontainer"];
-             try
-             {
-                 Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_RAMPART);
-                 Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
-             }
-             catch (e)
-             {}
-             try
-             {
-                 Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_RAMPART);
-                 Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_CONTAINER);
-             }
-             catch (e)
-             {}
-             try
-             {
-             Game.rooms[roomname].createConstructionSite(flag2.pos.x, flag2.pos.y, STRUCTURE_CONTAINER);
-             }
-             catch (e)
-             {}
-         }
          
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-                 try
-                 {
-                     Game.rooms[roomname].createConstructionSite(storage_xpos, storage_ypos, STRUCTURE_STORAGE);
-                 }
-                 catch (e)
-                 {}
+                 goalroom.createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
+         
+     
+                 goalroom.createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_CONTAINER);
+            
+             goalroom.createConstructionSite(flag2.pos.x, flag2.pos.y, STRUCTURE_CONTAINER);
+       
+         }
+ 
          
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
          
          
-         if(Game.rooms[roomname].controller.level > 4)
+         if(goalroom.controller.level > 4)
          {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-             try
-             {
-                 Game.rooms[roomname].createConstructionSite(storage_xpos - 1, storage_ypos, STRUCTURE_LINK);
+                  goalroom.createConstructionSite(storage_xpos - 1, storage_ypos, STRUCTURE_LINK);
                  
-             }
-             catch (e)
-             {}
+          
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           
              
                  
                  for(var i = 0; i < arrayoflabs.length; i++)
                  {
-                     try
-                     {
+                    
                          Game.rooms[roomname].createConstructionSite(storage_xpos + arrayoflabs[i][0], storage_ypos + arrayoflabs[i][1], STRUCTURE_LAB);
-                     }
-                     catch (e)
-                     {}
+                
                  }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                 for(var i = 0; i < spawnlocations.length; i++)
-                 {
-                     try
-                     {
-                         Game.rooms[roomname].createConstructionSite(storage_xpos + spawnlocations[i][0], storage_ypos + spawnlocations[i][1], STRUCTURE_SPAWN, roomname + (i + 1));
-                     }
-                     catch (e)
-                     {}
-                 }
-                 
+ 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
-                 try
-                 {
+              if(goalroom.terminal == undefined){
                      Game.rooms[roomname].createConstructionSite(storage_xpos - 2, storage_ypos - 1, STRUCTURE_TERMINAL);
-                 }
-                 catch (e)
-                 {}
+              }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                 try
-                 {
+              
                      var temp = Game.rooms[roomname].find(FIND_MINERALS)[0].pos;
                      Game.rooms[roomname].createConstructionSite(temp.x, temp.y, STRUCTURE_EXTRACTOR);
-                 }
-                 catch (e)
-                 {}
+              
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-var flgmain1 = Game.flags[roomname];//flgmain1.memory.flagstruct.claimedroomstuct.roomIsStronghold
+var flgmain1 = Game.flags[roomname]; 
                  if(Game.rooms[roomname].controller.level > 6 &&  flgmain1.memory.flagstruct.claimedroomstuct.roomIsStronghold == true)
                  {
                      for(var i = 0; i < core.length; i++)
                      {
                          try
                          {
-                             Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);
+        //                     Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);////////core
                          }
                          catch (e)
                          {}
@@ -370,20 +194,12 @@ var flgmain1 = Game.flags[roomname];//flgmain1.memory.flagstruct.claimedroomstuc
                      }
                  }
                  }
-                 try
-                 {
-                     Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_RAMPART);
+            
                      Game.rooms[roomname].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_LINK);
-                 }
-                 catch (e)
-                 {}
-                 try
-                 {
-                     Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_RAMPART);
+       
+              
                      Game.rooms[roomname].createConstructionSite(flag0.pos.x, flag0.pos.y, STRUCTURE_LINK);
-                 }
-                 catch (e)
-                 {}
+           
      
              
              /////////////////////////////////////////////////////////////////////////////////////////////////////////                   

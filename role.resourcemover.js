@@ -6,6 +6,9 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
  var roleresourcemover = {
      run: function(creep)
      {
+                  var check = creepfunctions.checkglobaltasks(creep);
+         if(check)
+         {
          if(creep.store.getFreeCapacity() == creep.store.getCapacity())
          {
              creep.memory.creepIsFull = false;
@@ -377,6 +380,6 @@ if the energy level of the terminal is over 51,000 withdraw energy from it
                  }
              }
          }
-     }
+     }}
  };
  module.exports = roleresourcemover;

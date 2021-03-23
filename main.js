@@ -4,6 +4,7 @@ var buildbase = require('buildbase');
 var tower = require('tower');
 var defcon = require('defcon');
 var terminalManager = require('terminal');
+var factoryManager = require('factory');
 var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
 var visuals = require('visuals');
@@ -366,6 +367,25 @@ module.exports.loop = function()
                 Memory.cpuUsage.terminals += Terminal_cpu_used;
             }
         }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                       factroy
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+           const factorys = Game.rooms[roomname].find(FIND_MY_STRUCTURES, {
+    filter: { structureType: STRUCTURE_FACTORY }
+});
+           
+           
+        if( Game.time % (8) == 0 && factorys.length != 0 )
+        {
+             
+           
+            factoryManager.run(roomname, Game.rooms[roomname].terminal,  factorys[0] );
+           
+        }
+        
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
