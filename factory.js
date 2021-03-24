@@ -99,7 +99,7 @@ var factoryManager = {
          
          
            var basic =    ['fixtures', 'tissue',  'transistor', 'extract'];
-           var basicamounts =[30,30,  30, 30];
+           var basicamounts =[90,90,  90, 90];
  
      var breaks=false;
           for(var i = 0; i < basic.length; i++) 

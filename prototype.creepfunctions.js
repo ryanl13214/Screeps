@@ -188,37 +188,52 @@
                     {
                         this.loopTasks(creep);
                     }
-                /*
-                
-                
-                           var     storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
+     
+                if(creep.memory.memstruct.tasklist[0][1] == "terminal")
+                {
+                      creep.say(creep.memory.memstruct.tasklist[0][1] );
+                               var     targ = creep.room.find(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_STORAGE ||  structure.structureType == STRUCTURE_TERMINAL           || structure.structureType == STRUCTURE_FACTORY  ) && structure.store.getUsedCapacity() > 100;
+                        return structure.structureType == STRUCTURE_TERMINAL ;
                     }
-                });
-                
-                
-                */
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-           //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue"]////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                const targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                
-                
-        
+                })[0];
     var resourcesToSteal = Object.keys(targ.store);
     var listvalues = Object.values(targ.store);
+                }
+                else if(creep.memory.memstruct.tasklist[0][1] == "factory")
+                {
+                 var     targ = creep.room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return structure.structureType == STRUCTURE_FACTORY ;
+                    }
+                })[0];
+    var resourcesToSteal = Object.keys(targ.store);
+    var listvalues = Object.values(targ.store);
+                }
+                else if(creep.memory.memstruct.tasklist[0][1] == "storage")
+                {
+                var targ =creep.room.storage;
+    var resourcesToSteal = Object.keys(targ.store);
+    var listvalues = Object.values(targ.store);
+    
+                }
+                else
+                {
+                var targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
+    var resourcesToSteal = Object.keys(targ.store);
+    var listvalues = Object.values(targ.store);
+    
+                }
+                
+                
+                 creep.say(targ);
+                
+   
+    
     var steal=  ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2",  "XKHO2" ,"X","power", 'utrium_bar','lemergium_bar','zynthium_bar','keanium_bar','ghodium_melt','oxidant','reductant','purifier','battery','composite','crystal','liquid','wire','switch','transistor','microchip','circuit','cell','phlegm','tissue','muscle','organoid','alloy','tube','fixtures','frame','hydraulics','condensate','concentrate','extract','spirit','emanation'];    
         var index=0;
                  for(a = 0; a < resourcesToSteal.length;a++)

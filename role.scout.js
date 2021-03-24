@@ -178,15 +178,12 @@ room considtions
                          var available = true;
                          if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller != undefined)
                          {
-                             if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level < 7)
-                             {
-                                 //   available = true;
-                             }
+                            
                              if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level < 8 && tmpvar.length < 3)
                              {
                                  available = true;
                              }
-                             if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 8 && tmpvar.length < 4)
+                             if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 8 && tmpvar.length < 5)
                              {
                                  available = true;
                              }
