@@ -129,6 +129,14 @@ var spwan = {
                 multiplyrepairerrs += Math.floor(constructionsites.length / 20);
             }
             var ups = 0;
+            
+            if(roomname=="E21S12"){
+                ups=2;
+            }
+            
+            
+            
+            
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(storagevalue > 10000 && movers.length == 0 && moveralt.length < 2  && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500))

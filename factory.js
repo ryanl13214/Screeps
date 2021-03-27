@@ -72,14 +72,36 @@ var factoryManager = {
      
      
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     
+       if(fact.level !=2){
      // if level ==0 or no power
+  //   lvl 0 resources
   var basic =    ['wire', 'cell',  'alloy', 'condensate'];
   var basicamounts =[1000,1000,  1000, 1000];
      var breaks=false;
           for(var i = 0; i < basic.length; i++) 
          {  
-             if( fact.store.getUsedCapacity(basic[i]) < basicamounts[i] ){
+             if( fact.store.getUsedCapacity(basic[i]) < basicamounts[i] || termin.store.getUsedCapacity(basic[i]) < basicamounts[i]  ){
+                 
+                 
+             var a =      fact.produce(basic[i]);
+                 
+                 if(a == 0 ){
+                      breaks=true;
+                 }
+             }
+     
+         }
+    
+         
+     
+     
+     
+       var basic =    [ 'lemergium_bar', 'zynthium_bar', 'keanium_bar', 'ghodium_melt', 'oxidant', 'reductant', 'purifier'];
+  var basicamounts =[2000,2000,2000,2000,2000,2000,2000,2000];
+     var breaks=false;
+          for(var i = 0; i < basic.length; i++) 
+         {  
+             if(   termin.store.getUsedCapacity(basic[i]) < basicamounts[i]  ){
                  
                  
              var a =      fact.produce(basic[i]);
@@ -95,6 +117,20 @@ var factoryManager = {
      
      
      
+     
+     
+       }
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
      if(fact.level ==2 && breaks == false){
          
          
@@ -104,7 +140,7 @@ var factoryManager = {
      var breaks=false;
           for(var i = 0; i < basic.length; i++) 
          {  
-             if( fact.store.getUsedCapacity(basic[i]) < basicamounts[i] ){
+            
                   breaks=true;
                  
                  var a =  fact.produce(basic[i]);
@@ -112,7 +148,7 @@ var factoryManager = {
                       breaks=true;
                  }   
                  
-             }
+             
      
          }
      

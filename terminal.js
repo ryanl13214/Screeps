@@ -47,7 +47,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
           {
               temp += allValues[i];
           }
-          //    console.log(temp);
+              console.log(temp);
           var listOfResourcesInsideTerminal = Game.rooms[roomname].terminal.store;
           var resourcekeys = Object.keys(listOfResourcesInsideTerminal);
           var resourcevalues = Object.values(listOfResourcesInsideTerminal);
@@ -62,7 +62,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                   {
                       if((roomsobj[roomsall[i]]).controller.owner.username === "Q13214" && (roomsobj[roomsall[i]]).terminal != undefined)
                       {
-                          if(Game.map.getRoomLinearDistance(roomname, roomsall[i]) < 10 && Game.map.getRoomLinearDistance(roomname, roomsall[i]) != 0)
+                          if(Game.map.getRoomLinearDistance(roomname, roomsall[i]) < 12 && Game.map.getRoomLinearDistance(roomname, roomsall[i]) != 0)
                           {
                               roominrange.push(roomsall[i]);
                           }
@@ -79,7 +79,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                   {
                       if(Game.rooms[roomname].terminal != undefined)
                       {
-                          if( Game.rooms[ roominrange[j]].terminal.store.getUsedCapacity(allResources[i])*1.3 < Game.rooms[roomname].terminal.store.getUsedCapacity(allResources[i]) && Game.rooms[roomname].terminal.store.getUsedCapacity(allResources[i]) > 6)
+                          if( Game.rooms[ roominrange[j]].terminal.store.getUsedCapacity(allResources[i])*1.1 < Game.rooms[roomname].terminal.store.getUsedCapacity(allResources[i]) && Game.rooms[roomname].terminal.store.getUsedCapacity(allResources[i]) > 6)
                           {
                                
                              Game.rooms[roomname].terminal.send(allResources[i], (Game.rooms[roomname].terminal.store.getUsedCapacity(allResources[i]) -  Game.rooms[roominrange[j]].terminal.store.getUsedCapacity(allResources[i])) / 2, roominrange[j], '0');
@@ -253,7 +253,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
           }
           ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           ////////////////////////////////////////////////////////// BUY ENERGY ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-          if(storagevalue < 50000 && terminalActual.store.getUsedCapacity(RESOURCE_ENERGY) < 65000 && Game.time % (2000) == 0)
+          if(storagevalue < 50000 && terminalActual.store.getUsedCapacity(RESOURCE_ENERGY) < 65000 && Game.time % (2000000000000) == 0)
           {
               var hist = Game.market.getHistory(RESOURCE_ENERGY)
               for(const id in Game.market.orders)

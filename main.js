@@ -5,6 +5,8 @@ var tower = require('tower');
 var defcon = require('defcon');
 var terminalManager = require('terminal');
 var factoryManager = require('factory');
+var storageManager = require('storage');
+
 var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
 var visuals = require('visuals');
@@ -387,6 +389,25 @@ module.exports.loop = function()
         
         
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                       storageManager
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+        
+        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined  )
+        {
+            storageManager.run(roomname);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                       powerspawnManager
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+        
+        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined  )
+        {
+ //           storageManager.run(roomname);
+        }
+        
+        
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.rooms[roomname].controller.level > 3  )
@@ -460,7 +481,7 @@ module.exports.loop = function()
         });
         if(powerspawn.length == 1)
         {
-            if(Game.time % 8 == 0)
+            if(Game.time % 1 == 0)
             {
                 powerspawn[0].processPower();
             }
