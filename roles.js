@@ -45,7 +45,7 @@ var roles = {
                         Memory.roleCPU.harvester += powerManager_cpu_used;
                     }
                 }
-                else if(creep.memory.role == "mover")
+                else if(creep.memory.role == "mover" ||creep.memory.role == "moveralt"  )
                 {
                     rolemover.run(creep);
                     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
@@ -74,12 +74,14 @@ var roles = {
                 }
                 else if(creep.memory.role == "resmover")
                 {
+                    try{
                     roleresourcemover.run(creep);
                     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
                     if(debug)
                     {
                         Memory.roleCPU.resourceMover += powerManager_cpu_used;
                     }
+                    }catch(e){console.log("remover errror");}
                 }
                 else if(creep.memory.role == "extractor")
                 {

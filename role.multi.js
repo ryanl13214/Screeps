@@ -13,9 +13,11 @@ var multi = {
        
      
    
-     
+     try{
        creepfunctions.checkglobaltasks(creep);
-       
+     }catch(e){
+         
+     }
   
  
        

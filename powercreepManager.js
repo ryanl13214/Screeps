@@ -1,7 +1,25 @@
+ var creepfunctions = require('prototype.creepfunctions');
 var powercreepManager = {
     run: function(powerCreep)
     {
         var r;
+        if(powerCreep.memory.memstruct == undefined)
+        {
+            powerCreep.memory.memstruct = {
+                spawnRoom: "E24N3",
+                tasklist: [],
+                objectIDStorage: "",
+                boosted: false,
+                moveToRenew: false,
+                opportuniticRenew: true,
+                hastask: false,
+                full: false,
+                wantsToJoinSquad: false,
+                isInSquad: false,
+                SquadID: "0",
+                SquadRole: false
+            };
+        }
         // for the ops gens move to some position and gen ops and transfer them into storage.
         // spawn only in a stronhold.
         //   console.log(powerCreep.spawnCooldownTime );
@@ -22,30 +40,34 @@ var powercreepManager = {
         }
         else // creep is in the world
         {
-            if(powerCreep.room.controller.isPowerEnabled == false)
+            var check = creepfunctions.checkglobaltasks(powerCreep);
+            if(check)
             {
-                if(powerCreep.enableRoom(powerCreep.room.controller) == -9)
+                if(powerCreep.room.controller.isPowerEnabled == false)
                 {
-                    powerCreep.moveTo(powerCreep.room.controller,
+                    if(powerCreep.enableRoom(powerCreep.room.controller) == -9)
                     {
-                        visualizePathStyle:
+                        powerCreep.moveTo(powerCreep.room.controller,
                         {
-                            stroke: '#ffaa00'
-                        }
-                    });
+                            visualizePathStyle:
+                            {
+                                stroke: '#ff0000'
+                            }
+                        });
+                    }
                 }
-            }
-            var powerList = powerCreep.powers;
-            var powerkeys = Object.keys(powerList);
-            var powervalues = Object.values(powerList);
-            var creepid = powerCreep.name.substring(0, 6)
-            if(creepid == "opsHar")
-            {
-                this.opsharvester(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
-            }
-            else
-            {
-                this.roomManager(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
+                var powerList = powerCreep.powers;
+                var powerkeys = Object.keys(powerList);
+                var powervalues = Object.values(powerList);
+                var creepid = powerCreep.name.substring(0, 6)
+                if(creepid == "opsHar")
+                {
+                    this.opsharvester(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
+                }
+                else
+                {
+                    this.roomManager(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
+                }
             }
         }
     },
@@ -64,7 +86,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -83,7 +105,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -106,7 +128,7 @@ var powercreepManager = {
             {
                 visualizePathStyle:
                 {
-                    stroke: '#ffaa00'
+                    stroke: '#ff0000'
                 }
             });
         }
@@ -128,7 +150,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -140,7 +162,6 @@ var powercreepManager = {
         else
         {
             var mainflag = Game.flags[powerCreep.room.name];
-            powerCreep.say(mainflag);
             var range = powerCreep.pos.getRangeTo(new RoomPosition(mainflag.pos.x + 7, mainflag.pos.y + 7, mainflag.room.name));
             if(range > 2)
             {
@@ -148,7 +169,7 @@ var powercreepManager = {
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -172,18 +193,17 @@ var powercreepManager = {
             {
                 visualizePathStyle:
                 {
-                    stroke: '#ffaa00'
-                }
+                    stroke: '#ff0000'
+                },
+                 reusePath: 50
             });
         }
         ////////////////////////////////////stock with energy//////////////////////////////////////////////////////////////////////////////////////////
-        if(powerCreep.powers[PWR_OPERATE_EXTENSION] != undefined)
+         if(powerCreep.powers[PWR_OPERATE_EXTENSION] != undefined)
         {
             var strongroom = powerCreep.room;
-            //       powerCreep.say(strongroom.energyCapacityAvailable);
             if(strongroom.energyAvailable * 1.15 < strongroom.energyCapacityAvailable)
             { // add cooldown check and storage full check else termianl
-                powerCreep.say("a");
                 if(strongroom.storage.store.getUsedCapacity(RESOURCE_ENERGY) > 15000)
                 {
                     var range = powerCreep.pos.getRangeTo(strongroom.storage);
@@ -197,7 +217,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                     }
@@ -215,7 +235,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                     }
@@ -227,7 +247,6 @@ var powercreepManager = {
         {
             var target = powerCreep.room.find(FIND_SOURCES);
             var boolchecker = false;
-            powerCreep.say(target[1].effects.length);
             if(target[0].effects.length != 0)
             {
                 if(target[0].effects.length == 1)
@@ -238,7 +257,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                         boolchecker = true;
@@ -247,12 +266,11 @@ var powercreepManager = {
             }
             else if(target[0].effects.length == 0)
             {
-                powerCreep.say("t0");
                 powerCreep.moveTo(target[0],
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -266,7 +284,7 @@ var powercreepManager = {
                         {
                             visualizePathStyle:
                             {
-                                stroke: '#ffaa00'
+                                stroke: '#ff0000'
                             }
                         });
                     }
@@ -274,12 +292,11 @@ var powercreepManager = {
             }
             else if(target[1].effects.length == 0)
             {
-                powerCreep.say("t1");
                 powerCreep.moveTo(target[1],
                 {
                     visualizePathStyle:
                     {
-                        stroke: '#ffaa00'
+                        stroke: '#ff0000'
                     }
                 });
             }
@@ -288,6 +305,69 @@ var powercreepManager = {
             if(targets.length != 0)
             {
                 powerCreep.usePower(PWR_REGEN_SOURCE, targets[0]);
+            }
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+        if(powerCreep.powers[PWR_REGEN_MINERAL] != undefined)
+        {
+            powerCreep.say("ee");
+            var target = powerCreep.room.find(FIND_MINERALS);
+            var boolchecker = false;
+            powerCreep.say(target[0].effects);
+            var extractorneeded;
+            var minerals = powerCreep.room.find(FIND_MINERALS)[0].mineralAmount;
+            if(minerals > 0)
+            {
+                extractorneeded = true;
+            }
+            if(extractorneeded)
+            {
+                if(target[0].effects == undefined)
+                {
+                    powerCreep.say("dee");
+                    powerCreep.moveTo(target[0],
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ff0000'
+                        }
+                    });
+                }
+                else if(target[0].effects.length != 0)
+                {
+                    powerCreep.say("dfee");
+                    if(target[0].effects.length == 1)
+                    {
+                        if(target[0].effects[0].ticksRemaining < 20 || target[0].effects.length == 0)
+                        {
+                            powerCreep.moveTo(target[0],
+                            {
+                                visualizePathStyle:
+                                {
+                                    stroke: '#ff0000'
+                                }
+                            });
+                            boolchecker = true;
+                        }
+                    }
+                }
+                else if(target[0].effects.length == 0 || target[0].effects == undefined)
+                {
+                    powerCreep.say("dee");
+                    powerCreep.moveTo(target[0],
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ff0000'
+                        }
+                    });
+                }
+                ////////////////   
+                var targets = powerCreep.pos.findInRange(FIND_MINERALS, 3);
+                if(targets.length != 0)
+                {
+                    powerCreep.usePower(PWR_REGEN_MINERAL, targets[0]);
+                }
             }
         }
         //////////////////////////////////// operate power//////////////////////////////////////////////////////////////////////////////////////////
@@ -308,13 +388,66 @@ var powercreepManager = {
                     {
                         visualizePathStyle:
                         {
-                            stroke: '#ffaa00'
+                            stroke: '#ff0000'
                         }
                     });
                     powerCreep.usePower(PWR_OPERATE_POWER, pwrspawn);
                 }
             }
+            else
+            {
+                if(powerCreep.withdraw(powerCreep.room.terminal, RESOURCE_OPS) == ERR_NOT_IN_RANGE)
+                {
+                    powerCreep.moveTo(powerCreep.room.terminal);
+                    powerCreep.say("wit term");
+                }
+            }
         }
+        
+        
+        
+//////////////////////////////////// operate power//////////////////////////////////////////////////////////////////////////////////////////
+        if(powerCreep.powers[PWR_OPERATE_FACTORY] != undefined)
+        {
+            if(powerCreep.store.getUsedCapacity("ops") > 210) // creep is full
+            {
+                var FACTORY = powerCreep.room.find(FIND_MY_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_FACTORY);
+                    }
+                })[0];
+                if(FACTORY.effects == undefined || FACTORY.effects.length == 0  )///////////////////////////////////////////////
+                {
+                    powerCreep.moveTo(FACTORY,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ff0000'
+                        }
+                    });
+                    powerCreep.usePower(PWR_OPERATE_FACTORY, FACTORY);
+                }
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     },
 }
 module.exports = powercreepManager;
