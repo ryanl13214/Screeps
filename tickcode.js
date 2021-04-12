@@ -5,39 +5,13 @@ var tickcode = {
  
        
             
+                     
+
             
             
             /*
             
-            
-            
-                   Game.spawns["E19S4"].spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY],
-            'E19S4theiftall',
-            {
-                memory:
-                {
-                    role: 'multi',
-                    memstruct:
-                    {
-                        spawnRoom: "E19S4",
-                        tasklist: [
-                            ["moveToRoom", "E21S4"],
-                            ["steal", "terminal"],
-                            ["steal", "factory"],
-                            ["steal", "storage"],
-                            ["forcemoveToRoom", "E19S4"],
-                            ["deposit"],
-                            ["repeat", 6]
-                        ],
-                        objectIDStorage: "",
-                        boosted: false,
-                        moveToRenew: false,
-                        opportuniticRenew: true,
-                        hastask: false
-                    }
-                }
-            });
-            
+   
                                Game.spawns["E19S4"].spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY],
             'E19S4theiftal2l',
             {

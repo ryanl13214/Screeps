@@ -120,7 +120,7 @@ KNOWN ISSUES
                      var range = creep.pos.getRangeTo(object);
                      if(range <= 1)
                      {
-                         creep.withdraw(object, resourcekeys[0]);
+                         creep.withdraw(object, "energy");
                      }
                      else
                      {
