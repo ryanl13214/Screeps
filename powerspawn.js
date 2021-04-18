@@ -42,7 +42,7 @@ var pwrspawnManager = {
         {
             for(var j = 0; j < allResources.length; j++) // transfer to strg
             {
-                if(allValues[j] > pwrspawn.store.getUsedCapacity(allResources[j])*2 && termin.store.getUsedCapacity(allResources[j]) > 100)
+                if(allValues[j] > pwrspawn.store.getUsedCapacity(allResources[j])*2 && termin.store.getUsedCapacity(allResources[j]) > 100 && resmoveractual.memory.memstruct.tasklist.length == 0)
                 { 
                     resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
                     resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, allResources[j], (allValues[j]) - pwrspawn.store.getUsedCapacity(allResources[j])]);

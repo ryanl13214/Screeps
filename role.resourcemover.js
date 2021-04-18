@@ -4,6 +4,14 @@ var roleresourcemover = {
     {
         creep.say(creep.memory.memstruct.tasklist.length);
         
+        if(creep.memory.memstruct.tasklist.length > 30 ){
+            creep.memory.memstruct.tasklist=[];
+        }
+        
+        
+        
+        
+        
         
                 if(creep.room.storage)
         {

@@ -3,6 +3,7 @@ var coremining = require('squad.coremining');
 var roommining = require('squad.roommining');
 var coredefence = require('squad.coredefence');
 var serpentsquad = require('squad.serpent');
+var quadsquad = require('squad.quad');
 var squadmanager = {
     run: function(squadID)
     {
@@ -46,7 +47,11 @@ var squadmanager = {
                 {
                     serpentsquad.run(squadID);
                 }
-            }
+              
+            }  if(mainMemoryObject.squadType == "quad" && mainMemoryObject.SquadMembersCurrent.length != 0) 
+                {
+                    quadsquad.run(squadID);
+                }
             ///////////////////////////////////////////////////////////////////////////////////////////////////////// 
             if(mainMemoryObject.SquadMembersCurrent.length != 0) //independant squads
             {

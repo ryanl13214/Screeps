@@ -232,7 +232,7 @@ var roommining = {
                     try
                     {
                         var levelofcontrollerinhomeroom = Game.rooms[mainMemoryObject.squadHomeRoom].controller.level;
-                        if(levelofcontrollerinhomeroom == 5)
+                        if(levelofcontrollerinhomeroom >4)
                         {
                             Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep([MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL], 'roomguard' + squadID,
                             {

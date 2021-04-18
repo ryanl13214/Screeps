@@ -50,7 +50,7 @@ var spwan = {
             {
                 filter: (creep) =>
                 {
-                    return (creep.memory.memstruct.boosted == false && (creep.memory.memstruct.opportuniticRenew == true || creep.memory.memstruct.moveToRenew == true) && creep.ticksToLive < 1450);
+                    return (creep.memory.memstruct.boosted == false && (creep.memory.memstruct.opportuniticRenew == true || creep.memory.memstruct.moveToRenew == true) && creep.ticksToLive < 1480);
                 }
             });
             if(ajacentcreepstorenew.length != 0 && storagevalue != 0)
@@ -92,6 +92,26 @@ var spwan = {
             Game.flags[roomname].memory.flagstruct.spawnfree = false;
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
@@ -129,13 +149,11 @@ var spwan = {
                 multiplyrepairerrs += Math.floor(constructionsites.length / 20);
             }
             var ups = 0;
-            if(roomname == "E21S12")
-            {
-                ups = 2;
-            }
-            if(storagevalue > 500000)
+           
+            if(storagevalue > 800000)
             {
                 ups = 3;
+                multiplyrepairerrs=3;
             }
             
             
@@ -288,17 +306,20 @@ var spwan = {
                     if(towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0)
                     {
                         var bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY];
-                        if(storagevalue > 990000 && levelOfController > 5)
+                        if(storagevalue > 900000 && levelOfController > 5)
                         {
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
-                            bpodyparts.push(WORK);
+                            bpodyparts= [CARRY, CARRY,  CARRY, CARRY,  CARRY, CARRY,  CARRY, CARRY ];
+                          
+                           var numberofparts = Math.floor((energyavailable - 700) / 100);
+                           if(numberofparts > 40){numberofparts=40;}
+                           
+                            for(let j = 0; j < numberofparts; j++)
+                            {
+                            
+                                bpodyparts.push(WORK);
+                            }
+                          
+                          
                         }
                         if(storagevalue > 900000 && levelOfController < 6)
                         {

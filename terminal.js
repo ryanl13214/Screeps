@@ -65,7 +65,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                   {
                       if((roomsobj[roomsall[i]]).controller.owner.username === "Q13214" && (roomsobj[roomsall[i]]).terminal != undefined)
                       {
-                          if(Game.map.getRoomLinearDistance(roomname, roomsall[i]) < 7 && Game.map.getRoomLinearDistance(roomname, roomsall[i]) != 0)
+                          if(Game.map.getRoomLinearDistance(roomname, roomsall[i]) < 10 && Game.map.getRoomLinearDistance(roomname, roomsall[i]) != 0)
                           {
                               roominrange.push(roomsall[i]);
                           }
@@ -139,7 +139,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                                       found = true;
                                   }
                               }
-                              if(!found || (found && terminalActual.store.getFreeCapacity() < 1000) && breaker == false)
+                              if(!found || (found && terminalActual.store.getFreeCapacity() < 0) && breaker == false)// stopped selling on full terminal
                               {
                                   breaker = true;
                                   Game.market.deal(buyOrders[index].id, excessResources, roomname); ////////////////////////////////////////

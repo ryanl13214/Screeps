@@ -174,9 +174,11 @@ module.exports.loop = function()
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-        squadmanage.run(resourcekeys[i]);
+            squadmanage.run(resourcekeys[i]);
         try
-        {}
+        {
+         
+        }
         catch (e)
         {}
     }
@@ -249,7 +251,7 @@ module.exports.loop = function()
         var defconlevel;
         if(Game.rooms[roomname].storage != undefined)
         {
-            storagevalue = Game.rooms[roomname].storage.store.energy;
+            storagevalue = Game.rooms[roomname].storage.store.getUsedCapacity();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();
@@ -257,7 +259,7 @@ module.exports.loop = function()
         {
             try
             {
-                defconlevel = defcon.run(roomname);
+                defconlevel = defcon.run(roomname, creepsInRoom);
             }
             catch (e)
             {
@@ -342,7 +344,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (20) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (50) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
@@ -367,6 +369,17 @@ module.exports.loop = function()
         {
             factoryManager.run(roomname, Game.rooms[roomname].terminal, factorys[0]);
         }
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       storageManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
