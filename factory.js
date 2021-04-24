@@ -53,10 +53,10 @@ var factoryManager = {
              {
               
                  if(    allValues[j] >  fact.store.getUsedCapacity(allResources[j])  && resmoveractual.memory.memstruct.tasklist.length ==0       && termin.store.getUsedCapacity(allResources[j]) > 100  )  
-                 {//     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue"]
+                 { 
            
                      resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                   resmoveractual.memory.memstruct.tasklist.push(["withdraw",termin.id   ,allResources[j] , (allValues[j]) - fact.store.getUsedCapacity(allResources[j])    ]);
+                  resmoveractual.memory.memstruct.tasklist.push(["withdraw",termin.id   ,allResources[j] , (allValues[j]) - fact.store.getUsedCapacity(allResources[j])    ]);
                     resmoveractual.memory.memstruct.tasklist.push(["transfer",fact.id ,allResources[j] ]);
                  }
              }
@@ -80,7 +80,7 @@ var factoryManager = {
      var breaks=false;
           for(var i = 0; i < basic.length; i++) 
          {  
-             if( fact.store.getUsedCapacity(basic[i]) < basicamounts[i] || termin.store.getUsedCapacity(basic[i]) < basicamounts[i]  ){
+             if( fact.store.getUsedCapacity(basic[i]) < basicamounts[i] || termin.store.getUsedCapacity(basic[i]) < basicamounts[i] *1.9){
                  
                  
              var a =      fact.produce(basic[i]);
@@ -104,11 +104,9 @@ var factoryManager = {
              if(   termin.store.getUsedCapacity(basic[i]) < basicamounts[i]  ){
                  
                  
-             var a =      fact.produce(basic[i]);
+                  fact.produce(basic[i]);
                  
-                 if(a == 0 ){
-                      breaks=true;
-                 }
+          
              }
      
          }
@@ -131,24 +129,21 @@ var factoryManager = {
      
      
      
-     if(fact.level ==2 && breaks == false){
-         
+     if(fact.level ==2  ){
+      
          
            var basic =    ['fixtures', 'tissue',  'transistor', 'extract'];
            var basicamounts =[90,90,  90, 90];
- 
-     var breaks=false;
+  
           for(var i = 0; i < basic.length; i++) 
          {  
+                 if( fact.store.getUsedCapacity(basic[i]) < basicamounts[i] || termin.store.getUsedCapacity(basic[i]) < basicamounts[i]  ){
             
-                  breaks=true;
+                  
+                fact.produce(basic[i]) ;
+                
                  
-                 var a =  fact.produce(basic[i]);
-                  if(a == 0 ){
-                      breaks=true;
-                 }   
-                 
-             
+                 }
      
          }
      

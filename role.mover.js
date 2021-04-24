@@ -77,7 +77,7 @@ KNOWN ISSUES
                      {
                          creep.memory.target = containers.id;
                      }
-                     else if(storagemain != undefined)
+                       if(storagemain != undefined)
                      {
                          creep.memory.target = storagemain.id;
                      }
@@ -101,7 +101,7 @@ KNOWN ISSUES
                          });
                      }
                  }
-                 else if(creep.memory.target != undefined)
+                    if(creep.memory.target != undefined)
                  {
                      var object = Game.getObjectById(creep.memory.target);
                      var resourcekeys = [RESOURCE_ENERGY];
@@ -120,7 +120,7 @@ KNOWN ISSUES
                      var range = creep.pos.getRangeTo(object);
                      if(range <= 1)
                      {
-                         creep.withdraw(object, resourcekeys[0]);
+                         creep.withdraw(object, "energy");
                      }
                      else
                      {

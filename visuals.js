@@ -24,64 +24,99 @@ var visuals = {
                 }
             }
         }
-   
         for(var i = 0; i < ownedrooms.length; i++)
         {
-            try{
-                
-                 var roomname = ownedrooms[i];
-             
-               ///////////////////////// 
-                
-                
-                         var corridorRoomList = Game.flags[roomname].memory.flagstruct.claimedroomstuct.corridorRooms;
-     var MineRoomslist = Game.flags[roomname].memory.flagstruct.claimedroomstuct.MineRooms;
-     var centerroomsinrange = Game.flags[roomname].memory.flagstruct.claimedroomstuct.centerroomsinrange;
-                
-                        for(var iN = 0; iN < corridorRoomList.length; iN++)
-            {    
-                
-                
-                
-                
-                Game.map.visual.line(new RoomPosition(25  ,25  ,   roomname),new RoomPosition(25  ,25  ,    corridorRoomList[iN]),    {color: '#ffffff', lineStyle: 'dashed'});
-                
-                
-                    Game.map.visual.rect(new RoomPosition(0  ,0  ,    corridorRoomList[iN]), 50, 50,
+            try
+            {
+                var roomname = ownedrooms[i];
+                ///////////////////////// 
+                var corridorRoomList = Game.flags[roomname].memory.flagstruct.claimedroomstuct.corridorRooms;
+                var MineRoomslist = Game.flags[roomname].memory.flagstruct.claimedroomstuct.MineRooms;
+                var centerroomsinrange = Game.flags[roomname].memory.flagstruct.claimedroomstuct.centerroomsinrange;
+                for(var iN = 0; iN < corridorRoomList.length; iN++)
                 {
-                      fill:'#0000ff',
-                    stroke: '#ff0000',
-                    opacity:0.1
+                    Game.map.visual.line(new RoomPosition(25, 25, roomname), new RoomPosition(25, 25, corridorRoomList[iN]),
+                    {
+                        color: '#ffffff',
+                        lineStyle: 'dashed'
+                    });
+                    Game.map.visual.rect(new RoomPosition(0, 0, corridorRoomList[iN]), 50, 50,
+                    {
+                        fill: '#0000ff',
+                        stroke: '#ff0000',
+                        opacity: 0.1
+                    });
+                }
+                for(var iN = 0; iN < MineRoomslist.length; iN++)
+                {
+                    Game.map.visual.line(new RoomPosition(25, 25, roomname), new RoomPosition(25, 25, MineRoomslist[iN]),
+                    {
+                        color: '#ffffff',
+                        lineStyle: 'dashed'
+                    });
+                    Game.map.visual.rect(new RoomPosition(0, 0, MineRoomslist[iN]), 50, 50,
+                    {
+                        fill: '#0000ff',
+                        stroke: '#ff0000',
+                        opacity: 0.1
+                    });
+                }
+                for(var iN = 0; iN < centerroomsinrange.length; iN++)
+                {
+                    Game.map.visual.line(new RoomPosition(25, 25, roomname), new RoomPosition(25, 25, centerroomsinrange[iN]),
+                    {
+                        color: '#ffffff',
+                        lineStyle: 'dashed'
+                    });
+                    Game.map.visual.rect(new RoomPosition(0, 0, centerroomsinrange[iN]), 50, 50,
+                    {
+                        fill: '#0000ff',
+                        stroke: '#ff0000',
+                        opacity: 0.1
+                    });
+                }
+                /////////////////////////////////////////////////////////////////////////
+                //  Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
+                Game.map.visual.rect(new RoomPosition(0, 0, roomname), 50, 50,
+                {
+                    fill: 'transparent',
+                    stroke: '#00FF00',
+                    strokeWidth: 1,
+                });
+                var storagev = 1000000 - Game.rooms[roomname].storage.store.getUsedCapacity("energy");
+                var fillv = Math.floor((storagev / 1000000) * 50);
+                Game.map.visual.rect(new RoomPosition(40, 0, roomname), 10, 50,
+                {
+                    fill: 'transparent',
+                    stroke: '#FFFF00',
+                    strokeWidth: 2
+                });
+                Game.map.visual.rect(new RoomPosition(40, fillv, roomname), 10, 50 - fillv,
+                {
+                    fill: '#FFFF00',
+                    stroke: '#FFFF00',
+                    strokeWidth: 1,
+                    opacity: 0.4
+                });
+                /////////////////////////////////////////////////////////////////////////
+                //  Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
+   
+                var storagev = 1000000 -  Game.rooms[roomname].terminal.store.getUsedCapacity("energy")*10;
+                var fillv = Math.floor((storagev / 1000000) * 50);
+                Game.map.visual.rect(new RoomPosition(35, 0, roomname), 5, 50,
+                {
+                    fill: 'transparent',
+                    stroke: '#FFFF00',
+                    strokeWidth: 2
+                });
+                Game.map.visual.rect(new RoomPosition(35, fillv, roomname), 5, 50 - fillv,
+                {
+                    fill: '#FFFF00',
+                    stroke: '#FFFF00',
+                    strokeWidth: 1,
+                    opacity: 0.4
                 });
                 
-            }   
-                
-                                        for(var iN = 0; iN < MineRoomslist.length; iN++)
-            {    
-                    Game.map.visual.line(new RoomPosition(25  ,25  ,   roomname),new RoomPosition(25  ,25  ,    MineRoomslist[iN]),    {color: '#ffffff', lineStyle: 'dashed'});
-                
-                    Game.map.visual.rect(new RoomPosition(0  ,0  ,    MineRoomslist[iN]), 50, 50,
-                {
-                      fill:'#0000ff',
-                    stroke: '#ff0000',
-                    opacity:0.1
-                });
-                
-            }   
-                
-                
-                                        for(var iN = 0; iN < centerroomsinrange.length; iN++)
-            {    
-                    Game.map.visual.line(new RoomPosition(25  ,25  ,   roomname),new RoomPosition(25  ,25  ,    centerroomsinrange[iN]),    {color: '#ffffff', lineStyle: 'dashed'});
-                
-                    Game.map.visual.rect(new RoomPosition(0  ,0  ,    centerroomsinrange[iN]), 50, 50,
-                {
-                      fill:'#0000ff',
-                    stroke: '#ff0000',
-                    opacity:0.1
-                });
-                
-            }   
                 
                 
                 
@@ -92,88 +127,52 @@ var visuals = {
                 
                 
                 /////////////////////////////////////////////////////////////////////////
-                
-            
-          //  Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
-            
-            Game.map.visual.rect(new RoomPosition(0  ,0  ,   roomname), 50, 50,
+                var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
                 {
-                      fill:'transparent',
-                    stroke: '#00FF00',
-                    strokeWidth:1,
-                      
+                    filter: (s) =>
+                    {
+                        return (s.structureType == STRUCTURE_TOWER);
+                    }
                 });
-            
-            var storagev = Game.rooms[roomname].storage.store.getFreeCapacity();
-            
-            var fillv =Math.floor(( storagev / 1000000 )* 50);
-             
-                Game.map.visual.rect(new RoomPosition(40 ,0  ,   roomname), 10, 50,
+                for(var iN = 0; iN < towers.length; iN++)
                 {
-                      fill:'transparent',
-                    stroke: '#FFFF00',
-                    strokeWidth:2
-                      
-                });
-            
-                Game.map.visual.rect(new RoomPosition(40 , fillv ,   roomname), 10, 50-fillv ,
-                {
-                      fill:'#FFFF00',
-                    stroke: '#FFFF00',
-                    strokeWidth:1,
-                     opacity:0.4
-                      
-                });
-            
-                 
-            /////////////////////////////////////////////////////////////////////////
-            
-            
-            
-            var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
-            {
-                filter: (s) =>
-                {
-                    return (s.structureType == STRUCTURE_TOWER);
+                    Game.map.visual.rect(new RoomPosition(towers[iN].pos.x - 5, towers[iN].pos.y - 5, towers[iN].pos.roomName), 11, 11,
+                    {
+                        fill: 'transparent',
+                        stroke: '#ff0000'
+                    });
                 }
-            });
-            for(var iN = 0; iN < towers.length; iN++)
+            }
+            catch (e)
+            {}
+            // nuker  
+            if(1 == 2)
             {
-                Game.map.visual.rect(new RoomPosition(towers[iN].pos.x - 5, towers[iN].pos.y - 5, towers[iN].pos.roomName), 11, 11,
+                Game.map.visual.rect(new RoomPosition(25, 25, ownedrooms[i]), 525, 525,
                 {
-                    fill: 'transparent',
-                    stroke: '#ff0000'
+                    fill: '#0000ff',
+                    stroke: '#0000ff',
+                    opacity: 0.05
+                });
+                Game.map.visual.rect(new RoomPosition(25, 25, ownedrooms[i]), -525, 525,
+                {
+                    fill: '#0000ff',
+                    stroke: '#0000ff',
+                    opacity: 0.05
+                });
+                Game.map.visual.rect(new RoomPosition(25, 25, ownedrooms[i]), 525, -525,
+                {
+                    fill: '#0000ff',
+                    stroke: '#0000ff',
+                    opacity: 0.05
+                });
+                Game.map.visual.rect(new RoomPosition(25, 25, ownedrooms[i]), -525, -525,
+                {
+                    fill: '#0000ff',
+                    stroke: '#0000ff',
+                    opacity: 0.05
                 });
             }
-            }catch(e){}
-                // nuker  
-                if(1==2){
-                Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), 525, 525,
-                {
-                      fill:'#0000ff',
-                    stroke: '#0000ff',
-                    opacity:0.05
-                });
-                     Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), -525, 525,
-                {
-                     fill:'#0000ff',
-                    stroke: '#0000ff',
-                    opacity:0.05
-                });
-                     Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), 525, -525,
-                {
-                    fill:'#0000ff',
-                    stroke: '#0000ff',
-                    opacity:0.05
-                });
-                     Game.map.visual.rect(new RoomPosition(25  ,25  ,    ownedrooms[i]), -525, -525,
-                {
-                      fill:'#0000ff',
-                    stroke: '#0000ff',
-                    opacity:0.05
-                });
-                }
-                 
         }
         var allcreeps = Game.creeps;
         allcreeps = Object.keys(allcreeps);

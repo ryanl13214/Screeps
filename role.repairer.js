@@ -67,7 +67,7 @@ var rolerepair = {
                             }
                             if(!creep.memory.hastask)
                             {
-                                creepfunctions.upkeepwalls(creep);
+                           this.repairLowestRamparts(creep);
                             }
                         }
                     }
@@ -108,6 +108,28 @@ var rolerepair = {
                 //      creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
             }
         }
-    }
+    },
+     repairLowestRamparts: function(creep){
+            var LowestRamparts = creep.room.find(FIND_STRUCTURES,
+                        {
+                            filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
+                        });
+             var tmp = 0;
+             if(LowestRamparts.length !=0){
+                            var value = 9999999999999999999;
+                            for(var i = 0; i < LowestRamparts.length; i++)
+                            {
+                                if(LowestRamparts[i].hits < value)
+                                {
+                                    value = LowestRamparts[i].hits;
+                                    tmp = i;
+                                }
+                            }
+                            
+                            creep.memory.memstruct.tasklist.push(["repair",LowestRamparts[tmp].id]);
+             }                   
+                            
+         
+     }
 };
 module.exports = rolerepair;

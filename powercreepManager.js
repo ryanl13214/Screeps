@@ -432,10 +432,35 @@ var powercreepManager = {
             }
         }
         
+        /////////////////////////////////////////////////
         
         
-        
-        
+           if(powerCreep.powers[PWR_OPERATE_SPAWN] != undefined)
+        {
+            if(powerCreep.store.getUsedCapacity("ops") > 210) // creep is full
+            {
+                
+                var FACTORY = Game.spawns[powerCreep.room.name];
+                if(FACTORY.effects == undefined || FACTORY.effects.length == 0  )///////////////////////////////////////////////
+                {
+                    powerCreep.moveTo(FACTORY,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ff0000'
+                        }
+                    });
+                    powerCreep.usePower(PWR_OPERATE_SPAWN, FACTORY);
+                }
+                
+                
+                
+                
+                
+                
+                
+            }
+        }
         
         
         

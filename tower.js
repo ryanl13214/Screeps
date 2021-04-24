@@ -36,7 +36,27 @@ var tower = {
         {
             
             
-            var closestHostile = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            var closestHostile = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS,
+        {
+            filter: (c) =>
+            {
+                return (c.pos.x > 2 && c.pos.x < 48 && c.pos.y < 48 && c.pos.y > 2);
+            }
+        });
+        
+                var doretos = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS ,
+        {
+            filter: (c) =>
+            {
+                return (c.owner.username == "Invader");
+            }
+        });
+        
+       
+            
+            
+            
+            
             var closestDamagedStructure = towers[i].pos.findInRange(FIND_STRUCTURES, 5,
             {
                 filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL
@@ -58,10 +78,16 @@ var tower = {
             }
             
             
-            else   if (closestHostile != undefined  )// make limiter to ensure tower draining doesnt work 
+            else   if (closestHostile != undefined   )// make limiter to ensure tower draining doesnt work 
             {
                 towers[i].attack(closestHostile);
             }
+             else   if (  doretos != undefined )// make limiter to ensure tower draining doesnt work 
+            {
+                towers[i].attack(doretos);
+            }
+            
+            
             else if (closestDamagedStructure.length != 0 && towers[i].store.getUsedCapacity() > 200 && towers[i].room.controller.level >3 && Game.rooms[roomname].storage.store.getUsedCapacity("energy")>10000)
             {
                 towers[i].repair(closestDamagedStructure[0]);
