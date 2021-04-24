@@ -1,20 +1,9 @@
-   /*
-    total resouce distribution is 
-    104,000  raw resources 
-    105k finished resources
-    50k energy =234,000
-    40,000 free space
-    above this sell all
-    
+/*
 catalyzed zynthium alkalide	   	+300% fatigue decrease speed   
 catalyzed ghodium alkalide  	-70% damage taken                                                      
 catalyzed utrium acid        	+300% attack effectiveness                                             
 catalyzed lemergium alkalide    +300% heal and rangedHeal effectiveness                                        
 catalyzed keanium alkalide	 + 	60	RANGED_ATTACK	+300% rangedAttack and rangedMassAttack effectiveness                             
-
-
-
-
 
 XUH2O   catalyzed utrium acid	            ATTACK	        +300% attack effectiveness                                                                                                   
 XUHO2   catalyzed utrium alkalide        	WORK	        +600% harvest effectiveness                                                                                                   
@@ -26,13 +15,6 @@ XZH20   catalyzed zynthium acid	        	WORK	        +300% dismantle effectiven
 XZHO2   catalyzed zynthium alkalide	     	MOVE	        +300% fatigue decrease speed                                                                                                   
 XGH2O   catalyzed ghodium acid	        	WORK        	+100% upgradeController effectiveness without increasing the energy cost                                                                                                   
 XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken                                                                                                   
-
-
-
-
-
-
- 
 */
   var terminalManager = {
       run: function(roomname, terminalActual, defcon, storagevalue)
@@ -264,27 +246,52 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
           }
           ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           ////////////////////////////////////////////////////////// BUY ENERGY ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-          if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 50000 && terminalActual.store.getUsedCapacity(RESOURCE_ENERGY) < 65000 && Game.time % (20000) == 0)
-          {
-              var hist = Game.market.getHistory(RESOURCE_ENERGY)
-              for(const id in Game.market.orders)
+           var q = 0; 
+               for(const id in Game.market.orders)
               {
                   if(Game.market.orders[id].remainingAmount == 0)
                   {
                       Game.market.cancelOrder(id);
                   }
-                  Game.market.createOrder(
+                q++;
+              }  
+          if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 50000  && Game.time % (20000) == 0)
+          {
+              var hist = Game.market.getHistory(RESOURCE_ENERGY)
+       Game.market.createOrder(
                   {
                       type: ORDER_BUY,
                       resourceType: RESOURCE_ENERGY,
-                      price: (hist[0].avgPrice + (hist[0].stddevPrice * 1.6)),
+                      price: (hist[0].avgPrice + (hist[0].stddevPrice * 1.2)),
                       totalAmount: 200000,
                       roomName: roomname
                   });
-              }
+            }
               ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
               ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-          }
+ 
+         if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 500000   && Game.market.credits > 30000000 && q < Game.gcl.level)
+          {
+              console.log("buying energy");
+              var hist = Game.market.getHistory(RESOURCE_ENERGY)
+          
+            Game.market.createOrder(
+                  {
+                      type: ORDER_BUY,
+                      resourceType: RESOURCE_ENERGY,
+                      price: (hist[0].avgPrice + (hist[0].stddevPrice * 1.2)),
+                      totalAmount: 500000,
+                      roomName: roomname
+                  });
+           
+            }
+              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+             
+          
+          
+          
+          
       }
   }
   module.exports = terminalManager;

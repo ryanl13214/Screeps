@@ -152,11 +152,16 @@ var spwan = {
            
             if(storagevalue > 800000)
             {
+                if(levelOfController !=8){
                 ups = 3;
+                }
+                
                 multiplyrepairerrs=3;
             }
-            
-            
+            if(defconstruct.defenceLevel != 10){
+                 multiplyrepairerrs=3;
+            }
+                
             
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,6 +182,7 @@ var spwan = {
             }
             else if(storagevalue < 10000 && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500))
             {
+               
                 Game.spawns[roomname].spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN' + roomname,
                 {
                     memory:
@@ -297,22 +303,25 @@ var spwan = {
                     }
                 }
             }
-            else if(levelOfController > 3)
-            {
+           if(levelOfController > 3)
+            {  
                 //////////////////////end low energy management/////////////////////////////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 for(var i = 0; i < spawnss.length; i++)
                 {
-                    if(towermover == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0)
-                    {
-                        var bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY];
+                    if(towermover.length  == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0)
+                    {  console.log(storagevalue);
+                    
+                    
+                    
+                     var bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY];
                         if(storagevalue > 900000 && levelOfController > 5)
                         {
                             bpodyparts= [CARRY, CARRY,  CARRY, CARRY,  CARRY, CARRY,  CARRY, CARRY ];
                           
                            var numberofparts = Math.floor((energyavailable - 700) / 100);
                            if(numberofparts > 40){numberofparts=40;}
-                           
+                           console.log(numberofparts);
                             for(let j = 0; j < numberofparts; j++)
                             {
                             
@@ -325,7 +334,7 @@ var spwan = {
                         {
                          bpodyparts=[WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY];
                         }
-                        
+                               var bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY];
                         
                         spawnss[i].spawnCreep(bpodyparts, 'towermover' + roomname,
                         {
@@ -337,7 +346,7 @@ var spwan = {
                             }
                         });
                     }
-                    else if(resourcemover == 0 && levelOfController > 5 && Game.rooms[roomname].terminal != undefined)
+                    else if(resourcemover.length  == 0 && levelOfController > 5 && Game.rooms[roomname].terminal != undefined)
                     {
                         if(levelOfController == 8 && spawnss[i].name == roomname + "1")
                         {

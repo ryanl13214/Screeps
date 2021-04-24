@@ -380,8 +380,7 @@ var roleguard = {
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creep.memory.attackrole == "cavalry")
             {
-                //  creep.say("f.length");
-                // console.log("d");
+              
                 const closetarget = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                 var targetlist = creep.room.find(FIND_HOSTILE_CREEPS);
                 if(closetarget != undefined)
@@ -410,7 +409,7 @@ var roleguard = {
                             freeRamparts.push(ramparts[i]);
                         }
                     }
-                    creep.say(freeRamparts.length);
+                   
                     var distance = 999999;
                     var index = 9999;
                     for(var i = 0; i < freeRamparts.length; i++)
@@ -425,14 +424,15 @@ var roleguard = {
                     }
                     if(freeRamparts.length != 0)
                     {
-                        var targetsincurrrange = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 1);
+                        var targetsincurrrange = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 1);  
+                    
                         var targetsformove = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 2);
                         var creepRangeToClosestsFreeRampart = freeRamparts[index].pos.getRangeTo(creep);
                         if(targetsformove.length == 0 || creep.hits < creep.hitsMax)
                         { // need to move to closest rampart this stops when in range 
                             creep.moveTo(freeRamparts[index].pos);
                         }
-                        if(creep.hits == creep.hitsMax && creepRangeToClosestsFreeRampart < 1)
+                        if(creep.hits == creep.hitsMax && creepRangeToClosestsFreeRampart !=0)
                         {
                             creep.moveTo(closetarget);
                         }
@@ -440,11 +440,20 @@ var roleguard = {
                         {
                             creep.say("else");
                         }
-                        if(targetsincurrrange != undefined)
+                          
+                        if(targetsincurrrange.length != 0)
                         {
-                            creep.attack(targetsincurrrange[0]);
+                            creep.attack(closetarget);
                         }
+                        
                     }
+                     var targetsincurrrange = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 1);  
+                     if(targetsincurrrange.length != 0)
+                        {
+                            creep.attack(closetarget);
+                        }
+                    
+                    
                 }
                 if(creep.room.name != creep.memory.memstruct.spawnRoom)
                 {

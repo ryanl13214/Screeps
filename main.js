@@ -263,6 +263,7 @@ module.exports.loop = function()
             }
             catch (e)
             {
+                console.log("defconbroke-",roomname);
                 var defconlevel = {
                     defenceLevel: 10,
                     attackLevel: 10
@@ -307,10 +308,10 @@ module.exports.loop = function()
         //                                            spawning
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
         var startCpu = Game.cpu.getUsed();
-        
+             spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
         try
         {
-               spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
+          
         }
         catch (e)
         {}
@@ -397,7 +398,14 @@ module.exports.loop = function()
                 structureType: STRUCTURE_POWER_SPAWN
             }
         });
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && pwrspawn.length != 0&& Game.time % (10) == 0)
+        var g=4;
+        if(Game.market.credits> 30000000){
+          g=1;  
+        }
+        
+        
+        
+        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].terminal.store.getUsedCapacity("energy") > 5000 && Game.rooms[roomname].storage != undefined && pwrspawn.length != 0&& Game.time % (g) == 0)
         {
            pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
         }
@@ -469,7 +477,6 @@ module.exports.loop = function()
             {}
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.time % 111111 == 0)

@@ -154,10 +154,16 @@ var roommining = {
                 var storagemain = creeper.room.storage;
                 var terminal = creeper.room.terminal;
                 var targ;
-                if(storagemain != undefined)
+                
+                if(storagemain != undefined && storagemain.store.getFreeCapacity() > 2500)
                 {
                     targ = storagemain;
+                }else if(terminal != undefined){
+                    targ=terminal;
                 }
+                
+                
+                
                 var range = creeper.pos.getRangeTo(targ);
                 if(range <= 1)
                 {

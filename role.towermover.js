@@ -4,7 +4,8 @@ var roletowermover = {
         //     var sources = creep.room.find(FIND_STRUCTURES, { filter: (structure) =>{return (structure.structureType == STRUCTURE_CONTAINER);}}); 
         // creep.say(sources.length); 
     if(creep.memory.spawntime == undefined){
-        creep.memory.spawntime 
+        
+        creep.memory.spawntime =0;
     }else{
          if(creep.memory.spawntime> 10000){
         creep.suicide();
