@@ -2,7 +2,7 @@ var squadmanage = require('squadManager');
 var tickcode = {
     run: function()
     {
-  
+  // walkaround room is E21N5
        
        
        
@@ -13,15 +13,20 @@ var tickcode = {
        
        
        
+                    Game.spawns["E24N3" ].spawnCreep(
+           [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK]
+           , 'lastHope2' ,{memory:{role: 'guard', attackrole :"attacker",  memstruct:{spawnRoom: "E24N3", tasklist: [["createslaveBOOST"] ,["createslaveBOOST2"] ,["boosAllMax"],["moveToRoom",   "E21N5"],["moveToRoom",   "E20N4"],["moveToRoom",   "E20S4"],["moveToRoom",   "E19S4"]   ],
+  objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+
+        
        
        
        
        
        
        
-       
-       if(Memory.squadObject.testQuad == undefined  ){
-                squadmanage.initializeSquad(  "testQuad", ["E19S0"], false, "quad", "E19S1", {
+       if(Memory.squadObject.testQuad == undefined && 1==2 ){
+                squadmanage.initializeSquad(  "testQuad", ["E20S12"], false, "quad", "E21S12", {
                                     "head1": [RANGED_ATTACK ,MOVE],                                
                                     "tail1": [HEAL, MOVE],
                                     "head2": [RANGED_ATTACK ,MOVE],
@@ -30,62 +35,65 @@ var tickcode = {
        }
        
        
-        if(Memory.squadObject.attack_SERPENT == undefined  && 1==2){
-       
+ 
 
+ 
 
-  squadmanage.initializeSquad(  "attack_SERPENT", ["E19S0"], false, "serpent", "E19N2",
-                                {
-                                    "head": [TOUGH,  MOVE , MOVE, RANGED_ATTACK ],
-                                    "body": [TOUGH, MOVE, MOVE,  HEAL],
-                                    "tail":   [TOUGH, MOVE, MOVE,  HEAL]
-                                });
-
-
-
-
-}
+      //  Game.rooms['E19N2'].terminal.send("energy", 10000, 'E25N2',    'trade contract #1');
         
         
-
-
-
         
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
+    
+   
+   
+                   Game.spawns["E21S12" ].spawnCreep(
+        [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH, RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL]
+           , 'remoteDefence'  ,{memory:{role: 'guard', attackrole :"ranger",  memstruct:{spawnRoom: "E24N3", tasklist: [ ["moveToRoom",   "E19S4"] ],
+  objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+   
+   
+   /*
+   
+   
         
+   
+   
+   
+   */
        
             /*
        
+       
+        
+                   Game.spawns["E24N3" ].spawnCreep(
+          [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL]
+           , 'remoteDefence'+Game.time ,{memory:{role: 'guard', attackrole :"ranger",  memstruct:{spawnRoom: "E24N3", tasklist: [ ["moveToRoom",   "E21N5"],["moveToRoom",   "E19N2"]   ],
+  objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+   
+       
+           
+        
+                   Game.spawns["E24N31" ].spawnCreep(
+          [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL]
+           , 'remoteDefence1'+Game.time ,{memory:{role: 'guard', attackrole :"ranger",  memstruct:{spawnRoom: "E24N3", tasklist: [ ["moveToRoom",   "E21N5"],["moveToRoom",   "E19N2"]   ],
+  objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
+   
+       
+       
+       
+       
+       
+       
+       
+        
+       
+       
+       
+       
+       
+       
+       
+        
        
         
            
@@ -123,8 +131,8 @@ var tickcode = {
         
        
                        Game.spawns["E24N31" ].spawnCreep(
-           [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK]
-           , 'basicroomdis2' ,{memory:{role: 'guard', attackrole :"basicRoomDIS",  memstruct:{spawnRoom: "E24N3", tasklist: [["createslaveBOOST"] ,["createslaveBOOST2"] ,["boosAllMax"],["moveToRoom",   "E21N5"],["moveToRoom",   "E19N0"],["moveToRoom",   "E14S0"],["moveToRoom",   "E14S3"]   ],
+           [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK]
+           , 'defeceduo' ,{memory:{role: 'guard', attackrole :"chasedown",  memstruct:{spawnRoom: "E24N3", tasklist: [["createslaveBOOST"]  ,["boosAllMax"]   ],
   objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
 
         

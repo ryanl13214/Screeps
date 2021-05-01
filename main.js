@@ -41,8 +41,8 @@ module.exports.loop = function()
     //                                  
     //------------------------------------------------------------------------------------------------
     var startCpu = Game.cpu.getUsed();
-    try
-    {
+   // try
+    //{
         var powerCreepList = Game.powerCreeps;
         var listnumbers = Object.keys(powerCreepList);
         var listvalues = Object.values(powerCreepList);
@@ -50,9 +50,8 @@ module.exports.loop = function()
         {
             powerManager.run(listvalues[i]);
         }
-    }
-    catch (e)
-    {}
+    //}
+   // catch (e) {}
     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
     if(debug)
     {
@@ -174,10 +173,10 @@ module.exports.loop = function()
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-            squadmanage.run(resourcekeys[i]);
+         
         try
         {
-         
+            squadmanage.run(resourcekeys[i]);
         }
         catch (e)
         {}
@@ -256,10 +255,10 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();
         if(Game.rooms[roomname].controller.level > 3)
-        {
+        {  defconlevel = defcon.run(roomname, creepsInRoom);
             try
             {
-                defconlevel = defcon.run(roomname, creepsInRoom);
+              
             }
             catch (e)
             {
@@ -308,10 +307,10 @@ module.exports.loop = function()
         //                                            spawning
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
         var startCpu = Game.cpu.getUsed();
-             spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
+           
         try
         {
-          
+            spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
         }
         catch (e)
         {}
@@ -384,10 +383,12 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       storageManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+      
         if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (6) == 0)
         {
             storageManager.run(roomname);
         }
+      
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       pwrspawnManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  

@@ -93,8 +93,11 @@ var roles = {
                     }
                 }
                 else if(creep.memory.role == "guard")
-                {try{
-                    roleguard.run(creep);}catch(e){}
+                {
+                 //   try{
+                    roleguard.run(creep);
+                        
+             //       }catch(e){}
                 }
                 else if(creep.memory.role == "scout")
                 {
