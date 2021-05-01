@@ -52,53 +52,162 @@ var rolerepair = {
                             filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
                         });
                     }
-                    if(structuresclosetoenemys.length == 0)
+                    var nukeIncoming = creep.room.find(FIND_NUKES);
+                    var myspawns = creep.room.find(FIND_MY_SPAWNS);
+                    var spawnsInDanger = [];
+                    var terminalInDanger = false;
+                    var storageInDanger = false;
+                    //  nukes 
+                    if(nukeIncoming.length != 0 && target.length ==0)
                     {
-                        creep.memory.hastask = false;
-                        if(!creep.memory.hastask)
+                        // storaqge spawn and terminal
+                        var storagerampartsneeded = 0.;
+                        // calc storage ramparts needed
+                        for(var i = 0; i < nukeIncoming.length; i++)
                         {
-                            if(!creep.memory.hastask)
+                            var range = creep.room.storage.pos.getRangeTo(nukeIncoming[i]);
+                            if(range == 0)
                             {
-                                creepfunctions.buildstructs(creep);
+                                storagerampartsneeded += 10100000;
                             }
-                            if(!creep.memory.hastask)
+                            else if(range < 3)
                             {
-                                creepfunctions.repairbuildingsfull(creep);
-                            }
-                            if(!creep.memory.hastask)
-                            {
-                           this.repairLowestRamparts(creep);
+                                storagerampartsneeded += 5100000;
                             }
                         }
-                    }
-                    else
-                    {
-                        if(structuresclosetoenemys.length != 0)
+                        var terminalrampartsneeded = 0.;
+                        // calc terminal ramparts needed
+                        for(var i = 0; i < nukeIncoming.length; i++)
                         {
-                            var tmp = 0;
-                            var value = 9999999999999999999;
-                            for(var i = 0; i < structuresclosetoenemys.length; i++)
+                            var range = creep.room.terminal.pos.getRangeTo(nukeIncoming[i]);
+                            if(range == 0)
                             {
-                                if(structuresclosetoenemys[i].hits < value)
-                                {
-                                    value = structuresclosetoenemys[i].hits;
-                                    tmp = i;
-                                }
+                                terminalrampartsneeded += 10100000;
                             }
-                            var range = creep.pos.getRangeTo(structuresclosetoenemys[tmp]);
+                            else if(range < 3)
+                            {
+                                terminalrampartsneeded += 5100000;
+                            }
+                        }
+                        var storagerampartsCurrent = 0;
+                        var terminalrampartsCurrent = 0;
+                        var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.storage.pos.x, creep.room.storage.pos.y);
+                        var terminalrapartActual;
+                        var storagerampartActual;
+                        for(var i = 0; i < tmp.length; i++)
+                        {
+                            if(tmp[i].structureType == STRUCTURE_RAMPART)
+                            {
+                                storagerampartsCurrent = tmp[i].hits;
+                                storagerampartActual = tmp[i];
+                            }
+                        }
+                        var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.terminal.pos.x, creep.room.terminal.pos.y);
+                        for(var i = 0; i < tmp.length; i++)
+                        {
+                            if(tmp[i].structureType == STRUCTURE_RAMPART)
+                            {
+                                terminalrampartsCurrent = tmp[i].hits;
+                                terminalrapartActual = tmp[i];
+                            }
+                        }
+                        if(terminalrampartsneeded > terminalrampartsCurrent)
+                        {
+                            var range = creep.pos.getRangeTo(terminalrapartActual);
                             if(range <= 3)
                             {
-                                creep.repair(structuresclosetoenemys[tmp]);
+                                creep.repair(terminalrapartActual);
                             }
                             else
                             {
-                                creep.moveTo(structuresclosetoenemys[tmp],
+                                creep.moveTo(terminalrapartActual);
+                            }
+                            creep.say("nuketerminal");
+                        }
+                        else if(storagerampartsneeded > storagerampartsCurrent)
+                        {
+                            var range = creep.pos.getRangeTo(storagerampartActual);
+                            if(range <= 3)
+                            {
+                                creep.repair(storagerampartActual);
+                            }
+                            else
+                            {
+                                creep.moveTo(storagerampartActual.pos);
+                            }
+                            creep.say("nukestorage");
+                        }
+                        else
+                        {
+                            creep.say("nukeready");
+                            nukeIncoming = [];
+                        }
+                        // end of nuke check
+  
+                    }   
+                    if(nukeIncoming.length == 0 || target.length !=0)
+                        {
+                            if(structuresclosetoenemys.length == 0)
+                            {
+                                creep.memory.hastask = false;
+                                if(!creep.memory.hastask)
                                 {
-                                    reusePath: 5
-                                });
+                                    if(!creep.memory.hastask)
+                                    {
+                                        creepfunctions.buildstructs(creep);
+                                    }
+                                    if(!creep.memory.hastask)
+                                    {
+                                        creepfunctions.repairbuildingsfull(creep);
+                                    }
+                                    if(!creep.memory.hastask)
+                                    {
+                                        this.repairLowestRamparts(creep);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                
+                                        let goals = _.map(target, function(host)
+        {
+            return {
+                pos: host.pos,
+                range: 3
+            };
+        });
+        let patha = PathFinder.search(creep.pos, goals,
+        {
+            flee: true
+        }).path;
+        creep.moveByPath(patha);
+                                if(structuresclosetoenemys.length != 0)
+                                {
+                                    var tmp = 0;
+                                    var value = 9999999999999999999;
+                                    for(var i = 0; i < structuresclosetoenemys.length; i++)
+                                    {
+                                        if(structuresclosetoenemys[i].hits < value)
+                                        {
+                                            value = structuresclosetoenemys[i].hits;
+                                            tmp = i;
+                                        }
+                                    }
+                                    var range = creep.pos.getRangeTo(structuresclosetoenemys[tmp]);
+                                    if(range <= 3)
+                                    {
+                                        creep.repair(structuresclosetoenemys[tmp]);
+                                    }
+                                    else
+                                    {
+                                        creep.moveTo(structuresclosetoenemys[tmp],
+                                        {
+                                            reusePath: 5
+                                        });
+                                    }
+                                }
                             }
                         }
-                    }
                 }
                 creep.memory.cpuUsed = creep.memory.cpuUsed + (Game.cpu.getUsed() - startCpurepair);
                 if(creep.ticksToLive == 1)
@@ -109,27 +218,26 @@ var rolerepair = {
             }
         }
     },
-     repairLowestRamparts: function(creep){
-            var LowestRamparts = creep.room.find(FIND_STRUCTURES,
-                        {
-                            filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
-                        });
-             var tmp = 0;
-             if(LowestRamparts.length !=0){
-                            var value = 9999999999999999999;
-                            for(var i = 0; i < LowestRamparts.length; i++)
-                            {
-                                if(LowestRamparts[i].hits < value)
-                                {
-                                    value = LowestRamparts[i].hits;
-                                    tmp = i;
-                                }
-                            }
-                            
-                            creep.memory.memstruct.tasklist.push(["repair",LowestRamparts[tmp].id]);
-             }                   
-                            
-         
-     }
+    repairLowestRamparts: function(creep)
+    {
+        var LowestRamparts = creep.room.find(FIND_STRUCTURES,
+        {
+            filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
+        });
+        var tmp = 0;
+        if(LowestRamparts.length != 0)
+        {
+            var value = 9999999999999999999;
+            for(var i = 0; i < LowestRamparts.length; i++)
+            {
+                if(LowestRamparts[i].hits < value)
+                {
+                    value = LowestRamparts[i].hits;
+                    tmp = i;
+                }
+            }
+            creep.memory.memstruct.tasklist.push(["repair", LowestRamparts[tmp].id]);
+        }
+    }
 };
 module.exports = rolerepair;

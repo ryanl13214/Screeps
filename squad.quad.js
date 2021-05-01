@@ -1,6 +1,7 @@
 var serpentsquad = {
     getpositions: function(c, head)
     {
+        head[c].say("getpos");
         if(c == 1)
         {
             var a = 0;
@@ -34,7 +35,7 @@ var serpentsquad = {
             freepositions.push(new RoomPosition(buddyX, buddyY - 1, head[a].room.name));
             prefered = true;
         }
-        head[c].say(prefered);
+        head[c].say("pre "+prefered);
         if(prefered)
         {
             head[c].memory.movingcheck = true;
@@ -107,6 +108,48 @@ var serpentsquad = {
             return false;
         }
     },
+    moveAsOne: function(squadID)
+    {
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var head = [];
+        var tail = [];
+        var all = [];
+        var inHome = false;
+        for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            var creepername = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name.substring(0, 4);
+            if(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).room.name == mainMemoryObject.squadHomeRoom)
+            {
+                inHome = true;
+            }
+            if(creepername == "head")
+            {
+                head.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+                all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+            else if(creepername == "tail")
+            {
+                tail.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+                all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+        }
+        var targetPos = Game.flags[squadID];
+        if(targetPos != undefined)
+        {
+            const path = head[0].pos.findPathTo(targetPos);
+            if(path.length > 0)
+            {
+                for(var c = 0; c < head.length; c++)
+                {
+                    head[c].move(path[0].direction);
+                }
+                for(var c = 0; c < tail.length; c++)
+                {
+                    tail[c].move(path[0].direction);
+                }
+            }
+        }
+    },
     run: function(squadID)
     {
         //    console.log("serpent control");
@@ -134,31 +177,25 @@ var serpentsquad = {
             }
         }
         var squadFullyInroom = false;
-     
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////MOVEMENT to goal room///////////////////////////////////////////////////////////////    
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////     
         if(mainMemoryObject.arrayOfSquadGoals.length != 0)
         {
-            
-               var goalposition = new RoomPosition(25, 25, mainMemoryObject.arrayOfSquadGoals[0]);
-            
+            var goalposition = new RoomPosition(25, 25, mainMemoryObject.arrayOfSquadGoals[0]);
             for(var c = 0; c < all.length; c++)
-            {   
-                 var closeteams = all[c].pos.findInRange(FIND_MY_CREEPS, 3);
+            {
+                var closeteams = all[c].pos.findInRange(FIND_MY_CREEPS, 3);
                 if(closeteams.length == 4 && all[c].room.name == mainMemoryObject.arrayOfSquadGoals[0])
                 {
                     squadFullyInroom = true;
-                
                 }
-               
                 var closeteams = all[c].pos.findInRange(FIND_MY_CREEPS, 1);
                 if(closeteams.length != 0 || all[c].pos.x < 2 || all[c].pos.x > 48 || all[c].pos.y < 2 || all[c].pos.y > 48 && all[c].room.name != mainMemoryObject.arrayOfSquadGoals[0])
                 {
                     all[c].moveTo(new RoomPosition(25, 25, mainMemoryObject.arrayOfSquadGoals[0]));
                 }
             }
-        
             if(squadFullyInroom)
             {
                 mainMemoryObject.arrayOfSquadGoals.splice(0, 1);
@@ -168,117 +205,114 @@ var serpentsquad = {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////build square////////////////////////////////////////////////////////////////////////    
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-        if(head.length !=0){
-        var allclose =head[0].pos.findInRange(FIND_MY_CREEPS, 1);
-        if(allclose<4){
-        
-            for(var  c = 0; c < head.length; c++)
+        if(head.length != 0)
+        {
+            var allclose = head[0].pos.findInRange(FIND_MY_CREEPS, 1);
+     if(allclose.length == 4 ){
+          allclose = head[1].pos.findInRange(FIND_MY_CREEPS, 1);
+     }
+     if(allclose.length == 4 ){
+          allclose = tail[0].pos.findInRange(FIND_MY_CREEPS, 1);
+     }
+     if(allclose.length == 4 ){
+         allclose = tail[1].pos.findInRange(FIND_MY_CREEPS, 1);
+     } 
+     
+            if(allclose.length != 4)
             {
-                var closeteams = head[c].pos.findInRange(FIND_MY_CREEPS, 1);
-                if(closeteams.length < 4)
+                head[0].say(allclose.length);
+                for(var c = 0; c < head.length; c++)
                 {
-                    // check if the creep needs to move to its other head
-                    if(c == 0)
+                    var closeteams = head[c].pos.findInRange(FIND_MY_CREEPS, 1);
+                    if(closeteams.length < 4)
                     {
-                        var a = 1;
-                    }
-                    if(c == 1)
-                    {
-                        var a = 0;
-                    }
-                    var range = head[c].pos.getRangeTo(head[a]);
-                    var BothMoveChecker = false;
-                    if(c == 1 && range < 4)
-                    {
-                        if(head[0].memory.movingcheck != true)
+                        // check if the creep needs to move to its other head
+                        if(c == 0)
                         {
-                            BothMoveChecker = true;
+                            var a = 1;
+                        }
+                        if(c == 1)
+                        {
+                            var a = 0;
+                        }
+                        var range = head[c].pos.getRangeTo(head[a]);
+                        var BothMoveChecker = false;
+                        
+                        if(c == 1 && range < 4)
+                        {
+                            if(head[0].memory.movingcheck != true)
+                            {
+                                BothMoveChecker = true;
+                            }
+                        }
+                            head[c].say("r"+range+ " - "+ BothMoveChecker +" "+ closeteams.length );
+                        if((range > 1 || closeteams.length < 4) && BothMoveChecker)
+                        {
+                            head[c].moveTo(head[c].pos.findClosestByRange(this.getpositions(c, head)));
+                        try{
+                            head[c].room.visual.line(head[c].pos, head[c].pos.findClosestByRange(this.getpositions(c, head)),
+                            {
+                                color: 'blue',
+                                lineStyle: 'dashed'
+                            }); }catch(e){}
                         }
                     }
-                    if(range > 1 && BothMoveChecker)
+                }
+                for(var c = 0; c < tail.length; c++)
+                {
+                    tail[c].say("closeteams");
+                    tail[c].memory.movingcheck = false;
+                    var closeteams = tail[c].pos.findInRange(FIND_MY_CREEPS, 1);
+                    tail[c].say("c"+closeteams.length);
+                    if(closeteams.length < 4)
                     {
-                        head[c].moveTo(head[c].pos.findClosestByRange(this.getpositions(c, head)));
-                        head[c].room.visual.line(head[c].pos, head[c].pos.findClosestByRange(this.getpositions(c, head)),
+                        // check if the creep needs to move to its other head
+                        if(c == 0)
                         {
-                            color: 'blue',
-                            lineStyle: 'dashed'
-                        });
+                            var a = 1;
+                        }
+                        if(c == 1)
+                        {
+                            var a = 0;
+                        }
+                        var range = tail[c].pos.getRangeTo(tail[a]);
+                        var BothMoveChecker = false;
+                        if(c == 1 && range < 4)
+                        {
+                            if(tail[0].memory.movingcheck != true)
+                            {
+                                BothMoveChecker = true;
+                            }
+                        }
+                        tail[c].say("r"+range+ " - "+ BothMoveChecker);
+                        if((range > 1 || closeteams.length < 3)&& BothMoveChecker)
+                        {
+                              
+                           var a =  tail[c].moveTo(tail[c].pos.findClosestByRange(this.getpositions(c, tail)));
+                          
+                          try{
+                            tail[c].room.visual.line(tail[c].pos, tail[c].pos.findClosestByRange(this.getpositions(c, tail)),
+                            {
+                                color: 'red',
+                                lineStyle: 'dashed'
+                            });
+                          }catch(e){}
+                        }
                     }
                 }
             }
-            
-            for(var c = 0; c < tail.length; c++)
+            else
             {
-                  tail[c].say("closeteams");
-                tail[c].memory.movingcheck = false;
-                var closeteams = tail[c].pos.findInRange(FIND_MY_CREEPS, 1);
-                  tail[c].say(closeteams);
-                if(closeteams.length < 4)
-                {
-                    // check if the creep needs to move to its other head
-                    if(c == 0)
-                    {
-                        var a = 1;
-                    }
-                    if(c == 1)
-                    {
-                        var a = 0;
-                    }
-                    var range = tail[c].pos.getRangeTo(tail[a]);
-                    var BothMoveChecker = false;
-                    if(c == 1 && range < 4)
-                    {
-                        if(tail[0].memory.movingcheck != true)
-                        {
-                            BothMoveChecker = true;
-                        }
-                    }
-                    tail[c].say(range);
-                    if(range > 1 && BothMoveChecker)
-                    {
-                        tail[c].moveTo(tail[c].pos.findClosestByRange(this.getpositions(c, tail)));
-                        tail[c].room.visual.line(tail[c].pos, tail[c].pos.findClosestByRange(this.getpositions(c, tail)),
-                        {
-                            color: 'red',
-                            lineStyle: 'dashed'
-                        });
-                    }
-                }
+                
+                head[0].say(allclose.length+"moveAsOne");
+                this.moveAsOne(squadID);
             }
         }
-        }
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
 }
 module.exports = serpentsquad;

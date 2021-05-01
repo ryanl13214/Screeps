@@ -27,6 +27,10 @@ KNOWN ISSUES
                  var storagemain;
                  var links;
                  var containers;
+                  var droppedresources;
+                 var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+                 
+                 if(hostiles.length == 0){
                  var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES,
                  {
                      filter: (res) =>
@@ -34,6 +38,8 @@ KNOWN ISSUES
                          return (res.resourceType != RESOURCE_ENERGY) || (res.amount > 200);
                      }
                  });
+                 
+                 }
                  if(droppedresources == undefined && creep.memory.target == "a")
                  {
                      storagemain = creep.pos.findClosestByPath(FIND_STRUCTURES,
@@ -150,7 +156,7 @@ KNOWN ISSUES
                          {
                              filter: (structure) =>
                              {
-                                 return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_LAB) && structure.energy != structure.energyCapacity;
+                                 return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_LAB|| structure.structureType == STRUCTURE_SPAWN) && structure.energy != structure.energyCapacity;
                              }
                          });
                      }

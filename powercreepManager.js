@@ -198,6 +198,9 @@ var powercreepManager = {
                  reusePath: 50
             });
         }
+        
+        if(powerCreep.ticksToLive > 500){
+        
         ////////////////////////////////////stock with energy//////////////////////////////////////////////////////////////////////////////////////////
          if(powerCreep.powers[PWR_OPERATE_EXTENSION] != undefined)
         {
@@ -394,12 +397,12 @@ var powercreepManager = {
                     powerCreep.usePower(PWR_OPERATE_POWER, pwrspawn);
                 }
             }
-            else
+            else  if(powerCreep.store.getUsedCapacity("ops") < 210 )
             {
-                if(powerCreep.withdraw(powerCreep.room.terminal, RESOURCE_OPS) == ERR_NOT_IN_RANGE)
+                if(powerCreep.withdraw(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getFreeCapacity()/2) == ERR_NOT_IN_RANGE)
                 {
-                    powerCreep.moveTo(powerCreep.room.terminal);
-                    powerCreep.say("wit term");
+                    powerCreep.moveTo(powerCreep.room.storage);
+                    powerCreep.say("wit storage");
                 }
             }
         }
@@ -407,7 +410,7 @@ var powercreepManager = {
         
         
 //////////////////////////////////// operate power//////////////////////////////////////////////////////////////////////////////////////////
-        if(powerCreep.powers[PWR_OPERATE_FACTORY] != undefined)
+        if(powerCreep.powers[PWR_OPERATE_FACTORY] != undefined && powerCreep.powers[PWR_OPERATE_FACTORY].level == 2 )
         {
             if(powerCreep.store.getUsedCapacity("ops") > 210) // creep is full
             {
@@ -440,30 +443,60 @@ var powercreepManager = {
             if(powerCreep.store.getUsedCapacity("ops") > 210) // creep is full
             {
                 
-                var FACTORY = Game.spawns[powerCreep.room.name];
-                if(FACTORY.effects == undefined || FACTORY.effects.length == 0  )///////////////////////////////////////////////
+                var Spawns = Game.spawns[powerCreep.room.name];
+                if(Spawns != undefined && Spawns.effects == undefined || Spawns.effects.length == 0   && Spawns.spawning)///////////////////////////////////////////////
                 {
-                    powerCreep.moveTo(FACTORY,
+                    powerCreep.moveTo(Spawns,
                     {
                         visualizePathStyle:
                         {
                             stroke: '#ff0000'
                         }
                     });
-                    powerCreep.usePower(PWR_OPERATE_SPAWN, FACTORY);
+                    powerCreep.usePower(PWR_OPERATE_SPAWN, Spawns);
+                }
+                
+                    var Spawns = Game.spawns[powerCreep.room.name+"1"];
+                if(Spawns != undefined && Spawns.effects == undefined || Spawns.effects.length == 0  && Spawns.spawning )///////////////////////////////////////////////
+                {
+                    powerCreep.moveTo(Spawns,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ff0000'
+                        }
+                    });
+                    powerCreep.usePower(PWR_OPERATE_SPAWN, Spawns);
+                }
+                       var Spawns = Game.spawns[powerCreep.room.name+"2"];
+                if(Spawns != undefined && Spawns.effects == undefined || Spawns.effects.length == 0 && Spawns.spawning  )///////////////////////////////////////////////
+                {
+                    powerCreep.moveTo(Spawns,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ff0000'
+                        }
+                    });
+                    powerCreep.usePower(PWR_OPERATE_SPAWN, Spawns);
                 }
                 
                 
                 
                 
                 
-                
-                
+            } else if(powerCreep.store.getUsedCapacity("ops") < 210 )// todo add in capacity check
+            {
+                if(powerCreep.withdraw(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getFreeCapacity()/2) == ERR_NOT_IN_RANGE)
+                {
+                    powerCreep.moveTo(powerCreep.room.storage);
+                    powerCreep.say("wit storage");
+                }
             }
         }
         
         
-        
+        }
         
         
         
