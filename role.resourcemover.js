@@ -38,7 +38,7 @@ var roleresourcemover = {
        
              for(var j = 0; j < badResource.length; j++) // transfer to strg
             {
-             if(  creep.room.terminal.store.getUsedCapacity(badResource[j]) > 50000  && creep.memory.memstruct.tasklist.length == 0)
+             if(  creep.room.terminal.store.getUsedCapacity(badResource[j]) > 40000  && creep.memory.memstruct.tasklist.length == 0)
                 {
                     creep.memory.memstruct.tasklist.push(["deposit"]);
                     creep.memory.memstruct.tasklist.push(["withdraw", creep.room.terminal.id, badResource[j],  creep.store.getCapacity()  ]);

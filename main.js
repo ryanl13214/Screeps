@@ -176,7 +176,7 @@ module.exports.loop = function()
          
         try
         {
-            squadmanage.run(resourcekeys[i]);
+    //        squadmanage.run(resourcekeys[i]);
         }
         catch (e)
         {}
@@ -255,10 +255,17 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();
         if(Game.rooms[roomname].controller.level > 3)
-        {  defconlevel = defcon.run(roomname, creepsInRoom);
+        { 
+              var defconlevel = {
+                defenceLevel: 10,
+                attackLevel: 10
+            };
+            
+            
+            //
             try
             {
-              
+              defconlevel = defcon.run(roomname, creepsInRoom);
             }
             catch (e)
             {
@@ -344,7 +351,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (50) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
@@ -384,7 +391,7 @@ module.exports.loop = function()
         //                                       storageManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
       
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (6) == 0)
+        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (8) == 0)
         {
             storageManager.run(roomname);
         }

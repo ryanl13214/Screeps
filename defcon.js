@@ -7,8 +7,8 @@ var defcon = {
             defenceLevel: 10,
             attackLevel: 10
         };
-          var mainflag = Game.flags[roomname];
-         mainflag.memory.blocktranferIntoRoom = false;
+        var mainflag = Game.flags[roomname];
+        mainflag.memory.blocktranferIntoRoom = false;
         var numberofguardingcreeps = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
         var numberOfHealParts = 0;
         var numberOfAttackParts = 0;
@@ -72,23 +72,27 @@ var defcon = {
                 this.spawnBasicattacker(roomname);
                 this.spawnBasicRanger(roomname);
             }
+                          if(totalBodyParts >= 300)
+            {
+             this.spawnBoostedattacker(roomname, 3);
+        this.spawnBoostedarcher(roomname, 3);
+            }
+            
+            
+            
             if(spawnss[0].hits < 1000 && target.length != 0)
             {
                 Game.rooms[roomname].controller.activateSafeMode()
             }
-           
             mainflag.memory.blocktranferIntoRoom = false;
         }
         else
         {
             var mainflag = Game.flags[roomname];
-           
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
             if(spawnss.length == 0)
             {
-                
-                 mainflag.memory.blocktranferIntoRoom = true;
-                
+                mainflag.memory.blocktranferIntoRoom = true;
                 for(const id in Game.market.orders)
                 {
                     //    console.log(JSON.stringify(Game.market.orders[id]));
@@ -109,19 +113,53 @@ var defcon = {
     },
     spawnRawAttacker: function(roomname)
     {
-        for(let o = 0; o < 4; o++)
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        for(let i = 0; i < spawnss.length; i++)
         {
-            Game.spawns[roomname].spawnCreep(
-                [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK], 'basicattacker' + roomname + o,
+            for(let o = 0; o < 4; o++)
+            {
+                spawnss[i].spawnCreep(
+                    [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK], 'basicattacker' + roomname + o,
+                    {
+                        memory:
+                        {
+                            role: 'guard',
+                            attackrole: "attacker",
+                            memstruct:
+                            {
+                                spawnRoom: roomname,
+                                tasklist: [],
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: true,
+                                hastask: false
+                            }
+                        }
+                    });
+            }
+        }
+    },
+    spawnBasicsquad: function(roomname)
+    {
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        for(let i = 0; i < spawnss.length; i++)
+        {
+            spawnss[i].spawnCreep(
+                [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK], 
+                'defenceduo'+roomname,
                 {
                     memory:
                     {
                         role: 'guard',
-                        attackrole: "attacker",
+                        attackrole: "chasedown",
                         memstruct:
                         {
                             spawnRoom: roomname,
-                            tasklist: [],
+                            tasklist: [
+                                ["createslaveBOOST"],
+                                ["boosAllMax"]
+                            ],
                             objectIDStorage: "",
                             boosted: false,
                             moveToRenew: false,
@@ -132,37 +170,10 @@ var defcon = {
                 });
         }
     },
-    spawnBasicsquad: function(roomname)
-    {
-        Game.spawns[roomname].spawnCreep(
-            [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK], 'defenceduo',
-            {
-                memory:
-                {
-                    role: 'guard',
-                    attackrole: "chasedown",
-                    memstruct:
-                    {
-                        spawnRoom: roomname,
-                        tasklist: [
-                            ["createslaveBOOST"],
-                            ["boosAllMax"]
-                        ],
-                        objectIDStorage: "",
-                        boosted: false,
-                        moveToRenew: false,
-                        opportuniticRenew: true,
-                        hastask: false
-                    }
-                }
-            });
-    },
     boostedBasicDefenders: function(roomname)
     {
-       
-       this.spawnBoostedattacker(roomname,3);
-           
-          this.spawnBoostedarcher(roomname,3);  
+        this.spawnBoostedattacker(roomname, 3);
+        this.spawnBoostedarcher(roomname, 3);
     },
     spawnBasicRanger: function(roomname)
     {
@@ -186,30 +197,34 @@ var defcon = {
         {
             numberOfRangersNeeded = 30;
         }
-        for(let o = 0; o < numberOfRangersNeeded; o++)
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        for(let i = 0; i < spawnss.length; i++)
         {
-            var q = Game.spawns[roomname].spawnCreep(bodyparts,
-                'guardranger' + o + roomname,
-                {
-                    memory:
+            for(let o = 0; o < numberOfRangersNeeded; o++)
+            {
+                var q = spawnss[i].spawnCreep(bodyparts,
+                    'guardranger' + o + roomname,
                     {
-                        role: 'guard',
-                        attackrole: "archer",
-                        memstruct:
+                        memory:
                         {
-                            spawnRoom: roomname,
-                            tasklist: [],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
+                            role: 'guard',
+                            attackrole: "archer",
+                            memstruct:
+                            {
+                                spawnRoom: roomname,
+                                tasklist: [],
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: false,
+                                hastask: false
+                            }
                         }
-                    }
-                });
+                    });
+            }
         }
     },
-    spawnBasicattacker: function(roomname,number)
+    spawnBasicattacker: function(roomname, number)
     {
         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
         var numberofparts = Math.floor((energyavailable - 200) / 130);
@@ -226,30 +241,34 @@ var defcon = {
         {
             bodyparts.push(MOVE);
         }
-        for(let o = 0; o < number; o++)
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        for(let i = 0; i < spawnss.length; i++)
         {
-            var q = Game.spawns[roomname].spawnCreep(bodyparts,
-                'guardcavalry' + o + roomname,
-                {
-                    memory:
+            for(let o = 0; o < number; o++)
+            {
+                var q = spawnss[i].spawnCreep(bodyparts,
+                    'guardcavalry' + o + roomname,
                     {
-                        role: 'guard',
-                        attackrole: "cavalry",
-                        memstruct:
+                        memory:
                         {
-                            spawnRoom: roomname,
-                            tasklist: [],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
+                            role: 'guard',
+                            attackrole: "cavalry",
+                            memstruct:
+                            {
+                                spawnRoom: roomname,
+                                tasklist: [],
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: false,
+                                hastask: false
+                            }
                         }
-                    }
-                });
+                    });
+            }
         }
     },
-    spawnBoostedattacker: function(roomname)
+    spawnBoostedattacker: function(roomname, number)
     {
         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
         var numberofparts = Math.floor((energyavailable - 550) / 80);
@@ -273,7 +292,7 @@ var defcon = {
         for(let o = 0; o < 2; o++)
         {
             var q = Game.spawns[roomname].spawnCreep(bodyparts,
-                'cavalry' + roomname + o,
+                'cavalry' + roomname + number,
                 {
                     memory:
                     {
@@ -294,7 +313,8 @@ var defcon = {
                     }
                 });
         }
-    },   spawnBoostedarcher: function(roomname)
+    },
+    spawnBoostedarcher: function(roomname,number)
     {
         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
         var numberofparts = Math.floor((energyavailable - 500) / 150);
@@ -303,7 +323,6 @@ var defcon = {
         {
             numberofparts = 35;
         }
-       
         for(let j = 0; j < numberofparts; j++)
         {
             bodyparts.push(RANGED_ATTACK);
@@ -312,29 +331,33 @@ var defcon = {
         {
             bodyparts.push(MOVE);
         }
-        for(let o = 0; o < 2; o++)
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        for(let i = 0; i < spawnss.length; i++)
         {
-            var q = Game.spawns[roomname].spawnCreep(bodyparts,
-                'cavalry' + roomname + o,
-                {
-                    memory:
+            for(let o = 0; o < number; o++)
+            {
+                var q = spawnss[i].spawnCreep(bodyparts,
+                    'cavalry' + roomname + o,
                     {
-                        role: 'guard',
-                        attackrole: "archer",
-                        memstruct:
+                        memory:
                         {
-                            spawnRoom: roomname,
-                            tasklist: [
-                                ["boosAllMax"],
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
+                            role: 'guard',
+                            attackrole: "archer",
+                            memstruct:
+                            {
+                                spawnRoom: roomname,
+                                tasklist: [
+                                    ["boosAllMax"],
+                                ],
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: false,
+                                hastask: false
+                            }
                         }
-                    }
-                });
+                    });
+            }
         }
     },
 }

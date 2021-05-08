@@ -146,11 +146,11 @@ var spwan = {
             {
                 moversneeded = 1;
             }
-            var multiplyrepairerrs = 1;
+            var multiplyrepairerrs = 2;
       
             var ups = 0;
            
-            if(storagevalue > 800000 || defconstruct.defenceLevel != 10)
+            if(storagevalue > 800000 || defconstruct.defenceLevel != 10 || Game.rooms[roomname].controller.safeModenumber > 0)
             {
                 multiplyrepairerrs=5;
             }

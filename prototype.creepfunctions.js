@@ -915,8 +915,19 @@ var creepfunctions = {
                                 resmoveractual.say("fill2");
                                 if(resmoveractual != undefined)
                                 {
+                                    
+                                    var temp;
+                                    if(resmoveractual.room.terminal.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) >creep.memory.memstruct.tasklist[0][2]* 30 ){
+                                        temp=resmoveractual.room.terminal.id;
+                                    }else if(resmoveractual.room.storage.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) >creep.memory.memstruct.tasklist[0][2]* 30){
+                                        temp=resmoveractual.room.storage.id;
+                                    }else{
+                                           this.loopTasks(creep);// todo add flag to stop spawning boost creeps
+                                    }
+                                    
+                                    
                                     resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", resmoveractual.room.storage.id, creep.memory.memstruct.tasklist[0][1], (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1])]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", temp, creep.memory.memstruct.tasklist[0][1], (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1])]);
                                     resmoveractual.memory.memstruct.tasklist.push(["transfer", boostlab.id, creep.memory.memstruct.tasklist[0][1], (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1])]);
                                     resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
                                 }
@@ -936,10 +947,14 @@ var creepfunctions = {
                     creep.say(pathh.length);
                     creep.say(pathh[0].y);
                     var nextPosition = new RoomPosition(pathh[0].x, pathh[0].y, creep.room.name);
+                    
+                   // var blockingcreep = nextPosition.findInRange(FIND_MY_CREEPS);
+                    
+                    
                     var targets2 = nextPosition.findInRange(FIND_MY_CREEPS, 0);
                     var a = creep.moveByPath(pathh);
                     //creep.say(a);
-                    if(targets2.length != 0)
+                    if(targets2.length != 0 && (pathh.length > 1  || targets2[0].memory.memstruct.tasklist.length ==0)   )
                     {
                         creep.say("blocked");
                         var blockingCreeps = creep.pos.findInRange(FIND_MY_CREEPS, 1);
@@ -955,7 +970,7 @@ var creepfunctions = {
             {
                 creep.say("e");
                 //   var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
-                //  try{
+                 try{
                 var targobject = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]).pos;
                 var range = creep.pos.getRangeTo(targobject);
                 creep.say("t-" + targobject.pos);
@@ -969,10 +984,10 @@ var creepfunctions = {
                     creep.say("in range");
                     this.loopTasks(creep);
                 }
-                //  }catch(e){// losing visual on object
+                  }catch(e){// losing visual on object
                 //     creep.say("error");
-                //        this.loopTasks(creep);
-                // }
+                       this.loopTasks(creep);
+                 }
                 this.allowSlave(creep);
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "moveToRoom")

@@ -139,7 +139,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                                          found = true;
                                      }
                                  }
-                                 if(!found || (found && terminalActual.store.getFreeCapacity() < 1000) && breaker == false) // stopped selling on full terminal
+                                 if(!found || (found && terminalActual.store.getFreeCapacity() < 10000) && breaker == false) // stopped selling on full terminal
                                  {
                                      breaker = true;
                                      Game.market.deal(buyOrders[index].id, excessResources, roomname); ////////////////////////////////////////
@@ -297,6 +297,38 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                  });
              }
              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+           
+           
+           
+           
+           
+            
+             
+               
+               
+    //   ["drop" , "what to drop"]
+            
+               
+          //        creep.drop(targ, creep.memory.memstruct.tasklist[0][1]);
+       if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 50000 && Game.time % (200) == 0)
+             {
+             for(var j = 0; j < allResources.length; j++) // transfer to strg
+            {
+             if(  Game.rooms[roomname].terminal.store.getUsedCapacity(allResources[j]) > allValues[j]  )
+                {
+                      var hist = Game.market.getHistory(allResources[j])
+                      Game.market.createOrder(
+                 {
+                     type: ORDER_SELL,
+                     resourceType: allResources[j],
+                     price: (hist[0].avgPrice *0.7),
+                     totalAmount: (allValues[j] - Game.rooms[roomname].terminal.store.getUsedCapacity(allResources[j]) ) /5,
+                     roomName: roomname
+                 });
+                }
+            
+            }
+             }
              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
          }
      }

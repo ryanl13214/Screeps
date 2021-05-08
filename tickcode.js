@@ -4,21 +4,32 @@ var tickcode = {
     {
   // walkaround room is E21N5
        
-       
+       if(Memory.fiveTimer == undefined){
+          Memory.fiveTimer=true; 
+       }
        
         // name target room, boosted,typeofsquad,homeroom
         
-                        
+                        if(Game.time % 5 == 0){
+                            Memory.fiveTimer=true; 
+                        }
        
        
-       
-       
-                    Game.spawns["E24N3" ].spawnCreep(
-           [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK]
-           , 'lastHope2' ,{memory:{role: 'guard', attackrole :"attacker",  memstruct:{spawnRoom: "E24N3", tasklist: [["createslaveBOOST"] ,["createslaveBOOST2"] ,["boosAllMax"],["moveToRoom",   "E21N5"],["moveToRoom",   "E20N4"],["moveToRoom",   "E20S4"],["moveToRoom",   "E19S4"]   ],
-  objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
-
+       console.log( Memory.fiveTimer);
+       if(Memory.fiveTimer==true){
+     
         
+              Memory.fiveTimer=false; 
+        
+       }
+       
+       
+       
+        
+       
+       
+       
+       
        
        
        
@@ -45,13 +56,7 @@ var tickcode = {
         
     
    
-   
-                   Game.spawns["E21S12" ].spawnCreep(
-        [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH, RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL]
-           , 'remoteDefence'  ,{memory:{role: 'guard', attackrole :"ranger",  memstruct:{spawnRoom: "E24N3", tasklist: [ ["moveToRoom",   "E19S4"] ],
-  objectIDStorage: "",boosted: false, moveToRenew: false, opportuniticRenew: true, hastask: false}} });
-   
-   
+    
    /*
    
    

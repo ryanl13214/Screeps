@@ -561,14 +561,25 @@ var roleguard = {
     },
     attacker: function(creep)
     {
-        var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        
+        if(creep.room.controller != undefined&& creep.room.controller.owner != undefined && creep.room.controller.owner.username == "Q13214"){
+            var mainflag = Game.flags[creep.room.name];
+              var target = mainflag.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        }else{
+              var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        }
+        
+        
+        
+        
+      
          var range = creep.pos.getRangeTo(target);
          creep.say(range);
         if(target!= undefined)
-        {
+        { creep.moveTo(target);
             if(creep.attack(target) == ERR_NOT_IN_RANGE)
             {
-                creep.moveTo(target);
+               
             }
         }
         else
@@ -587,7 +598,28 @@ var roleguard = {
                     creep.moveTo(targetst[0]);
                 }
             }
+            
+            
+                 var targetst = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES,1 );
+            if(targetst.length > 0)
+            {
+                creep.attack(targetst[0] );
+                 
+            }
+            
+            
+            
         }
+        
+          var targetst = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES,1 );
+            var targetst2 = creep.pos.findInRange(FIND_HOSTILE_CREEPS,1 );
+            if(targetst.length > 0 && targetst2.length == 0)
+            {
+                creep.attack(targetst[0] );
+                 
+            }
+        
+        
     },
     MineGuard: function(creep)
     {

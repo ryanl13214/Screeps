@@ -173,7 +173,7 @@ var rolerepair = {
         {
             return {
                 pos: host.pos,
-                range: 3
+                range: 4
             };
         });
         let patha = PathFinder.search(creep.pos, goals,

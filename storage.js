@@ -2,7 +2,7 @@ var storageManager = {
     run: function(roomname)
     {
         var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2"];
-        var allValues = [40000, 40000, 40000, 40000, 40000, 40000];
+        var allValues = [20000, 20000, 20000, 20000, 20000, 20000];
         
         
         var allspawns = Game.rooms[roomname].find(FIND_MY_SPAWNS);
@@ -54,7 +54,7 @@ var storageManager = {
             
             
                 
-                var listOfResourcesInsideTerminal = termin.store;
+                var listOfResourcesInsideTerminal = termin.store;// OVERFLOW
         var resourcekeys = Object.keys(listOfResourcesInsideTerminal);
         var resourcevalues = Object.values(listOfResourcesInsideTerminal);
         if(termin.store.getFreeCapacity() < 8000 & strg.store.getFreeCapacity() > 30000){
@@ -73,7 +73,22 @@ var storageManager = {
             
         }
             
-            
+                   //    Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]) , resmoveractual.store.getCapacity())
+            // enegy manager
+            if(strg.store.getUsedCapacity("energy") > (10 * termin.store.getUsedCapacity("energy")) && strg.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length == 0)
+            {
+                resmoveractual.say("e to trm ");
+                resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, "energy", Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]), resmoveractual.store.getCapacity())]);
+                resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, "energy"]);
+            }
+            if(strg.store.getUsedCapacity("energy") < 10 * termin.store.getUsedCapacity("energy") && termin.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length == 0)
+            {
+                resmoveractual.say("e to strg ");
+                resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, "energy", Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]), resmoveractual.store.getCapacity())]);
+                resmoveractual.memory.memstruct.tasklist.push(["transfer", strg.id, "energy"]);
+            }
             
             
             
@@ -115,22 +130,7 @@ var storageManager = {
             
             
             
-            //    Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]) , resmoveractual.store.getCapacity())
-            // enegy manager
-            if(strg.store.getUsedCapacity("energy") > (10 * termin.store.getUsedCapacity("energy")) && strg.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length == 0)
-            {
-                resmoveractual.say("e to trm ");
-                resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, "energy", Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]), resmoveractual.store.getCapacity())]);
-                resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, "energy"]);
-            }
-            if(strg.store.getUsedCapacity("energy") < 10 * termin.store.getUsedCapacity("energy") && termin.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length == 0)
-            {
-                resmoveractual.say("e to strg ");
-                resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, "energy", Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]), resmoveractual.store.getCapacity())]);
-                resmoveractual.memory.memstruct.tasklist.push(["transfer", strg.id, "energy"]);
-            }
+      
         }
     }
 }
