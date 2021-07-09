@@ -17,14 +17,19 @@ var squadmanager = {
             }
         }
         mainMemoryObject.SquadMembersCurrent = numberOfLivingSqaudMembers;
-        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 && Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
+        
+        
+        
+        
+        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 )
         {
+            console.log("deleting squad-",squadID);
             delete Memory.squadObject[squadID];
         }
         else
         {
-            const resourcevalues = Object.values(mainMemoryObject.SquadMembersGoal);
-            if(mainMemoryObject.SquadMembersCurrent.length < resourcevalues.length && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level > 6))
+            var squadMemberGoal = Object.values(mainMemoryObject.SquadMembersGoal);
+            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true )
             {
                 if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
                 {
@@ -32,10 +37,11 @@ var squadmanager = {
                 }
                 if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == squadID)
                 {
+                   
                     this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
                 }
             }
-            else if(mainMemoryObject.SquadMembersCurrent.length == resourcevalues.length)
+            else if(mainMemoryObject.SquadMembersCurrent.length == squadMemberGoal.length)
             {
                 mainMemoryObject.squadisready = true;
                 Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
@@ -48,7 +54,7 @@ var squadmanager = {
                     serpentsquad.run(squadID);
                 }
               
-            }  if(mainMemoryObject.squadType == "quad" && mainMemoryObject.SquadMembersCurrent.length != 0) 
+            }  if(mainMemoryObject.squadType == "quad" &&  (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready) ) 
                 {
                     quadsquad.run(squadID);
                 }
@@ -92,7 +98,8 @@ var squadmanager = {
         };
     },
     spawnnewcreep: function(squadID, squadHomeRoom)
-    { // add in function fpor broken squads to be reincorpirated
+    { 
+        // add in function fpor broken squads to be reincorpirated
         var mainMemoryObject = Memory.squadObject[squadID];
         var tasklistt = [
             ["joinSquad", squadID]
@@ -114,6 +121,7 @@ var squadmanager = {
                 ["joinSquad", squadID]
             ];
         }
+        
         var mainflag = Game.flags[squadHomeRoom];
         // find the missing members 
         var memstruct = {
@@ -133,13 +141,14 @@ var squadmanager = {
         };
         var allspawns = Game.rooms[squadHomeRoom].find(FIND_MY_SPAWNS);
         var mainMemoryObject = Memory.squadObject[squadID];
-        const number = Game.time % Object.values(mainMemoryObject.SquadMembersGoal).length;
-        const resourcevalues = Object.values(mainMemoryObject.SquadMembersGoal);
-        const names = Object.keys(mainMemoryObject.SquadMembersGoal);
+        var number = Game.time % Object.values(mainMemoryObject.SquadMembersGoal).length;
+        var resourcevalues = Object.values(mainMemoryObject.SquadMembersGoal);
+        var names = Object.keys(mainMemoryObject.SquadMembersGoal);
         var sucs3esscounter = 9;
         var total = 0;
         for(var i = 0; i < allspawns.length; i++)
         {
+             
             var curspawn = allspawns[i];
             for(var q = 0; q < names.length; q++)
             {
@@ -154,6 +163,8 @@ var squadmanager = {
                             memstruct: memstruct
                         }
                     });
+                   
+//////////////////////////////////////////////////// resource tracking ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     if(sucs3esscounter == 0 && (Memory.squadObject[squadID].squadType == "MiningSquad" || Memory.squadObject[squadID].squadType == "centerMiningSquad" || Memory.squadObject[squadID].squadType == "solocenterdamager"))
                     {
                         total = 0;
@@ -190,6 +201,8 @@ var squadmanager = {
                         }
                         Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost += total;
                     }
+                    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 }
             }
         }

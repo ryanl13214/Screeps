@@ -1,5 +1,5 @@
 var squadmanage = require('squadManager');
-var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6", "E29N5", "E28N7", "E27N6"];
+var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7", "E27N6"];
 var squadgenerator = {
     run: function(roomname, redflags)
     {
@@ -189,8 +189,8 @@ var squadgenerator = {
                                 {
                                     "mover1": bodypartsMOVER,
                                     "mover2": bodypartsMOVER,
-                                    "miner0": bodypartsMINER,
-                                    "claimer": [MOVE, CLAIM, MOVE, CLAIM]
+                                    "miner0": bodypartsMINER
+                                  
                                 });
                            
                             if(1 == 2)
@@ -201,8 +201,8 @@ var squadgenerator = {
                                     "mover2": bodypartsMOVER,
                                     "mover3": bodypartsMOVER,
                                     "miner0": bodypartsMINER,
-                                    "miner1": bodypartsMINER,
-                                    "claimer": [MOVE, CLAIM, MOVE, CLAIM]
+                                    "miner1": bodypartsMINER
+                                    
                                 });
                             }
                         }

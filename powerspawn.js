@@ -38,14 +38,22 @@ var pwrspawnManager = {
             filter: (creep) => (creep.memory.role == "resmover")
         });
         var resmoveractual = resmover[0];
-        if(resmoveractual)
+        if(resmoveractual && resmoveractual.memory.memstruct.tasklist.length == 0)
         {
             for(var j = 0; j < allResources.length; j++) // transfer to strg
             {
                 if(allValues[j] > pwrspawn.store.getUsedCapacity(allResources[j])*2 && termin.store.getUsedCapacity(allResources[j]) > 100 && resmoveractual.memory.memstruct.tasklist.length == 0)
                 { 
                     resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, allResources[j], (allValues[j]) - pwrspawn.store.getUsedCapacity(allResources[j])]);
+                    
+                    if(Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity(allResources[j]) > (allValues[j]) - pwrspawn.store.getUsedCapacity(allResources[j]) ){
+                     resmoveractual.memory.memstruct.tasklist.push(["withdraw", Game.rooms[roomname].storage.id, allResources[j], (allValues[j]) - pwrspawn.store.getUsedCapacity(allResources[j])  ] ); 
+                    }else{
+                      resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, allResources[j], (allValues[j]) - pwrspawn.store.getUsedCapacity(allResources[j])]);
+                    }
+                    
+                     
+                    
                     resmoveractual.memory.memstruct.tasklist.push(["transfer", pwrspawn.id, allResources[j]]);
                 }
             }

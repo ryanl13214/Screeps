@@ -1,4 +1,4 @@
-var roles = require('roles'); 
+var roles = require('roles');
 var spawnmain = require('spawn');
 var buildbase = require('buildbase');
 var tower = require('tower');
@@ -41,17 +41,15 @@ module.exports.loop = function()
     //                                  
     //------------------------------------------------------------------------------------------------
     var startCpu = Game.cpu.getUsed();
-   // try
-    //{
-        var powerCreepList = Game.powerCreeps;
-        var listnumbers = Object.keys(powerCreepList);
-        var listvalues = Object.values(powerCreepList);
-        for(var i = 0; i < listnumbers.length; i++)
-        {
-            powerManager.run(listvalues[i]);
-        }
-    //}
-   // catch (e) {}
+    
+    var powerCreepList = Game.powerCreeps;
+    var listnumbers = Object.keys(powerCreepList);
+    var listvalues = Object.values(powerCreepList);
+    for(var i = 0; i < listnumbers.length; i++)
+    {
+        powerManager.run(listvalues[i]);
+    }
+     
     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
     if(debug)
     {
@@ -59,22 +57,7 @@ module.exports.loop = function()
     }
     //------------------------------------------------------------------------------------------------//////////////////////////////
     //             
-   
-   
-   
-  // console.log(Game.market.credits*0.00000005);
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+    // console.log(Game.market.credits*0.00000005);
     //------------------------------------------------------------------------------------------------
     tickcode.run();
     visuals.run();
@@ -151,7 +134,7 @@ module.exports.loop = function()
         {
             if(!Game.flags[name])
             {
-              delete Memory.flags[name];
+                delete Memory.flags[name];
             }
         }
     }
@@ -173,13 +156,9 @@ module.exports.loop = function()
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-         
-        try
-        {
-    //        squadmanage.run(resourcekeys[i]);
-        }
-        catch (e)
-        {}
+       try{
+          //        squadmanage.run(resourcekeys[i]);
+       }catch(e){}
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -212,15 +191,10 @@ module.exports.loop = function()
         if(mainflag == undefined)
         {
             var flagstruct = {
-                roomissafe: false,
-                roomsuitableforClaiming: false,
-                numberOfSourcesInRoom: 0,
-                roomisSuitableForMainRoomMining: false,
-                roomIsFightTeritory: false,
-                roomIsMyTeritory: false,
-                distancefromoom: 9999,
+                
+              
                 squadspawning: "",
-                remoteMine: false,
+                
                 mineroomsProfitmargin: 0,
                 mineroomsCPU: 0,
                 mineroomsCost: 0,
@@ -238,7 +212,7 @@ module.exports.loop = function()
                 }
             };
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-            console.log(roomname);
+          //  console.log(roomname);
             Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x - 2, Game.spawns[roomname].pos.y - 2, roomname);
             var mainflags = Game.flags[roomname];
             mainflags.memory.flagstruct = flagstruct;
@@ -255,21 +229,19 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();
         if(Game.rooms[roomname].controller.level > 3)
-        { 
-              var defconlevel = {
+        {
+            var defconlevel = {
                 defenceLevel: 10,
                 attackLevel: 10
             };
-            
-            
             //
             try
             {
-              defconlevel = defcon.run(roomname, creepsInRoom);
+                defconlevel = defcon.run(roomname, creepsInRoom);
             }
             catch (e)
             {
-                console.log("defconbroke-",roomname);
+                console.log("defconbroke-", roomname);
                 var defconlevel = {
                     defenceLevel: 10,
                     attackLevel: 10
@@ -314,7 +286,6 @@ module.exports.loop = function()
         //                                            spawning
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
         var startCpu = Game.cpu.getUsed();
-           
         try
         {
             spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
@@ -351,7 +322,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (50) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
@@ -363,39 +334,21 @@ module.exports.loop = function()
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                       factroy
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const factorys = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
-        {
-            filter:
-            {
-                structureType: STRUCTURE_FACTORY
-            }
-        });
-        if(Game.time % (8) == 0 && factorys.length != 0)
-        {
-            factoryManager.run(roomname, Game.rooms[roomname].terminal, factorys[0]);
-        }
-        
-    
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       storageManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-      
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (8) == 0)
+        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (2) == 0)
         {
             storageManager.run(roomname);
         }
-      
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                       factroy
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var factorys = Game.rooms[roomname].find(FIND_MY_STRUCTURES,  {filter:{structureType: STRUCTURE_FACTORY}});
+        
+        if(factorys.length != 0 && factorys[0].cooldown < 1 )
+        {
+            factoryManager.run(roomname, Game.rooms[roomname].terminal, factorys[0]);
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       pwrspawnManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
@@ -406,18 +359,16 @@ module.exports.loop = function()
                 structureType: STRUCTURE_POWER_SPAWN
             }
         });
-        var g=4;
-        if(Game.market.credits> 30000000){
-          g=1;  
-        }
-        
-        
-        
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].terminal.store.getUsedCapacity("energy") > 5000 && Game.rooms[roomname].storage != undefined && pwrspawn.length != 0&& Game.time % (g) == 0)
+        var g = 4;
+        if(Game.market.credits > 30000000)
         {
-           pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
+            g = 1;
         }
-    
+          g = 1;
+        if(Game.rooms[roomname].terminal != undefined  && Game.rooms[roomname].storage != undefined && pwrspawn.length != 0 && Game.time % (g) == 0)
+        {
+        //    pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

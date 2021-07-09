@@ -15,12 +15,10 @@ var tickcode = {
                         }
        
        
-       console.log( Memory.fiveTimer);
-       if(Memory.fiveTimer==true){
-     
-        
+       //console.log( Memory.fiveTimer);
+       if(Memory.fiveTimer==true)
+       {
               Memory.fiveTimer=false; 
-        
        }
        
        
@@ -35,18 +33,52 @@ var tickcode = {
        
        
        
-       
-       if(Memory.squadObject.testQuad == undefined && 1==2 ){
-                squadmanage.initializeSquad(  "testQuad", ["E20S12"], false, "quad", "E21S12", {
-                                    "head1": [RANGED_ATTACK ,MOVE],                                
-                                    "tail1": [HEAL, MOVE],
-                                    "head2": [RANGED_ATTACK ,MOVE],
-                                    "tail2": [HEAL, MOVE ]
+       //  clearroom  movetoRoom   guardroom  attackroom  killCreeps
+       if(Memory.squadObject.testQuad2 == undefined && 1==2  ){
+                squadmanage.initializeSquad(  "testQuad2", [["guardroom","E28N6"] ], false, "quad", "E28N5", {
+                                    "head1": [MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL],                               
+                                    "tail1": [MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL],  
+                                    "head2": [MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL],  
+                                    "tail2": [MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL]
                                     });
        }
+  //       Memory.squadObject["testQuad"].arrayOfSquadGoals =[ ["movetoRoom","E29N5"],["movetoRoom","E29N4"],["repeat",2]];
+
+
+
+
+
+
+       if(Memory.squadObject.testQuad2 == undefined  && 1==2 ){
+                squadmanage.initializeSquad(  "testQuad2", [["movetoRoom","E25N5"],["clearroom","E27N6"],["guardroom","E28N6"] ], true, "quad", "E24N3", {
+                                    "head1":  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],                               
+                                    "tail1":  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],  
+                                    "head2":  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL] ,  
+                                    "tail2":  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+                                    });
+       }
+
+
+       if(Memory.squadObject.testQuad2 == undefined   && 1==2){
+                squadmanage.initializeSquad(  "testQuad2", [["guardroom","E26N5"]  ], false, "quad", "E28N5", {
+                                "head1": [ MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL],                               
+                                    "tail1": [ MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL],
+                                    "head2": [ MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL],
+                                    "tail2": [ MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL]
+                                    });
+       }
+//    delete   Memory.squadObject["testQuad"];
+
+
+
+
+
+
+
+
+
        
-       
- 
+// delete   Memory.squadObject["testQuad2"];
 
  
 

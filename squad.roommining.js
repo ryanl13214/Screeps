@@ -24,6 +24,8 @@ var roommining = {
                 claimer.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
             }
         }
+//////////////////////////////////////////////////////////////MINER ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         for(var c = 0; c < miners.length; c++)
         {
             var creeper = miners[c];
@@ -50,14 +52,45 @@ var roommining = {
                 var range = creeper.pos.getRangeTo(source_target);
                 if(range > 1)
                 {
-                    creeper.moveTo(source_target,
-                    {
+                    
+            
+                    
+                    
+                    
+                var A =    creeper.moveTo(source_target,
+                    {    ignoreCreeps: true,
                         reusePath: range,
                         visualizePathStyle:
                         {
                             stroke: '#ffaa00'
                         }
                     });
+                    
+                    
+                    if(A != 0)
+                    {
+                         
+                         var targets = creeper.pos.findInRange(FIND_MY_CREEPS, 1 );
+                        for(var c = 0; c < targets.length; c++)
+                        {
+                            targets[c].moveTo(creeper.pos);
+                        }
+                        
+                        
+                        
+                        creeper.moveTo(source_target,
+                    {
+                        
+                    ignoreCreeps: true,
+                
+                        reusePath: range,
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                    }
+                    
                 }
                 else
                 {
@@ -94,6 +127,8 @@ var roommining = {
                 }
             }
         }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         for(var c = 0; c < movers.length; c++)
         {
             var creeper = movers[c];
@@ -207,38 +242,16 @@ var roommining = {
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////           
         }
-        for(var c = 0; c < claimer.length; c++)
-        {
-            var creeper = claimer[c];
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    creep not in room
-            if(creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM
-            {
-                var roomPosition = new RoomPosition(25, 25, mainMemoryObject.arrayOfSquadGoals[0]);
-                var pos1 = creeper.pos;
-                var range = creeper.pos.getRangeTo(roomPosition);
-                if(range > 23)
-                { // might cause bug on nxt room wall 
-                    creeper.moveTo(roomPosition);
-                    Game.map.visual.line(creeper.pos, roomPosition,
-                    {
-                        color: '#000000',
-                        lineStyle: 'solid'
-                    });
-                }
-            }
-            else
-            {
-                var targets = creeper.room.find(FIND_HOSTILE_STRUCTURES);
-                if(targets.length = 0)
-                {
-                    var targets = creeper.room.find(FIND_HOSTILE_CREEPS); // todo make bodypart tracker 
-                }
-                if(targets.length != 0)
-                {
-                    try
-                    {
-                        var levelofcontrollerinhomeroom = Game.rooms[mainMemoryObject.squadHomeRoom].controller.level;
-                        if(levelofcontrollerinhomeroom >4)
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    },
+        summonBackup: function(squadID)
+    {
+        // console.log("test mineing op");
+        var mainMemoryObject = Memory.squadObject[squadID];
+                           if(levelofcontrollerinhomeroom >4)
                         {
                             Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep([MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL], 'roomguard' + squadID,
                             {
@@ -260,53 +273,8 @@ var roommining = {
                                     }
                                 }
                             });
+    
                         }
-                        else
-                        {
-                            Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep([MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, HEAL], 'roomguard' + squadID,
-                            {
-                                memory:
-                                {
-                                    role: 'guard',
-                                    attackrole: "mineguard",
-                                    memstruct:
-                                    {
-                                        spawnRoom: "E24N3",
-                                        tasklist: [
-                                            ["moveToRoom", mainMemoryObject.arrayOfSquadGoals[0]]
-                                        ],
-                                        objectIDStorage: "",
-                                        boosted: false,
-                                        moveToRenew: false,
-                                        opportuniticRenew: true,
-                                        hastask: false
-                                    }
-                                }
-                            });
-                        }
-                    }
-                    catch (e)
-                    {}
-                }
-                if(creeper.reserveController(creeper.room.controller) == ERR_NOT_IN_RANGE)
-                {
-                    creeper.moveTo(creeper.room.controller,
-                    {
-                        visualizePathStyle:
-                        {
-                            stroke: '#ffaa00'
-                        }
-                    });
-                }
-                else if(creeper.reserveController(creeper.room.controller) == -7)
-                {
-                    if(creeper.attackController(creeper.room.controller) == ERR_NOT_IN_RANGE)
-                    {
-                        creeper.moveTo(creep.room.controller);
-                    }
-                }
-            }
-        }
     }
 }
 module.exports = roommining;

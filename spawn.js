@@ -146,13 +146,13 @@ var spwan = {
             {
                 moversneeded = 1;
             }
-            var multiplyrepairerrs = 2;
+            var multiplyrepairerrs = 1;
       
             var ups = 0;
            
             if(storagevalue > 800000 || defconstruct.defenceLevel != 10 || Game.rooms[roomname].controller.safeModenumber > 0)
             {
-                multiplyrepairerrs=5;
+              //  multiplyrepairerrs=5;
             }
             
              
@@ -166,6 +166,11 @@ var spwan = {
             
     var brokenspawnstructure=false;
          var spawnmain =        Game.spawns[roomname];
+         
+         
+         if( Game.spawns[roomname].length ==3){
+              Game.flags[roomname].memory.flagstruct.spawnfree = true;
+         }
             if(spawnmain= undefined){
                 brokenspawnstructure=true;
           //      console.log(brokenspawnstructure);
@@ -176,7 +181,7 @@ var spwan = {
             
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(storagevalue > 10000 && movers.length == 0 && moveralt.length < 2 && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) )
+            if((  Game.rooms[roomname].storage != undefined &&   Game.rooms[roomname].storage.store.getUsedCapacity("energy") >10000 ) && movers.length == 0 && moveralt.length < 2 && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) )
             {
                spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN' + roomname,
                 {
@@ -191,8 +196,9 @@ var spwan = {
                     }
                 });
             }
-            else if(storagevalue < 10000 && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) || brokenspawnstructure)
+            else if((  Game.rooms[roomname].storage == undefined ||   Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 10000 ) && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) || brokenspawnstructure)
             {
+                console.log("low energy management");
                
                spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN' + roomname,
                 {
@@ -220,6 +226,7 @@ var spwan = {
                 });
                 if(movers.length > 0 || moveralt.length > 0)
                 {
+                       var fullbody = [MOVE, MOVE, WORK, CARRY];
                     var numberofparts = Math.floor((energycurrentlyavailable - 550) / 150);
                     var bodyparts = [MOVE, MOVE, WORK, CARRY];
                     if(numberofparts > 6)
@@ -269,7 +276,7 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
-                        spawnmain.spawnCreep(bodyparts, 'up1' + roomname,
+                        spawnmain.spawnCreep(fullbody, 'up1' + roomname,
                         {
                             memory:
                             {
@@ -278,7 +285,7 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
-                        spawnmain.spawnCreep(bpodypartsMOBILE, 'rep' + roomname,
+                        spawnmain.spawnCreep(fullbody, 'rep' + roomname,
                         {
                             memory:
                             {
@@ -290,7 +297,7 @@ var spwan = {
                     }
                     if(harvesters.length == 0)
                     {
-                        spawnmain.spawnCreep(bodyparts, 'harvester1' + roomname,
+                        spawnmain.spawnCreep(fullbody, 'harvester1' + roomname,
                         {
                             memory:
                             {
@@ -302,7 +309,7 @@ var spwan = {
                     }
                     else
                     {
-                        spawnmain.spawnCreep(bodyparts, 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
+                        spawnmain.spawnCreep(fullbody, 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
                         {
                             memory:
                             {
@@ -446,7 +453,7 @@ var spwan = {
                                 }
                             }
                         }
-                        if(roomname == "E24N3") //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        if(roomname == "E24N3dfgdfgdf") //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         {
                             numberofparts = 12;
                             bodyparts.push(MOVE);
@@ -645,8 +652,10 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
-                    }       else if(scouts.length < 1 && levelOfController > 3) ///////////////////////////////////
-                    {
+                    }   
+                    
+                    else if(scouts.length < 1 && levelOfController > 3) ///////////////////////////////////
+                    { Game.flags[roomname].memory.flagstruct.spawnfree = true;
                         spawnss[i].spawnCreep([MOVE], 'scout' + roomname,
                         {
                             memory:

@@ -143,7 +143,8 @@ var creepfunctions = {
                 //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue",optional value]
                 // ad factory terminal storoage indicators
                 const targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                if(creep.memory.memstruct.tasklist[0].length == 3)
+                creep.say(targ.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][2]));
+                if(creep.memory.memstruct.tasklist[0].length == 3 ||  ( targ.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][2]) < creep.memory.memstruct.tasklist[0][3]))
                 {
                     var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2]);
                 }
@@ -153,6 +154,10 @@ var creepfunctions = {
                     {
                         creep.memory.memstruct.tasklist[0][3] = creep.store.getFreeCapacity();
                     }
+                    
+                    
+                    
+                    
                     var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
                 }
                 if(a == ERR_NOT_IN_RANGE)
@@ -180,6 +185,7 @@ var creepfunctions = {
                 {
                     var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
                 }
+                creep.say(a);
                 if(a == ERR_NOT_IN_RANGE)
                 {
                     creep.moveTo(targ);
@@ -216,6 +222,27 @@ var creepfunctions = {
                 else if(creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
+                }
+            }
+                    
+            else if(creep.memory.memstruct.tasklist[0][0] == "reserve")
+            {
+                 if(creeper.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE)
+                {
+                    creeper.moveTo(creep.room.controller,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                }
+                else if(creeper.reserveController(creep.room.controller) == -7)
+                {
+                    if(creeper.attackController(creep.room.controller) == ERR_NOT_IN_RANGE)
+                    {
+                        creeper.moveTo(creep.room.controller);
+                    }
                 }
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "steal")
@@ -1174,6 +1201,7 @@ var creepfunctions = {
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "repair")
             {
+            try{
                 var target = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
                 if(target.hits + 800 > target.hitsMax)
                 {
@@ -1189,7 +1217,7 @@ var creepfunctions = {
                 else
                 {
                     this.loopTasks(creep);
-                }
+                }}catch(e){  this.loopTasks(creep);}
             }
             else if(creep.memory.memstruct.tasklist[0][0] == "renewfull")
             {
