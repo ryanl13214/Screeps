@@ -181,7 +181,7 @@ var roletowermover = {
             }
             creep.transfer(lowEnergySpawns[0], RESOURCE_ENERGY, transverAmount);
         }
-        else if(constructionsites.length != 0 && nukeIncoming.length ==0)
+        else if(constructionsites.length != 0 && nukeIncoming==0)
         {
             creep.build(constructionsites[0]);
         }
@@ -189,11 +189,11 @@ var roletowermover = {
         {
        
          
-     var nukeIncoming =    creep.room.find(FIND_NUKES);
-     var myspawns  =    creep.room.find(FIND_MY_SPAWNS);
-     var spawnsInDanger =[];
-     var terminalInDanger  = false;
-     var storageInDanger = false;
+  //   var nukeIncoming =    creep.room.find(FIND_NUKES);
+   //  var myspawns  =    creep.room.find(FIND_MY_SPAWNS);
+   //  var spawnsInDanger =[];
+   //  var terminalInDanger  = false;
+   //  var storageInDanger = false;
      
      
           

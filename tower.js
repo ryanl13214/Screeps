@@ -130,9 +130,9 @@
            
            
            if(allHosiles[i].pos.x< 3 ||   allHosiles[i].pos.x> 47 || allHosiles[i].pos.y< 3 ||   allHosiles[i].pos.y> 47 ){
-               console.log(healcapacity);
+        //       console.log(healcapacity);
                healcapacity+= 1500;
-                  console.log(healcapacity+" "+damagePotential);
+                //  console.log(healcapacity+" "+damagePotential);
            }
            
            

@@ -1,4 +1,27 @@
 var spwan = {
+    createBiggestsChasedown: function(roomname)
+    {
+        var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
+        var numberofparts = Math.floor((energyavailable - 310) / 880);
+        var bodyparts = [MOVE, MOVE, MOVE, ATTACK, ATTACK];
+        if(numberofparts > 5)
+        {
+            numberofparts = 5;
+        }
+        for(let j = 0; j < numberofparts; j++)
+        {
+            bodyparts.push(MOVE);
+            bodyparts.push(MOVE);
+            bodyparts.push(MOVE);
+            bodyparts.push(MOVE);
+            bodyparts.push(MOVE);
+            bodyparts.push(ATTACK);
+            bodyparts.push(RANGED_ATTACK);
+            bodyparts.push(RANGED_ATTACK);
+            bodyparts.push(HEAL);
+        }
+        return bodyparts;
+    },
     run: function(roomname, defconstruct, storagevalue, roomExits, creepsinroom)
     {
         ///////////////////////////////////////////////////////////
@@ -58,9 +81,9 @@ var spwan = {
                 spawnss[i].renewCreep(ajacentcreepstorenew[0]);
             }
         }
-        
+            var levelOfController = Game.rooms[roomname].controller.level;
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(Game.time % 30 == 0)
+        if(Game.time % 30 == 0   || levelOfController < 4)
         {
             var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
             var energycurrentlyavailable = Game.rooms[roomname].energyAvailable;
@@ -75,6 +98,7 @@ var spwan = {
             var harvesters = _.filter(creepsinroom, (creep) => creep.memory.role == 'harvester');
             var movers = _.filter(creepsinroom, (creep) => creep.memory.role == 'mover');
             var moveralt = _.filter(creepsinroom, (creep) => creep.memory.role == 'moveralt');
+            var numberOfMineRooms = Game.flags[roomname].memory.flagstruct.claimedroomstuct.MineRooms.length;
             //standard creep memory
             var memstruct = {
                 spawnRoom: roomname,
@@ -90,32 +114,16 @@ var spwan = {
                 SquadID: "0",
                 SquadRole: false
             };
-            Game.flags[roomname].memory.flagstruct.spawnfree = false;
+            Game.flags[roomname].memory.flagstruct.spawnfree = true;
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        var wallsBreeched = false; 
-        var targetsInsideWalls = Game.flags[roomname].pos.findInRange(FIND_HOSTILE_CREEPS,7);
-        if(targetsInsideWalls.length != 0){
-            wallsBreeched=true;
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
+            var wallsBreeched = false;
+            var targetsInsideWalls = Game.flags[roomname].pos.findInRange(FIND_HOSTILE_CREEPS, 7);
+            if(targetsInsideWalls.length != 0)
+            {
+                wallsBreeched = true;
+                console.log("walls breeched");
+            }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
@@ -128,7 +136,7 @@ var spwan = {
                     extractorneeded = true;
                 }
             }
-            var levelOfController = Game.rooms[roomname].controller.level;
+         
             var moversneeded = 1;
             if(levelOfController < 6)
             {
@@ -147,42 +155,39 @@ var spwan = {
                 moversneeded = 1;
             }
             var multiplyrepairerrs = 1;
-      
             var ups = 0;
-           
-            if(storagevalue > 800000 || defconstruct.defenceLevel != 10)
+            if(storagevalue > 800000 || defconstruct.defenceLevel != 10 || Game.rooms[roomname].controller.safeModenumber > 0)
             {
-                multiplyrepairerrs=5;
+                //  multiplyrepairerrs=5;
             }
-            
-             
-            if(wallsBreeched){
-                    multiplyrepairerrs=1;
-                   moversneeded = 1; 
+            if(wallsBreeched)
+            {
+                multiplyrepairerrs = 1;
+                moversneeded = 1;
             }
-            
-            
-            
-            
-    var brokenspawnstructure=false;
-         var spawnmain =        Game.spawns[roomname];
-            if(spawnmain= undefined){
-                brokenspawnstructure=true;
-          //      console.log(brokenspawnstructure);
-             spawnmain=Game.rooms[roomname].find(FIND_MY_SPAWNS)[0];   
+            var brokenspawnstructure = false;
+            var spawnmain = Game.spawns[roomname];
+            if(spawnmain != undefined && Game.spawns[roomname].length == 3)
+            {
+                Game.flags[roomname].memory.flagstruct.spawnfree = true;
             }
-               spawnmain=Game.rooms[roomname].find(FIND_MY_SPAWNS)[0];   
-             //    console.log(brokenspawnstructure);
-            
+            if(spawnmain = undefined)
+            {
+                brokenspawnstructure = true;
+                //      console.log(brokenspawnstructure);
+                spawnmain = Game.rooms[roomname].find(FIND_MY_SPAWNS)[0];
+            }
+            spawnmain = Game.rooms[roomname].find(FIND_MY_SPAWNS)[0];
+            //    console.log(brokenspawnstructure);
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(storagevalue > 10000 && movers.length == 0 && moveralt.length < 2 && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) )
+            if((Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000) && movers.length == 0 && moveralt.length < 2 && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500))
             {
-               spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN' + roomname,
+                spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN' + roomname,
                 {
                     memory:
                     {
-                        role: 'moveralt',
+                        role: 'mover',
                         cpuUsed: 0,
                         roomtarg: roomname,
                         target: "a",
@@ -191,10 +196,9 @@ var spwan = {
                     }
                 });
             }
-            else if(storagevalue < 10000 && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) || brokenspawnstructure)
+            else if((Game.rooms[roomname].storage == undefined || Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 10000) && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) || brokenspawnstructure ||levelOfController < 4)
             {
-               
-               spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN' + roomname,
+                spawnmain.spawnCreep([MOVE, MOVE, CARRY, CARRY], 'moverMIN' + roomname,
                 {
                     memory:
                     {
@@ -220,7 +224,18 @@ var spwan = {
                 });
                 if(movers.length > 0 || moveralt.length > 0)
                 {
-                    var numberofparts = Math.floor((energycurrentlyavailable - 550) / 150);
+                    var fullbody = [MOVE, MOVE, WORK, CARRY];
+                     var numberofpartsHARVESTER = Math.floor((energyavailable - 300) / 100);
+                        if(numberofpartsHARVESTER > 6)
+                    {
+                        numberofpartsHARVESTER = 6;
+                    }
+                       for(let j = 0; j < numberofpartsHARVESTER; j++)
+                    {
+                        fullbody.push(WORK);
+                       
+                    }
+                    var numberofparts = Math.floor((energyavailable - 300) / 150);
                     var bodyparts = [MOVE, MOVE, WORK, CARRY];
                     if(numberofparts > 6)
                     {
@@ -231,7 +246,7 @@ var spwan = {
                         bodyparts.push(WORK);
                         bodyparts.push(MOVE);
                     }
-                    var numberofparts = Math.floor((energycurrentlyavailable - 550) / 200);
+                    var numberofparts = Math.floor((energyavailable - 300) / 200);
                     var bpodypartsMOBILE = [MOVE, MOVE, WORK, CARRY];
                     if(numberofparts > 6)
                     {
@@ -269,7 +284,7 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
-                        spawnmain.spawnCreep(bodyparts, 'up1' + roomname,
+                        spawnmain.spawnCreep(fullbody, 'up1' + roomname,
                         {
                             memory:
                             {
@@ -287,10 +302,19 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
+                                     spawnmain.spawnCreep(bpodypartsMOBILE, 'rep2' + roomname,
+                        {
+                            memory:
+                            {
+                                role: 'repair',
+                                sourcetarget: 0,
+                                memstruct: memstruct
+                            }
+                        });
                     }
                     if(harvesters.length == 0)
                     {
-                        spawnmain.spawnCreep(bodyparts, 'harvester1' + roomname,
+                        spawnmain.spawnCreep([MOVE, MOVE, WORK, CARRY], 'harvester1' + roomname,
                         {
                             memory:
                             {
@@ -302,7 +326,7 @@ var spwan = {
                     }
                     else
                     {
-                        spawnmain.spawnCreep(bodyparts, 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
+                        spawnmain.spawnCreep(fullbody, 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
                         {
                             memory:
                             {
@@ -314,66 +338,51 @@ var spwan = {
                     }
                 }
             }
-           if(levelOfController > 3)
-            {  
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if(levelOfController > 3)
+            {
                 //////////////////////end low energy management/////////////////////////////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 for(var i = 0; i < spawnss.length; i++)
                 {
-                    if(towermover.length  == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0)
-                    {   
-                    
-                      var nukeIncoming =    Game.rooms[roomname].find(FIND_NUKES);
-    
-                    
-                     var bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY];
-                      
-                                 if(storagevalue > 900000 && levelOfController < 6)
+                    if(towermover.length == 0 && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0)
+                    {
+                        var nukeIncoming = Game.rooms[roomname].find(FIND_NUKES);
+                        var bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY];
+                        if(storagevalue > 950000 && levelOfController < 6)
                         {
-                         bpodyparts=[WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY];
+                            bpodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
                         }
-                            
-                      
-                        if(storagevalue > 900000 && levelOfController > 5 || nukeIncoming.length != 0)
+                        if(storagevalue > 950000 && levelOfController > 5 || nukeIncoming.length != 0)
                         {
-                            bpodyparts= [CARRY, CARRY,  CARRY, CARRY,  CARRY, CARRY,  CARRY, CARRY ];
-                          
-                           var numberofparts = Math.floor((energyavailable - 700) / 100);
-                           if(numberofparts > 40){numberofparts=40;}
-                            
+                            bpodyparts = [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+                            var numberofparts = Math.floor((energyavailable - 700) / 100);
+                            if(numberofparts > 40)
+                            {
+                                numberofparts = 40;
+                            }
                             for(let j = 0; j < numberofparts; j++)
                             {
-                            
                                 bpodyparts.push(WORK);
                             }
-                          
-                          
                         }
-             
-                        
-                        if(nukeIncoming.length != 0 && !wallsBreeched ){
-                            
-                            
-                              if( Game.rooms[roomname].controller.level > 6){
-                                    bpodyparts= [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY];
-                                }
-                                 if( Game.rooms[roomname].controller.level == 6 ){
-                                         bpodyparts= [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY];
-                                }
-                                if( Game.rooms[roomname].controller.level == 5 ){
-                                          bpodyparts= [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY];
-                                }
-                            
-                            
-                            
-                            
+                        if(nukeIncoming.length != 0 && !wallsBreeched)
+                        {
+                            if(Game.rooms[roomname].controller.level > 6)
+                            {
+                                bpodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
+                            }
+                            if(Game.rooms[roomname].controller.level == 6)
+                            {
+                                bpodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
+                            }
+                            if(Game.rooms[roomname].controller.level == 5)
+                            {
+                                bpodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
+                            }
                         }
-                        
-                        
-                        
-                        
-                        
-                        
                         spawnss[i].spawnCreep(bpodyparts, 'towermover' + roomname,
                         {
                             memory:
@@ -383,18 +392,18 @@ var spwan = {
                                 working: false
                             }
                         });
-                        
-                        
-                        
-                        
-                        
-                        
                     }
-                    else if(resourcemover.length  == 0 && levelOfController > 5 && Game.rooms[roomname].terminal != undefined)
+                    else if(resourcemover.length == 0 && levelOfController > 5 && Game.rooms[roomname].terminal != undefined)
                     {
                         if(levelOfController == 8 && spawnss[i].name == roomname + "1")
                         {
-                            spawnss[i].spawnCreep( [MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY], 'resourcemover' + roomname,
+                               var bodyparts = [ MOVE];
+                        for(let j = 0; j < 35; j++)
+                        {
+                            bodyparts.push(CARRY);
+                        }
+                            
+                            spawnss[i].spawnCreep(bodyparts, 'resourcemover' + roomname,
                             {
                                 memory:
                                 {
@@ -405,8 +414,8 @@ var spwan = {
                         }
                         else if(levelOfController < 8)
                         {
-                              spawnss[i].spawnCreep( [MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY], 'resourcemover' + roomname,
-                         {
+                            spawnss[i].spawnCreep([MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], 'resourcemover' + roomname,
+                            {
                                 memory:
                                 {
                                     role: 'resmover',
@@ -434,25 +443,20 @@ var spwan = {
                         }
                         // find power creeps with boost source
                         var boostharvesters = false;
-                        var powerCreepList = Game.rooms[roomname].powerCreeps;
+                        var powerCreepList = Game.rooms[roomname].find(FIND_MY_POWER_CREEPS);
                         if(powerCreepList != undefined)
                         {
-                            var listvalues = Object.values(powerCreepList);
-                            for(var i = 0; i < listnumbers.length; i++)
+                            for(var PP = 0; PP < powerCreepList.length; PP++)
                             {
-                                if(listvalues[i].powers[PWR_REGEN_SOURCE] != undefined)
+                                if(powerCreepList[PP].powers[PWR_REGEN_SOURCE] != undefined)
                                 {
                                     boostharvesters = true;
                                 }
                             }
                         }
-                        if(roomname == "E24N3") //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        if(boostharvesters)
                         {
-                            numberofparts = 12;
-                            bodyparts.push(MOVE);
-                            bodyparts.push(MOVE);
-                            bodyparts.push(MOVE);
-                            bodyparts.push(MOVE);
+                            numberofparts = 14;
                         }
                         for(let j = 0; j < numberofparts; j++)
                         {
@@ -522,7 +526,6 @@ var spwan = {
                             }
                         });
                     }
-              
                     else if(repairers.length < 1 * multiplyrepairerrs && levelOfController > 2)
                     {
                         var bodyparts = [];
@@ -554,7 +557,7 @@ var spwan = {
                             }
                         });
                     }
-                    else if(extractor.length < 1 && extractorneeded && levelOfController >= 6 && 1==2)
+                    else if(extractor.length < 1 && extractorneeded && levelOfController >= 6 && 1 == 2)
                     {
                         var numberofparts = Math.floor(energyavailable / 350);
                         if(numberofparts > 8)
@@ -590,11 +593,15 @@ var spwan = {
                     {
                         var numberofparts = Math.floor((energyavailable - 600) / 100);
                         var bodyparts = [];
-                        if(numberofparts > 4 && storagevalue > 400000)
+                        if(numberofparts > 9 && storagevalue > 500000)
                         {
-                            numberofparts = 4;
+                            numberofparts = 9;
                         }
-                        else if(numberofparts > 4 && storagevalue < 400000)
+                        if(levelOfController > 6 && storagevalue > 500000)
+                        {
+                            numberofparts = 20;
+                        }
+                        else if(numberofparts > 4 && storagevalue < 500000)
                         {
                             numberofparts = 3;
                         }
@@ -607,6 +614,7 @@ var spwan = {
                         }
                         else
                         {
+                            bodyparts.push(WORK);
                             bodyparts.push(WORK);
                         }
                         bodyparts.push(CARRY);
@@ -645,8 +653,10 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
-                    }       else if(scouts.length < 1 && levelOfController > 3) ///////////////////////////////////
+                    }
+                    else if(scouts.length < 1 && levelOfController > 3)
                     {
+                        Game.flags[roomname].memory.flagstruct.spawnfree = true;
                         spawnss[i].spawnCreep([MOVE], 'scout' + roomname,
                         {
                             memory:
@@ -655,6 +665,18 @@ var spwan = {
                                 role: 'scout',
                                 exitchosen: "a",
                                 prevRoom: roomname
+                            }
+                        });
+                    }
+                    else if(numberofguardingcreeps.length < 1 && numberOfMineRooms > 2)
+                    {
+                        spawnss[i].spawnCreep(this.createBiggestsChasedown(roomname), 'mineGuardChasedown' + roomname,
+                        {
+                            memory:
+                            {
+                                memstruct: memstruct,
+                                role: 'guard',
+                                attackrole: "chasedown"
                             }
                         });
                     }

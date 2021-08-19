@@ -1,5 +1,5 @@
 var squadmanage = require('squadManager');
-var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6", "E29N5", "E28N7", "E27N6"];
+var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7"];
 var squadgenerator = {
     run: function(roomname, redflags)
     {
@@ -7,10 +7,9 @@ var squadgenerator = {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////// CENTER MINES////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000 && 1==2)
+        if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000 && mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange.length != 0 && Game.rooms[roomname].controller.level ==8 && 1==2)
         {
-            if(mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange.length != 0 && Game.rooms[roomname].controller.level ==8)
-            {
+            
                 var squads = Memory.squadObject;
                 var squadnames = Object.keys(squads);
                 var currsquadspawning = Game.flags[roomname].memory.flagstruct.squadspawning;
@@ -127,7 +126,7 @@ var squadgenerator = {
                     }
                 }
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            }
+          
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////other mines////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,22 +188,11 @@ var squadgenerator = {
                                 {
                                     "mover1": bodypartsMOVER,
                                     "mover2": bodypartsMOVER,
-                                    "miner0": bodypartsMINER,
-                                    "claimer": [MOVE, CLAIM, MOVE, CLAIM]
+                                    "miner0": bodypartsMINER
+                                  
                                 });
                            
-                            if(1 == 2)
-                            {
-                                squadmanage.initializeSquad(roomname + mainflag.memory.flagstruct.claimedroomstuct.MineRooms[l] + "MiningSquad", [mainflag.memory.flagstruct.claimedroomstuct.MineRooms[l]], false, "MiningSquad", roomname,
-                                {
-                                    "mover1": bodypartsMOVER,
-                                    "mover2": bodypartsMOVER,
-                                    "mover3": bodypartsMOVER,
-                                    "miner0": bodypartsMINER,
-                                    "miner1": bodypartsMINER,
-                                    "claimer": [MOVE, CLAIM, MOVE, CLAIM]
-                                });
-                            }
+                           
                         }
                     }
                 }

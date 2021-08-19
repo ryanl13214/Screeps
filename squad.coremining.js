@@ -1,3 +1,4 @@
+var creepfunctions = require('prototype.creepfunctions');
 var coremining = {
     run: function(squadID)
     {

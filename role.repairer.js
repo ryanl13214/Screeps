@@ -6,6 +6,11 @@ var rolerepair = {
         var check = creepfunctions.checkglobaltasks(creep);
         if(check)
         {
+            
+            if( creep.memory.sourcetarget == undefined){
+                creep.memory.sourcetarget =1;
+            }
+            
             if(creep.memory.memstruct.tasklist.length == 0)
             {
                 if(creep.memory.full == true && creep.carry.energy == 0)
@@ -26,7 +31,7 @@ var rolerepair = {
                     }
                     if(!creep.memory.hastask)
                     {
-                        creep.say("a");
+                        creep.say("!creep.memory.hastask");
                         var sources = creep.room.find(FIND_SOURCES);
                         if(creep.harvest(sources[creep.memory.sourcetarget]) == ERR_NOT_IN_RANGE)
                         {
@@ -164,6 +169,22 @@ var rolerepair = {
                                     {
                                         this.repairLowestRamparts(creep);
                                     }
+                                     if(!creep.memory.hastask)
+                                    { 
+                                    
+                                    
+                                     creep.upgradeController(creep.room.controller);
+                creep.moveTo(Game.flags[creep.room.name + "controllerpos"].pos,
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ffaa00'
+                    }
+                });
+                                    }
+                                    
+                                    
+                                    
                                 }
                             }
                             else
@@ -173,7 +194,7 @@ var rolerepair = {
         {
             return {
                 pos: host.pos,
-                range: 3
+                range: 4
             };
         });
         let patha = PathFinder.search(creep.pos, goals,
