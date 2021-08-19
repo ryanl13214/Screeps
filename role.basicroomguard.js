@@ -8,12 +8,22 @@ var roleguard = {
         if(creepfunctions.checkglobaltasks(creep))
         {
             if(creep.memory.attackrole == "chasedown")
-            {
+            {    
                 var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                if(creep.body.find(elem => elem.type === "heal") != undefined)
-                {
-                    creep.heal(creep);
+                
+                if(target == undefined){
+                    
+                    target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+                        
+                    if(target == undefined){
+                        
+                        target = creep.pos.findClosestByRange(STRUCTURE_INVADER_CORE);
+                    }
                 }
+                creep.say(target);
+        //        STRUCTURE_INVADER_CORE
+                
+              
                 var mainflag = Game.flags[creep.room.name];
                 if(mainflag != undefined)
                 {
@@ -33,20 +43,27 @@ var roleguard = {
                 {
                     creep.rangedAttack(target);
                 }
-                if(target && (creep.pos.x > 2 && creep.pos.x < 49 && creep.pos.y > 2 && creep.pos.y < 49) || (target && range < 4))
+                if(target != undefined && (creep.pos.x > 2 && creep.pos.x < 49 && creep.pos.y > 2 && creep.pos.y < 49) || (target != undefined && range < 4))
                 {
-                    creep.say("s");
+                   // creep.say("s");
                     var range = creep.pos.getRangeTo(target);
-                    creep.say(range);
+                 //   creep.say(range);
                     if(range > 1)
                     {
                         creep.moveTo(target);
                     }
                 }
-                else if(target && range > 3)
+                else if(target && range > 3 && creep.memory.memstruct.tasklist.length ==0  || (   creep.memory.memstruct.tasklist.length !=0 &&     creep.memory.memstruct.tasklist[0][0] != "moveToObjectLoose") )
                 {
                     creep.say("task move");
-                    creep.memory.memstruct.tasklist.push(["moveToObjectLoose", target.id]);
+                    var temp =  creep.memory.memstruct.tasklist;
+                    creep.memory.memstruct.tasklist = ["moveToObjectLoose", target.id] ;
+                   for(var i = 0; i < temp.length; i++){
+                         creep.memory.memstruct.tasklist.push(temp[i]);
+                    }
+                    
+                    
+                     
                 }
                 if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax && !target)
                 {

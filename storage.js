@@ -1,6 +1,16 @@
 var storageManager = {
-    run: function(roomname)
+    
+    
+      simpleVisualiser: function(roomname,topos,frompos,textActual,number)
     {
+     
+    
+          new RoomVisual(roomname).line(topos.x,topos.y,frompos.x,frompos.y);
+                    new RoomVisual(roomname).text(textActual + number, frompos.x,frompos.y, {color: 'red', font: 0.8}); 
+    
+    },
+    run: function(roomname)
+    { 
         var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "power","G"];
         var allValues = [20000, 20000, 20000, 20000, 20000, 20000, 0,5000];
         if(Game.rooms[roomname].controller.isPowerEnabled)
@@ -39,9 +49,36 @@ var storageManager = {
         });
         ////////////////////////////////////////////
         var resmoveractual = resmover[0];
-        if(resmoveractual && resmoveractual.memory.memstruct.tasklist.length == 0  )
+        if(resmoveractual  )
         {
-
+            if(strg.store.getUsedCapacity("energy") > (10 * termin.store.getUsedCapacity("energy")) && strg.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length == 0 && termin.store.getFreeCapacity() > 5000)
+            {
+                var moveAmount = Math.min(strg.store.getUsedCapacity("energy") - 10 * termin.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity()  );
+                //   console.log(moveAmount);
+                if(moveAmount == resmoveractual.store.getCapacity())
+                {
+                    resmoveractual.say("e to trm ");
+                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, "energy", moveAmount]);
+                    resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, "energy"]);
+                     this.simpleVisualiser(roomname,termin.pos,strg.pos ,"energy" ,moveAmount);
+                }
+            }
+            if(strg.store.getUsedCapacity("energy") < 10 * termin.store.getUsedCapacity("energy") && termin.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length  == 0 && strg.store.getFreeCapacity() > 5000)
+            {
+                var moveAmount = Math.min(10 * termin.store.getUsedCapacity("energy") - strg.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity());
+                //    console.log(moveAmount);
+                if(moveAmount == resmoveractual.store.getCapacity())
+                {
+                    
+                    resmoveractual.say("e to strg ");
+                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, "energy", moveAmount]);
+                    resmoveractual.memory.memstruct.tasklist.push(["transfer", strg.id, "energy"]);
+                     this.simpleVisualiser(roomname,strg.pos,termin.pos ,"energy" ,moveAmount);
+                    
+                }
+            }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // RESOURCE    manager  
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,22 +97,27 @@ var storageManager = {
                         {
                             itemfound = true;
                         }
-                        if(resourcekeys[i] == allResources[j] && resourcevalues[i] > allValues[j] && resmoveractual.memory.memstruct.tasklist.length < 3 && allResources[j] != "energy" && termin.store.getFreeCapacity() > 5000)
+                        if(resourcekeys[i] == allResources[j] && resourcevalues[i] > allValues[j] && resmoveractual.memory.memstruct.tasklist.length < 0 && allResources[j] != "energy" && termin.store.getFreeCapacity() > 5000)
                         {
+                                 var transferAmount = Math.min((resourcevalues[i] - allValues[j]), resmoveractual.store.getCapacity());
                             itemfound = true;
                             resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                            resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, allResources[j], Math.min((resourcevalues[i] - allValues[j]), resmoveractual.store.getCapacity())]);
-                            resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, allResources[j], Math.min((resourcevalues[i] - allValues[j]), resmoveractual.store.getCapacity())]);
+                            resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, allResources[j],  transferAmount]);
+                            resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, allResources[j],transferAmount]);
+                               this.simpleVisualiser(roomname,termin.pos,strg.pos ,  allResources[j] ,transferAmount);
+                            
                         }
                     }
                     ////////////////////////
                     if(!itemfound && resmoveractual.memory.memstruct.tasklist.length < 3)
                     { // item not on the i want in storage list
-                        if(resmoveractual.memory.memstruct.tasklist.length < 3 && termin.store.getFreeCapacity() > 5000)
+                        if(termin.store.getFreeCapacity() > 5000)
                         {
+                            var transferAmount = Math.min(strg.store.getUsedCapacity(resourcekeys[i]), resmoveractual.store.getCapacity());
                             resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                            resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, resourcekeys[i], Math.min(strg.store.getUsedCapacity(resourcekeys[i]), resmoveractual.store.getCapacity())]);
-                            resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, resourcekeys[i], Math.min(strg.store.getUsedCapacity(resourcekeys[i]), resmoveractual.store.getCapacity())]);
+                            resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, resourcekeys[i],transferAmount]);
+                            resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, resourcekeys[i], transferAmount]);
+                            this.simpleVisualiser(roomname,termin.pos,strg.pos ,  allResources[j] ,transferAmount);
                         }
                     }
                 }
@@ -83,40 +125,22 @@ var storageManager = {
             //////////////////////// 
             for(var j = 0; j < allResources.length; j++) // transfer to strg
             {
-                if(allValues[j] > strg.store.getUsedCapacity(allResources[j]) && termin.store.getUsedCapacity(allResources[j]) > 1000 && resmoveractual.memory.memstruct.tasklist.length < 3)
+                if(allValues[j] > strg.store.getUsedCapacity(allResources[j]) && termin.store.getUsedCapacity(allResources[j]) > 1000 && resmoveractual.memory.memstruct.tasklist.length == 0)
                 {
+                    var transferAmount = Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]), resmoveractual.store.getCapacity());
                     resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, allResources[j], Math.min((allValues[j]) - strg.store.getUsedCapacity(allResources[j]), resmoveractual.store.getCapacity())]);
+                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, allResources[j], transferAmount ]);
                     resmoveractual.memory.memstruct.tasklist.push(["transfer", strg.id, allResources[j]]);
+                    
+    
+         
+                   this.simpleVisualiser(roomname,strg.pos,termin.pos ,  allResources[j] ,transferAmount);
                 }
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // enegy manager
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(strg.store.getUsedCapacity("energy") > (10 * termin.store.getUsedCapacity("energy")) && strg.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length < 3)
-            {
-                var moveAmount = Math.min(strg.store.getUsedCapacity("energy") - 10 * termin.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity() && termin.store.getFreeCapacity() > 5000);
-                //   console.log(moveAmount);
-                if(moveAmount == resmoveractual.store.getCapacity())
-                {
-                    resmoveractual.say("e to trm ");
-                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", strg.id, "energy", moveAmount]);
-                    resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, "energy"]);
-                }
-            }
-            if(strg.store.getUsedCapacity("energy") < 10 * termin.store.getUsedCapacity("energy") && termin.store.getUsedCapacity("energy") > 10000 && resmoveractual.memory.memstruct.tasklist.length < 3)
-            {
-                var moveAmount = Math.min(10 * termin.store.getUsedCapacity("energy") - strg.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity());
-                //    console.log(moveAmount);
-                if(moveAmount == resmoveractual.store.getCapacity())
-                {
-                    resmoveractual.say("e to strg ");
-                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, "energy", moveAmount]);
-                    resmoveractual.memory.memstruct.tasklist.push(["transfer", strg.id, "energy"]);
-                }
-            }
+ 
         }
     }
 }

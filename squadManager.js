@@ -21,7 +21,7 @@ var squadmanager = {
         
         
         
-        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 )
+        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || (mainMemoryObject.squadType == "quad"  && mainMemoryObject.SquadMembersCurrent.length  ==0 && mainMemoryObject.squadisready) )
         {
             console.log("deleting squad-",squadID);
             delete Memory.squadObject[squadID];
@@ -29,7 +29,7 @@ var squadmanager = {
         else
         {
             var squadMemberGoal = Object.values(mainMemoryObject.SquadMembersGoal);
-            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true )
+            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true  )
             {
                 if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
                 {
@@ -37,10 +37,21 @@ var squadmanager = {
                 }
                 if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == squadID)
                 {
-                   
+                   if(mainMemoryObject.squadType == "quad"  && mainMemoryObject.squadisready == true){
+                       
+                   }
+                  else{ 
                     this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
+                  }
                 }
             }
+            
+            
+            
+            
+            
+            
+            
             else if(mainMemoryObject.SquadMembersCurrent.length == squadMemberGoal.length)
             {
                 mainMemoryObject.squadisready = true;
@@ -83,7 +94,7 @@ var squadmanager = {
     },
     initializeSquad: function(squadID, arrayOfSquadGoals, squadIsBoosted, squadType, squadHomeRoom, SquadMembers)
     {
-        console.log("creating squad");
+        console.log("creating squad",squadID);
         Memory.squadObject[squadID] = {
             arrayOfSquadGoals: arrayOfSquadGoals,
             squadIsBoosted: squadIsBoosted,
@@ -105,10 +116,23 @@ var squadmanager = {
             ["joinSquad", squadID]
         ];
         var mainflag = Game.flags[squadHomeRoom];
+       
+        
         if(mainMemoryObject.squadIsBoosted == true)
-        {
+        {  
+            var waitUntil = mainMemoryObject.SquadMembersGoal;
+            var temp =[];
+            for(var c = 0; c < waitUntil.length; c++)
+            {
+               temp.push(waitUntil[c] + "-" + squadID); 
+                
+            }
+            console.log(temp);
             tasklistt = [
-                ["waituntil", mainMemoryObject.squadcreationtime + 250],
+                
+                ["waitForCreepsToSpawn", temp],
+                
+                
                 ["renewfull"],
                 ["boosAllMax"],
                 ["moveToLoose", mainflag.pos.x - 7, mainflag.pos.y - 7],
@@ -199,6 +223,12 @@ var squadmanager = {
                                 total += 10;
                             }
                         }
+                        
+                        
+                        if(Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost == undefined){
+                            Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost=0;
+                        }
+                        
                         Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost += total;
                     }
                     

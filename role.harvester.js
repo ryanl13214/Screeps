@@ -71,7 +71,9 @@ var roleharvester = {
                     if( Game.rooms[creep.memory.memstruct.spawnRoom].controller.level < 4)
                     {
                         var flag1 = Game.flags[creep.room.name + "container" + creep.memory.sourcetarget];
+                        if(flag1 != undefined){
                         Game.rooms[creep.room.name].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
+                        }
                     }
                 }
             }

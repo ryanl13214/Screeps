@@ -31,11 +31,19 @@ var roleUpgrader = {
             if(Game.time % 10000){
                 
                 
-                     if(creep.room.controller.level < 8 )
+                     if(creep.room.controller.level < 7 )
                     {
                         var flag1 = Game.flags[creep.room.name + "controllerposcontainer" ];
                         Game.rooms[creep.room.name].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_CONTAINER);
                     }
+                     else     if(creep.room.controller.level < 8 )
+                    {
+                        var flag1 = Game.flags[creep.room.name + "controllerposcontainer" ];
+                        Game.rooms[creep.room.name].createConstructionSite(flag1.pos.x, flag1.pos.y, STRUCTURE_LINK);
+                    }
+                    
+                    
+                    
             }
             
             
@@ -48,7 +56,7 @@ var roleUpgrader = {
             {
                 creep.memory.full = false;
             }
-            if(!creep.memory.full && creep.carry.energy == creep.carryCapacity)
+            if(!creep.memory.full && creep.store.getUsedCapacity("energy") ==creep.store.getCapacity()  )
             {
                 creep.memory.full = true;
             }
@@ -78,18 +86,23 @@ var roleUpgrader = {
                 }
                 else
                 {
-                    var targets = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                      var controllerflag = Game.flags[creep.room.name + "controllerposcontainer"];
+                         var controllerlink = controllerflag.pos.findInRange(FIND_STRUCTURES, 1,
+            {
+                filter: (structure) =>
+                {
+                    return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK) ;
+                }
+            });
+                    
+                    
+                    
+                  
+                    if(controllerlink.length != 0)
                     {
-                        filter: (structure) =>
+                        if(creep.withdraw(controllerlink[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
                         {
-                            return (structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_LINK) && structure.store.getUsedCapacity() > creep.store.getFreeCapacity();
-                        }
-                    });
-                    if(targets != undefined)
-                    {
-                        if(creep.withdraw(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-                        {
-                            creep.moveTo(targets,
+                            creep.moveTo(controllerlink[0],
                             {
                                 visualizePathStyle:
                                 {

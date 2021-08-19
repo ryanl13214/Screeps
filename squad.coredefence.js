@@ -1,15 +1,23 @@
+var creepfunctions = require('prototype.creepfunctions');
 var coredefence = {
     run: function(squadID)
     {
         var mainMemoryObject = Memory.squadObject[squadID];
         for(var kk = 0; kk < mainMemoryObject.SquadMembersCurrent.length; kk++)
         {
-            var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[kk]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            var creeper = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[kk]);
+            var target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+     
+            
+            
+            
+           
+           
             if(target != undefined)
             {
                 mainMemoryObject.squadposition = [target.pos.x, target.pos.y];
             }
-            else if(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[kk]).room.name == mainMemoryObject.arrayOfSquadGoals[0])
+            else if(creeper.room.name == mainMemoryObject.arrayOfSquadGoals[0])
             {
                 if(mainMemoryObject.arrayOfSquadGoals.length > 1)
                 {
@@ -17,7 +25,7 @@ var coredefence = {
                     mainMemoryObject.arrayOfSquadGoals.push(tmp);
                 }
             }
-            var creeper = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[kk]);
+            
             var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
             {
                 filter: function(object)
@@ -98,6 +106,24 @@ var coredefence = {
                     }
                 }
             }
+              creeper.heal(creeper);
+            var invaderCore = creeper.room.find(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: function(object)
+                    {
+                        return object.structureType != STRUCTURE_KEEPER_LAIR;
+                    }
+                });
+            if(invaderCore != undefined)
+            {
+                creeper.rangedMassAttack();
+                creeper.moveTo(invaderCore);
+          
+          
+            }
+            
+            
+            
             creeper.heal(creeper);
         }
     },

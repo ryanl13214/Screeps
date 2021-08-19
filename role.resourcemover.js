@@ -88,9 +88,16 @@ var roleresourcemover = {
             });
             if(spawnss.length != 0)
             {
+                
                 creep.memory.memstruct.tasklist.push(["deposit"]);
                 creep.memory.memstruct.tasklist.push(["withdraw", creep.room.terminal.id, "energy", 300 - spawnss[0].store.getUsedCapacity("energy")]);
                 creep.memory.memstruct.tasklist.push(["transfer", spawnss[0].id, "energy"]);
+                
+                     //  new RoomVisual(creep.room.name).line(targ.pos.x,targ.pos.y,creep.pos.x,creep.pos.y);
+                 //    new RoomVisual(creep.room.name).text(creep.memory.memstruct.tasklist[0][2],creep.pos.x,creep.pos.y, {color: 'green', font: 0.3}); 
+                    
+                
+                
             }
             var link = creep.pos.findInRange(FIND_STRUCTURES, 1,
             {

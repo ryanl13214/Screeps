@@ -1,4 +1,12 @@
 var factoryManager = {
+         simpleVisualiser: function(roomname,topos,frompos,textActual,number)
+    {
+     
+    
+          new RoomVisual(roomname).line(topos.x,topos.y,frompos.x,frompos.y);
+                    new RoomVisual(roomname).text(textActual + number, frompos.x,frompos.y, {color: 'red', font: 0.3}); 
+    
+    },
     run: function(roomname, termin, fact)
     {
         var allResources = ['battery', 'energy', "H", "O", "U", "L", "Z", "X", "G", 'utrium_bar', 'lemergium_bar', 'zynthium_bar', 'keanium_bar', 'ghodium_melt', 'oxidant', 'reductant', 'purifier', 'composite', 'crystal', 'liquid', 'wire', 'cell', 'alloy', 'condensate', "silicon", "metal", "mist", "biomass", 'switch', 'transistor', 'microchip', 'circuit', 'phlegm', 'tissue', 'muscle', 'organoid', 'tube', 'fixtures', 'frame', 'hydraulics', 'concentrate', 'extract', 'spirit', 'emanation', 'machine', 'organism', 'device', 'essence'];
@@ -26,12 +34,13 @@ var factoryManager = {
                 {
                     if(resourcekeys[i] == allResources[j] && resourcevalues[i] > allValues[j] && resmoveractual.memory.memstruct.tasklist.length == 0)
                     { //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue"]
-                    
+                    var moveAmount =  (resourcevalues[i] - allValues[j]);
                     
                     
                         resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                        resmoveractual.memory.memstruct.tasklist.push(["withdraw", fact.id, allResources[j], (resourcevalues[i] - allValues[j])]);
-                        resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, allResources[j], (resourcevalues[i] - allValues[j])]);
+                        resmoveractual.memory.memstruct.tasklist.push(["withdraw", fact.id, allResources[j], moveAmount]);
+                        resmoveractual.memory.memstruct.tasklist.push(["transfer", termin.id, allResources[j], moveAmount]);
+                        this.simpleVisualiser(roomname,termin.pos,fact.pos,allResources[j],moveAmount);
                     }
                 }
             }
@@ -45,26 +54,126 @@ var factoryManager = {
                     resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
                     resmoveractual.memory.memstruct.tasklist.push(["withdraw", termin.id, allResources[j],   moveAmount]);
                     resmoveractual.memory.memstruct.tasklist.push(["transfer", fact.id, allResources[j]]);
+                    
+                      this.simpleVisualiser(roomname,fact.pos,termin.pos,allResources[j],moveAmount);
                 }
             }
         }
+        
+        
+        
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(fact.level != 2 || (fact.level == 2 && fact.store.getUsedCapacity('alloy') < 200))
+     var globalBreak = false;
+     
+     
+     
+        if(fact.level == 1 )
         {
+           
+                if(fact.store.getUsedCapacity('composite') < 720 )
+                {
+                    fact.produce('composite');
+                    new RoomVisual(roomname).text('composite', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                    globalBreak=true;
+                }
             
-           // console.log("room factory " ,roomname );
-            // if level ==0 or no power
-            //   lvl 0 resources
+        }
+        if(fact.level == 2 && globalBreak == false)
+        {
+            var basic = ['crystal'];
+  
+                if(fact.store.getUsedCapacity(basic[0]) < 720)
+                {
+                    fact.produce(basic[0]);
+                    new RoomVisual(roomname).text(basic[0], fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                    globalBreak=true;
+                }
+            
+        }   
+        if(fact.level == 3 && globalBreak == false )
+        {
+            var basic = ['liquid'];
+            
+                if(fact.store.getUsedCapacity(basic[0]) < 720)
+                {
+                    fact.produce(basic[0]);
+                    new RoomVisual(roomname).text(basic[0], fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                    globalBreak=true;
+                }
+            
+        }
+        ////////////////////////////////////////////////////////
+        if(fact.level == 2  && globalBreak == false )
+        {
+                   
+            var basic = ['fixtures', 'tissue', 'transistor', 'extract'];
+            var basicamounts = [90, 90, 90, 90];
+            var tmp = 0;
+            for(var i = 0; i < basic.length; i++)
+            {
+                if(fact.store.getUsedCapacity(basic[i]) < 90 || termin.store.getUsedCapacity(basic[i]) < 90 && tmp ==0)
+                {
+                      
+                var a =    fact.produce(basic[i]);
+                
+                if(a == 0 ){
+                   new RoomVisual(roomname).text(basic[i], fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                 tmp=1;   
+                 globalBreak=true;
+                }
+                
+                
+                }
+            }
+        }
+     
+     
+             if(fact.level ==1  && globalBreak == false )
+        {
+                   
+            var basic = ['tube' ];
+            var basicamounts = [90 ];
+        
+            for(var i = 0; i < basic.length; i++)
+            {
+                if(fact.store.getUsedCapacity(basic[i]) < 90 )
+                {
+                      
+                 fact.produce(basic[i]);
+                
+               
+                   new RoomVisual(roomname).text(basic[i], fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+               
+                 globalBreak=true;
+              
+                
+                }
+            }
+        }
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+        if( globalBreak == false  )
+        {
+ 
             var basic = ['alloy', 'cell', 'wire', 'condensate'];
-            var basicamounts = [1000, 1000, 1000, 1000];
+          
             var breaks = false;
  
             for(var i = 0; i < basic.length; i++)
             {
-                if(fact.store.getUsedCapacity(basic[i]) < basicamounts[i]  ||   termin.store.getUsedCapacity(basic[i]) < 1900  && !breaks  )
+                if(fact.store.getUsedCapacity(basic[i]) < 980  || (   termin.store.getUsedCapacity(basic[i]) < 1900 &&  fact.level != 2  ) && globalBreak == false   )
                 {
                     fact.produce(basic[i]);
-                    breaks = true;
+                    globalBreak = true;
                 }
             }
             
@@ -75,10 +184,10 @@ var factoryManager = {
             
             for(var i = 0; i < basic2.length; i++)
             {
-                if(fact.store.getUsedCapacity(basic2[i]) < 800  ||   termin.store.getUsedCapacity(basic2[i]) < 1900  && !breaks  )
+                if(fact.store.getUsedCapacity(basic2[i]) < 720  ||  ( termin.store.getUsedCapacity(basic2[i]) < 1900 &&  fact.level != 2  ) && globalBreak == false   )
                 {
                     fact.produce(basic2[i]);
-                    breaks = true;
+                    globalBreak = true;
                 }
             }  
             
@@ -92,19 +201,7 @@ var factoryManager = {
         
         
         
-        ////////////////////////////////////////////////////////
-        if(fact.level == 2 &&  fact.store.getUsedCapacity('alloy') >  200 )
-        {
-            var basic = ['fixtures', 'tissue', 'transistor', 'extract'];
-            var basicamounts = [90, 90, 90, 90];
-            for(var i = 0; i < basic.length; i++)
-            {
-                if(fact.store.getUsedCapacity(basic[i]) < basicamounts[i] || termin.store.getUsedCapacity(basic[i]) < basicamounts[i])
-                {
-                    fact.produce(basic[i]);
-                }
-            }
-        }
+      
     }
 }
 module.exports = factoryManager;
