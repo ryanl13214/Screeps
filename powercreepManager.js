@@ -1,5 +1,263 @@
 var creepfunctions = require('prototype.creepfunctions');
 var powercreepManager = {
+    loopTasks: function(creep)
+    {
+        //     console.log(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
+        if(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0] == "repeat")
+        {
+            //   creep.say(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
+            if(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][1] + 1 == creep.memory.memstruct.tasklist.length)
+            {
+                var tmpstore = creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1]
+                var back = creep.memory.memstruct.tasklist.splice(0, 1);
+                creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1] = back[0];
+                creep.memory.memstruct.tasklist.push(tmpstore);
+            }
+            else
+            {
+                creep.memory.memstruct.tasklist.splice(0, 1);
+            }
+        }
+        else
+        {
+            creep.memory.memstruct.tasklist.splice(0, 1);
+        }
+    },
+    allowSlave: function(creep)
+    {
+        try
+        {
+            if(creep.memory.duoId != undefined)
+            {
+                var slave = Game.getObjectById(creep.memory.duoId);
+                const range = creep.pos.getRangeTo(slave);
+                var counter = 1;
+                if(slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
+                {
+                    counter = 3;
+                }
+                if(range > counter && creep.room.name == slave.room.name && Game.time % 3 ==0)
+                {
+                    creep.say("come");
+                    creep.moveTo(slave);
+                }
+            }
+             
+        }
+        catch (e)
+        {}
+    },
+    checkPowerCreepTasks: function(powerCreep)
+    {
+        creep = powerCreep;
+        if(creep.memory.memstruct.tasklist.length == 0)
+        {
+            return true;
+        }
+        else
+        if(creep.memory.memstruct.tasklist[0] != undefined)
+        {
+            if(creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
+            {
+                var targposition = new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]);
+                var pos1 = creep.pos;
+                var pos2 = targposition;
+                const range = creep.pos.getRangeTo(targposition);
+                if(range > 23)
+                { // might cause bug on nxt room wall 
+                    creep.moveTo(targposition);
+                    Game.map.visual.line(creep.pos, targposition,
+                    {
+                        color: '#000000',
+                        lineStyle: 'solid'
+                    });
+                    var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    var range2 = creep.pos.getRangeTo(targets);
+                    if(range2 <= 5)
+                    {
+                        const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
+                        target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                        //     this.combatMove(creep, targetArr, target);
+                    }
+                }
+                else
+                {
+                    this.loopTasks(creep);
+                }
+                this.allowSlave(creep);
+            }
+            if(creep.memory.memstruct.tasklist[0][0] == "attackRoom")
+            {
+             
+                /////////////////////////////////////////////////
+                if(creep.memory.duoId != undefined)
+                {
+                    var slave = Game.getObjectById(creep.memory.duoId);
+                    if(slave != undefined)
+                    {
+                        if(creep.store.getFreeCapacity() > 10)
+                        {
+                           // creep.withdraw("ops", slave, 10);
+                        }
+                    }
+                }
+                else
+                {
+                    creep.say("spawning");
+                    Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(
+                        [TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL], 'powerspawnSupport',
+                        {
+                            memory:
+                            {
+                                role: 'multi',
+                                memstruct:
+                                {
+                                    spawnRoom: creep.memory.memstruct.spawnRoom,
+                                    tasklist: [
+                                        ["boosAllMax"],
+                                        ["withdraw", "terminal", "ops"], //["withdraw", strg.id, "energy", moveAmount]);
+                                        ["findMaster", creep.id]
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: false,
+                                    hastask: false
+                                }
+                            }
+                        });
+                }
+                //////////////////////////////////////////////////
+            
+                if(powerCreep.ticksToLive < 800)
+                {
+                    // go home and renew
+                    if(creep.room.name != creep.memory.memstruct.spawnRoom)
+                    {
+                        creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.spawnRoom));
+                    }
+                    else
+                    {
+                        var myPowerspawn = powerCreep.room.find(FIND_MY_STRUCTURES,
+                        {
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType == STRUCTURE_POWER_SPAWN);
+                            }
+                        });
+                        creep.moveTo(myPowerspawn[0]);
+                        var range = powerCreep.pos.getRangeTo(myPowerspawn[0]);
+                        if(range < 2)
+                        {
+                            powerCreep.renew(myPowerspawn[0]);
+                        }
+                    }
+                }
+                if(creep.memory.memstruct.spawnRoom == creep.room.name && creep.store.getUsedCapacity(RESOURCE_OPS) < 2500 && powerCreep.ticksToLive > 800)
+                {
+                   
+                    powerCreep.moveTo(creep.room.storage);
+                     powerCreep.withdraw(powerCreep.room.storage, RESOURCE_OPS);
+                
+                }
+                else if(powerCreep.ticksToLive > 800 && creep.memory.memstruct.tasklist[0][1] == creep.room.name)
+                {
+                    creep.say("r");
+                        if(powerCreep.powers[PWR_SHIELD] != undefined)
+                    {
+                        if(1 == 1)
+                        {
+                            powerCreep.usePower(PWR_SHIELD);
+                        }
+                    }
+                    if(powerCreep.powers[PWR_DISRUPT_TERMINAL] != undefined)
+                    {
+                        var enemyTerminal = powerCreep.room.find(FIND_HOSTILE_STRUCTURES,
+                        {
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType == STRUCTURE_TERMINAL);
+                            }
+                        });
+                        if(enemyTerminal.length != 0)
+                        {
+                            var range = powerCreep.pos.getRangeTo(enemyTerminal);
+                            if(range < 20)
+                            {
+                                powerCreep.moveTo(enemyTerminal[0]);
+                            }
+                            else
+                            {
+                                var enemyLogisticCreeps = enemyTerminal[0].pos.findInRange(FIND_HOSTILE_CREEPS, 2);
+                                if(enemyLogisticCreeps.length != 0  ) //cooldown
+                                {
+                                    powerCreep.usePower(PWR_DISRUPT_TERMINAL, enemyTerminal[0]);
+                                }
+                            }
+                        }
+                    }
+                    if(powerCreep.powers[PWR_DISRUPT_TOWER] != undefined && 1==2)
+                    {
+                        var enTowers = powerCreep.room.find(FIND_HOSTILE_STRUCTURES,
+                        {
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType == STRUCTURE_TOWER);
+                            }
+                        });
+                        if(enTowers.length != 0)
+                        {
+                            var range = powerCreep.pos.getRangeTo(enTowers[0]);
+                            if(range < 20)
+                            {
+                                powerCreep.moveTo(enTowers[0]);
+                            }
+                            else
+                            {
+                                var enemyLogisticCreeps = enTowers[0].pos.findInRange(FIND_HOSTILE_CREEPS, 1);
+                                if(enemyLogisticCreeps.length != 0 && Game.time % 5 ==0) //cooldown
+                                {
+                                    powerCreep.usePower(PWR_DISRUPT_TOWER, enTowers[0]);
+                                }
+                            }
+                        }
+                    }
+                    if(powerCreep.powers[PWR_DISRUPT_SPAWN] != undefined && 1==2)
+                    {
+                        var enSPAWNS = powerCreep.room.find(FIND_HOSTILE_STRUCTURES,
+                        {
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType == STRUCTURE_SPAWN);
+                            }
+                        });
+                        if(enSPAWNS.length != 0)
+                        {
+                            var range = powerCreep.pos.getRangeTo(enSPAWNS[0]);
+                            if(range < 20)
+                            {
+                                powerCreep.moveTo(enSPAWNS[0]);
+                            }
+                            else
+                            {
+                                var enemyLogisticCreeps = enSPAWNS[0].pos.findInRange(FIND_HOSTILE_CREEPS, 1);
+                                if(enemyLogisticCreeps.length != 0 && 1 == 2) //cooldown
+                                {
+                                    powerCreep.usePower(PWR_DISRUPT_SPAWN, enSPAWNS[0]);
+                                }
+                            }
+                        }
+                    }
+                 
+                }
+                else if(powerCreep.ticksToLive > 800 && creep.memory.memstruct.tasklist[0][0] != creep.room.name)
+                {
+                   // creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
+                }
+                this.allowSlave(powerCreep);
+            }
+        }
+    },
     run: function(powerCreep)
     {
         var r;
@@ -25,7 +283,7 @@ var powercreepManager = {
         //   console.log(powerCreep.spawnCooldownTime );
         if(powerCreep.room == undefined) // creep is not in the world
         {
-            if(!(powerCreep.spawnCooldownTime > Date.now()) && powerCreep.name == "eco1")
+            if(!(powerCreep.spawnCooldownTime > Date.now()) && powerCreep.name == "eco1" || powerCreep.name == "attacker1")
             {
                 var pwrspawn = Game.rooms["E24N3"].find(FIND_STRUCTURES,
                 {
@@ -40,8 +298,9 @@ var powercreepManager = {
                     powerCreep.spawn(pwrspawn[0]);
                 }
             }
-            if(!(powerCreep.spawnCooldownTime > Date.now()) && (powerCreep.name == "eco2" || powerCreep.name == "attack1"))
+            if(!(powerCreep.spawnCooldownTime > Date.now()) && (powerCreep.name == "eco2"))
             {
+                powerCreep.memory.memstruct.spawnRoom = "E28N5";
                 var pwrspawn = Game.rooms["E28N5"].find(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
@@ -58,9 +317,11 @@ var powercreepManager = {
         }
         else // creep is in the world
         {
-            var check = creepfunctions.checkglobaltasks(powerCreep);
+            var check = this.checkPowerCreepTasks(powerCreep);
+            powerCreep.say(check);
             if(check)
             {
+                
                 if(powerCreep.room.controller.isPowerEnabled == false)
                 {
                     if(powerCreep.enableRoom(powerCreep.room.controller) == -9)
@@ -79,81 +340,14 @@ var powercreepManager = {
                     var powerList = powerCreep.powers;
                     var powerkeys = Object.keys(powerList);
                     var powervalues = Object.values(powerList);
-                    var creepid = powerCreep.name.substring(0, 6)
-                    if(creepid == "opsHar")
-                    {
-                        this.opsharvester(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
-                    }
-                    else
-                    {
+                    var creepid = powerCreep.name.substring(0, 6);
                         this.roomManager(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
-                    }
+                    
                 }
             }
         }
     },
-    opsharvester: function(powerCreep)
-    {
-        if(Game.time % 50 == 0)
-        {
-            powerCreep.usePower(PWR_GENERATE_OPS);
-        }
-        if(powerCreep.store.getFreeCapacity() < 5) // creep is full
-        {
-            var range = powerCreep.pos.getRangeTo(powerCreep.room.storage);
-            if(range > 1)
-            {
-                powerCreep.moveTo(powerCreep.room.storage,
-                {
-                    visualizePathStyle:
-                    {
-                        stroke: '#ff0000'
-                    }
-                });
-            }
-            else
-            {
-                powerCreep.transfer(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getUsedCapacity("ops"));
-            }
-        }
-        else
-        {
-            var mainflag = Game.flags[powerCreep.room.name];
-            var range = powerCreep.pos.getRangeTo(new RoomPosition(mainflag.pos.x + 7, mainflag.pos.y + 7, mainflag.room.name));
-            if(range > 2)
-            {
-                powerCreep.moveTo(new RoomPosition(mainflag.pos.x + 7, mainflag.pos.y + 7, mainflag.room.name),
-                {
-                    visualizePathStyle:
-                    {
-                        stroke: '#ff0000'
-                    }
-                });
-            }
-        }
-        var pwrspawn = powerCreep.room.find(FIND_STRUCTURES,
-        {
-            filter: (structure) =>
-            {
-                return (structure.structureType == STRUCTURE_POWER_SPAWN);
-            }
-        })[0];
-        var range = powerCreep.pos.getRangeTo(pwrspawn);
-        if(range < 2)
-        {
-            powerCreep.renew(pwrspawn);
-        }
-        if(powerCreep.ticksToLive < 200)
-        {
-            powerCreep.moveTo(pwrspawn,
-            {
-                visualizePathStyle:
-                {
-                    stroke: '#ff0000'
-                }
-            });
-        }
-    },
+   
     roomManager: function(powerCreep)
     {
         ////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////

@@ -10,9 +10,9 @@ var storageManager = {
     
     },
     run: function(roomname)
-    { 
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "power","G"];
-        var allValues = [20000, 20000, 20000, 20000, 20000, 20000, 0,5000];
+    {             
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "power","G","XKH2O"];
+        var allValues = [20000, 20000, 20000, 20000, 20000, 20000, 0,5000,5000];
         if(Game.rooms[roomname].controller.isPowerEnabled)
         {
             allResources.push("ops");

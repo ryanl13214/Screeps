@@ -38,7 +38,7 @@ var pwrspawnManager = {
             filter: (creep) => (creep.memory.role == "resmover")
         });
         var resmoveractual = resmover[0];
-        if(resmoveractual && resmoveractual.memory.memstruct.tasklist.length == 0)
+        if(resmoveractual && resmoveractual.memory.memstruct.tasklist.length == 0 && (pwrspawn.store.getUsedCapacity("power") < 25  ||  pwrspawn.store.getUsedCapacity("energy") < 3750))
         {
             for(var j = 0; j < allResources.length; j++) // transfer to strg
             {

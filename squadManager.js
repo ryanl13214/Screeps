@@ -127,7 +127,7 @@ var squadmanager = {
                temp.push(waitUntil[c] + "-" + squadID); 
                 
             }
-            console.log(temp);
+           
             tasklistt = [
                 
                 ["waitForCreepsToSpawn", temp],

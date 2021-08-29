@@ -156,10 +156,7 @@ var spwan = {
             }
             var multiplyrepairerrs = 1;
             var ups = 0;
-            if(storagevalue > 800000 || defconstruct.defenceLevel != 10 || Game.rooms[roomname].controller.safeModenumber > 0)
-            {
-                //  multiplyrepairerrs=5;
-            }
+          
             if(wallsBreeched)
             {
                 multiplyrepairerrs = 1;
@@ -181,9 +178,25 @@ var spwan = {
             //    console.log(brokenspawnstructure);
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if((Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000) && movers.length == 0 && moveralt.length < 2 && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500))
+            if(spawnmain != undefined &&(Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000) && movers.length == 0 && moveralt.length < 2 && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500))
             {
-                spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN' + roomname,
+                
+                
+                    var fullbody = [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY];
+                     var numberofpartsHARVESTER = Math.floor((energycurrentlyavailable - 300) / 100);
+                        if(numberofpartsHARVESTER > 22)
+                    {
+                        numberofpartsHARVESTER = 22;
+                    }
+                       for(let j = 0; j < numberofpartsHARVESTER; j++)
+                    {
+                        fullbody.push(MOVE);
+                         fullbody.push(CARRY);
+                    }
+                
+                
+                
+                spawnmain.spawnCreep(fullbody, 'moverMIN' + roomname,
                 {
                     memory:
                     {
@@ -196,8 +209,9 @@ var spwan = {
                     }
                 });
             }
-            else if((Game.rooms[roomname].storage == undefined || Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 10000) && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) || brokenspawnstructure ||levelOfController < 4)
+            else if( spawnmain != undefined && (  (Game.rooms[roomname].storage == undefined || Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 10000) && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) || brokenspawnstructure ||levelOfController < 4))
             {
+                
                 spawnmain.spawnCreep([MOVE, MOVE, CARRY, CARRY], 'moverMIN' + roomname,
                 {
                     memory:
@@ -246,7 +260,7 @@ var spwan = {
                         bodyparts.push(WORK);
                         bodyparts.push(MOVE);
                     }
-                    var numberofparts = Math.floor((energyavailable - 300) / 200);
+                    var numberofparts = Math.floor((energyavailable - 250) / 250);
                     var bpodypartsMOBILE = [MOVE, MOVE, WORK, CARRY];
                     if(numberofparts > 6)
                     {
@@ -255,11 +269,16 @@ var spwan = {
                     for(let j = 0; j < numberofparts; j++)
                     {
                         bpodypartsMOBILE.push(WORK);
+                        bpodypartsMOBILE.push(MOVE); 
                         bpodypartsMOBILE.push(MOVE);
                         bpodypartsMOBILE.push(CARRY);
                     }
-                    if(harvesters.length > 1)
+                    
+                    
+                    
+                    if((harvesters.length > 1   && Game.rooms[roomname].find(FIND_MY_SPAWNS).length ==2)   || (harvesters.length > 0   && Game.rooms[roomname].find(FIND_MY_SPAWNS).length ==1  ) )
                     {
+                        
                         spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN3' + roomname,
                         {
                             memory:
@@ -272,6 +291,7 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
+                        
                         spawnmain.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], 'moverMIN1' + roomname,
                         {
                             memory:
@@ -302,29 +322,34 @@ var spwan = {
                                 memstruct: memstruct
                             }
                         });
-                                     spawnmain.spawnCreep(bpodypartsMOBILE, 'rep2' + roomname,
-                        {
-                            memory:
-                            {
-                                role: 'repair',
-                                sourcetarget: 0,
-                                memstruct: memstruct
-                            }
-                        });
+                                    
                     }
-                    if(harvesters.length == 0)
+                    if(harvesters.length == 0  )
                     {
-                        spawnmain.spawnCreep([MOVE, MOVE, WORK, CARRY], 'harvester1' + roomname,
+                        var parts =[MOVE, WORK, WORK, CARRY]
+                        if(levelOfController == 2 && energycurrentlyavailable == 	550){
+                          parts=   [MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,CARRY]
+                        }
+                        if(levelOfController == 2 && energycurrentlyavailable <	550 && energycurrentlyavailable >=	450 ){
+                          parts=   [MOVE,MOVE,WORK,WORK,WORK,CARRY]
+                        }
+                        if(levelOfController == 2 && energycurrentlyavailable < 450 && energycurrentlyavailable >=	350 ){
+                          parts=   [MOVE,MOVE,WORK,WORK,CARRY]
+                        }
+                        
+                        
+                        spawnmain.spawnCreep(parts, 'harvester0' + roomname,
                         {
                             memory:
                             {
                                 role: 'harvester',
-                                sourcetarget: 1,
+                                sourcetarget: 0,
                                 memstruct: memstruct
                             }
                         });
+                        
                     }
-                    else
+                    else if(Game.rooms[roomname].find(FIND_MY_SPAWNS).length ==2) 
                     {
                         spawnmain.spawnCreep(fullbody, 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
                         {
@@ -343,6 +368,7 @@ var spwan = {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(levelOfController > 3)
             {
+                console.log("ps",upgraders.length);
                 //////////////////////end low energy management/////////////////////////////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 for(var i = 0; i < spawnss.length; i++)
@@ -424,6 +450,49 @@ var spwan = {
                             });
                         }
                     }
+                       else if(upgraders.length == 0  && harvesters.length != 0)  
+                    { 
+                        console.log("£ups");
+                     
+                     
+                        var bodyparts = [];
+                       
+                        if(levelOfController == 6 )
+                        {
+                            bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
+                        }
+                        if(levelOfController == 7  )
+                        {
+                            bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
+                        }
+                        if(levelOfController < 3)
+                        {
+                            bodyparts = [MOVE, WORK, WORK, CARRY];
+                        }
+                        
+                          if(levelOfController ==4)
+                        {
+                            bodyparts = [MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY];
+                        }
+                        if(levelOfController ==5)
+                        {
+                            bodyparts = [MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY];
+                        }
+                        if(levelOfController ==8)
+                        {
+                            bodyparts = [MOVE,MOVE,MOVE,MOVE,WORK,WORK,,CARRY,CARRY];
+                        }
+                        spawnss[i].spawnCreep(bodyparts, 'upgrader' + roomname+ Game.time,
+                        {
+                            memory:
+                            {
+                                role: 'upgrader',
+                                cpuUsed: 0,
+                                full: false,
+                                memstruct: memstruct
+                            }
+                        });
+                    }
                     else if(harvesters.length < 2 && !wallsBreeched)
                     {
                         var numberofparts = Math.floor((energyavailable - 350) / 150);
@@ -462,9 +531,21 @@ var spwan = {
                         {
                             bodyparts.push(WORK);
                         }
-                        if(harvesters.length == 0)
-                        {
-                            spawnss[i].spawnCreep(bodyparts, 'harvester1' + roomname,
+                      
+                      
+                      
+                       spawnss[i].spawnCreep(bodyparts, 'harvester0' + roomname,
+                            {
+                                memory:
+                                {
+                                    role: 'harvester',
+                                    sourcetarget: 0,
+                                    memstruct: memstruct
+                                }
+                            });
+                      
+                      
+                       spawnss[i].spawnCreep(bodyparts, 'harvester1' + roomname,
                             {
                                 memory:
                                 {
@@ -473,19 +554,14 @@ var spwan = {
                                     memstruct: memstruct
                                 }
                             });
-                        }
-                        else
-                        {
-                            spawnss[i].spawnCreep(bodyparts, 'harvester' + (harvesters[0].memory.sourcetarget + 1) % 2 + roomname,
-                            {
-                                memory:
-                                {
-                                    role: 'harvester',
-                                    sourcetarget: (harvesters[0].memory.sourcetarget + 1) % 2,
-                                    memstruct: memstruct
-                                }
-                            });
-                        }
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                   
                     }
                     else if(movers.length < moversneeded && levelOfController >= 3)
                     {
@@ -526,7 +602,8 @@ var spwan = {
                             }
                         });
                     }
-                    else if(repairers.length < 1 * multiplyrepairerrs && levelOfController > 2)
+                   
+                    else if(repairers.length < 1 * multiplyrepairerrs )
                     {
                         var bodyparts = [];
                         var numberofparts = Math.floor(energyavailable / 350);
@@ -535,7 +612,7 @@ var spwan = {
                             numberofparts = Math.floor(50 / 6);
                         }
                         var bodyparts = [];
-                        for(let i = 0; i < numberofparts; i++)
+                        for(let q = 0; q < numberofparts;q++)
                         {
                             bodyparts.push(WORK);
                             bodyparts.push(CARRY);
@@ -557,7 +634,7 @@ var spwan = {
                             }
                         });
                     }
-                    else if(extractor.length < 1 && extractorneeded && levelOfController >= 6 && 1 == 2)
+                    else if(extractor.length < 1 &&  levelOfController >= 6  )
                     {
                         var numberofparts = Math.floor(energyavailable / 350);
                         if(numberofparts > 8)
@@ -565,7 +642,7 @@ var spwan = {
                             numberofparts = 8;
                         }
                         var bodyparts = [];
-                        for(let i = 0; i < numberofparts; i++)
+                        for(let q = 0; q < numberofparts; q++)
                         {
                             bodyparts.push(WORK);
                             bodyparts.push(CARRY);
@@ -589,71 +666,7 @@ var spwan = {
                             }
                         });
                     }
-                    else if(upgraders.length < 1 + ups && levelOfController > 3 && !wallsBreeched) // add condition that ensures the source and controller are close together
-                    {
-                        var numberofparts = Math.floor((energyavailable - 600) / 100);
-                        var bodyparts = [];
-                        if(numberofparts > 9 && storagevalue > 500000)
-                        {
-                            numberofparts = 9;
-                        }
-                        if(levelOfController > 6 && storagevalue > 500000)
-                        {
-                            numberofparts = 20;
-                        }
-                        else if(numberofparts > 4 && storagevalue < 500000)
-                        {
-                            numberofparts = 3;
-                        }
-                        if(levelOfController < 8)
-                        {
-                            for(let i = 0; i < numberofparts; i++)
-                            {
-                                bodyparts.push(WORK);
-                            }
-                        }
-                        else
-                        {
-                            bodyparts.push(WORK);
-                            bodyparts.push(WORK);
-                        }
-                        bodyparts.push(CARRY);
-                        bodyparts.push(CARRY);
-                        bodyparts.push(CARRY);
-                        bodyparts.push(CARRY);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        bodyparts.push(MOVE);
-                        if(levelOfController == 6 && storagevalue > 900000)
-                        {
-                            console.log("boosted up");
-                            bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
-                        }
-                        if(levelOfController == 7 && storagevalue > 900000)
-                        {
-                            bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
-                        }
-                        if(levelOfController < 3)
-                        {
-                            bodyparts = [MOVE, WORK, WORK, CARRY];
-                        }
-                        spawnss[i].spawnCreep(bodyparts, 'upgrader' + Game.time,
-                        {
-                            memory:
-                            {
-                                role: 'upgrader',
-                                cpuUsed: 0,
-                                full: false,
-                                memstruct: memstruct
-                            }
-                        });
-                    }
+                    
                     else if(scouts.length < 1 && levelOfController > 3)
                     {
                         Game.flags[roomname].memory.flagstruct.spawnfree = true;

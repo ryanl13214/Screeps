@@ -139,7 +139,7 @@
            
            
            
-            if(healcapacity < damagePotential * 1.1  || Game.rooms[roomname].controller.safeMode > 1)
+            if(healcapacity < damagePotential * 1.1  || Game.rooms[roomname].controller.safeMode > 1 || allHosiles[i].body.length < 25)
             {
                 targetList.push(allHosiles[i]);
             }

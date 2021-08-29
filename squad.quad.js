@@ -38,7 +38,18 @@ var quadsquad = {
             [1, 2],
             [2, 2]
         ];
-        if(combatRange = 10)
+        var targets = leader.pos.findInRange(FIND_HOSTILE_CREEPS, 4);
+        if(targets.length == 0)
+        {
+            combatRange = 10;
+        }
+        else if(1 == 1 && targets.length != 0) // if quad is blinky 
+        {
+            combatRange = 3;
+        }
+        var array;
+        combatRange = 3;
+        if(combatRange == 10)
         {
             var array = posArray;
         }
@@ -46,7 +57,6 @@ var quadsquad = {
         {
             var array = posArray2;
         }
-        var array = posArray2;
         var returnPos = new RoomPosition(25, 25, leader.room.name);
         for(var c = 0; c < array.length; c++)
         {
@@ -59,43 +69,49 @@ var quadsquad = {
                 {
                     skip = true;
                 }
-                  if(terrain.get(newpos.x-1, newpos.y) == TERRAIN_MASK_WALL ) // costs avoid 
+                if(terrain.get(newpos.x - 1, newpos.y) == TERRAIN_MASK_WALL) // costs avoid 
                 {
                     skip = true;
                 }
-                  if(terrain.get(newpos.x-1, newpos.y+1) == TERRAIN_MASK_WALL ) // costs avoid 
+                if(terrain.get(newpos.x - 1, newpos.y + 1) == TERRAIN_MASK_WALL) // costs avoid 
                 {
                     skip = true;
                 }
-                
-                  if(terrain.get(newpos.x, newpos.y+1) == TERRAIN_MASK_WALL) // costs avoid 
+                if(terrain.get(newpos.x, newpos.y + 1) == TERRAIN_MASK_WALL) // costs avoid 
                 {
                     skip = true;
                 }
                 var xx = newpos.x;
                 var yy = newpos.y;
-                
-               var found11 = leader.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(newpos.x, newpos.y, leader.room.name));
+                var found11 = leader.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(newpos.x, newpos.y, leader.room.name));
                 var found22 = leader.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(newpos.x - 1, newpos.y, leader.room.name));
                 var found33 = leader.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(newpos.x - 1, newpos.y + 1, leader.room.name));
                 var found44 = leader.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(newpos.x, newpos.y + 1, leader.room.name));
-                       if((found11.length != 0 || found22.length != 0 || found33.length != 0 || found44.length != 0)  ) // costs avoid 
-                { 
-                    
-                   skip = true;
+                if((found11.length != 0 || found22.length != 0 || found33.length != 0 || found44.length != 0)) // costs avoid 
+                {
+                    skip = true;
                 }
-          
-                        
-                var found1 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x, newpos.y, leader.room.name));
-                var found2 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x - 1, newpos.y, leader.room.name));
-                var found3 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x - 1, newpos.y + 1, leader.room.name));
-                var found4 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x, newpos.y + 1, leader.room.name));
+                var myCreeps = leader.pos.findInRange(FIND_MY_CREEPS, 3);
+            
                 
                 
                 
-                
+                if(myCreeps.length > 3)
+                {
+                    var found1 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x, newpos.y, leader.room.name));
+                    var found2 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x - 1, newpos.y, leader.room.name));
+                    var found3 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x - 1, newpos.y + 1, leader.room.name));
+                    var found4 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x, newpos.y + 1, leader.room.name));
+                }
+                else
+                {
+                    var found1 = [];
+                    var found2 = [];
+                    var found3 = [];
+                    var found4 = [];
+                }
                 if((found1.length != 0 || found2.length != 0 || found3.length != 0 || found4.length != 0) && leader.pos.x != newpos.x && leader.pos.y != newpos.y) // costs avoid 
-                { 
+                {
                     skip = true;
                     Game.rooms[leader.room.name].visual.circle(newpos.x, newpos.y,
                     {
@@ -151,12 +167,12 @@ var quadsquad = {
                 }
             }
         }
-        leader.room.visual.line(leader.pos,returnPos,
-    {color: 'red', lineStyle: 'dashed',width:0.4});
-        
-        
-        
-        
+        leader.room.visual.line(leader.pos, returnPos,
+        {
+            color: 'red',
+            lineStyle: 'dashed',
+            width: 0.4
+        });
         return returnPos;
     },
     moveIntoFormation: function(leaderid, squadID)
@@ -337,17 +353,13 @@ var quadsquad = {
             pos: target,
             range: 0
         };
-          var mainMemoryObject = Memory.squadObject[squadID];
+        var mainMemoryObject = Memory.squadObject[squadID];
         var all = [];
-       
         for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
         {
             // cound how many have rsanged
             all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
         }
-        
-        
-        
         let ret = PathFinder.search(
             leader.pos, target,
             {
@@ -404,20 +416,26 @@ var quadsquad = {
                     room.find(FIND_MY_CREEPS).forEach(function(struct)
                     {
                         var tmp = 0;
-                       for(var xx = 0; xx < all.length; xx++)
-                       {
-                           if(all[xx].pos.x == struct.pos.x&& all[xx].pos.y ==struct.pos.y){
-                             tmp=1;  
-                           }
-                           
-                       }
-                              if(tmp ==0){
-                                  room.visual.circle(struct.pos.x, struct.pos.y,    {fill: 'transparent', radius: 0.08, stroke: 'black'});
-                                  costs.set(struct.pos.x , struct.pos.y , 0xff); 
-                              }    
-                           //     costs.set(struct.pos.x , struct.pos.y , 150);
-                          
-                        
+                        for(var xx = 0; xx < all.length; xx++)
+                        {
+                            if(all[xx].pos.x == struct.pos.x && all[xx].pos.y == struct.pos.y)
+                            {
+                                tmp = 1;
+                            }
+                        }
+                        if(tmp == 0)
+                        {
+                            room.visual.circle(struct.pos.x, struct.pos.y,
+                            {
+                                fill: 'transparent',
+                                radius: 0.08,
+                                stroke: 'black'
+                            });
+                            costs.set(struct.pos.x, struct.pos.y, 0xff);
+                            costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
+                            costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
+                            costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
+                        }
                     });
                     room.find(FIND_STRUCTURES).forEach(function(struct)
                     {
@@ -463,7 +481,16 @@ var quadsquad = {
                 },
             }
         );
-        let pos = ret.path[0];
+        var pos = ret.path[0];
+        if(ret.path.length == 0)
+        {
+            var path = leader.pos.findPathTo(target);
+            var pos = path[0];
+        }
+        else
+        {
+            var pos = ret.path[0];
+        }
         for(var xx = 0; xx < ret.path.length; xx++)
         {
             Game.rooms[leader.room.name].visual.circle(ret.path[xx].x, ret.path[xx].y,
@@ -618,7 +645,6 @@ var quadsquad = {
                     {
                         // deteck hostile creeps and room match 
                         var leader = Game.getObjectById(leaderid);
-                        console.log(tasklist[0][1]);
                         var targRoomPosition = new RoomPosition(25, 25, tasklist[0][1]);
                         var range = leader.pos.getRangeTo(targRoomPosition);
                         if(range < 23)
@@ -714,6 +740,36 @@ var quadsquad = {
             }
         }
     },
+    decideMassAttack: function(creep)
+    {
+        var enemiesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 1);
+        var structuresInRange = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+        var enemiesInRange2 = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 2);
+        var structuresInRange2 = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 2);
+        var enemiesInRange3 = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+        var structuresInRange3 = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3);
+        if(enemiesInRange.length != 0 || structuresInRange.length != 0)
+        {
+            return true;
+        }
+        else
+        {
+            var counter = 0;
+            counter += enemiesInRange2.length * 4;
+            counter += structuresInRange2.length * 4;
+            counter += enemiesInRange3.length;
+            counter += structuresInRange3.length;
+            if(counter > 10)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    },
     handleattacks: function(squadID)
     {
         var mainMemoryObject = Memory.squadObject[squadID];
@@ -739,29 +795,25 @@ var quadsquad = {
             var targetArr = all[c].room.find(FIND_HOSTILE_CREEPS);
             var targets = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
             var tempTargs = [];
-            
             for(var q = 0; q < targets.length; q++)
             {
-                    var tempdftg = targets[q].pos.findInRange(FIND_HOSTILE_STRUCTURES, 0,
+                var tempdftg = targets[q].pos.findInRange(FIND_HOSTILE_STRUCTURES, 0,
+                {
+                    filter: function(object)
                     {
-                        filter: function(object)
-                        {
-                            return (object.structureType == STRUCTURE_RAMPART);
-                        }
-                    });
-                    if(tempdftg.length==0){
-                        tempTargs.push(targets[q]);
+                        return (object.structureType == STRUCTURE_RAMPART);
                     }
+                });
+                if(tempdftg.length == 0)
+                {
+                    tempTargs.push(targets[q]);
+                }
             }
-            
-            targets=tempTargs;
-            
-            if(targets.length ==0){
+            targets = tempTargs;
+            if(targets.length == 0)
+            {
                 targets = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
             }
-            
-            
-            
             var flagsInRange = all[c].pos.findInRange(FIND_FLAGS, 3);
             var targetFromflag = 0;
             var targetsTRUCTURES = all[c].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
@@ -771,10 +823,11 @@ var quadsquad = {
                     return (object.structureType != STRUCTURE_KEEPER_LAIR && object.structureType != STRUCTURE_PORTAL && object.structureType != STRUCTURE_POWER_BANK);
                 }
             });
-            if(flagsInRange.length != 0 && 1 == 2)
+            if(flagsInRange.length != 0 && 1 == 1   )
             {
                 for(var q = 0; q < flagsInRange.length; q++)
                 {
+                    if(flagsInRange[q].color == COLOR_RED){
                     var found = creep.room.lookForAt(LOOK_CREEPS, flagsInRange[q].pos);
                     var found2 = creep.room.lookForAt(LOOK_STRUCTURES, flagsInRange[q].pos);
                     if(found.length != 0)
@@ -785,11 +838,20 @@ var quadsquad = {
                     {
                         targetFromflag = found2[0];
                     }
+                        
+                    }
+                    
                 }
             }
-            if(targetFromflag != 0)
+            var decideMassAttack = this.decideMassAttack(all[c]);
+        
+             if(targetFromflag != 0)
             {
                 all[c].rangedAttack(targetFromflag);
+            }  
+            else if(decideMassAttack)
+            {
+                all[c].rangedMassAttack();
             }
             else if(targets.length > 0)
             {
@@ -818,6 +880,7 @@ var quadsquad = {
     },
     run: function(squadID)
     {
+        this.handleattacks(squadID);
         var mainMemoryObject = Memory.squadObject[squadID];
         var all = [];
         var target;
@@ -914,7 +977,7 @@ var quadsquad = {
                 leader.say("moveTo(target)");
                 leader.moveTo(target);
             }
-            else if(QuadVital && this.leaderBlocked(squadID) == false && !SquadIsInFormation && squadNearBorder == false && Memory.squadObject[squadID].squadCrossingBorder == false && Game.time % 17 != 0) // creeps not in cube
+            else if(QuadVital && this.leaderBlocked(squadID) == false && !SquadIsInFormation && squadNearBorder == false && Memory.squadObject[squadID].squadCrossingBorder == false && Game.time % 17 != 0 && all.length == 4) // creeps not in cube
             {
                 leader.say("moveIntoFormation");
                 if(Memory.squadObject[squadID].leader != undefined)
@@ -938,10 +1001,22 @@ var quadsquad = {
                     leader.say("fixme");
                     for(var c = 0; c < all.length; c++)
                     {
-                        all[c].moveTo(target,
+                        if(Game.time % 17 != 0)
                         {
-                            ignoreCreeps: true
-                        });
+                            all[c].moveTo(target,
+                            {
+                                ignoreCreeps: true
+                            });
+                        }
+                        else
+                        {
+                            all[c].moveTo(target);
+                        }
+                    }
+                    if(squadNearBorder == false && Game.time % 3 == 0)
+                    {
+                        var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
+                        leader.move(Direction);
                     }
                 }
             }

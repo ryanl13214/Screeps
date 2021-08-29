@@ -66,10 +66,32 @@ var factoryManager = {
      var globalBreak = false;
      
      
-     
-        if(fact.level == 1 )
+    
+        if(fact.level == 1  && fact.effects.length != 0)
         {
-           
+                if(fact.store.getUsedCapacity('oxidant') < 620  )
+                {
+                         fact.produce('oxidant');
+                    new RoomVisual(roomname).text('oxidant', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                    globalBreak=true;
+                } 
+                if(fact.store.getUsedCapacity('utrium_bar') < 620  )
+                {
+                         fact.produce('utrium_bar');
+                    new RoomVisual(roomname).text('utrium_bar', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                    globalBreak=true;
+                }
+                if(fact.store.getUsedCapacity('switch') < 72  && fact.store.getUsedCapacity('wire') > 200 )
+                {
+                    fact.produce('switch');
+                    new RoomVisual(roomname).text('switch', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                    globalBreak=true;
+                }
+                
+                
+                
+                
+                
                 if(fact.store.getUsedCapacity('composite') < 720 )
                 {
                     fact.produce('composite');
@@ -127,30 +149,7 @@ var factoryManager = {
             }
         }
      
-     
-             if(fact.level ==1  && globalBreak == false )
-        {
-                   
-            var basic = ['tube' ];
-            var basicamounts = [90 ];
-        
-            for(var i = 0; i < basic.length; i++)
-            {
-                if(fact.store.getUsedCapacity(basic[i]) < 90 )
-                {
-                      
-                 fact.produce(basic[i]);
-                
-               
-                   new RoomVisual(roomname).text(basic[i], fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
-               
-                 globalBreak=true;
-              
-                
-                }
-            }
-        }
-     
+    
      
      
      

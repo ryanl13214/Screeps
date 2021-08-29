@@ -261,9 +261,10 @@ var roommining = {
                     if(creeper.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
                     {}
                 }
-                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                var range = creeper.pos.getRangeTo(targets);
-                if(range < 5)
+                var targets =  creepfunctions.getHostilesInRange(creep,5);
+                
+                 
+                if(targets.length != 0)
                 {
                     const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
                     target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -364,6 +365,23 @@ var roommining = {
                         }
                     });
                 }
+                
+                
+                
+                  var emptyEnstensions = creeper.pos.findInRange(FIND_STRUCTURES,1,
+                {
+                    filter: (structure) =>
+                    {
+                        return ((structure.structureType == STRUCTURE_EXTENSION) && structure.store.getFreeCapacity() > 0 );
+                    }
+                });
+                
+                if(emptyEnstensions.length > 0 && creep.store.getUsedCapacity() > 200){
+                  var suc = creeper.transfer(emptyEnstensions[0], RESOURCE_ENERGY,emptyEnstensions[0].getFreeCapacity() );
+                }
+                
+                
+                
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.store.getUsedCapacity() < 1 && creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM

@@ -84,7 +84,7 @@ var roleresourcemover = {
             }
             var spawnss = creep.pos.findInRange(FIND_MY_SPAWNS, 1,
             {
-                filter: (structure) => (structure.store.getUsedCapacity("energy") < 300)
+                filter: (structure) => (structure.store.getUsedCapacity("energy") < 250)
             });
             if(spawnss.length != 0)
             {

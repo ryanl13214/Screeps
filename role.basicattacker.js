@@ -7,67 +7,107 @@ var roleguard = {
         {
             if(creep.memory.attackrole == "roomDismantleOuterBunker")
             {
+                creep.rangedMassAttack();
                 var targlist = [];
-                  var targlist2 = [];
+                var targlist2 = [];
                 var target = creep.room.find(FIND_SOURCES);
+                
                 if(target.length == 2)
                 {
-                 
-                  targlist2 =target[0].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
+                    targlist2 = target[0].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
+                    {
+                        filter: (res) =>
                         {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_LINK || res.structureType == STRUCTURE_CONTAINER);
-                            }
-                        });
-                        if(targlist2.length ==0){
-                               targlist2 =target[0].pos.findInRange(FIND_HOSTILE_CREEPS, 3,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_LINK || res.structureType == STRUCTURE_CONTAINER);
-                            }
-                        });
+                            return (res.structureType == STRUCTURE_LINK );
                         }
-                        
-                        
-                        
-                        targlist =target[1].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
+                    });
+                    
+                  
+                    
+                    targlist = target[1].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
+                    {
+                        filter: (res) =>
                         {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_LINK || res.structureType == STRUCTURE_CONTAINER);
-                            }
-                        });
-                          if(targlist.length ==0){
-                               targlist =target[0].pos.findInRange(FIND_HOSTILE_CREEPS, 3,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_LINK || res.structureType == STRUCTURE_CONTAINER);
-                            }
-                        });
+                            return (res.structureType == STRUCTURE_LINK );
                         }
+                    });
+                    
+                    
+                    
+                    
+                     if(targlist.length == 0)
+                    {
+                        targlist = target[1].pos.findInRange(FIND_HOSTILE_POWER_CREEPS, 3);
+                    }
+                    
+                    
+                    
+                    if(targlist.length == 0)
+                    {
+                        targlist = target[1].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+                    }
+                    if(targlist2.length == 0)
+                    {
+                        targlist2 = target[0].pos.findInRange(FIND_HOSTILE_POWER_CREEPS, 3);
+                    }
+                    
+                    
+                    
+                    if(targlist2.length == 0)
+                    {
+                        targlist2 = target[0].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+                    }
+                    
+                    
                     
                 }
-               
+                  creep.rangedMassAttack();
                 // moveAvoidingThe damage areas
-                
                 if(targlist.length != 0)
                 {
-                    creep.rangedMassAttack();
-                    creep.heal(creep);
-                    if(creep.memory.memstruct.tasklist.length ==0 )
+                    var range = creep.pos.getRangeTo(targlist[0]);
+                    if(range < 2)
                     {
-                        creep.memory.memstruct.tasklist.push(["moveToLooseinterRoom",targlist[0].x,targlist[0].y,creep.room.name]); 
+                        creep.rangedMassAttack();
+                    }
+                    else if(range < 4)
+                    {
+                        creep.rangedAttack(targlist[0]);
+                    }else{
+                  
+                    }
+                    
+                    
+                    
+                    creep.heal(creep);
+                    if(creep.memory.memstruct.tasklist.length == 0)
+                    {
+                        creep.memory.memstruct.tasklist.push(["moveToLooseinterRoom", targlist[0].pos.x, targlist[0].pos.y, creep.room.name]);
                     }
                 }
-                else if(targlist2.length != 0){
-                    creep.rangedMassAttack();
-                    creep.heal(creep);
-                    if(creep.memory.memstruct.tasklist.length ==0 )
+                else if(targlist2.length != 0)
+                {
+                    
+                    
+                     var range = creep.pos.getRangeTo(targlist2[0]);
+                    if(range < 2)
                     {
-                        creep.memory.memstruct.tasklist.push(["moveToLooseinterRoom",targlist2[0].x,targlist2[0].y,creep.room.name]); 
+                        creep.rangedMassAttack();
+                    }
+                    else if(range < 4)
+                    {
+                        creep.rangedAttack(targlist2[0]);
+                    }else{
+                    creep.rangedMassAttack();
+                    }
+                    
+                    
+                    
+                    
+                    creep.heal(creep);
+                    if(creep.memory.memstruct.tasklist.length == 0)
+                    {
+                        creep.memory.memstruct.tasklist.push(["moveToLooseinterRoom", targlist2[0].pos.x, targlist2[0].pos.y, creep.room.name]);
                     }
                 }
                 creepfunctions.allowSlave(creep);
@@ -86,10 +126,17 @@ var roleguard = {
                     creep.dismantle(target[0]);
                 }
                 var found = [];
-                var flagsinrange = creep.room.find(FIND_FLAGS);
-                if(flagsinrange.length != 0)
+                var flagsinrange = creep.pos.findClosestByPath(FIND_FLAGS);
+                if(flagsinrange  != undefined)
                 {
-                    found = creep.room.lookForAt(LOOK_STRUCTURES, flagsinrange[0].pos);
+                    found = creep.room.lookForAt(LOOK_STRUCTURES, flagsinrange.pos);
+                    
+                    
+                    if( flagsinrange.pos.x == creep.pos.x   &&  flagsinrange.pos.x == creep.pos.x    &&  flagsinrange.pos.y  == creep.pos.y  &&  flagsinrange.pos.y == creep.pos.y){
+                        flagsinrange.remove();
+                    }
+                    
+                    
                     if(found.length != 0)
                     {
                         //       found = creep.room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsinrange[0].pos);
@@ -447,30 +494,7 @@ var roleguard = {
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            else if(creep.memory.attackrole == "chasedownAttacker")
-            {
-                const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                if(target)
-                {
-                    const range = creep.pos.getRangeTo(target);
-                    if(range < 2)
-                    {
-                        creep.attack(target);
-                        creep.moveTo(target);
-                        creep.rangedAttack(target);
-                    }
-                    else
-                    {
-                        var a = creep.heal(creep);
-                        creep.moveTo(target);
-                        creep.rangedAttack(target);
-                    }
-                }
-                if(creep.room.controller == undefined)
-                {
-                    creepfunctions.mineCorridor(creep);
-                }
-            }
+         
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             else if(creep.memory.attackrole == "healer")
             {

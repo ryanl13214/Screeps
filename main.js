@@ -1,4 +1,4 @@
- var roles = require('roles');
+var roles = require('roles');
 var spawnmain = require('spawn');
 var buildbase = require('buildbase');
 var tower = require('tower');
@@ -35,6 +35,7 @@ module.exports.loop = function()
             }
         }
     }
+    
     var mainstartCpu = Game.cpu.getUsed();
     var gametime = Game.time;
     //------------------------------------------------------------------------------------------------
@@ -46,7 +47,9 @@ module.exports.loop = function()
     var listvalues = Object.values(powerCreepList);
     for(var i = 0; i < listnumbers.length; i++)
     {
+        try{
         powerManager.run(listvalues[i]);
+        }catch(e){}
     }
     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -128,6 +131,15 @@ module.exports.loop = function()
                 delete Memory.creeps[name];
             }
         }
+        
+        for(var name in Memory.powerCreeps)
+        {
+            if(!Game.powerCreeps[name])
+            {
+                delete Memory.powerCreeps[name];
+            }
+        }
+        
         for(var name in Memory.flags)
         {
             if(!Game.flags[name])
@@ -136,6 +148,32 @@ module.exports.loop = function()
             }
         }
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                       INTERSHARD 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    var inteshardCreeps = _.filter(Game.creeps, (creep) => ( creep.memory.role == undefined || creep.memory.intershard==true ));
+  
+    for(var i = 0; i < inteshardCreeps.length; i++)
+    {
+        if(inteshardCreeps[i].memory.role ==undefined )
+        {
+            inteshardCreeps[i].memory.role = "multi";
+            
+            
+            
+            inteshardCreeps[i].memory.memstruct = {
+                tasklist:[]
+            }
+            inteshardCreeps[i].memory.memstruct.tasklist = [["getDataFromOldShard"]]
+        }
+        
+  
+    }
+  
+      //  try{
+        
+      roles.run(inteshardCreeps); //   }catch(e){}
     //------------------------------------------------------------------------------------------------
     if(Game.cpu.bucket == 10000)
     {
@@ -344,7 +382,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       storageManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (12) < 2)
+        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (15) < 2)
         {
             storageManager.run(roomname);
         }
@@ -373,11 +411,11 @@ module.exports.loop = function()
             }
         });
         var g = 4;
-        if(Game.market.credits > 30000000)
+        if(Game.market.credits > 50000000)
         {
             g = 1;
         }
-        g = 1;
+        
         if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 600000 && pwrspawn.length != 0 && Game.time % (g) == 0)
         {
             pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
@@ -387,6 +425,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.rooms[roomname].controller.level > 3)
         {
+            try{
             var mainflags = Game.flags[roomname];
             var flag1 = Game.flags[roomname + "container1"];
             var flag0 = Game.flags[roomname + "container0"];
@@ -460,13 +499,14 @@ module.exports.loop = function()
                     {
                         links[o].transferEnergy(controllerlink[0]);
                     }
-                    else if(linkto[0] != undefined)
+                    else if(linkto[0] != undefined && ( controllerlink[0] == undefined        ||  (controllerlink[0] != undefined && links[o].id !=   controllerlink[0].id )  ))
                     {
                         links[o].transferEnergy(linkto[0]);
                     }
                 }
             }
             var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
+            } catch (e)        {              }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
