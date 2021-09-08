@@ -48,8 +48,10 @@ module.exports.loop = function()
     for(var i = 0; i < listnumbers.length; i++)
     {
         try{
-        powerManager.run(listvalues[i]);
-        }catch(e){}
+       powerManager.run(listvalues[i]);
+        }catch(e){
+            console.log("pwer err",e);
+    }
     }
     var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -78,47 +80,13 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     //                                  
     //------------------------------------------------------------------------------------------------
-    if(Memory.cpuUsage == undefined)
+
+    
+        if(Game.cpu.bucket == 10000)
     {
-        Memory.cpuUsage = {
-            roles: 0,
-            towers: 0,
-            spawnin: 0,
-            terminals: 0,
-            defcon: 0,
-            squads: 0,
-            powercreeps: 0,
-            generatingsquads: 0
-        }
+        Game.cpu.generatePixel()
     }
-    if(Memory.roleCPU == undefined)
-    {
-        Memory.roleCPU = {
-            mover: 0,
-            multi: 0,
-            harvester: 0,
-            repairer: 0,
-            scout: 0,
-            upgrader: 0,
-            resourceMover: 0,
-            towerMover: 0,
-            extractor: 0
-        }
-    }
-    //------------------------------------------------------------------------------------------------
-    //                                  
-    //------------------------------------------------------------------------------------------------
-    var mainflag = Game.flags;
-    var flaglist = Object.keys(Game.flags);
-    var redflags = [];
-    for(var i = 0; i < flaglist.length; i++)
-    {
-        //console.log( mainflag[flaglist[i]].secondaryColor);
-        if(mainflag[flaglist[i]].color == 1)
-        {
-            redflags.push(mainflag[flaglist[i]]);
-        }
-    }
+    
     //------------------------------------------------------------------------------------------------
     //                          deleting memory
     //------------------------------------------------------------------------------------------------
@@ -170,15 +138,9 @@ module.exports.loop = function()
         
   
     }
-  
-      //  try{
+   
         
-      roles.run(inteshardCreeps); //   }catch(e){}
-    //------------------------------------------------------------------------------------------------
-    if(Game.cpu.bucket == 10000)
-    {
-        Game.cpu.generatePixel()
-    }
+      roles.run(inteshardCreeps);  
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        SQUAD MANAGER
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,11 +154,11 @@ module.exports.loop = function()
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-        //try{
+     //  try{
         squadmanage.run(resourcekeys[i]);
-        //}catch(e){
-        //    console.log( "squadmanage err");
-        //}
+      //  }catch(e){
+     //       console.log( "squadmanage err",e);
+    //    }
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -252,7 +214,7 @@ module.exports.loop = function()
                  Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x - 2, Game.spawns[roomname].pos.y - 2, roomname);
             }else{
                  Game.rooms[roomname].createFlag(25, 25, roomname);
-                       Game.rooms[roomname].createFlag(25, 25, roomname+"noTemplate");
+                 Game.rooms[roomname].createFlag(25, 25, roomname+"noTemplate");
             }
             
             
@@ -310,7 +272,7 @@ module.exports.loop = function()
         {
             if(Game.time % 150 == 0 || defconlevel.defenceLevel < 10)
             {
-                squadgenerate.run(roomname, redflags);
+                squadgenerate.run(roomname);
             }
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
@@ -368,7 +330,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (15) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
@@ -411,7 +373,7 @@ module.exports.loop = function()
             }
         });
         var g = 4;
-        if(Game.market.credits > 50000000)
+        if(Game.market.credits > 75000000)
         {
             g = 1;
         }
@@ -420,6 +382,14 @@ module.exports.loop = function()
         {
             pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
         }
+        else if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined  && pwrspawn.length != 0 &&     g == 1)
+        {   
+            pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
+            
+        }
+        
+        
+        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -466,7 +436,7 @@ module.exports.loop = function()
                     structureType: STRUCTURE_LINK
                 }
             });
-            if(harvesterlink0[0].store.getUsedCapacity("energy") > 300)
+            if( harvesterlink0[0] != undefined &&   harvesterlink0[0].store.getUsedCapacity("energy") > 300)
             {
                 if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
                 {
@@ -477,7 +447,7 @@ module.exports.loop = function()
                     harvesterlink0[0].transferEnergy(linkto[0]);
                 }
             }
-            if(harvesterlink1[0].store.getUsedCapacity("energy") > 300)
+            if( harvesterlink1[0] != undefined && harvesterlink1[0].store.getUsedCapacity("energy") > 300)
             {
                 if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
                 {
@@ -524,40 +494,7 @@ module.exports.loop = function()
         // } catch (e)        {            console.log("error in room : ", roomname, " ", e);        }
     } //end of rooms loop 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    if(debug && Game.time % debugTime == 0)
-    {
-        console.log("spent ", Memory.cpuUsage.roles / debugTime, " cpu on creeps");
-        Memory.cpuUsage.roles = 0;
-        console.log("spent ", Memory.cpuUsage.towers / debugTime, " cpu on towers");
-        Memory.cpuUsage.towers = 0;
-        console.log("spent ", Memory.cpuUsage.terminals / debugTime, " cpu on terminals");
-        Memory.cpuUsage.terminals = 0;
-        console.log("spent ", Memory.cpuUsage.defcon / debugTime, " cpu on defcon");
-        Memory.cpuUsage.defcon = 0;
-        console.log("spent ", Memory.cpuUsage.squads / debugTime, " cpu on squads");
-        Memory.cpuUsage.squads = 0;
-        console.log("spent ", Memory.cpuUsage.powercreeps / debugTime, " cpu on powercreeps");
-        Memory.cpuUsage.powercreeps = 0;
-        console.log("spent ", Memory.cpuUsage.generatingsquads / debugTime, " cpu on generatingsquads");
-        Memory.cpuUsage.generatingsquads = 0;
-        ////////////////////////////////////////////
-        console.log("roles ", Memory.roleCPU.mover / debugTime, " cpu on movers");
-        Memory.roleCPU.mover = 0;
-        console.log("roles ", Memory.roleCPU.harvester / debugTime, " cpu on harvester");
-        Memory.roleCPU.harvester = 0;
-        console.log("roles ", Memory.roleCPU.repairer / debugTime, " cpu on repairer");
-        Memory.roleCPU.repairer = 0;
-        console.log("roles ", Memory.roleCPU.scout / debugTime, " cpu on scout");
-        Memory.roleCPU.scout = 0;
-        console.log("roles ", Memory.roleCPU.upgrader / debugTime, " cpu on upgrader");
-        Memory.roleCPU.upgrader = 0;
-        console.log("roles ", Memory.roleCPU.resourceMover / debugTime, " cpu on resourceMover");
-        Memory.roleCPU.resourceMover = 0;
-        console.log("roles ", Memory.roleCPU.towerMover / debugTime, " cpu on towerMover");
-        Memory.roleCPU.towerMover = 0;
-        console.log("roles ", Memory.roleCPU.extractor / debugTime, " cpu on extractor");
-        Memory.roleCPU.extractor = 0;
-    }
+ 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     counter++;
 }

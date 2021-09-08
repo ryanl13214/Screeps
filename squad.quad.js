@@ -48,7 +48,6 @@ var quadsquad = {
             combatRange = 3;
         }
         var array;
-        combatRange = 3;
         if(combatRange == 10)
         {
             var array = posArray;
@@ -92,10 +91,6 @@ var quadsquad = {
                     skip = true;
                 }
                 var myCreeps = leader.pos.findInRange(FIND_MY_CREEPS, 3);
-            
-                
-                
-                
                 if(myCreeps.length > 3)
                 {
                     var found1 = leader.room.lookForAt(LOOK_CREEPS, new RoomPosition(newpos.x, newpos.y, leader.room.name));
@@ -325,6 +320,7 @@ var quadsquad = {
     {
         var mainMemoryObject = Memory.squadObject[squadID];
         var leader = Game.getObjectById(mainMemoryObject.leader);
+        leader.say("check");
         if(leader.pos.x < 2 || leader.pos.x > 47 || leader.pos.y < 2 || leader.pos.y > 47)
         {
             return true;
@@ -336,10 +332,12 @@ var quadsquad = {
             var found3 = leader.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(leader.pos.x, leader.pos.y + 1, leader.room.name));
             if(found1.length == 0 && found2.length == 0 && found3.length == 0)
             {
+                leader.say("clear");
                 return false;
             }
             else
             {
+                leader.say("blocked");
                 return true;
             }
         }
@@ -436,6 +434,19 @@ var quadsquad = {
                             costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
                             costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
                         }
+                    });
+                    room.find(FIND_MY_POWER_CREEPS).forEach(function(struct)
+                    {
+                        room.visual.circle(struct.pos.x, struct.pos.y,
+                        {
+                            fill: 'transparent',
+                            radius: 0.08,
+                            stroke: 'black'
+                        });
+                        costs.set(struct.pos.x, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
+                        costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
                     });
                     room.find(FIND_STRUCTURES).forEach(function(struct)
                     {
@@ -708,6 +719,39 @@ var quadsquad = {
             }
             if(tasklist[0][0] == "killCreeps")
             {}
+            if(tasklist[0][0] == "HoldAttack") // tot reset hold flag // 
+            {
+                if(leaderid != undefined)
+                {
+                    // deteck hostile creeps and room match 
+                    var leader = Game.getObjectById(leaderid);
+                    if(leader != undefined)
+                    {
+                        // deteck hostile creeps and room match 
+                        var leader = Game.getObjectById(leaderid);
+                        var range = leader.pos.getRangeTo(new RoomPosition(25, 25, tasklist[0][1]));
+                        if(range < 23)
+                        {
+                            var gameflags = leader.room.find(FIND_FLAGS);
+                            if(gameflags.length != 0)
+                            {
+                                for(var c = 0; c < gameflags.length; c++)
+                                {
+                                    if(gameflags[c].name.substring(0, 8) == "QuadHold")
+                                    {
+                                        var flagtemp = gameflags[c];
+                                        return new RoomPosition(flagtemp.pos.x, flagtemp.pos.y, flagtemp.pos.roomName)
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return new RoomPosition(25, 25, tasklist[0][1]);
+                        }
+                    }
+                }
+            }
             if(tasklist[0][0] == "GeneralAttack")
             {
                 if(Memory.squadObject[squadID].leader != undefined)
@@ -823,32 +867,30 @@ var quadsquad = {
                     return (object.structureType != STRUCTURE_KEEPER_LAIR && object.structureType != STRUCTURE_PORTAL && object.structureType != STRUCTURE_POWER_BANK);
                 }
             });
-            if(flagsInRange.length != 0 && 1 == 1   )
+            if(flagsInRange.length != 0 && 1 == 1)
             {
                 for(var q = 0; q < flagsInRange.length; q++)
                 {
-                    if(flagsInRange[q].color == COLOR_RED){
-                    var found = creep.room.lookForAt(LOOK_CREEPS, flagsInRange[q].pos);
-                    var found2 = creep.room.lookForAt(LOOK_STRUCTURES, flagsInRange[q].pos);
-                    if(found.length != 0)
+                    if(flagsInRange[q].color == COLOR_RED)
                     {
-                        targetFromflag = found[0];
+                        var found = creep.room.lookForAt(LOOK_CREEPS, flagsInRange[q].pos);
+                        var found2 = creep.room.lookForAt(LOOK_STRUCTURES, flagsInRange[q].pos);
+                        if(found.length != 0)
+                        {
+                            targetFromflag = found[0];
+                        }
+                        else if(found2.length != 0)
+                        {
+                            targetFromflag = found2[0];
+                        }
                     }
-                    else if(found2.length != 0)
-                    {
-                        targetFromflag = found2[0];
-                    }
-                        
-                    }
-                    
                 }
             }
             var decideMassAttack = this.decideMassAttack(all[c]);
-        
-             if(targetFromflag != 0)
+            if(targetFromflag != 0)
             {
                 all[c].rangedAttack(targetFromflag);
-            }  
+            }
             else if(decideMassAttack)
             {
                 all[c].rangedMassAttack();
@@ -878,15 +920,203 @@ var quadsquad = {
             }
         }
     },
+    DecideIfQuadIsVital: function(squadID)
+    {
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var all = [];
+        var leaderid = mainMemoryObject.leader;
+        var leader = Game.getObjectById(leaderid);
+        for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+        }
+        var homeroomFlag = Game.flags[mainMemoryObject.squadHomeRoom];
+        var target = leader.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        var targetArr = leader.room.find(FIND_HOSTILE_CREEPS);
+        var creepsInRnage = leader.pos.findInRange(FIND_HOSTILE_CREEPS, 6);
+        if(homeroomFlag != undefined && leader.pos.getRangeTo(homeroomFlag) < 10 && targetArr.length < 1)
+        {
+            return false;
+        }
+        if(targetArr.length < 1)
+        {
+            return false;
+        }
+        var targets = leader.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_TOWER);
+            }
+        });
+        if(targets != undefined)
+        {
+            var range = leader.pos.getRangeTo(targets);
+            if(range > 19)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        if(creepsInRnage.length < 4)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+        return true;
+    },
+    lineMove: function(squadID, target)
+    {
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var all = [];
+        var leaderid = mainMemoryObject.leader;
+        var leader = Game.getObjectById(leaderid);
+        for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            if(mainMemoryObject.SquadMembersCurrent[c] != leaderid)
+            {
+                all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+        }
+        // myArray.splice (all.indexOf('c'), 2);
+        var cohesion = leader.pos.findInRange(FIND_MY_CREEPS, 3);
+        if(cohesion.length > 2 || Game.time % 5 != 0) // or squadClose to edge
+        {
+            try
+            {
+                leader.moveTo(target);
+            }
+            catch (e)
+            {}
+        }
+        try
+        {
+            all[0].moveTo(leader);
+        }
+        catch (e)
+        {}
+        try
+        {
+            all[1].moveTo(all[0]);
+        }
+        catch (e)
+        {}
+        try
+        {
+            all[2].moveTo(all[1]);
+        }
+        catch (e)
+        {}
+    },
+    calculateDamage: function(creep)
+    {
+        var tempamopunt = 0;
+        for(var xx = -3; xx < 3; xx++)
+        {
+            for(var yy = -3; yy < 3; yy++)
+            {
+                var tempx = creep.pos.x + xx;
+                var tempy = creep.pos.y + yy;
+                var newpos = new RoomPosition(tempx, tempy, creep.room.name);
+                var found = newpos.findInRange(FIND_HOSTILE_CREEPS,0);
+                
+                var found2 = creep.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(tempx, tempy, creep.room.name));
+                if(found.length != 0 || found2.length != 0)
+                {
+                    if(creep.body.find(elem => elem.type === RANGED_ATTACK) != undefined)
+                    {
+                        tempamopunt = tempamopunt + 10;
+                    }
+                }
+            }
+        }
+        return tempamopunt;
+    },
+    
+    damageMAx: function(creep)
+    {
+        var a =0;
+        if(creep.body.find(elem => elem.type === RANGED_ATTACK) != undefined)
+                {
+                   a =a +  10;
+                   creep.say("ranged_attack");
+                }
+                
+                 if(creep.body.find(elem => elem.type === HEAL) != undefined)
+                {
+                   a =-1;
+                   creep.say("heal");
+                }     
+                
+    
+    return a;
+    
+    },
+    
+    internalRearange: function(squadID)
+    {
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var leader = Game.getObjectById(Memory.squadObject[squadID].leader);
+        leader.say("internalRearange");
+        var all = [];
+        var target;
+        for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+        }
+        var fatigueAll = 0;
+        for(var c = 0; c < all.length; c++)
+        {
+            fatigueAll += all[c].fatigue;
+        }
+        var moved=false;
+        if(fatigueAll == 0)
+        {
+            for(var c = 0; c < all.length; c++)
+            {
+                for(var c2 = 0; c2 < all.length; c2++)
+                {
+                    if(all[c].pos.x != all[c2].pos.x && all[c].pos.y != all[c2].pos.y)
+                    {
+                        var a1 =this.calculateDamage(all[c]);
+                        var a2 =this.calculateDamage(all[c2]);
+                        
+                        
+                        
+                        if( a1 > a2 && (a1  !=0 || a2  !=0) )
+                        {
+                            if(all[c].id == leader.id)
+                            {
+                                Memory.squadObject[squadID].leader = all[c].id;
+                            }
+                            moved=true;
+                           all[c2].moveTo(all[c]);
+                           all[c].moveTo(all[c2]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+    
+        
+        
+    },
     run: function(squadID)
     {
-        this.handleattacks(squadID);
+         this.handleattacks(squadID);
         var mainMemoryObject = Memory.squadObject[squadID];
         var all = [];
         var target;
         for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
         {
-            // cound how many have rsanged
             all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
         }
         if(Memory.squadObject[squadID].leader == undefined)
@@ -900,131 +1130,56 @@ var quadsquad = {
         }
         if(leader != null && leader != undefined && leader)
         {
-            /////////////////////////////////////////////////      
-            //                   decide targets 
-            target = this.TaskList(squadID);
-            Memory.squadObject[squadID].target = target;
-            ////////////////////////////////////////////////////        
-            // border edge
-            var squadNearBorder = false;
-            for(var c = 0; c < all.length; c++)
-            {
-                if(all[c].pos.x < 2 || all[c].pos.x > 47 || all[c].pos.y < 2 || all[c].pos.y > 47)
-                {
-                    squadNearBorder = true;
-                }
-            }
-            if(leader.pos.x < 2 || leader.pos.x > 47 || leader.pos.y < 2 || leader.pos.y > 47)
-            {
-                Memory.squadObject[squadID].squadCrossingBorder = true;
-            }
-            else
-            {
-                Memory.squadObject[squadID].squadCrossingBorder = false;
-            }
-            var leaderRoom = leader.room.name;
-            Memory.squadObject[squadID].squadInSameRoom = true;
-            for(var c = 0; c < all.length; c++)
-            {
-                if(all[c].room.name != leaderRoom)
-                {
-                    Memory.squadObject[squadID].squadInSameRoom = false;
-                }
-            }
-            /////////////major break fixer//////////
-            for(var c = 0; c < all.length; c++)
-            {
-                var range = leader.pos.getRangeTo(all[c]);
-                if(range > 5 && Memory.squadObject[squadID].squadCrossingBorder != true)
-                {
-                    all[c].say("severe break");
-                    all[c].moveTo(leader,
-                    {
-                        ignoreCreeps: true
-                    });
-                }
-            }
-            ///////////////////////
-            // decicde if quad is vital
-            var QuadVital = true;
-            var targs = leader.room.find(FIND_HOSTILE_CREEPS);
-            var targsclose = leader.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-            var rangeToClosestCreep = leader.pos.getRangeTo(targsclose);
-            var homeroomFlag = Game.flags[leader.room.name];
-            if(homeroomFlag != undefined && leader.pos.getRangeTo(homeroomFlag) < 10 && targs.length < 1)
+            if(leader.pos.x < 2 || leader.pos.x > 47 || leader.pos.y < 2 || leader.pos.y > 47) // and tower now here
             {
                 QuadVital = false;
             }
-            //////////////
-            //   vistials
-            // console.log("target quad", JSON.stringify(target));
-            //   Game.rooms[target.roomName].visual.circle(target.x ,target.y,    {fill: 'red', radius: 0.55, stroke: 'red'});
-            ///////////////////////
-            // move 
-            //  leader.say(this.checkIfInCube(squadID, Memory.squadObject[squadID].leader));
+            /////////////////////////////////////////////////      
+            //                   decide targets 
+            target = this.TaskList(squadID);
+            var QuadVital = this.DecideIfQuadIsVital(squadID);
             var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            leader.say(target);
             if(QuadVital == false && !SquadIsInFormation && target != undefined)
             {
-                leader.say("move");
-                // todo check average distance and iff its too high then all move towards the leader
-                for(var c = 0; c < all.length; c++)
-                {
-                    all[c].moveTo(leader,
-                    {
-                        ignoreCreeps: true
-                    });
-                }
-                leader.say("moveTo(target)");
-                leader.moveTo(target);
+                leader.say("lineMove");
+                this.lineMove(squadID, target);
             }
-            else if(QuadVital && this.leaderBlocked(squadID) == false && !SquadIsInFormation && squadNearBorder == false && Memory.squadObject[squadID].squadCrossingBorder == false && Game.time % 17 != 0 && all.length == 4) // creeps not in cube
+            else if(QuadVital == true && !SquadIsInFormation)
             {
                 leader.say("moveIntoFormation");
                 if(Memory.squadObject[squadID].leader != undefined)
                 {
                     this.moveIntoFormation(Memory.squadObject[squadID].leader, squadID);
                 }
-            }
-            else if(SquadIsInFormation || (!SquadIsInFormation && squadNearBorder == true && Game.time % 5 == 0))
-            {
-                if(target != undefined)
+                if(Game.time % 5 < 1)
                 {
-                    leader.say("moveAsOne");
-                    var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
-                    this.moveAsOne(squadID, Direction);
+                    if(!SquadIsInFormation)
+                    {
+                        this.lineMove(squadID, target);
+                        //    Memory.squadObject[squadID].leader = undefined;
+                    }
                 }
             }
-            else
+            else if(SquadIsInFormation && target != undefined && (leader.pos.x != target.x  || leader.pos.y != target.y))
             {
-                if(target != undefined)
+                leader.say("moveAsOne");
+                var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
+                this.moveAsOne(squadID, Direction);
+            }
+            if(leader != undefined && target != undefined && SquadIsInFormation)
+            {
+                if(leader.pos.x == target.x && leader.pos.y == target.y)
                 {
-                    leader.say("fixme");
-                    for(var c = 0; c < all.length; c++)
-                    {
-                        if(Game.time % 17 != 0)
-                        {
-                            all[c].moveTo(target,
-                            {
-                                ignoreCreeps: true
-                            });
-                        }
-                        else
-                        {
-                            all[c].moveTo(target);
-                        }
-                    }
-                    if(squadNearBorder == false && Game.time % 3 == 0)
-                    {
-                        var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
-                        leader.move(Direction);
-                    }
+                    this.internalRearange(squadID)
                 }
             }
         }
         /////////////////////////////////////////////////////
         //                  deal damage / heal
         /////////////////////////////////////////
-        this.handleattacks(squadID);
+        
         /////
     }
 }

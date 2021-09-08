@@ -218,13 +218,71 @@ room considtions
                          {
                              found = true;
                          }
-                         if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller == undefined && sources.length != 0)
+                         if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller == undefined && sources.length != 0 && creep.ticksToLive > 1450)
                          {
                              Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.centerroomsinrange.push(creep.room.name); /// this causes duplicates to need to remove dupes
                          }
                         
                      
                      }
+                     
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                 
+                     if(creep.ticksToLive > 1300)
+                     {
+                           var  target = creep.room.find(FIND_HOSTILE_STRUCTURES,
+                            {
+                                filter: (structure) =>
+                                {
+                                    return (structure.structureType == STRUCTURE_INVADER_CORE);
+                                }
+                            });
+                         
+                         if(target.length != 0 && target[0].level == 2)
+                         {
+                       Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(
+                      [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK]
+                        , 'attackroomtert',
+                        {
+                            memory:
+                            {
+                                role: 'guard',
+                                attackrole: "chasedown",
+                                memstruct:
+                                {
+                                    spawnRoom: creep.memory.memstruct.spawnRoom,
+                                    tasklist: [
+                                        ["createslaveBOOST"],
+                                        ["boosAllMax"],
+                                        ["forcemoveToRoom", creep.room.name] 
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: true,
+                                    hastask: false
+                                }
+                            }
+                        });
+                             
+                             
+                             
+                             
+                             
+                             
+                         }
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                     }
+                     
+                     
+                     
                     
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                  

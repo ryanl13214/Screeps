@@ -18,9 +18,7 @@ var squadmanager = {
         }
         mainMemoryObject.SquadMembersCurrent = numberOfLivingSqaudMembers;
         
-        
-        
-        
+ 
         if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || (mainMemoryObject.squadType == "quad"  && mainMemoryObject.SquadMembersCurrent.length  ==0 && mainMemoryObject.squadisready) )
         {
             console.log("deleting squad-",squadID);
@@ -29,8 +27,12 @@ var squadmanager = {
         else
         {
             var squadMemberGoal = Object.values(mainMemoryObject.SquadMembersGoal);
-            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true  )
+            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level ==8 ))
             {
+                if(Memory.squadObject[Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning] == undefined)
+                {
+                    Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+                }
                 if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
                 {
                     Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = squadID;
@@ -120,13 +122,20 @@ var squadmanager = {
         
         if(mainMemoryObject.squadIsBoosted == true)
         {  
-            var waitUntil = mainMemoryObject.SquadMembersGoal;
+             
             var temp =[];
+            
+                var waitUntil = Object.keys(mainMemoryObject.SquadMembersGoal);
+            
+            
             for(var c = 0; c < waitUntil.length; c++)
             {
+                
                temp.push(waitUntil[c] + "-" + squadID); 
                 
             }
+ 
+           
            
             tasklistt = [
                 
@@ -176,7 +185,7 @@ var squadmanager = {
             var curspawn = allspawns[i];
             for(var q = 0; q < names.length; q++)
             {
-                if(sucs3esscounter != 0 && Game.rooms[squadHomeRoom].storage.store.getUsedCapacity("energy") > 10000)
+                if(sucs3esscounter != 0 && Game.rooms[squadHomeRoom].storage.store.getUsedCapacity("energy") > 10000 || Game.rooms[squadHomeRoom].controller.level ==8 )
                 {
                     sucs3esscounter = curspawn.spawnCreep(resourcevalues[q], names[q] + "-" + squadID,
                     {
@@ -187,7 +196,7 @@ var squadmanager = {
                             memstruct: memstruct
                         }
                     });
-                   
+                    
 //////////////////////////////////////////////////// resource tracking ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     if(sucs3esscounter == 0 && (Memory.squadObject[squadID].squadType == "MiningSquad" || Memory.squadObject[squadID].squadType == "centerMiningSquad" || Memory.squadObject[squadID].squadType == "solocenterdamager"))
                     {

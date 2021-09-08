@@ -19,7 +19,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
     var terminalManager = {
         buyItemsFromResourceList: function(roomname, allCondensedResources, terminalActual)
         {
-            var neverBuy = ["ops", "energy", 'wire', 'switch', 'transistor', 'microchip', 'circuit', 'cell', 'phlegm', 'tissue', 'muscle', 'organoid', 'alloy', 'tube', 'fixtures', "biomass", 'frame', 'hydraulics', 'condensate', 'concentrate', 'extract', 'spirit', 'emanation'];
+            var neverBuy = [  "energy", 'wire', 'switch', 'transistor', 'microchip', 'circuit', 'cell', 'phlegm', 'tissue', 'muscle', 'organoid', 'alloy', 'tube', 'fixtures', "biomass", 'frame', 'hydraulics', 'condensate', 'concentrate', 'extract', 'spirit', 'emanation'];
             for(var i = 0; i < allCondensedResources.length; i++)
             {
                 let sellOrders = Game.market.getAllOrders(
@@ -116,7 +116,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     }
                 }
                 var excessResources = terminalActual.store.getUsedCapacity(allCondensedResources[i][0]) - allCondensedResources[i][1];
-                if(excessResources > 5 && resourceInNeverSellList == false)
+                if(buyOrders.length > 1 && excessResources > 5 && resourceInNeverSellList == false &&  terminalActual.store.getUsedCapacity(allCondensedResources[i][0]) != 0)
                 {
                     var hist = Game.market.getHistory(allCondensedResources[i][0]);
                     //// find best current deal
@@ -149,8 +149,25 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
         },
         transferNonEnergy: function(roomname, allCondensedResources, terminalActual, roominrange)
         {
+            var neverTransfer = ["power"];
+            
+          
             for(var i = 0; i < allCondensedResources.length; i++)
             {
+                
+                
+                  var nevertrnasfer = false;
+                for(q = 0; q < neverTransfer.length; q++)
+                {
+                    if(neverTransfer[q] == allCondensedResources[i][0])
+                    {
+                        nevertrnasfer = true;
+                    }
+                }
+                if(!nevertrnasfer){
+                
+                
+                
                 for(var j = 0; j < roominrange.length; j++)
                 {
                     var roomwithTerminal = Game.rooms[roominrange].terminal;
@@ -168,8 +185,15 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                      }   
                     }
                 }
+                
             }
+            
+            
+            }
+            
+            
               return false;
+              
         },
         averageEnergy: function(roomname, allCondensedResources, terminalActual, roominrange)
         {
@@ -224,30 +248,30 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ["silicon", 5000, 0.4],
                 ['wire', 2000, 0.4],
                 ['switch', 30, 0.2],
-                ['transistor', 30, 0.1],
-                ['microchip', 30, 0.1],
-                ['circuit', 30, 0.1],
+                ['transistor', 0, 0.1],
+                ['microchip', 0, 0.1],
+                ['circuit', 0, 0.1],
                 ["device", 0, 0.2],
                 ["biomass", 5000, 0.4],
                 ['cell', 2000, 0.4],
                 ['phlegm', 30, 0.2],
-                ['tissue', 30, 0.1],
-                ['muscle', 30, 0.1],
-                ['organoid', 30, 0.1],
+                ['tissue', 0, 0.1],
+                ['muscle', 0, 0.1],
+                ['organoid', 0, 0.1],
                 ["organism", 0, 0.2],
                 ["mist", 5000, 0.4],
                 ['condensate', 2000, 0.2],
                 ['concentrate', 30, 0.2],
                 ['extract', 30, 0.1],
-                ['spirit', 30, 0.1],
-                ['emanation', 30, 0.1],
+                ['spirit', 0, 0.1],
+                ['emanation', 0, 0.1],
                 ["essence", 0, 0.2],
-                ["metal", 5000, 0.8],
+                ["metal", 5000, 0.3],
                 ['alloy', 2000, 0.2],
                 ['tube', 30, 0.2],
                 ['fixtures', 30, 0.1],
-                ['frame', 30, 0.1],
-                ['hydraulics', 30, 0.1],
+                ['frame', 0, 0.1],
+                ['hydraulics', 0, 0.1],
                 ["power", 5000, 0.2],
                 ["machine", 0, 0.2]
             ];
@@ -330,8 +354,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     //     this.averageEnergy(roomname, allCondensedResources, terminalActual,roominrange)
                 }
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
-                if(terminalInUse == false)
-                {
+               
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     var ownedrooms = [];
@@ -367,14 +390,14 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 50000 && Game.time % (200) == 0 && roomOrders.length < 3)
                     {
                         var hist = Game.market.getHistory(RESOURCE_ENERGY)
-                        if(hist[0].avgPrice + (hist[0].stddevPrice * 2) < 3)
+                        if(hist[0].avgPrice + (hist[0].stddevPrice * 1.5) < 3)
                         {
                             Game.market.createOrder(
                             {
                                 type: ORDER_BUY,
                                 resourceType: RESOURCE_ENERGY,
-                                price: (hist[0].avgPrice + (hist[0].stddevPrice * 2)),
-                                totalAmount: 20000,
+                                price: (hist[0].avgPrice + (hist[0].stddevPrice *1.5)),
+                                totalAmount: 50000,
                                 roomName: roomname
                             });
                         }
@@ -385,13 +408,13 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                                 type: ORDER_BUY,
                                 resourceType: RESOURCE_ENERGY,
                                 price: 3,
-                                totalAmount: 20000,
+                                totalAmount: 50000,
                                 roomName: roomname
                             });
                         }
                     }
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                }
+                
             }
         }
     }

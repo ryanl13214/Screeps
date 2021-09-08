@@ -1,22 +1,79 @@
+ 
+       Game.market.changeOrderPrice('6113c2914e9e2a2f06a8749d', 51.95);
+             
+             
+       
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "power",
+    price: 25.00,
+    totalAmount: 150000,
+    roomName: "E24N3"   
+});
+       
+           
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "energy",
+    price: 3,
+    totalAmount: 100000,
+    roomName: "E24N3"   
+});      
+        
+        
+        
+           
+       
+       
+       
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "power",
+    price: 20.00,
+    totalAmount: 50000,
+    roomName: "E28N5"   
+});      
+             
+             
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "metal",
+    price: 50.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
 
-todo
-ned toom moivers need to pickup resources first
 
-container mine center rooms 
-extract center rooms
+      
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "composite",
+    price: 20.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
+ 
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "power",
+    price: 20.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
 
-call claimer only when needed in next rooms 
 
-reserve controller creep function
-
-creep functions from task list into seperate functions 
-
-task manager for moving resources in =room 
-
-
-remo9ve roles in the system
-
-
+     
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "metal",
+    price: 55.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
 
 
 

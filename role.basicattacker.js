@@ -1,6 +1,8 @@
 var creepfunctions = require('prototype.creepfunctions');
 var roleguard = {
     /** @param {Creep} creep **/
+    
+    
     run: function(creep)
     {
         if(creepfunctions.checkglobaltasks(creep))
@@ -61,7 +63,7 @@ var roleguard = {
                     
                     
                 }
-                  creep.rangedMassAttack();
+                 // creep.rangedMassAttack();
                 // moveAvoidingThe damage areas
                 if(targlist.length != 0)
                 {
@@ -110,10 +112,33 @@ var roleguard = {
                         creep.memory.memstruct.tasklist.push(["moveToLooseinterRoom", targlist2[0].pos.x, targlist2[0].pos.y, creep.room.name]);
                     }
                 }
+                else{
+                       var closestDuded = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+                       if(closestDuded != undefined){
+                           creep.moveTo(closestDuded);
+                           
+                       }
+                        var range = creep.pos.getRangeTo(closestDuded);
+                    if(range < 2)
+                    {
+                        creep.rangedMassAttack();
+                    }
+                    else if(range < 4)
+                    {
+                        creep.rangedAttack(closestDuded);
+                    }
+                       
+                       
+                }
+                
+                
+                
+                
                 creepfunctions.allowSlave(creep);
             }
             if(creep.memory.attackrole == "basicRoomDIS")
             {
+                 creep.rangedMassAttack();
                 var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1,
                 {
                     filter: (res) =>
@@ -134,6 +159,8 @@ var roleguard = {
                     
                     if( flagsinrange.pos.x == creep.pos.x   &&  flagsinrange.pos.x == creep.pos.x    &&  flagsinrange.pos.y  == creep.pos.y  &&  flagsinrange.pos.y == creep.pos.y){
                         flagsinrange.remove();
+                    }else{
+                        creep.moveTo(flagsinrange);
                     }
                     
                     
@@ -244,18 +271,19 @@ var roleguard = {
                     {
                         if(creep.dismantle(target) == ERR_NOT_IN_RANGE)
                         {
-                            creep.say("f");
-                            var findNewtarget = creep.moveTo(target);
-                            if(findNewtarget == -2)
-                            {
-                                var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
-                                if(target.length != 0)
-                                {
-                                    creep.dismantle(target[0]);
-                                }
-                            }
+                           // creep.say("f");
+                           // var findNewtarget = creep.moveTo(target);
+                           // if(findNewtarget == -2)
+                            //{
+                            //    var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+                          //      if(target.length != 0)
+                         //  //     {
+                         //           creep.dismantle(target[0]);
+                         //       }
+                         //   }
+                          //   creep.moveTo(target);
                         }
-                        creep.moveTo(target);
+                        
                     }
                 }
                 creepfunctions.allowSlave(creep);

@@ -2,38 +2,124 @@ var creepfunctions = require('prototype.creepfunctions');
 var attackerCode = require('role.basicattacker');
 var roleguard = {
     /** @param {Creep} creep **/
+    decideMassAttack: function(creep)
+    {
+        var enemiesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 1);
+        var structuresInRange = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+        var enemiesInRange2 = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 2);
+        var structuresInRange2 = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 2);
+        var enemiesInRange3 = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+        var structuresInRange3 = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 3);
+        if(enemiesInRange.length != 0 || structuresInRange.length != 0)
+        {
+            return true;
+        }
+        else
+        {
+            var counter = 0;
+            counter += enemiesInRange2.length * 4;
+            counter += structuresInRange2.length * 4;
+            counter += enemiesInRange3.length;
+            counter += structuresInRange3.length;
+            if(counter > 10)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    },
+    handleattacks: function(creep)
+    {
+        var targets = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+        var decideMassAttack = this.decideMassAttack(all[c]);
+        if(decideMassAttack)
+        {
+            all[c].rangedMassAttack();
+        }
+        else if(targets.length > 0)
+        {
+            all[c].rangedAttack(targets[0]);
+        }
+    },
+    plunderCorridor: function(creep)
+    {
+        if(creep.body.find(elem => elem.type === "carry") != undefined)
+        {
+            var resourcesPot = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1,
+            {
+                filter: (res) =>
+                {
+                    return (res.resourceType == RESOURCE_METAL || res.resourceType == RESOURCE_SILICON || res.resourceType == RESOURCE_BIOMASS || res.resourceType == RESOURCE_MIST);
+                }
+            });
+            if(resourcesPot.length != 0)
+            {
+                creep.pickup(resourcesPot[0]);
+            }
+        }
+        if(creep.store.getUsedCapacity() != 0 && creep.ticksToLive < 175)
+        {
+            creep.memory.memstruct.tasklist = [
+                ["forcemoveToRoom", creep.memory.memstruct.spawnRoom],
+                ["deposit"]
+            ]
+        }
+        return true;
+    },
+    checkRuins: function(creep)
+    {
+        var resourcesPot = creep.room.find(FIND_RUINS,
+        {
+            filter: (res) =>
+            {
+                return (res.resourceType != RESOURCE_ENERGY);
+            }
+        });
+        if(resourcesPot.length != 0)
+        {
+            creepfunctions.summonHauler(creep.room.name, creep.memory.memstruct.spawnRoom);
+        }
+    },
     run: function(creep)
     {
-        if(creepfunctions.checkglobaltasks(creep))
+        this.checkRuins(creep);
+        if(creepfunctions.checkglobaltasks(creep) && this.plunderCorridor(creep))
         {
             if(creep.memory.attackrole == "chasedown")
             {
-                creep.say("chasedown");
-                var target = creepfunctions.findCloseHostiles(creep);
-                //  creepfunctions.getHostilesInRange(creep,range);
-                //  creepfunctions.findHostiles(creep);
-                // creepfunctions.findCloseHostiles(creep);
+                var whitelist = ["slowmotionghost"]
+                var target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
                 if(target == undefined)
                 {
-                    target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
-                    if(target == undefined)
+                    target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
                     {
-                        target = creep.pos.findClosestByRange(STRUCTURE_INVADER_CORE);
-                    }
+                        filter:
+                        {
+                            owner:
+                            {
+                                username: 'Invader'
+                            }
+                        }
+                    });
                 }
-                //        STRUCTURE_INVADER_CORE
-                var mainflag = Game.flags[creep.room.name];
-                if(mainflag != undefined)
+                if(target == undefined)
                 {
-                    var target2 = creepfunctions.getHostilesInRange(mainflag, 5);
-                    if(target2.length != 0)
+                    target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
                     {
-                        target = target2[0];
-                    }
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_INVADER_CORE);
+                        }
+                    });
                 }
                 var range = creep.pos.getRangeTo(target);
                 if(range == 1)
                 {
+                    creep.moveTo(target);
                     creep.rangedMassAttack();
                     creep.attack(target);
                 }
@@ -43,6 +129,7 @@ var roleguard = {
                     {
                         creep.heal(creep);
                     }
+                    creep.moveTo(target);
                     creep.rangedAttack(target);
                 }
                 else
@@ -51,43 +138,9 @@ var roleguard = {
                     {
                         creep.heal(creep);
                     }
+                    creep.moveTo(target);
                 }
-                if(target != undefined && (creep.pos.x > 2 && creep.pos.x < 49 && creep.pos.y > 2 && creep.pos.y < 49) || (target != undefined && range < 4))
-                {
-                    // creep.say("s");
-                    var range = creep.pos.getRangeTo(target);
-                    //   creep.say(range);
-                    if(range > 1)
-                    {
-                        if(target != undefined)
-                        {
-                            var temp = creep.memory.memstruct.tasklist;
-                            creep.memory.memstruct.tasklist = [
-                                ["moveToObjectLoose", target.id]
-                            ];
-                            for(var i = 0; i < temp.length; i++)
-                            {
-                                creep.memory.memstruct.tasklist.push(temp[i]);
-                            }
-                        }
-                    }
-                }
-                else if(target && range > 3 && creep.memory.memstruct.tasklist.length == 0 || (target && creep.memory.memstruct.tasklist.length != 0 && creep.memory.memstruct.tasklist[0][0] != "moveToObjectLoose"))
-                {
-                    creep.say(target)
-                    var temp = creep.memory.memstruct.tasklist;
-                    creep.memory.memstruct.tasklist = [
-                        ["moveToObjectLoose", target.id]
-                    ];
-                    for(var i = 0; i < temp.length; i++)
-                    {
-                        creep.memory.memstruct.tasklist.push(temp[i]);
-                    }
-                }
-                if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax && !target)
-                {
-                    creep.heal(creep);
-                }
+                var range = creep.pos.getRangeTo(target);
                 creepfunctions.allowSlave(creep);
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
