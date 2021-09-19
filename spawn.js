@@ -175,6 +175,18 @@ var spwan = {
                 spawnmain = Game.rooms[roomname].find(FIND_MY_SPAWNS)[0];
             }
             spawnmain = Game.rooms[roomname].find(FIND_MY_SPAWNS)[0];
+            
+            
+            
+            var twemp = Game.rooms[roomname].find(FIND_SOURCES);
+            
+            if(twemp.length ==2){
+                var harvestersneeded = 2;
+            }
+              if(twemp.length ==1){
+                var harvestersneeded = 1;
+            }
+            
             //    console.log(brokenspawnstructure);
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,7 +517,7 @@ var spwan = {
                             }
                         });
                     }
-                    else if(harvesters.length < 2 && !wallsBreeched)
+                    else if(harvesters.length < harvestersneeded && !wallsBreeched)
                     {
                         var numberofparts = Math.floor((energyavailable - 350) / 150);
                         if(levelOfController > 4)
@@ -566,7 +578,7 @@ var spwan = {
                                 }
                             });
                       
-                      
+                      if(harvestersneeded == 2){
                        spawnss[i].spawnCreep(bodyparts, 'harvester1' + roomname,
                             {
                                 memory:
@@ -575,7 +587,7 @@ var spwan = {
                                     sourcetarget: 1,
                                     memstruct: memstruct
                                 }
-                            });
+                            });}
                       
                       
                       

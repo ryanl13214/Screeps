@@ -27,7 +27,38 @@ var tickcode = {
       
             
             
-            
+             if(1 == 1)
+                {
+                    Game.spawns["E24N3"].spawnCreep(
+             [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,RANGED_ATTACK] , 'tester',
+                        {
+                            memory:
+                            {
+                                role: 'guard',
+                                attackrole: "basicRoomDIS",
+                                memstruct:
+                                {
+                                    spawnRoom: "E24N3",
+                                    tasklist: [
+                                        ["createslaveBOOST"],
+                                        ["boosAllMax"],
+                                        ["forcemoveToRoom", "E23N9"],
+                                        ["forcemoveToRoom", "E21N9"]
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: true,
+                                    hastask: false
+                                }
+                            }
+                        });
+                        
+                        
+                      
+                        
+                        
+                }
             
             
             ////////////////////////////////////////

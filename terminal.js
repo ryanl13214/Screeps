@@ -170,7 +170,8 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 
                 for(var j = 0; j < roominrange.length; j++)
                 {
-                    var roomwithTerminal = Game.rooms[roominrange].terminal;
+                    if(Game.rooms[roominrange[j]]){
+                    var roomwithTerminal = Game.rooms[roominrange[j]].terminal;
                     if(terminalActual.store.getUsedCapacity(allCondensedResources[i][0]) > roomwithTerminal.store.getUsedCapacity(allCondensedResources[i][0]) && allCondensedResources[i][0] != "energy")
                     {
                         var transferAmou8nt = ( terminalActual.store.getUsedCapacity(allCondensedResources[i][0]) -roomwithTerminal.store.getUsedCapacity(allCondensedResources[i][0])  )/2;
@@ -183,6 +184,8 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                          terminalActual.send(allCondensedResources[i][0], transferAmou8nt,roominrange[j], '0');
                           return true;
                      }   
+                    }
+                    
                     }
                 }
                 
@@ -389,15 +392,19 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     }
                     if(Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 50000 && Game.time % (200) == 0 && roomOrders.length < 3)
                     {
+                         
+                                  
                         var hist = Game.market.getHistory(RESOURCE_ENERGY)
-                        if(hist[0].avgPrice + (hist[0].stddevPrice * 1.5) < 3)
+                  
+                      
+                        if( hist[0].avgPrice  * 1.5  < 5)
                         {
                             Game.market.createOrder(
                             {
                                 type: ORDER_BUY,
                                 resourceType: RESOURCE_ENERGY,
-                                price: (hist[0].avgPrice + (hist[0].stddevPrice *1.5)),
-                                totalAmount: 50000,
+                                price: (hist[0].avgPrice  * 1.5),
+                                totalAmount: 175000,
                                 roomName: roomname
                             });
                         }
@@ -407,11 +414,12 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                             {
                                 type: ORDER_BUY,
                                 resourceType: RESOURCE_ENERGY,
-                                price: 3,
-                                totalAmount: 50000,
+                                price: 5,
+                                totalAmount: 175000,
                                 roomName: roomname
                             });
                         }
+                             
                     }
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 

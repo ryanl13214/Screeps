@@ -69,19 +69,19 @@ var factoryManager = {
     
         if(fact.level == 1  && fact.effects.length != 0)
         {
-                if(fact.store.getUsedCapacity('oxidant') < 620  )
+                if(fact.store.getUsedCapacity('oxidant') < 620  && globalBreak == false && fact.store.getUsedCapacity('O') > 100 )
                 {
                          fact.produce('oxidant');
                     new RoomVisual(roomname).text('oxidant', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
                     globalBreak=true;
                 } 
-                if(fact.store.getUsedCapacity('utrium_bar') < 620  )
+                if(fact.store.getUsedCapacity('utrium_bar') < 620  && globalBreak == false  && fact.store.getUsedCapacity('U') > 100 )
                 {
                          fact.produce('utrium_bar');
                     new RoomVisual(roomname).text('utrium_bar', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
                     globalBreak=true;
                 }
-                if(fact.store.getUsedCapacity('switch') < 72  && fact.store.getUsedCapacity('wire') > 200 )
+                if(fact.store.getUsedCapacity('switch') < 72  && fact.store.getUsedCapacity('wire') > 200  && globalBreak == false)
                 {
                     fact.produce('switch');
                     new RoomVisual(roomname).text('switch', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
@@ -92,7 +92,7 @@ var factoryManager = {
                 
                 
                 
-                if(fact.store.getUsedCapacity('composite') < 720 )
+                if(fact.store.getUsedCapacity('composite') < 720  && globalBreak == false)
                 {
                     fact.produce('composite');
                     new RoomVisual(roomname).text('composite', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  

@@ -13,42 +13,7 @@ var squadgenerator = {
                 var squads = Memory.squadObject;
                 var squadnames = Object.keys(squads);
                 var currsquadspawning = Game.flags[roomname].memory.flagstruct.squadspawning;
-                // creating damage squads
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                for(l = 0; l < mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange.length; l++)
-                {
-                    var found = false;
-                    for(q = 0; q < squadnames.length; q++)
-                    {
-                        if(squadnames[q] == (roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "centerdamagesquad") || squadnames[q] == (roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager"))
-                        {
-                            found = true;
-                        }
-                    }
-                    var centerxposition = mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l].substring(1, 3);
-                    var centeryposition = mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l].substring(4, 5);
-                 
-                    if(!found)
-                    {
-                        var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
-                        if(Game.rooms[roomname].controller.level == 7){
-                        squadmanage.initializeSquad(roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager", [mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l]], false, "solocenterdamager", roomname,
-                        {
-                            "solo": [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL],
-                     });
-                        } 
-                         if(Game.rooms[roomname].controller.level == 8){
-                            squadmanage.initializeSquad(roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager", [mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l]], false, "solocenterdamager", roomname,
-                        {
-                            "solo": [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
-                           
-                        });  
-                             
-                         }
-                        
-                    }
-                }
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 // creating mineing squads  
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,28 +30,13 @@ var squadgenerator = {
                     }
                     for(q = 0; q < squadnames.length; q++)
                     {
-                        if((squadnames[q] == (roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager") && Memory.squadObject[roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager"].squadisready == true))
+                        if(currsquadspawning.includes(roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "centerMiningSquad"))
                         {
-                            damagesquadready = true;
-                            if(currsquadspawning.includes(roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "centerMiningSquad"))
-                            {
-                                if(Memory.squadObject[roomname + mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l] + "solocenterdamager"].SquadMembersCurrent.length > 0)
-                                {}
-                                else
-                                {
-                                    console.log("resetting squad spawn priority from mineing operations");
-                                    Game.flags[roomname].memory.flagstruct.squadspawning = "";
-                                }
-                            }
+                            Game.flags[roomname].memory.flagstruct.squadspawning = "";
                         }
                     }
-                    var centerxposition = mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l].substring(1, 3);
-                    var centeryposition = mainflag.memory.flagstruct.claimedroomstuct.centerroomsinrange[l].substring(4, 5);
-                    if(centerxposition == "25" && centeryposition == "5")
-                    {
-                        damagesquadready = true;
-                    }
-                    if(!squadAlreadyExists && damagesquadready)
+            
+                    if(!squadAlreadyExists )
                     {
                         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
                         var numberofparts = Math.floor((energyavailable - 200) / 150);

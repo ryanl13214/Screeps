@@ -91,6 +91,7 @@ var storageManager = {
                 var itemfound = false;
                 if(resourcekeys[i] != "energy") // energy handled on its own 
                 {
+                   
                     for(var j = 0; j < allResources.length; j++)
                     {
                         if(resourcekeys[i] == allResources[j])

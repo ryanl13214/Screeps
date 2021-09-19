@@ -1,8 +1,6 @@
 var creepfunctions = require('prototype.creepfunctions');
 var coremining = require('squad.coremining');
 var roommining = require('squad.roommining');
-var coredefence = require('squad.coredefence');
-var serpentsquad = require('squad.serpent');
 var quadsquad = require('squad.quad');
 var squadmanager = {
     run: function(squadID)
@@ -62,11 +60,7 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(mainMemoryObject.squadisready) // group squads
             {
-                if(mainMemoryObject.squadType == "serpent" && mainMemoryObject.SquadMembersCurrent.length == 3) // add else here for retreating
-                {
-                    serpentsquad.run(squadID);
-                }
-              
+            
             }  if(mainMemoryObject.squadType == "quad" &&  (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready) ) 
                 {
                     quadsquad.run(squadID);
@@ -78,12 +72,7 @@ var squadmanager = {
                 {
                     coremining.run(squadID);
                 }
-                if(mainMemoryObject.squadType == "solocenterdamager")
-                {
-                    var startCpu = Game.cpu.getUsed();
-                    coredefence.run(squadID);
-                    Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.mineroomsCPU += Game.cpu.getUsed() - startCpu;
-                }
+  
                 if(mainMemoryObject.squadType == "MiningSquad")
                 {
                     var startCpu = Game.cpu.getUsed();
