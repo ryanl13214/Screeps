@@ -1,4 +1,4 @@
- var roles = require('roles');
+var roles = require('roles');
 var spawnmain = require('spawn');
 var buildbase = require('buildbase');
 var tower = require('tower');
@@ -12,6 +12,7 @@ var squadmanage = require('squadManager');
 var visuals = require('visuals');
 var powerManager = require('powercreepManager');
 var tickcode = require('tickcode');
+var observer = require('observer');
 var storecpu = 0;
 var ticks = 0;
 var counter = 0;
@@ -46,9 +47,16 @@ module.exports.loop = function()
     var listvalues = Object.values(powerCreepList);
     for(var i = 0; i < listnumbers.length; i++)
     {
-        powerManager.run(listvalues[i]);
+        try
+        {
+            powerManager.run(listvalues[i]);
+        }
+        catch (e)
+        {
+            console.log("pwer err", e);
+        }
     }
-    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
+    var powerManager_cpu_used = Game.cpu.getUsed() - startCpu;
     if(debug)
     {
         Memory.cpuUsage.powercreeps += powerManager_cpu_used;
@@ -75,46 +83,9 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     //                                  
     //------------------------------------------------------------------------------------------------
-    if(Memory.cpuUsage == undefined)
+    if(Game.cpu.bucket == 10000)
     {
-        Memory.cpuUsage = {
-            roles: 0,
-            towers: 0,
-            spawnin: 0,
-            terminals: 0,
-            defcon: 0,
-            squads: 0,
-            powercreeps: 0,
-            generatingsquads: 0
-        }
-    }
-    if(Memory.roleCPU == undefined)
-    {
-        Memory.roleCPU = {
-            mover: 0,
-            multi: 0,
-            harvester: 0,
-            repairer: 0,
-            scout: 0,
-            upgrader: 0,
-            resourceMover: 0,
-            towerMover: 0,
-            extractor: 0
-        }
-    }
-    //------------------------------------------------------------------------------------------------
-    //                                  
-    //------------------------------------------------------------------------------------------------
-    var mainflag = Game.flags;
-    var flaglist = Object.keys(Game.flags);
-    var redflags = [];
-    for(var i = 0; i < flaglist.length; i++)
-    {
-        //console.log( mainflag[flaglist[i]].secondaryColor);
-        if(mainflag[flaglist[i]].color == 1)
-        {
-            redflags.push(mainflag[flaglist[i]]);
-        }
+        Game.cpu.generatePixel()
     }
     //------------------------------------------------------------------------------------------------
     //                          deleting memory
@@ -128,6 +99,13 @@ module.exports.loop = function()
                 delete Memory.creeps[name];
             }
         }
+        for(var name in Memory.powerCreeps)
+        {
+            if(!Game.powerCreeps[name])
+            {
+                delete Memory.powerCreeps[name];
+            }
+        }
         for(var name in Memory.flags)
         {
             if(!Game.flags[name])
@@ -136,11 +114,24 @@ module.exports.loop = function()
             }
         }
     }
-    //------------------------------------------------------------------------------------------------
-    if(Game.cpu.bucket == 10000)
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                       INTERSHARD 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    var inteshardCreeps = _.filter(Game.creeps, (creep) => (creep.memory.role == undefined || creep.memory.intershard == true));
+    for(var i = 0; i < inteshardCreeps.length; i++)
     {
-        Game.cpu.generatePixel()
+        if(inteshardCreeps[i].memory.role == undefined)
+        {
+            inteshardCreeps[i].memory.role = "multi";
+            inteshardCreeps[i].memory.memstruct = {
+                tasklist: []
+            }
+            inteshardCreeps[i].memory.memstruct.tasklist = [
+                ["getDataFromOldShard"]
+            ]
+        }
     }
+    roles.run(inteshardCreeps);
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        SQUAD MANAGER
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,12 +144,8 @@ module.exports.loop = function()
     const resourcevalues = Object.values(testingsquads);
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
-    {
-        //try{
+    {   
         squadmanage.run(resourcekeys[i]);
-        //}catch(e){
-        //    console.log( "squadmanage err");
-        //}
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -184,7 +171,7 @@ module.exports.loop = function()
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var mainflag = Game.flags[roomname];
-        if(Game.time % 1500 == 0)
+        if(Game.time % 100 == 0)
         {
             mainflag.memory.flagstruct.squadspawning = "";
         }
@@ -210,14 +197,15 @@ module.exports.loop = function()
             };
             var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
             //  console.log(roomname);
-            if(spawnss.length > 0){
-                 Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x - 2, Game.spawns[roomname].pos.y - 2, roomname);
-            }else{
-                 Game.rooms[roomname].createFlag(25, 25, roomname);
-                       Game.rooms[roomname].createFlag(25, 25, roomname+"noTemplate");
+            if(spawnss.length > 0)
+            {
+                Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x - 2, Game.spawns[roomname].pos.y - 2, roomname);
             }
-            
-            
+            else
+            {
+                Game.rooms[roomname].createFlag(25, 25, roomname);
+                Game.rooms[roomname].createFlag(25, 25, roomname + "noTemplate");
+            }
             var mainflags = Game.flags[roomname];
             mainflags.memory.flagstruct = flagstruct;
         }
@@ -272,7 +260,7 @@ module.exports.loop = function()
         {
             if(Game.time % 150 == 0 || defconlevel.defenceLevel < 10)
             {
-                squadgenerate.run(roomname, redflags);
+                squadgenerate.run(roomname);
             }
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
@@ -301,18 +289,20 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
         if(Game.time % (1500 + i) == 0)
         {
-                var checkflag = Game.flags[roomname+"noTemplate"];
-                try{
-       
-            
-            var startCpu = Game.cpu.getUsed();
-            if(checkflag == undefined){
-            buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
+            var checkflag = Game.flags[roomname + "noTemplate"];
+            try
+            {
+                var startCpu = Game.cpu.getUsed();
+                if(checkflag == undefined)
+                {
+                    buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
+                }
+                var buildbase_cpu_used = +Game.cpu.getUsed() - startCpu;
             }
-            var buildbase_cpu_used = +Game.cpu.getUsed() - startCpu;
-               }catch(e){
-           console.log( "basebuild err");
-        }
+            catch (e)
+            {
+                console.log("basebuild err");
+            }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            towers
@@ -330,7 +320,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (15) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
@@ -344,10 +334,78 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       storageManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (12) < 2)
+        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (15) < 2)
         {
             storageManager.run(roomname);
         }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                            nuker 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var nuker = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
+        {
+            filter:
+            {
+                structureType: STRUCTURE_NUKER
+            }
+        });
+        try
+        {
+            if(nuker.length == 1)
+            {
+                if(nuker[0].store.getFreeCapacity("energy") != 0)
+                {
+                    Game.spawns[roomname].spawnCreep(
+                        [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], roomname + 'nukerenergy',
+                        {
+                            memory:
+                            {
+                                role: 'multi',
+                                memstruct:
+                                {
+                                    spawnRoom: roomname,
+                                    tasklist: [
+                                        ["withdraw", Game.rooms[roomname].storage.id, "energy", 250],
+                                        ["transfer", nuker[0].id, "energy"],
+                                        ["repeat", 2]
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: true,
+                                    hastask: false
+                                }
+                            }
+                        });
+                }
+                if(nuker[0].store.getFreeCapacity("G") != 0)
+                {
+                    Game.spawns[roomname].spawnCreep(
+                        [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], roomname + 'nukerg',
+                        {
+                            memory:
+                            {
+                                role: 'multi',
+                                memstruct:
+                                {
+                                    spawnRoom: roomname,
+                                    tasklist: [
+                                        ["withdraw", Game.rooms[roomname].storage.id, "G", 250],
+                                        ["transfer", nuker[0].id, "G"],
+                                        ["repeat", 2]
+                                    ],
+                                    objectIDStorage: "",
+                                    boosted: false,
+                                    moveToRenew: false,
+                                    opportuniticRenew: true,
+                                    hastask: false
+                                }
+                            }
+                        });
+                }
+            }
+        }
+        catch (e)
+        {}
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       factroy
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,6 +421,20 @@ module.exports.loop = function()
             factoryManager.run(roomname, Game.rooms[roomname].terminal, factorys[0]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                       observer
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var obs = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
+        {
+            filter:
+            {
+                structureType: STRUCTURE_OBSERVER
+            }
+        });
+        if(obs.length != 0)
+        {
+            observer.run(roomname, obs[0]);
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       pwrspawnManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
         const pwrspawn = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
@@ -373,100 +445,102 @@ module.exports.loop = function()
             }
         });
         var g = 4;
-        if(Game.market.credits > 30000000)
+        if(Game.market.credits > 75000000)
         {
             g = 1;
         }
-        g = 1;
         if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 600000 && pwrspawn.length != 0 && Game.time % (g) == 0)
         {
             pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
         }
+       
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.rooms[roomname].controller.level > 3)
         {
-            var mainflags = Game.flags[roomname];
-            var flag1 = Game.flags[roomname + "container1"];
-            var flag0 = Game.flags[roomname + "container0"];
-            var controllerflag = Game.flags[roomname + "controllerposcontainer"];
-            var startCpu = Game.cpu.getUsed();
-            var linkto = mainflags.pos.findInRange(FIND_STRUCTURES, 2,
+            try
             {
-                filter: (structure) =>
+                var mainflags = Game.flags[roomname];
+                var flag1 = Game.flags[roomname + "container1"];
+                var flag0 = Game.flags[roomname + "container0"];
+                var controllerflag = Game.flags[roomname + "controllerposcontainer"];
+                var startCpu = Game.cpu.getUsed();
+                var linkto = mainflags.pos.findInRange(FIND_STRUCTURES, 2,
                 {
-                    return (structure.structureType == STRUCTURE_LINK);
-                }
-            });
-            var controllerlink = controllerflag.pos.findInRange(FIND_STRUCTURES, 1,
-            {
-                filter: (structure) =>
-                {
-                    return (structure.structureType == STRUCTURE_LINK);
-                }
-            });
-            var harvesterlink0 = flag1.pos.findInRange(FIND_STRUCTURES, 1,
-            {
-                filter: (structure) =>
-                {
-                    return (structure.structureType == STRUCTURE_LINK);
-                }
-            });
-            var harvesterlink1 = flag0.pos.findInRange(FIND_STRUCTURES, 1,
-            {
-                filter: (structure) =>
-                {
-                    return (structure.structureType == STRUCTURE_LINK);
-                }
-            });
-            var links = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
-            {
-                filter:
-                {
-                    structureType: STRUCTURE_LINK
-                }
-            });
-            if(harvesterlink0[0].store.getUsedCapacity("energy") > 300)
-            {
-                if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
-                {
-                    harvesterlink0[0].transferEnergy(controllerlink[0]);
-                }
-                else
-                {
-                    harvesterlink0[0].transferEnergy(linkto[0]);
-                }
-            }
-            if(harvesterlink1[0].store.getUsedCapacity("energy") > 300)
-            {
-                if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
-                {
-                    harvesterlink1[0].transferEnergy(controllerlink[0]);
-                }
-                else
-                {
-                    harvesterlink1[0].transferEnergy(linkto[0]);
-                }
-            }
-            
-            
-            
-            for(var o = 0; o < links.length; o++)
-            {
-                if(links[o].store.getUsedCapacity("energy") > 0 && linkto[0].store.getUsedCapacity("energy") == 0)
-                {
-                   if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
+                    filter: (structure) =>
                     {
-                        links[o].transferEnergy(controllerlink[0]);
+                        return (structure.structureType == STRUCTURE_LINK);
                     }
-                    else if(linkto[0] != undefined)
+                });
+                var controllerlink = controllerflag.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
                     {
-                        links[o].transferEnergy(linkto[0]);
+                        return (structure.structureType == STRUCTURE_LINK);
+                    }
+                });
+                var harvesterlink0 = flag1.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_LINK);
+                    }
+                });
+                var harvesterlink1 = flag0.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_LINK);
+                    }
+                });
+                var links = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
+                {
+                    filter:
+                    {
+                        structureType: STRUCTURE_LINK
+                    }
+                });
+                if(harvesterlink0[0] != undefined && harvesterlink0[0].store.getUsedCapacity("energy") > 300)
+                {
+                    if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
+                    {
+                        harvesterlink0[0].transferEnergy(controllerlink[0]);
+                    }
+                    else
+                    {
+                        harvesterlink0[0].transferEnergy(linkto[0]);
                     }
                 }
+                if(harvesterlink1[0] != undefined && harvesterlink1[0].store.getUsedCapacity("energy") > 300)
+                {
+                    if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
+                    {
+                        harvesterlink1[0].transferEnergy(controllerlink[0]);
+                    }
+                    else
+                    {
+                        harvesterlink1[0].transferEnergy(linkto[0]);
+                    }
+                }
+                for(var o = 0; o < links.length; o++)
+                {
+                    if(links[o].store.getUsedCapacity("energy") > 0 && linkto[0].store.getUsedCapacity("energy") == 0)
+                    {
+                        if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
+                        {
+                            links[o].transferEnergy(controllerlink[0]);
+                        }
+                        else if(linkto[0] != undefined && (controllerlink[0] == undefined || (controllerlink[0] != undefined && links[o].id != controllerlink[0].id)))
+                        {
+                            links[o].transferEnergy(linkto[0]);
+                        }
+                    }
+                }
+                var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
             }
-            var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
+            catch (e)
+            {}
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -484,40 +558,6 @@ module.exports.loop = function()
         // } catch (e)        {            console.log("error in room : ", roomname, " ", e);        }
     } //end of rooms loop 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    if(debug && Game.time % debugTime == 0)
-    {
-        console.log("spent ", Memory.cpuUsage.roles / debugTime, " cpu on creeps");
-        Memory.cpuUsage.roles = 0;
-        console.log("spent ", Memory.cpuUsage.towers / debugTime, " cpu on towers");
-        Memory.cpuUsage.towers = 0;
-        console.log("spent ", Memory.cpuUsage.terminals / debugTime, " cpu on terminals");
-        Memory.cpuUsage.terminals = 0;
-        console.log("spent ", Memory.cpuUsage.defcon / debugTime, " cpu on defcon");
-        Memory.cpuUsage.defcon = 0;
-        console.log("spent ", Memory.cpuUsage.squads / debugTime, " cpu on squads");
-        Memory.cpuUsage.squads = 0;
-        console.log("spent ", Memory.cpuUsage.powercreeps / debugTime, " cpu on powercreeps");
-        Memory.cpuUsage.powercreeps = 0;
-        console.log("spent ", Memory.cpuUsage.generatingsquads / debugTime, " cpu on generatingsquads");
-        Memory.cpuUsage.generatingsquads = 0;
-        ////////////////////////////////////////////
-        console.log("roles ", Memory.roleCPU.mover / debugTime, " cpu on movers");
-        Memory.roleCPU.mover = 0;
-        console.log("roles ", Memory.roleCPU.harvester / debugTime, " cpu on harvester");
-        Memory.roleCPU.harvester = 0;
-        console.log("roles ", Memory.roleCPU.repairer / debugTime, " cpu on repairer");
-        Memory.roleCPU.repairer = 0;
-        console.log("roles ", Memory.roleCPU.scout / debugTime, " cpu on scout");
-        Memory.roleCPU.scout = 0;
-        console.log("roles ", Memory.roleCPU.upgrader / debugTime, " cpu on upgrader");
-        Memory.roleCPU.upgrader = 0;
-        console.log("roles ", Memory.roleCPU.resourceMover / debugTime, " cpu on resourceMover");
-        Memory.roleCPU.resourceMover = 0;
-        console.log("roles ", Memory.roleCPU.towerMover / debugTime, " cpu on towerMover");
-        Memory.roleCPU.towerMover = 0;
-        console.log("roles ", Memory.roleCPU.extractor / debugTime, " cpu on extractor");
-        Memory.roleCPU.extractor = 0;
-    }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     counter++;
 }

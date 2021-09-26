@@ -18,19 +18,23 @@ var roleresourcemover = {
                 creep.moveTo(new RoomPosition(creep.room.storage.pos.x - 1, creep.room.storage.pos.y - 1, creep.room.name))
             }
         }
-        if(creep.memory.rescounter == undefined)
+       
+        
+        
+        if(creep.memory.rescounter2 == undefined)
         {
-            creep.memory.rescounter = 0;
+            creep.memory.rescounter2 = 0;
         }
-        if(creep.memory.rescounter == 15)
+         
+        if(creep.memory.rescounter2 > 15)
         {
-            creep.memory.rescounter = 0;
-            var link = creep.pos.findInRange(FIND_STRUCTURES, 1,
-            {
-                filter: (structure) => (structure.structureType == STRUCTURE_LINK)
-            });
+            creep.memory.rescounter2 = 0;
+          var pwrspawn = creep.pos.findInRange(FIND_STRUCTURES, 1,
+        {
+            filter: (structure) => (structure.structureType == STRUCTURE_POWER_SPAWN)
+        });
             Game.spawns[creep.room.name].spawnCreep(
-                [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], creep.room.name + 'linker',
+                [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], creep.room.name + 'power',
                 {
                     memory:
                     {
@@ -39,8 +43,8 @@ var roleresourcemover = {
                         {
                             spawnRoom: creep.room.name,
                             tasklist: [
-                                ["withdraw", link[0].id, "energy", 800],
-                                ["transfer", creep.room.storage.id, "energy"],
+                                ["withdraw", creep.room.terminal.id, "energy", 800],
+                                ["transfer", pwrspawn[0].id, "energy"],
                                 ["repeat", 2]
                             ],
                             objectIDStorage: "",
@@ -52,21 +56,29 @@ var roleresourcemover = {
                     }
                 });
         }
-        var link = creep.pos.findInRange(FIND_STRUCTURES, 1,
+        
+        
+        
+        
+     
+          var pwrspawn = creep.pos.findInRange(FIND_STRUCTURES, 1,
         {
-            filter: (structure) => (structure.structureType == STRUCTURE_LINK)
+            filter: (structure) => (structure.structureType == STRUCTURE_POWER_SPAWN)
         });
-        if(link.length != 0)
+        
+        if(pwrspawn.length != 0)
         {
-            if(link[0].store.getUsedCapacity("energy") > 700)
+            if(pwrspawn[0].store.getUsedCapacity("energy") < 3000)
             {
-                creep.memory.rescounter++;
+                creep.memory.rescounter2++;
             }
-            if(link[0].store.getUsedCapacity("energy") < 100)
+            if(pwrspawn[0].store.getUsedCapacity("energy") > 3000)
             {
-                creep.memory.rescounter = 0;
+                creep.memory.rescounter2 = 0;
             }
         }
+        
+        
         var check = creepfunctions.checkglobaltasks(creep);
         if(check)
         {
@@ -84,7 +96,7 @@ var roleresourcemover = {
             }
             var spawnss = creep.pos.findInRange(FIND_MY_SPAWNS, 1,
             {
-                filter: (structure) => (structure.store.getUsedCapacity("energy") < 300)
+                filter: (structure) => (structure.store.getUsedCapacity("energy") < 250)
             });
             if(spawnss.length != 0)
             {

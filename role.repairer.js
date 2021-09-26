@@ -33,6 +33,12 @@ var rolerepair = {
                     {
                         creep.say("!creep.memory.hastask");
                         var sources = creep.room.find(FIND_SOURCES);
+                        
+                        if(sources.length == 1){
+                            creep.memory.sourcetarget =0;
+                        }
+                        
+                        
                         if(creep.harvest(sources[creep.memory.sourcetarget]) == ERR_NOT_IN_RANGE)
                         {
                             creep.moveTo(sources[creep.memory.sourcetarget],
@@ -47,8 +53,14 @@ var rolerepair = {
                 }
                 if(creep.memory.full)
                 {
-                    var target = creep.room.find(FIND_HOSTILE_CREEPS);
-                    var targe2 = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    var target = creep.room.find(FIND_HOSTILE_CREEPS,
+                        {
+                            filter: (structure) => (structure.body.length >15 )
+                        });
+                    var targe2 = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
+                        {
+                            filter: (structure) => (structure.body.length >15 )
+                        });
                     var structuresclosetoenemys = [];
                     if(targe2 != undefined)
                     {
@@ -173,14 +185,16 @@ var rolerepair = {
                                     { 
                                     
                                     
+         try{
+        
                                      creep.upgradeController(creep.room.controller);
-                creep.moveTo(Game.flags[creep.room.name + "controllerpos"].pos,
+                creep.moveTo(creep.room.controller,
                 {
                     visualizePathStyle:
                     {
                         stroke: '#ffaa00'
                     }
-                });
+                });  }catch(e){}
                                     }
                                     
                                     

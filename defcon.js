@@ -1,4 +1,5 @@
 // if an attack is happening it is given prioruty if they are fufilled then the next stage is also done ie in a siege then we will also harrase the mining opperations if they exist .   
+var squadmanage = require('squadManager');
 var defcon = {
     run: function(roomname, creepsinroom)
     {
@@ -48,31 +49,31 @@ var defcon = {
         });
         if(spawnss.length != 0 && target != undefined && target.length != doretos.length)
         {
-            // dismantlers  
-            if(numberOfworkParts > 15 && numberOfRangedParts < 5 && numberOfAttackParts < 5)
+             var roomLevel = Game.rooms[roomname].controller.level;
+        
+          
+            if(totalBodyParts >= 50 && totalBodyParts < 100)
             {
-                this.spawnRawAttacker(roomname);
+                  this.spawnBoostedarcher(roomname, 9 - roomLevel );
             }
-            else if(numberOfRangedParts == 0 && numberOfAttackParts == 0 && numberOfHealParts > 15)
+              if(totalBodyParts ==   100)
             {
-                this.spawnRawAttacker(roomname);
+                  this.spawnBoostedarcher(roomname, 10 - roomLevel );
+                     this.spawnBoostedattacker(roomname, 1);
             }
-            else if(totalBodyParts >= 50 && numberOfRangedParts > 20 && target.length < 4 && numberOfHealParts < 50 && numberOfAttackParts == 0)
+            
+        
+            else if(totalBodyParts > 100)
             {
-                this.spawnBasicsquad(roomname);
-            }
-            else if(totalBodyParts > 99)
-            {
-                this.boostedBasicDefenders(roomname); // basic groups
+                this.boostedBasicDefenders(roomname); 
                 defconstuct.defenceLevel = 0;
             }
-            else if(totalBodyParts >= 50)
+            if(totalBodyParts > 99 && roomLevel < 7)
             {
-                defconstuct.defenceLevel = 0;
-                this.spawnBasicattacker(roomname);
-                this.spawnBasicRanger(roomname);
+            this.CallForAid(roomname);
+            
             }
-                          if(totalBodyParts >= 300)
+                  if(totalBodyParts >= 300)
             {
              this.spawnBoostedattacker(roomname, 3);
         this.spawnBoostedarcher(roomname, 3);
@@ -111,43 +112,66 @@ var defcon = {
         }
         return defconstuct;
     },
-    spawnRawAttacker: function(roomname)
+
+CallForAid: function(roomname)
     {
-        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-        for(let i = 0; i < spawnss.length; i++)
-        {
-            for(let o = 0; o < 4; o++)
+  
+  
+  
+  // find my rooms within 6 rooms and get a CloseCombatDuo 
+  
+  
+  
+  
+  var targroom = "E24N3";
+  
+  
+  
+  
+          var bodypartshead = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
+         var bodypartstail = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
+            if(Memory.squadObject['Gondor Calls For Aid'+roomname] == undefined)
             {
-                spawnss[i].spawnCreep(
-                    [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK], 'basicattacker' + roomname + o,
-                    {
-                        memory:
-                        {
-                            role: 'guard',
-                            attackrole: "attacker",
-                            memstruct:
-                            {
-                                spawnRoom: roomname,
-                                tasklist: [],
-                                objectIDStorage: "",
-                                boosted: false,
-                                moveToRenew: false,
-                                opportuniticRenew: true,
-                                hastask: false
-                            }
-                        }
-                    });
+                squadmanage.initializeSquad('Gondor Calls For Aid'+roomname, [["forcemoveToRoom",roomname]], true, "duo", targroom,
+                {
+                    "head": bodypartshead,
+                    "tail": bodypartstail,
+                },"chasedown");
             }
-        }
-    },
+  
+  
+   
+  
+  
+  
+  
+  
+  
+   
+  
+
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
     spawnBasicsquad: function(roomname)
     {
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         for(let i = 0; i < spawnss.length; i++)
         {
             spawnss[i].spawnCreep(
-                [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK], 
-                'defenceduo'+roomname,
+                [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK]
+                ,'defenceduo'+roomname,
                 {
                     memory:
                     {
@@ -175,112 +199,17 @@ var defcon = {
         this.spawnBoostedattacker(roomname, 3);
         this.spawnBoostedarcher(roomname, 3);
     },
-    spawnBasicRanger: function(roomname)
-    {
-        var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
-        var numberofparts = Math.floor((energyavailable) / 200);
-        var bodyparts = [];
-        if(numberofparts > 25)
-        {
-            numberofparts = 25;
-        }
-        for(let j = 0; j < numberofparts; j++)
-        {
-            bodyparts.push(RANGED_ATTACK);
-        }
-        for(let j = 0; j < numberofparts; j++)
-        {
-            bodyparts.push(MOVE);
-        }
-        numberOfRangersNeeded = 4;
-        if(numberofparts < 16)
-        {
-            numberOfRangersNeeded = 30;
-        }
-        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-        for(let i = 0; i < spawnss.length; i++)
-        {
-            for(let o = 0; o < numberOfRangersNeeded; o++)
-            {
-                var q = spawnss[i].spawnCreep(bodyparts,
-                    'guardranger' + o + roomname,
-                    {
-                        memory:
-                        {
-                            role: 'guard',
-                            attackrole: "archer",
-                            memstruct:
-                            {
-                                spawnRoom: roomname,
-                                tasklist: [],
-                                objectIDStorage: "",
-                                boosted: false,
-                                moveToRenew: false,
-                                opportuniticRenew: false,
-                                hastask: false
-                            }
-                        }
-                    });
-            }
-        }
-    },
-    spawnBasicattacker: function(roomname, number)
-    {
-        var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
-        var numberofparts = Math.floor((energyavailable - 200) / 130);
-        var bodyparts = [];
-        if(numberofparts > 25)
-        {
-            numberofparts = 25;
-        }
-        for(let j = 0; j < numberofparts; j++)
-        {
-            bodyparts.push(ATTACK);
-        }
-        for(let j = 0; j < numberofparts; j++)
-        {
-            bodyparts.push(MOVE);
-        }
-        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-        for(let i = 0; i < spawnss.length; i++)
-        {
-            for(let o = 0; o < number; o++)
-            {
-                var q = spawnss[i].spawnCreep(bodyparts,
-                    'guardcavalry' + o + roomname,
-                    {
-                        memory:
-                        {
-                            role: 'guard',
-                            attackrole: "cavalry",
-                            memstruct:
-                            {
-                                spawnRoom: roomname,
-                                tasklist: [],
-                                objectIDStorage: "",
-                                boosted: false,
-                                moveToRenew: false,
-                                opportuniticRenew: false,
-                                hastask: false
-                            }
-                        }
-                    });
-            }
-        }
-    },
+   
     spawnBoostedattacker: function(roomname, number)
     {
         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
         var numberofparts = Math.floor((energyavailable - 550) / 80);
         var bodyparts = [];
-        if(numberofparts > 35)
+        if(numberofparts > 40)
         {
-            numberofparts = 35;
+            numberofparts = 40;
         }
-        for(let j = 0; j < 5; j++)
-        {
-            bodyparts.push(TOUGH);
-        }
+      
         for(let j = 0; j < numberofparts; j++)
         {
             bodyparts.push(ATTACK);
@@ -319,15 +248,15 @@ var defcon = {
         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
         var numberofparts = Math.floor((energyavailable - 500) / 150);
         var bodyparts = [];
-        if(numberofparts > 35)
+        if(numberofparts > 40)
         {
-            numberofparts = 35;
+            numberofparts = 40;
         }
         for(let j = 0; j < numberofparts; j++)
         {
             bodyparts.push(RANGED_ATTACK);
         }
-        for(let j = 0; j < 10; j++)
+        for(let j = 0; j < numberofparts; j++)
         {
             bodyparts.push(MOVE);
         }
@@ -337,7 +266,7 @@ var defcon = {
             for(let o = 0; o < number; o++)
             {
                 var q = spawnss[i].spawnCreep(bodyparts,
-                    'cavalry' + roomname + o,
+                    'archer' + roomname + o,
                     {
                         memory:
                         {

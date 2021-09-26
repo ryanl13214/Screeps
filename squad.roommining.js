@@ -10,11 +10,11 @@ var roommining = {
         {
             if(numberofguardingcreeps[0].memory.memstruct.tasklist == 0)
             {
-                console.log("moveToRoom");
+              //  console.log("moveToRoom");
                 numberofguardingcreeps[0].memory.memstruct.tasklist = [
-                    ["moveToRoom", mainMemoryObject.arrayOfSquadGoals[0]],
+                    ["forcemoveToRoom", mainMemoryObject.arrayOfSquadGoals[0]],
                     ["clearRoomPassive"],
-                    ["moveToRoom", mainMemoryObject.squadHomeRoom]
+                    ["forcemoveToRoom", mainMemoryObject.squadHomeRoom]
                 ];
             }
         }
@@ -48,6 +48,7 @@ var roommining = {
         {
             // combat
             var invaders = roomObj.find(FIND_HOSTILE_CREEPS);
+            
             var hostileStructs = roomObj.find(FIND_HOSTILE_STRUCTURES);
             if(invaders.length != 0 || hostileStructs.length != 0)
             {
@@ -55,7 +56,7 @@ var roommining = {
             }
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // reservation
-            if((roomObj.controller.reservation != undefined && roomObj.controller.reservation.ticksToEnd < 2000) || roomObj.controller.reservation == undefined || roomObj.controller.reservation.username != "Q13214")
+            if((roomObj.controller.reservation != undefined && roomObj.controller.reservation.ticksToEnd < 2000) || roomObj.controller.reservation == undefined  || roomObj.controller.owner == undefined|| roomObj.controller.reservation.username != "Q13214")
             {
                 // summon reserver
                 var energyavailable = Game.rooms[mainMemoryObject.squadHomeRoom].energyCapacityAvailable;
@@ -73,7 +74,7 @@ var roommining = {
                         {
                             spawnRoom: mainMemoryObject.squadHomeRoom,
                             tasklist: [
-                                ["moveToRoom", mainMemoryObject.arrayOfSquadGoals[0]],
+                                ["forcemoveToRoom", mainMemoryObject.arrayOfSquadGoals[0]],
                                 ["reserve"]
                             ],
                             objectIDStorage: "",
@@ -261,9 +262,10 @@ var roommining = {
                     if(creeper.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
                     {}
                 }
-                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                var range = creeper.pos.getRangeTo(targets);
-                if(range < 5)
+                var targets =  creepfunctions.getHostilesInRange(creep,5);
+                
+                 
+                if(targets.length != 0)
                 {
                     const targetArr = creeper.room.find(FIND_HOSTILE_CREEPS);
                     target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -279,7 +281,10 @@ var roommining = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.store.getUsedCapacity() != creeper.store.getCapacity() && creeper.room.name == mainMemoryObject.arrayOfSquadGoals[0]) // COLLECT RESOURCES
             {
-                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                
+                
+                
+                var targets =  creepfunctions.findCloseHostiles(creeper);
                 var containers = creeper.pos.findClosestByRange(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
@@ -308,7 +313,7 @@ var roommining = {
                         }
                     });
                 }
-                var targets = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+         
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.store.getUsedCapacity() > creeper.store.getCapacity() * 0.8 && creeper.room.name != mainMemoryObject.squadHomeRoom) //  // MOVE TO HOME
@@ -364,6 +369,23 @@ var roommining = {
                         }
                     });
                 }
+                
+                
+                
+                  var emptyEnstensions = creeper.pos.findInRange(FIND_STRUCTURES,1,
+                {
+                    filter: (structure) =>
+                    {
+                        return ((structure.structureType == STRUCTURE_EXTENSION) && structure.store.getFreeCapacity() > 0 );
+                    }
+                });
+                
+                if(emptyEnstensions.length > 0 && creeper.store.getUsedCapacity() > 200){
+                  var suc = creeper.transfer(emptyEnstensions[0], RESOURCE_ENERGY,emptyEnstensions[0].getFreeCapacity() );
+                }
+                
+                
+                
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if(creeper.store.getUsedCapacity() < 1 && creeper.room.name != mainMemoryObject.arrayOfSquadGoals[0]) // MOVE TO ROOM

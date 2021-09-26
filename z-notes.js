@@ -1,22 +1,170 @@
+ 
+       Game.market.changeOrderPrice('6113c2914e9e2a2f06a8749d', 1.95);
+        
+       Game.market.deal('6137f9387273f05a39b18e69', 50, "E24N3");
+      
+      
+      
+       
+                 var target = creep.room.find(FIND_HOSTILE_STRUCTURES,
+                 {
+                     filter: (structure) =>
+                     {
+                         return (structure.structureType == STRUCTURE_INVADER_CORE);
+                     }
+                 });
+                 if(target.length != 0 && target[0].level == 2)
+                 {
+                     Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(
+                        [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK]
+                        , 'stronglvl2' + creep.room.name,
+                         {
+                             memory:
+                             {
+                                 role: 'guard',
+                                 attackrole: "chasedown",
+                                 memstruct:
+                                 {
+                                     spawnRoom: creep.memory.memstruct.spawnRoom,
+                                     tasklist: [
+                                         ["createslaveBOOST"],
+                                         ["boosAllMax"],
+                                         ["forcemoveToRoom", creep.room.name]
+                                     ],
+                                     objectIDStorage: "",
+                                     boosted: false,
+                                     moveToRenew: false,
+                                     opportuniticRenew: true,
+                                     hastask: false
+                                 }
+                             }
+                         });
+                 }
+         
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      lvl 1 - 30,000  credits    cost  15k    single blinky 
+      lvl 2 - 220,000 credits       - cost  30k  Duo
+      lvl 3 - 1,359,000  credits- cost  30k      Duo
+      lvl 4 - 5,500,000 credits    - cost  120k    Quad
+      lvl 5 - 40,000,000 credits   - cost Lots    mutliple quads and power attack 
+      
+      
+      
+      
+      
+      
+      
+        Game.market.createOrder({
+    type: ORDER_SELL,
+    resourceType: "access_key",
+    price: 100000000,
+    totalAmount: 10,
+    roomName: "E24N3"   
+});      
+        
+        
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "power",
+    price: 25.00,
+    totalAmount: 150000,
+    roomName: "E24N3"   
+});
+       
+           
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "energy",
+    price: 3,
+    totalAmount: 100000,
+    roomName: "E24N3"   
+});      
+        
+        
+        
+        Game.market.createOrder({
+    type: ORDER_SELL,
+    resourceType: "pixel",
+    price: 10000,
+    totalAmount: 10000,
+    roomName: "E24N3"   
+});      
+        
+        
+       
+       
+       
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "power",
+    price: 20.00,
+    totalAmount: 50000,
+    roomName: "E28N5"   
+});      
+             
+             
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "metal",
+    price: 50.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
 
-todo
-ned toom moivers need to pickup resources first
 
-container mine center rooms 
-extract center rooms
+      
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "composite",
+    price: 20.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
+ 
+       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "power",
+    price: 20.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
 
-call claimer only when needed in next rooms 
 
-reserve controller creep function
-
-creep functions from task list into seperate functions 
-
-task manager for moving resources in =room 
-
-
-remo9ve roles in the system
-
-
+     
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "metal",
+    price: 55.00,
+    totalAmount: 50000,
+    roomName: "E24N3"   
+});
 
 
 
