@@ -2,6 +2,7 @@ var creepfunctions = require('prototype.creepfunctions');
 var coremining = require('squad.coremining');
 var roommining = require('squad.roommining');
 var quadsquad = require('squad.quad');
+var duosquad = require('squad.duo');
 var squadmanager = {
     run: function(squadID)
     {
@@ -15,17 +16,15 @@ var squadmanager = {
             }
         }
         mainMemoryObject.SquadMembersCurrent = numberOfLivingSqaudMembers;
-        
- 
-        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || (mainMemoryObject.squadType == "quad"  && mainMemoryObject.SquadMembersCurrent.length  ==0 && mainMemoryObject.squadisready) )
+        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || (mainMemoryObject.squadType == "quad" && mainMemoryObject.SquadMembersCurrent.length == 0 && mainMemoryObject.squadisready))
         {
-            console.log("deleting squad-",squadID);
+            console.log("deleting squad-", squadID);
             delete Memory.squadObject[squadID];
         }
         else
         {
             var squadMemberGoal = Object.values(mainMemoryObject.SquadMembersGoal);
-            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level ==8 ))
+            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level == 8))
             {
                 if(Memory.squadObject[Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning] == undefined)
                 {
@@ -37,42 +36,45 @@ var squadmanager = {
                 }
                 if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == squadID)
                 {
-                   if(mainMemoryObject.squadType == "quad"  && mainMemoryObject.squadisready == true){
-                       
-                   }
-                  else{ 
-                    this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
-                  }
+                    if(mainMemoryObject.squadType == "quad" && mainMemoryObject.squadisready == true)
+                    {
+                             Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+                    }
+                    
+                    
+                      if(mainMemoryObject.squadType == "duo" && mainMemoryObject.squadisready == true)
+                    {
+                             Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+                    }
+                    
+                    else
+                    {
+                        this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
+                    }
                 }
             }
-            
-            
-            
-            
-            
-            
-            
             else if(mainMemoryObject.SquadMembersCurrent.length == squadMemberGoal.length)
             {
                 mainMemoryObject.squadisready = true;
                 Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
             }
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(mainMemoryObject.squadisready) // group squads
+            /////////////////////////////////////Solid GroupSquads////////////////////////////////////////////////////////////////////  squads that only fuinctiuon with set numbers 
+         
+            if(mainMemoryObject.squadType == "quad" && (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready))
             {
-            
-            }  if(mainMemoryObject.squadType == "quad" &&  (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready) ) 
-                {
-                    quadsquad.run(squadID);
-                }
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////// 
+                quadsquad.run(squadID);
+            }
+            if(mainMemoryObject.squadType == "duo" && (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready))
+            {
+              duosquad.run(squadID);
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////// squads that can function with looser restrictions
             if(mainMemoryObject.SquadMembersCurrent.length != 0) //independant squads
             {
                 if(mainMemoryObject.squadType == "centerMiningSquad")
                 {
                     coremining.run(squadID);
                 }
-  
                 if(mainMemoryObject.squadType == "MiningSquad")
                 {
                     var startCpu = Game.cpu.getUsed();
@@ -83,15 +85,16 @@ var squadmanager = {
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
     },
-    initializeSquad: function(squadID, arrayOfSquadGoals, squadIsBoosted, squadType, squadHomeRoom, SquadMembers)
+    initializeSquad: function(squadID, arrayOfSquadGoals, squadIsBoosted, squadType, squadHomeRoom, SquadMembers, squadSubType)
     {
-        console.log("creating squad",squadID);
+        console.log("creating squad", squadID);
         Memory.squadObject[squadID] = {
             arrayOfSquadGoals: arrayOfSquadGoals,
             squadIsBoosted: squadIsBoosted,
             squadType: squadType,
             squadHomeRoom: squadHomeRoom,
             SquadMembersCurrent: [],
+            squadSubType: squadSubType,
             squadposition: [25, 25],
             SquadMembersGoal: SquadMembers,
             squadisready: false,
@@ -100,37 +103,23 @@ var squadmanager = {
         };
     },
     spawnnewcreep: function(squadID, squadHomeRoom)
-    { 
+    {console.log("spawnnewcreep", squadID);
         // add in function fpor broken squads to be reincorpirated
         var mainMemoryObject = Memory.squadObject[squadID];
         var tasklistt = [
             ["joinSquad", squadID]
         ];
         var mainflag = Game.flags[squadHomeRoom];
-       
-        
         if(mainMemoryObject.squadIsBoosted == true)
-        {  
-             
-            var temp =[];
-            
-                var waitUntil = Object.keys(mainMemoryObject.SquadMembersGoal);
-            
-            
+        {
+            var temp = [];
+            var waitUntil = Object.keys(mainMemoryObject.SquadMembersGoal);
             for(var c = 0; c < waitUntil.length; c++)
             {
-                
-               temp.push(waitUntil[c] + "-" + squadID); 
-                
+                temp.push(waitUntil[c] + "-" + squadID);
             }
- 
-           
-           
             tasklistt = [
-                
                 ["waitForCreepsToSpawn", temp],
-                
-                
                 ["renewfull"],
                 ["boosAllMax"],
                 ["moveToLoose", mainflag.pos.x - 7, mainflag.pos.y - 7],
@@ -143,7 +132,6 @@ var squadmanager = {
                 ["joinSquad", squadID]
             ];
         }
-        
         var mainflag = Game.flags[squadHomeRoom];
         // find the missing members 
         var memstruct = {
@@ -170,11 +158,10 @@ var squadmanager = {
         var total = 0;
         for(var i = 0; i < allspawns.length; i++)
         {
-             
             var curspawn = allspawns[i];
             for(var q = 0; q < names.length; q++)
             {
-                if(sucs3esscounter != 0 && Game.rooms[squadHomeRoom].storage.store.getUsedCapacity("energy") > 10000 || Game.rooms[squadHomeRoom].controller.level ==8 )
+                if(sucs3esscounter != 0 && Game.rooms[squadHomeRoom].storage.store.getUsedCapacity("energy") > 10000 || Game.rooms[squadHomeRoom].controller.level == 8)
                 {
                     sucs3esscounter = curspawn.spawnCreep(resourcevalues[q], names[q] + "-" + squadID,
                     {
@@ -185,8 +172,7 @@ var squadmanager = {
                             memstruct: memstruct
                         }
                     });
-                    
-//////////////////////////////////////////////////// resource tracking ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////// resource tracking ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     if(sucs3esscounter == 0 && (Memory.squadObject[squadID].squadType == "MiningSquad" || Memory.squadObject[squadID].squadType == "centerMiningSquad" || Memory.squadObject[squadID].squadType == "solocenterdamager"))
                     {
                         total = 0;
@@ -221,16 +207,13 @@ var squadmanager = {
                                 total += 10;
                             }
                         }
-                        
-                        
-                        if(Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost == undefined){
-                            Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost=0;
+                        if(Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost == undefined)
+                        {
+                            Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost = 0;
                         }
-                        
                         Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost += total;
                     }
-                    
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 }
             }
         }

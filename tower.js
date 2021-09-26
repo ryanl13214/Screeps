@@ -125,8 +125,7 @@
             {
                 damagePotential = damagePotential * 0.3;
             }
-      //      console.log("creeep heal capacity " + healcapacity + " damage " + damagePotential);
-           
+       
            
            
            if(allHosiles[i].pos.x< 3 ||   allHosiles[i].pos.x> 47 || allHosiles[i].pos.y< 3 ||   allHosiles[i].pos.y> 47 ){
@@ -135,11 +134,12 @@
                 //  console.log(healcapacity+" "+damagePotential);
            }
            
+              //   console.log("creeep heal capacity " + healcapacity + " damage " + damagePotential);
            
            
            
            
-            if(healcapacity < damagePotential * 1.1  || Game.rooms[roomname].controller.safeMode > 1 || allHosiles[i].body.length < 25)
+            if(healcapacity < damagePotential * 1.1   || allHosiles[i].body.length < 25)
             {
                 targetList.push(allHosiles[i]);
             }

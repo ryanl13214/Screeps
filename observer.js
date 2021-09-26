@@ -91,7 +91,7 @@ var obs = {
                     return (structure.structureType == STRUCTURE_INVADER_CORE);
                 }
             });
-            if(target.length != 0 && target[0].level ==0)
+            if(target.length != 0 && target[0].level ==10)
             {   
                 console.log("spawning lvl 0 stroingohlder ");
                 Game.spawns[roomname].spawnCreep(

@@ -144,12 +144,8 @@ module.exports.loop = function()
     const resourcevalues = Object.values(testingsquads);
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
-    {
-        //  try{
+    {   
         squadmanage.run(resourcekeys[i]);
-        //  }catch(e){
-        //       console.log( "squadmanage err",e);
-        //    }
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -175,7 +171,7 @@ module.exports.loop = function()
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var mainflag = Game.flags[roomname];
-        if(Game.time % 1500 == 0)
+        if(Game.time % 100 == 0)
         {
             mainflag.memory.flagstruct.squadspawning = "";
         }

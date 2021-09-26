@@ -81,9 +81,16 @@ var factoryManager = {
                     new RoomVisual(roomname).text('utrium_bar', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
                     globalBreak=true;
                 }
+                if(fact.store.getUsedCapacity('zynthium_bar') < 620  && globalBreak == false  && fact.store.getUsedCapacity('U') > 100 )
+                {
+                         fact.produce('utrium_bar');
+                    new RoomVisual(roomname).text('utrium_bar', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
+                    globalBreak=true;
+                }
                 if(fact.store.getUsedCapacity('switch') < 72  && fact.store.getUsedCapacity('wire') > 200  && globalBreak == false)
                 {
                     fact.produce('switch');
+                    //fact.produce('tube');
                     new RoomVisual(roomname).text('switch', fact.pos.x,fact.pos.y, {color: 'black', font: 0.3});  
                     globalBreak=true;
                 }
@@ -125,7 +132,7 @@ var factoryManager = {
             
         }
         ////////////////////////////////////////////////////////
-        if(fact.level == 2  && globalBreak == false )
+        if(fact.level == 2  && globalBreak == false  )
         {
                    
             var basic = ['fixtures', 'tissue', 'transistor', 'extract'];

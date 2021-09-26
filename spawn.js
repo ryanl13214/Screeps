@@ -154,6 +154,28 @@ var spwan = {
             {
                 moversneeded = 1;
             }
+             var twemp = Game.rooms[roomname].find(FIND_SOURCES);
+            
+            if(twemp.length ==2){
+                var harvestersneeded = 2;
+                
+            }
+              if(twemp.length ==1){
+                var harvestersneeded = 1;
+                 if(levelOfController < 6)
+            {
+                moversneeded = 1;
+            }
+            if(levelOfController == 6)
+            {
+                moversneeded = 1;
+            }
+            }
+             
+            
+            
+            
+            
             var multiplyrepairerrs = 1;
             var ups = 0;
           
@@ -178,14 +200,7 @@ var spwan = {
             
             
             
-            var twemp = Game.rooms[roomname].find(FIND_SOURCES);
             
-            if(twemp.length ==2){
-                var harvestersneeded = 2;
-            }
-              if(twemp.length ==1){
-                var harvestersneeded = 1;
-            }
             
             //    console.log(brokenspawnstructure);
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,20 +490,17 @@ var spwan = {
                             });
                         }
                     }
-                       else if(upgraders.length == 0  && harvesters.length != 0)  
+                       else if(upgraders.length == 0  && harvesters.length != 0 && repairers.length != 0)  
                     { 
                        
                      
                         var bodyparts = [];
                        
-                        if(levelOfController == 6 )
-                        {
-                            bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
-                        }
-                        if(levelOfController == 7  )
-                        {
-                            bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY];
-                        }
+                       
+                       
+                       
+                       
+                     
                         if(levelOfController < 3)
                         {
                             bodyparts = [MOVE, WORK, WORK, CARRY];
@@ -502,10 +514,42 @@ var spwan = {
                         {
                             bodyparts = [MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,CARRY,CARRY];
                         }
+                        
+                        var term = Game.rooms[roomname].terminal;
+                        
+                        
+                            if(levelOfController == 6 )
+                        {
+                            bodyparts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY];
+                         
+                         if(  term != undefined &&   term.store.getUsedCapacity("XGH2O") > 500 )
+                         {
+                               memstruct.tasklist.push(["boost", "XGH2O", 15]); 
+                         }
+                         
+                             
+                    
+                        }
+                        if(levelOfController == 7  )
+                        {
+                            bodyparts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY];
+                             
+                             
+                                if(term != undefined &&   term.store.getUsedCapacity("XGH2O") >900 )
+                         {
+                              memstruct.tasklist.push(["boost", "XGH2O", 25]);
+                         }
+                             
+                        }
                         if(levelOfController ==8)
                         {
                             bodyparts = [MOVE,MOVE,WORK,CARRY];
                         }
+                        
+                        
+                        
+                      //  memstruct.tasklist = [["booost", "GH2O", ]];
+                        
                         spawnss[i].spawnCreep(bodyparts, 'upgrader' + roomname+ Game.time,
                         {
                             memory:
@@ -636,7 +680,6 @@ var spwan = {
                             }
                         });
                     }
-                   
                     else if(repairers.length < 1 * multiplyrepairerrs )
                     {
                         var bodyparts = [];

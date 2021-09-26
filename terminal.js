@@ -179,7 +179,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                          if(transferAmou8nt > 5000){
                         transferAmou8nt=5000;
                          }
-                     if(transferAmou8nt > 5){
+                     if((transferAmou8nt > 5 && allCondensedResources[i][1] < 200) || (transferAmou8nt > 150 && allCondensedResources[i][1] > 200)){
                          console.log("transfer-",allCondensedResources[i][0],"--",transferAmou8nt);
                          terminalActual.send(allCondensedResources[i][0], transferAmou8nt,roominrange[j], '0');
                           return true;
@@ -218,15 +218,15 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
         run: function(roomname, terminalActual, defcon, storagevalue)
         {
             var allCondensedResources = [
-                ["XGHO2", 8000, 0.2],
-                ["XUH2O", 8000, 0.2],
-                ["XLH2O", 8000, 0.2],
-                ["XLHO2", 8000, 0.2],
-                ["XZH2O", 8000, 0.2],
-                ["XZHO2", 8000, 0.2],
-                ["XKHO2", 8000, 0.2],
-                ["KH2O", 4000, 0.2],
-                ["XUHO2", 2000, 0.2],
+                ["XGHO2", 8000, 0.6],
+                ["XUH2O", 8000, 0.6],
+                ["XLH2O", 8000, 0.6],
+                ["XLHO2", 8000, 0.6],
+                ["XZH2O", 8000, 0.6],
+                ["XZHO2", 8000, 0.6],
+                ["XKHO2", 8000, 0.6],
+                ["KH2O" , 4000, 0.6],
+                ["XGH2O" , 4000, 1.4],
                 ['ops', 3000, 0.4],
                 ["H", 7000, 0.2],
                 ["O", 7000, 0.2],
@@ -250,7 +250,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ['liquid', 7000, 0.4],
                 ["silicon", 5000, 0.4],
                 ['wire', 2000, 0.4],
-                ['switch', 30, 0.2],
+                ['switch', 5, 0.2],////////////////////////////////
                 ['transistor', 0, 0.1],
                 ['microchip', 0, 0.1],
                 ['circuit', 0, 0.1],
@@ -271,8 +271,8 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ["essence", 0, 0.2],
                 ["metal", 5000, 0.3],
                 ['alloy', 2000, 0.2],
-                ['tube', 30, 0.2],
-                ['fixtures', 30, 0.1],
+                ['tube', 5, 0.2],////////////////////////////////
+                ['fixtures', 5, 0.1],////////////////////////////////
                 ['frame', 0, 0.1],
                 ['hydraulics', 0, 0.1],
                 ["power", 5000, 0.2],
@@ -335,7 +335,10 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 }
                 
                 /////////////////////////////////////////////////////////////
-                
+                    if(terminalInUse == false)
+                {
+                    terminalInUse = this.buyItemsFromResourceList(roomname, allCondensedResources, terminalActual)
+                }
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 if(terminalInUse == false && Game.time % 30 ==0)
                 {
@@ -344,17 +347,14 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
                 if(terminalInUse == false)
                 {
-                    terminalInUse = this.sellItemsFromResourceList(roomname, allCondensedResources, terminalActual)
+                  terminalInUse = this.sellItemsFromResourceList(roomname, allCondensedResources, terminalActual)
                 }
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
+             
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
                 if(terminalInUse == false)
                 {
-                    terminalInUse = this.buyItemsFromResourceList(roomname, allCondensedResources, terminalActual)
-                }
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
-                if(terminalInUse == false)
-                {
-                    //     this.averageEnergy(roomname, allCondensedResources, terminalActual,roominrange)
+               //          this.averageEnergy(roomname, allCondensedResources, terminalActual,roominrange)
                 }
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
                

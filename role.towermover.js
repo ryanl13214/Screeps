@@ -46,6 +46,18 @@ var roletowermover = {
                 return (structure.structureType == STRUCTURE_SPAWN && structure.energy < 300);
             }
         });
+        if(lowEnergySpawns.length != 0){
+            if(lowEnergySpawns[0].store.getFreeCapacity() > creep.store.getUsedCapacity()){
+                var amt = creep.store.getUsedCapacity();
+            }else{
+                  var amt = lowEnergySpawns[0].store.getFreeCapacity();
+            }
+            creep.transfer(lowEnergySpawns[0], RESOURCE_ENERGY,amt);
+            
+        }
+        
+        
+        
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //  nukes 
             var link = creep.pos.findInRange(FIND_STRUCTURES, 2,

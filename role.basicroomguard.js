@@ -2,6 +2,44 @@ var creepfunctions = require('prototype.creepfunctions');
 var attackerCode = require('role.basicattacker');
 var roleguard = {
     /** @param {Creep} creep **/
+    
+    recycleboost: function(creep)
+    {
+    if(creep.ticksToLive < 60){
+        var mainflag = creep.room.storage
+        var targpos = new RoomPosition(mainflag.pos.x - 4 , mainflag.pos.y - 1,creep.room.name)
+        
+        if(targpos.x != creep.pos.x || targpos.y != creep.pos.y ){
+            creep.moveTo(targpos);
+        }else if(targpos.x == creep.pos.x && targpos.y == creep.pos.y)
+        {
+             var lab = creep.pos.findInRange(FIND_STRUCTURES, 1,
+             {
+                filter: (res) =>
+                {
+                    return (res.structureType == STRUCTURE_LAB && res.cooldown == 0 );
+                }
+            });
+            
+            if(lab.length != 0 ){
+                
+                 lab[0].unboostCreep(creep);
+              //   creep.suicide();
+            }else{
+           //     creep.suicide();
+            }
+            
+            
+            
+        }
+        
+        
+    }
+    
+    
+    },
+    
+    
     decideMassAttack: function(creep)
     {
         var enemiesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 1);
@@ -63,54 +101,34 @@ var roleguard = {
         }
         if(creep.store.getUsedCapacity() != 0 && creep.ticksToLive < 200)
         {
-            if(creep.memory.memstruct.spawnRoom != creep.room.name){
-                        
-                var temparr = [["forcemoveToRoom", creep.memory.memstruct.spawnRoom],["deposit"]];
-                
-                for(var i = 0 ; i < creep.memory.memstruct.tasklist.length ; i++)
+            if(creep.memory.memstruct.spawnRoom != creep.room.name)
+            {
+                var temparr = [
+                    ["forcemoveToRoom", creep.memory.memstruct.spawnRoom],
+                    ["deposit"]
+                ];
+                for(var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
                 {
                     temparr.push(creep.memory.memstruct.tasklist[i]);
                 }
                 creep.memory.memstruct.tasklist = temparr;
-                
-                
-                
             }
-            
-            
         }
-        
-         if(creep.store.getFreeCapacity() == 0)
+        if(creep.store.getFreeCapacity() == 0)
         {
-            if(creep.memory.memstruct.spawnRoom != creep.room.name){
-                
-                
-                
-             
-                
-                
-                var temparr = [["forcemoveToRoom", creep.memory.memstruct.spawnRoom],["deposit"]];
-                
-                for(var i = 0 ; i < creep.memory.memstruct.tasklist.length ; i++)
+            if(creep.memory.memstruct.spawnRoom != creep.room.name)
+            {
+                var temparr = [
+                    ["forcemoveToRoom", creep.memory.memstruct.spawnRoom],
+                    ["deposit"]
+                ];
+                for(var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
                 {
                     temparr.push(creep.memory.memstruct.tasklist[i]);
                 }
                 creep.memory.memstruct.tasklist = temparr;
-                
-                
-                
-                
-                
-                
-                 
             }
-            
-            
         }
-        
-        
-        
-   
     },
     checkRuins: function(creep)
     {
@@ -121,121 +139,96 @@ var roleguard = {
                 return (res.resourceType != RESOURCE_ENERGY);
             }
         });
-        
-        
-        
-          var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_TOWER);
-                        }
-                    });
-        
-              var   target2 = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_INVADER_CORE);
-                        }
-                    });
-        
-        
-        
-        
-        
-        if((resourcesPot.length != 0 && target == undefined) || (resourcesPot.length != 0 && target2 == undefined && creep.room.conroller == undefined))
+        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
         {
-          //  creepfunctions.summonHauler(creep.room.name, creep.memory.memstruct.spawnRoom);
-         
-        
-        
-                         Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(
-            [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
-                , 'powerspawnSupport2' + creep.name,
-                    {
-                            memory:
-                            {
-                                role: 'multi',
-                                memstruct:
-                                {
-                                    spawnRoom: creep.memory.memstruct.spawnRoom,
-                                    tasklist: [
-                                                       ["deposit"],
-                ["moveToRoom", creep.room.name],
-                ["gatherLooseResources"],
-                 ["gatherstoredResources"],
-                ["moveToRoom", creep.memory.memstruct.spawnRoom],
-                ["deposit"],
-                ["repeat",6]
-                                    ],
-                                    objectIDStorage: "",
-                                    boosted: false,
-                                    moveToRenew: false,
-                                    opportuniticRenew: false,
-                                    hastask: false
-                                }
-                            }
-                        }
-                    );}
-        
-    },
-    run: function(creep)
-    {
-        this.checkRuins(creep);
-         this.plunderCorridor(creep)
-        if(creepfunctions.checkglobaltasks(creep))
-        {
-            if(creep.memory.attackrole == "chasedown")
+            filter: (structure) =>
             {
-                var whitelist = ["slowmotionghost"]
-                var target =creepfunctions.getcombattagetsclosest(creep);
-           
-                    
-                    
-                if(target == undefined)
+                return (structure.structureType == STRUCTURE_TOWER);
+            }
+        });
+        var target2 = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_INVADER_CORE);
+            }
+        });
+        if((resourcesPot.length != 0 && target == undefined) || (resourcesPot.length != 0 && target2 == undefined && creep.room.controller == undefined))
+        {
+            //  creepfunctions.summonHauler(creep.room.name, creep.memory.memstruct.spawnRoom);
+            Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(
+                [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL], 'powerspawnSupport2' + creep.name,
                 {
-                    target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
+                    memory:
                     {
-                        filter:
+                        role: 'multi',
+                        memstruct:
                         {
-                            owner:
-                            {
-                                username: 'Invader'
-                            }
+                            spawnRoom: creep.memory.memstruct.spawnRoom,
+                            tasklist: [
+                                ["deposit"],
+                                ["moveToRoom", creep.room.name],
+                                ["gatherLooseResources"],
+                                ["gatherstoredResources"],
+                                ["moveToRoom", creep.memory.memstruct.spawnRoom],
+                                ["deposit"],
+                                ["repeat", 6]
+                            ],
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: false,
+                            hastask: false
                         }
-                    });
+                    }
                 }
+            );
+        }
+    },
+    chaseDown: function(creep)
+    {
+        
+        if(creep.memory.movementIsFree == undefined){
+            creep.memory.movementIsFree = true;
+        }
+        
+        
+        
+        var target = creepfunctions.getcombattagetsclosest(creep);
+        if(target == undefined)
+        {
+            target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
+            {
+                filter:
+                {
+                    owner:
+                    {
+                        username: 'Invader'
+                    }
+                }
+            });
+        }
+        //////////////// attack strucrtures 
+        if(target == undefined)
+        {
+            target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
+            {
+                filter: (structure) =>
+                {
+                    return (structure.structureType == STRUCTURE_INVADER_CORE || structure.structureType == STRUCTURE_TOWER);
+                }
+            });
+            if(target == undefined)
+            {
+                target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_TOWER);
+                    }
+                });
                 if(target == undefined)
                 {
-                    
-                    
-                    
-                    target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_INVADER_CORE || structure.structureType == STRUCTURE_TOWER);
-                        }
-                    });
-                    if(target == undefined)
-                {
-                    
-                    
-                    
-                    target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_TOWER);
-                        }
-                    });
-                    
-                        if(target == undefined)
-                {
-                    
-                    
-                    
                     target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
                     {
                         filter: (structure) =>
@@ -243,43 +236,59 @@ var roleguard = {
                             return (structure.structureType == STRUCTURE_RAMPART);
                         }
                     });
-                    
-                    
-                    
                 }
-                    
-                }
-                }
-                
-           
-                
-                
-                var range = creep.pos.getRangeTo(target);
-                if(range == 1)
-                {
-                    creep.moveTo(target);
-                    creep.rangedMassAttack();
-                    creep.attack(target);
-                }
-                else if(range < 4)
-                {
-                    if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
-                    {
-                        creep.heal(creep);
-                    }
-                    creep.moveTo(target);
-                    creep.rangedAttack(target);
-                }
-                else
-                {
-                    if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
-                    {
-                        creep.heal(creep);
-                    }
-                    creep.moveTo(target);
-                }
-                var range = creep.pos.getRangeTo(target);
-                creepfunctions.allowSlave(creep);
+            }
+        }
+        //////////////// 
+        var range = creep.pos.getRangeTo(target);
+        if(range == 1)
+        {
+            creep.rangedMassAttack();
+            creep.attack(target);
+        }
+        else if(range < 4)
+        {
+            if(creep.body.find(elem => elem.type === "heal") != undefined)// pre-heal
+            {
+                creep.heal(creep);
+            }
+            creep.rangedAttack(target);
+        }
+        else
+        {
+            if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
+            {
+                creep.heal(creep);
+            }
+        }
+      
+      
+       if(creep.memory.movementIsFree == true)
+       {
+            creep.moveTo(target);
+       }
+       else
+       {
+            var DuoPartner = Game.getObjectById(creep.memory.movementIsFree);
+            creep.moveTo(DuoPartner);
+            creep.memory.movementIsFree = true;
+       }
+      
+         
+      
+      
+      
+        creepfunctions.allowSlave(creep);
+    },
+    run: function(creep)
+    {
+        this.checkRuins(creep);
+        this.plunderCorridor(creep)
+        if(creepfunctions.checkglobaltasks(creep))
+        {
+            if(creep.memory.attackrole == "chasedown")
+            {
+                this.chaseDown(creep);
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -376,7 +385,7 @@ var roleguard = {
                 {
                     creep.rangedAttack(targets[0]);
                 }
-                else
+                else if(targets.length != 0)
                 {
                     creep.rangedMassAttack();
                 }
@@ -526,6 +535,10 @@ var roleguard = {
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
+        
+        this.recycleboost(creep);
+        
+        
     },
     ranger: function(creep)
     {

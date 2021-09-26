@@ -2,6 +2,9 @@ var creepfunctions = {
     //  :mover2-E28N5E29N5MiningSquad*[joinSquad,E28N5E29N5MiningSquad];$
     getcombattagets: function(creep)
     {
+        
+        
+        if(creep.body.length != 50){
         var targets = creep.room.find(FIND_HOSTILE_CREEPS,
         {
             filter: (targ) =>
@@ -13,10 +16,19 @@ var creepfunctions = {
                 );
             }
         });
+        }else{
+            var targets = creep.room.find(FIND_HOSTILE_CREEPS ); 
+        }
+        
+        
+        
+        
+        
         return targets;
     },
     getcombattagetsclosest: function(creep)
     {
+          if(creep.body.length != 50){
         var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
         {
             filter: (targ) =>
@@ -28,6 +40,13 @@ var creepfunctions = {
                 );
             }
         });
+        
+        
+          }else{
+            var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS ); 
+        }
+        
+        
         return targets;
     },
     
@@ -232,22 +251,7 @@ var creepfunctions = {
             return "a";
         }
     },
-    initializeSquad: function(squadID, arrayOfSquadGoals, squadIsBoosted, squadType, squadHomeRoom, SquadMembers)
-    {
-        console.log("creating squad");
-        Memory.squadObject[squadID] = {
-            arrayOfSquadGoals: arrayOfSquadGoals,
-            squadIsBoosted: squadIsBoosted,
-            squadType: squadType,
-            squadHomeRoom: squadHomeRoom,
-            SquadMembersCurrent: [],
-            squadposition: [25, 25],
-            SquadMembersGoal: SquadMembers,
-            squadisready: false,
-            squadcreationtime: Game.time,
-            squaddisolvetime: Game.time + 1500
-        };
-    },
+  
     combatMove: function(creep, avoidarray, avoidclosest) // check if creep has damage parts
     {
         let goals = _.map(avoidarray, function(host)
@@ -1495,7 +1499,7 @@ var creepfunctions = {
                     }
                 }
                 var boostID = boostlab.id;
-                console.log(boostlab);
+      
                 
                 if(creep.pos.x == flagmid.pos.x - 1 && creep.pos.y == flagmid.pos.y - 3)
                 {
@@ -1560,22 +1564,25 @@ var creepfunctions = {
                                 resmoveractual.say("fill2");
                                 if(resmoveractual != undefined)
                                 {
-                                    var tempa;
-                                    if(resmoveractual.room.terminal.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30)
-                                    {
-                                        tempa = resmoveractual.room.terminal.id;
-                                    }
-                                    else if(resmoveractual.room.storage.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30)
+                                    var tempa=resmoveractual.room.terminal.id;
+                                    if(resmoveractual.room.storage.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30)
                                     {
                                         tempa = resmoveractual.room.storage.id;
                                     }
                                     else
                                     {
-                                        this.loopTasks(creep); // todo add flag to stop spawning boost creeps
+                                     //   this.loopTasks(creep); // todo add flag to stop spawning boost creeps
                                     }
+                                    
+                                
+                                    
+                                    var transferAmount = (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1])  ;
+                                    
+                                    
+                                    
                                     resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", tempa, creep.memory.memstruct.tasklist[0][1], (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1])]);
-                                    resmoveractual.memory.memstruct.tasklist.push(["transfer", boostID, creep.memory.memstruct.tasklist[0][1], (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1])]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", tempa, creep.memory.memstruct.tasklist[0][1], transferAmount ]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["transfer", boostID, creep.memory.memstruct.tasklist[0][1], transferAmount ]);
                                     resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
                                 }
                             }
@@ -1898,15 +1905,7 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "createPatrolBetweenTwoRooms")
-            {
-                var a = creep.name;
-                this.initializeSquad(a, [creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2]], false, "SoloPatrol", creep.memory.memstruct.spawnRoom,
-                {
-                    a: []
-                });
-                this.loopTasks(creep);
-            }
+            
             else if(creep.memory.memstruct.tasklist[0][0] == "boosAllMax") // used only by combat will deal with dismantel attack heal ranged_attack tough and move only 
             {
                 var numberOfHealParts = 0;

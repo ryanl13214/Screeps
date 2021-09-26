@@ -629,7 +629,7 @@ var quadsquad = {
                     }
                 }
             }
-            if(tasklist[0][0] == "movetoRoom" || tasklist[0][0] == "moveToRoom")
+            if(tasklist[0][0] == "movetoRoom" || tasklist[0][0] == "moveToRoom"   ||  tasklist[0][0] == "forcemoveToRoom")
             {
                 if(Memory.squadObject[squadID].leader != undefined)
                 {
@@ -910,14 +910,31 @@ var quadsquad = {
         }
         for(var c = 0; c < all.length; c++)
         {
+           
+            
+            
             if(index != 99)
             {
+                 var range = all[c].pos.getRangeTo(all[index]);
+                
+                if(range> 1){
+                      all[c].rangedHeal(all[index]);
+                }else{
                 all[c].heal(all[index]);
+                }
+                
+                
             }
             else
             {
                 all[c].heal(all[c]);
             }
+            
+            
+            
+            
+            
+            
         }
     },
     DecideIfQuadIsVital: function(squadID)
@@ -986,7 +1003,7 @@ var quadsquad = {
         }
         // myArray.splice (all.indexOf('c'), 2);
         var cohesion = leader.pos.findInRange(FIND_MY_CREEPS, 3);
-        if(cohesion.length > 2 || Game.time % 5 != 0) // or squadClose to edge
+        if(cohesion.length > 2 || Game.time % 3 != 0   ) // or squadClose to edge
         {
             try
             {
@@ -1075,33 +1092,61 @@ var quadsquad = {
         {
             fatigueAll += all[c].fatigue;
         }
-        var moved=false;
+
+
+        
+         
+        
+        
+        
+        
+         
+        
+        
+        
+        
         if(fatigueAll == 0)
         {
-            for(var c = 0; c < all.length; c++)
+            
+            
+            
+             for(var c = 0; c < all.length; c++)
             {
-                for(var c2 = 0; c2 < all.length; c2++)
+               if(all[c].body.find(elem => elem.type === "heal") == undefined)
                 {
-                    if(all[c].pos.x != all[c2].pos.x && all[c].pos.y != all[c2].pos.y)
+                   for(var a = 0; a < all.length; a++)
                     {
-                        var a1 =this.calculateDamage(all[c]);
-                        var a2 =this.calculateDamage(all[c2]);
-                        
-                        
-                        
-                        if( a1 > a2 && (a1  !=0 || a2  !=0) )
-                        {
-                            if(all[c].id == leader.id)
-                            {
-                                Memory.squadObject[squadID].leader = all[c].id;
-                            }
-                            moved=true;
-                           all[c2].moveTo(all[c]);
-                           all[c].moveTo(all[c2]);
+                    var tempClosest = all[a].pos.findInRange(FIND_HOSTILE_STRUCTURES,3)
+                    
+                        if(tempClosest.length == 0 ){
+                                tempClosest = all[a].pos.findInRange(FIND_HOSTILE_CREEPS,3)
                         }
+                        
+                        
+                          var tempClosest2 = all[c].pos.findInRange(FIND_HOSTILE_STRUCTURES,3)
+                    
+                        if(tempClosest.length == 0 ){
+                                tempClosest2 = all[c].pos.findInRange(FIND_HOSTILE_CREEPS,3)
+                        }
+                        
+                        
+                        if(tempClosest2.length == 0 && tempClosest.length != 0 ){
+                            all[a].moveTo(all[c])
+                              all[c].moveTo(all[a])
+                        }
+                        
+                        
+                        
                     }
+                  
                 }
+              
+              
+              
             }
+            
+            
+             
         }
         
         
