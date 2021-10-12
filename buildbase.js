@@ -86,7 +86,7 @@
      [-1, 3],
      [-1, 2],
      [-2, 1],
-     [1, -2],
+     [2, -2],
      [1, -3],
      [0, -3],
      [0, -4],
@@ -271,18 +271,7 @@
              Game.rooms[roomname].createConstructionSite(temp.x, temp.y, STRUCTURE_EXTRACTOR);
              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
              var flgmain1 = Game.flags[roomname];
-             if(Game.rooms[roomname].controller.level > 6 && flgmain1.memory.flagstruct.claimedroomstuct.roomIsStronghold == true)
-             {
-                 for(var i = 0; i < core.length; i++)
-                 {
-                     try
-                     {
-                         //                     Game.rooms[roomname].createConstructionSite(storage_xpos + core[i][0], storage_ypos + core[i][1], STRUCTURE_RAMPART);////////core
-                     }
-                     catch (e)
-                     {}
-                 }
-             }
+           
              ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
              var flag1 = Game.flags[roomname + "container1"];
              var flag0 = Game.flags[roomname + "container0"];
@@ -328,76 +317,60 @@
              {
                  if(i % 3 == 0)
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos - i) + 9, (storage_ypos) - 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 10)
-                     {
+                    
                          Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos - 9, STRUCTURE_RAMPART);
-                     }
+                     
                  }
                  else
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos - i) + 9, (storage_ypos) - 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 10)
-                     {
+                      
                          Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos - 9, STRUCTURE_WALL);
-                     }
+                     
                  }
              }
              for(var i = 0; i < 18; i++)
              {
                  if(i % 3 == 0)
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos - i) + 9, (storage_ypos) + 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 10)
-                     {
+                      
                          Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos + 9, STRUCTURE_RAMPART);
-                     }
+                    
                  }
                  else
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos - i) + 9, (storage_ypos) + 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 10)
-                     {
+                    
                          Game.rooms[roomname].createConstructionSite((storage_xpos - i) + 9, storage_ypos + 9, STRUCTURE_WALL);
-                     }
+                     
                  }
              }
              for(var i = 0; i < 18; i++)
              {
                  if(i % 3 == 0)
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos) + 9, (storage_ypos - i) + 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 10)
-                     {
+                   
                          Game.rooms[roomname].createConstructionSite((storage_xpos) + 9, (storage_ypos - i) + 9, STRUCTURE_RAMPART);
-                     }
+                     
                  }
                  else
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos) + 9, (storage_ypos - i) + 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 10)
-                     {
+                     
                          Game.rooms[roomname].createConstructionSite((storage_xpos) + 9, (storage_ypos - i) + 9, STRUCTURE_WALL);
-                     }
+                
                  }
              }
              for(var i = 0; i < 19; i++)
              {
                  if(i % 3 == 0)
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos) - 9, (storage_ypos - i) + 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 9)
-                     {
+                     
                          Game.rooms[roomname].createConstructionSite((storage_xpos) - 9, (storage_ypos - i) + 9, STRUCTURE_RAMPART);
-                     }
+                     
                  }
                  else
                  {
-                     var pathDistance = Game.rooms[roomname].room.findPath(new RoomPosition((storage_xpos) - 9, (storage_ypos - i) + 9, roomname), new RoomPosition(storage_xpos, storage_ypos, roomname)).length;
-                     if(pathDistance < 9)
-                     {
+                   
                          Game.rooms[roomname].createConstructionSite((storage_xpos) - 9, (storage_ypos - i) + 9, STRUCTURE_WALL);
-                     }
+                     
                  }
              }
             }

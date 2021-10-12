@@ -7,6 +7,18 @@ var squadmanager = {
     run: function(squadID)
     {
         var mainMemoryObject = Memory.squadObject[squadID];
+      
+      try{
+        if(Memory.squadObject[Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning] == undefined)
+                {
+                    Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+                }
+      }catch(e){
+          // squad setup wrong
+             delete Memory.squadObject[squadID];
+      }      
+                
+                
         var numberOfLivingSqaudMembers = [];
         for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
         {
@@ -16,7 +28,7 @@ var squadmanager = {
             }
         }
         mainMemoryObject.SquadMembersCurrent = numberOfLivingSqaudMembers;
-        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || (mainMemoryObject.squadType == "quad" && mainMemoryObject.SquadMembersCurrent.length == 0 && mainMemoryObject.squadisready))
+        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || ( (  mainMemoryObject.squadType == "duo"   ||  mainMemoryObject.squadType == "quad"  ) && mainMemoryObject.SquadMembersCurrent.length == 0 && mainMemoryObject.squadisready))
         {
             console.log("deleting squad-", squadID);
             delete Memory.squadObject[squadID];
@@ -26,10 +38,7 @@ var squadmanager = {
             var squadMemberGoal = Object.values(mainMemoryObject.SquadMembersGoal);
             if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level == 8))
             {
-                if(Memory.squadObject[Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning] == undefined)
-                {
-                    Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
-                }
+                 
                 if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
                 {
                     Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = squadID;
@@ -42,7 +51,7 @@ var squadmanager = {
                     }
                     
                     
-                      if(mainMemoryObject.squadType == "duo" && mainMemoryObject.squadisready == true)
+                 else     if(mainMemoryObject.squadType == "duo" && mainMemoryObject.squadisready == true)
                     {
                              Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
                     }
@@ -103,7 +112,8 @@ var squadmanager = {
         };
     },
     spawnnewcreep: function(squadID, squadHomeRoom)
-    {console.log("spawnnewcreep", squadID);
+    {
+        
         // add in function fpor broken squads to be reincorpirated
         var mainMemoryObject = Memory.squadObject[squadID];
         var tasklistt = [

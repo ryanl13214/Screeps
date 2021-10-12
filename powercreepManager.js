@@ -589,12 +589,117 @@ if(targets.length > 0) {
                     var powerList = powerCreep.powers;
                     var powerkeys = Object.keys(powerList);
                     var powervalues = Object.values(powerList);
-                    var creepid = powerCreep.name.substring(0, 6);
+                    var creepid = powerCreep.name.substring(0, 7);
+                    
+                    if( powerCreep.name == "defender1"){
+                        this.defence(powerCreep);
+                    }else{
                     this.roomManager(powerCreep); // add limiters on when it should run check defcon and game time to operate only when needed
+                    }
+                    
                 }
             }
         }
     },
+    
+    
+      defence: function(powerCreep)
+    { 
+        var mainflag = Game.flags[powerCreep.room.name];
+            if(Game.time % 50 == 0)
+        {
+            powerCreep.usePower(PWR_GENERATE_OPS);
+        }
+        
+        
+                if(powerCreep.store.getFreeCapacity() < 5) // creep is full
+        {
+            var range = powerCreep.pos.getRangeTo(powerCreep.room.storage);
+            if(range > 1)
+            {
+                powerCreep.moveTo(powerCreep.room.storage,
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ff0000'
+                    }
+                });
+            }
+            else
+            {
+                powerCreep.transfer(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getUsedCapacity("ops"));
+            }
+        }
+        else
+        {
+            var mainflag = Game.flags[powerCreep.room.name];
+            var range = powerCreep.pos.getRangeTo(new RoomPosition(mainflag.pos.x - 1, mainflag.pos.y + 1, mainflag.room.name));
+            if(range > 0)
+            {
+                powerCreep.moveTo(new RoomPosition(mainflag.pos.x  -  1 , mainflag.pos.y + 1, mainflag.room.name),
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ff0000'
+                    }
+                });
+            }
+        }
+      var enBodyparts=  mainflag.memory.totalEnemyBodyParts ;
+        
+        
+          if(powerCreep.powers[PWR_OPERATE_TOWER] != undefined && powerCreep.powers[PWR_OPERATE_EXTENSION].cooldown <1 && enBodyparts > 49)
+            {
+        
+        
+        
+         if(powerCreep.store.getUsedCapacity("ops") > 110) // creep is full
+                {
+                    var towers = powerCreep.room.find(FIND_MY_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_TOWER);
+                        }
+                    });
+                    for(var i = 0 ; i < towers.length ; i++){
+                    if(towers[i].effects == undefined || towers[i].effects.length == 0) ///////////////////////////////////////////////
+                    {
+                        powerCreep.usePower(PWR_OPERATE_TOWER, towers[i]);
+                    }
+                }
+        
+                }
+        
+            }
+        
+        
+        
+        
+        
+        
+        
+     if(powerCreep.store.getUsedCapacity("ops") < 210 && powerCreep.room.storage.store.getUsedCapacity("ops") > 5000) // todo add in capacity check
+                {
+                    if(powerCreep.withdraw(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getFreeCapacity() / 2) == ERR_NOT_IN_RANGE)
+                    {
+                        powerCreep.moveTo(powerCreep.room.storage);
+                        powerCreep.say("wit storage");
+                    }
+                }
+                
+                
+                
+                
+                
+                
+                
+    
+    },
+    
+    
+    
+    
     roomManager: function(powerCreep)
     {
         ////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////
@@ -940,7 +1045,7 @@ if(targets.length > 0) {
                         powerCreep.usePower(PWR_OPERATE_SPAWN, Spawns);
                     }
                 }
-                else if(powerCreep.store.getUsedCapacity("ops") < 210 && powerCreep.room.storage.store.getUsedCapacity("ops") > 5000) // todo add in capacity check
+              if(powerCreep.store.getUsedCapacity("ops") < 210 && powerCreep.room.storage.store.getUsedCapacity("ops") > 5000) // todo add in capacity check
                 {
                     if(powerCreep.withdraw(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getFreeCapacity() / 2) == ERR_NOT_IN_RANGE)
                     {

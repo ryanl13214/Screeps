@@ -104,12 +104,6 @@ var roleresourcemover = {
                 creep.memory.memstruct.tasklist.push(["deposit"]);
                 creep.memory.memstruct.tasklist.push(["withdraw", creep.room.terminal.id, "energy", 300 - spawnss[0].store.getUsedCapacity("energy")]);
                 creep.memory.memstruct.tasklist.push(["transfer", spawnss[0].id, "energy"]);
-                
-                     //  new RoomVisual(creep.room.name).line(targ.pos.x,targ.pos.y,creep.pos.x,creep.pos.y);
-                 //    new RoomVisual(creep.room.name).text(creep.memory.memstruct.tasklist[0][2],creep.pos.x,creep.pos.y, {color: 'green', font: 0.3}); 
-                    
-                
-                
             }
             var link = creep.pos.findInRange(FIND_STRUCTURES, 1,
             {
@@ -123,7 +117,238 @@ var roleresourcemover = {
                     creep.memory.memstruct.tasklist.push(["transfer", creep.room.storage.id, "energy"]);
                 }
             }
+            
+            
+                 if( creep.memory.memstruct.tasklist.length ==0 )
+                {
+                    this.storagea(creep);
+                }
+            
         }
+        
+        
+        
+        
+        
+        
+    },
+    
+    
+    
+      simpleVisualiser: function(roomname,topos,frompos,textActual,number)
+    {
+     
+    
+          new RoomVisual(roomname).line(topos.x,topos.y,frompos.x,frompos.y);
+                    new RoomVisual(roomname).text(textActual + number, frompos.x,frompos.y, {color: 'red', font: 0.8}); 
+    
+    },
+    storagea: function(creep)
+    {       
+        creep.say("storage");
+        var roomname = creep.room.name;
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "XLH2O" ,"XKH2O","G","OH","UH","LH","ZH","KH","GH","KO","LO","GO","ZO","GHO2","UH2O" ,"LH2O","LHO2","ZH2O","ZHO2","KHO2","KH2O","GH2O","H", "O", "U", "L", "Z","X"];
+        var allValues = [20000, 20000, 20000, 20000, 20000, 20000, 20000,5000,5000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,5000,5000,5000,5000,5000,5000];
+    
+   
+   
+        
+        
+        if(Game.rooms[roomname].controller.isPowerEnabled)
+        {
+            allResources.push("ops");
+            allValues.push(100000);
+        }
+        else
+        {
+            allResources.push("ops");
+            allValues.push(0);
+        }
+        
+        var termin = Game.rooms[roomname].terminal;
+        var strg = Game.rooms[roomname].storage;
+
+        
+        var termianlCurrEnergy = termin.store.getUsedCapacity(RESOURCE_ENERGY);
+        var storagegialenergy = 0;
+        if(termianlCurrEnergy < 50000)
+        {
+            storagegialenergy = termianlCurrEnergy * 10;
+        }
+        else
+        {
+            storagegialenergy = 500000;
+        }
+        
+        allResources.push("energy");
+        allValues.push(storagegialenergy);
+        
+        // emptystorage
+        var allspawns = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        if(allspawns.length == 0)
+        {
+            for(var i = 0; i < allValues.length; i++)
+            {
+                allValues[i] = 0;
+            }
+        }
+        
+        
+        
+          
+
+    // get the resources from therminal
+ 
+    
+    
+        for(var i = 0; i < allResources.length; i++)
+        { 
+            var currentTerminalValue = termin.store.getUsedCapacity(allResources[i]);
+            var currentStorageValue = strg.store.getUsedCapacity(allResources[i]);  
+       
+            if(currentStorageValue < allValues[i] && currentTerminalValue > 0)
+            {
+                
+                var moveAmount = 0;
+                
+                moveAmount = allValues[i] - currentStorageValue;
+                if(moveAmount > currentTerminalValue)
+                {
+                    moveAmount = currentTerminalValue;
+                }
+                if( creep.memory.memstruct.tasklist.length ==0  && (allResources[i] != "energy" || moveAmount > 1000 ))
+                {
+                    creep.memory.memstruct.tasklist.push(["deposit"]);
+                    creep.memory.memstruct.tasklist.push(["withdraw", termin.id, allResources[i],   moveAmount]);
+                    creep.memory.memstruct.tasklist.push(["transfer", strg.id, allResources[i]]); 
+                }
+            }
+            
+            
+          
+          
+        }
+    
+    
+    
+    
+    
+    
+    /////////////////////////////////////
+    // return anyt resources not in the list 
+    
+        var tmpresourcekeys = Object.keys(strg.store);
+        var tmpresourcevalues = Object.values(strg.store);
+        
+ for(var i = 0; i < tmpresourcekeys.length; i++)
+        { 
+        
+        var itemInList = false;
+                for(q = 0; q < allResources.length; q++)
+                {
+                    if(tmpresourcekeys[i] == allResources[q] ){
+                       itemInList = true; 
+                    }
+                 
+                }
+     
+    
+            if(itemInList == false){
+                  var moveAmount = tmpresourcevalues;
+                
+               if(moveAmount > creep.store.getCapacity()){
+                   moveAmount =  creep.store.getCapacity();
+               } 
+         
+         
+         
+         
+         
+         
+                   if( creep.memory.memstruct.tasklist.length ==0   && (allResources[i] != "energy" || moveAmount > 1000 ))
+                {
+                    creep.say(tmpresourcekeys[i]);
+                    creep.memory.memstruct.tasklist.push(["deposit"]);
+                    creep.memory.memstruct.tasklist.push(["withdraw", strg.id, tmpresourcekeys[i],   moveAmount]);
+                    creep.memory.memstruct.tasklist.push(["transfer", termin.id, tmpresourcekeys[i]]); 
+                }
+                
+                
+            }
+            
+            
+           
+            
+        }
+           
+    
+    ///////////////////////////////////////////////////
+    // return any overflow resources 
+
+
+   
+    
+        for(var i = 0; i < allResources.length; i++)
+        { 
+            var currentTerminalValue = termin.store.getUsedCapacity(allResources[i]);
+            var currentStorageValue = strg.store.getUsedCapacity(allResources[i]);  
+       
+            if(currentStorageValue > allValues[i]  )
+            {
+                
+                var moveAmount = 0;
+                
+                moveAmount =  currentStorageValue - allValues[i];
+              
+                if( creep.memory.memstruct.tasklist.length ==0   && (allResources[i] != "energy" || moveAmount > 1000 ) )
+                {
+                    creep.say("R",allResources[i]);
+                    creep.memory.memstruct.tasklist.push(["deposit"]);
+                    creep.memory.memstruct.tasklist.push(["withdraw", strg.id, allResources[i],   moveAmount]);
+                    creep.memory.memstruct.tasklist.push(["transfer", termin.id, allResources[i]]); 
+                }
+            }
+            
+            
+          
+          
+        }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+       
+       
+       
     }
+    
+    
+    
 };
 module.exports = roleresourcemover;

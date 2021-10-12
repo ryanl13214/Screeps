@@ -5,10 +5,10 @@ var tower = require('tower');
 var defcon = require('defcon');
 var terminalManager = require('terminal');
 var factoryManager = require('factory');
-var storageManager = require('storage');
 var pwrspawnManager = require('powerspawn');
 var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
+var labs = require('labs');
 var visuals = require('visuals');
 var powerManager = require('powercreepManager');
 var tickcode = require('tickcode');
@@ -47,14 +47,7 @@ module.exports.loop = function()
     var listvalues = Object.values(powerCreepList);
     for(var i = 0; i < listnumbers.length; i++)
     {
-        try
-        {
-            powerManager.run(listvalues[i]);
-        }
-        catch (e)
-        {
-            console.log("pwer err", e);
-        }
+        powerManager.run(listvalues[i]);
     }
     var powerManager_cpu_used = Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -144,7 +137,7 @@ module.exports.loop = function()
     const resourcevalues = Object.values(testingsquads);
     const resourcekeys = Object.keys(testingsquads);
     for(var i = 0; i < resourcekeys.length; i++)
-    {   
+    {
         squadmanage.run(resourcekeys[i]);
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
@@ -171,7 +164,7 @@ module.exports.loop = function()
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var mainflag = Game.flags[roomname];
-        if(Game.time % 100 == 0)
+        if(Game.time % 50 == 0)
         {
             mainflag.memory.flagstruct.squadspawning = "";
         }
@@ -226,19 +219,7 @@ module.exports.loop = function()
                 defenceLevel: 10,
                 attackLevel: 10
             };
-            //
-            try
-            {
-                defconlevel = defcon.run(roomname, creepsInRoom);
-            }
-            catch (e)
-            {
-                console.log("defconbroke-", roomname);
-                var defconlevel = {
-                    defenceLevel: 10,
-                    attackLevel: 10
-                };
-            }
+            defconlevel = defcon.run(roomname, creepsInRoom);
         }
         else
         {
@@ -318,6 +299,17 @@ module.exports.loop = function()
             Memory.cpuUsage.towers += tower_cpu_used;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                            labs
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        if(Game.rooms[roomname].controller.level > 6){
+            labs.run(roomname);
+        }
+        
+        
+        
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
@@ -330,13 +322,6 @@ module.exports.loop = function()
             {
                 Memory.cpuUsage.terminals += Terminal_cpu_used;
             }
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                       storageManager
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.time % (15) < 2)
-        {
-            storageManager.run(roomname);
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            nuker 
@@ -437,7 +422,7 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       pwrspawnManager
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-        const pwrspawn = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
+        var pwrspawn = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
         {
             filter:
             {
@@ -449,56 +434,42 @@ module.exports.loop = function()
         {
             g = 1;
         }
-        if(Game.rooms[roomname].terminal != undefined && Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 600000 && pwrspawn.length != 0 && Game.time % (g) == 0)
+        if(pwrspawn.length != 0){
+        if(Game.rooms[roomname].terminal   && Game.rooms[roomname].storage   && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 600000 && pwrspawn.length != 0 && Game.time % (g) == 0  )
         {
             pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
-        }
-       
+        }}
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.rooms[roomname].controller.level > 3)
         {
-            try
+            var mainflags = Game.flags[roomname];
+            var flag1 = Game.flags[roomname + "container1"];
+            var flag0 = Game.flags[roomname + "container0"];
+            var controllerflag = Game.flags[roomname + "controllerposcontainer"];
+            var startCpu = Game.cpu.getUsed();
+            var linkto = mainflags.pos.findInRange(FIND_STRUCTURES, 2,
             {
-                var mainflags = Game.flags[roomname];
-                var flag1 = Game.flags[roomname + "container1"];
-                var flag0 = Game.flags[roomname + "container0"];
-                var controllerflag = Game.flags[roomname + "controllerposcontainer"];
-                var startCpu = Game.cpu.getUsed();
-                var linkto = mainflags.pos.findInRange(FIND_STRUCTURES, 2,
+                filter: (structure) =>
                 {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_LINK);
-                    }
-                });
-                var controllerlink = controllerflag.pos.findInRange(FIND_STRUCTURES, 1,
+                    return (structure.structureType == STRUCTURE_LINK);
+                }
+            });
+            var controllerlink = controllerflag.pos.findInRange(FIND_STRUCTURES, 1,
+            {
+                filter: (structure) =>
                 {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_LINK);
-                    }
-                });
+                    return (structure.structureType == STRUCTURE_LINK);
+                }
+            });
+            if(flag1)
+            {
                 var harvesterlink0 = flag1.pos.findInRange(FIND_STRUCTURES, 1,
                 {
                     filter: (structure) =>
                     {
                         return (structure.structureType == STRUCTURE_LINK);
-                    }
-                });
-                var harvesterlink1 = flag0.pos.findInRange(FIND_STRUCTURES, 1,
-                {
-                    filter: (structure) =>
-                    {
-                        return (structure.structureType == STRUCTURE_LINK);
-                    }
-                });
-                var links = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
-                {
-                    filter:
-                    {
-                        structureType: STRUCTURE_LINK
                     }
                 });
                 if(harvesterlink0[0] != undefined && harvesterlink0[0].store.getUsedCapacity("energy") > 300)
@@ -512,6 +483,16 @@ module.exports.loop = function()
                         harvesterlink0[0].transferEnergy(linkto[0]);
                     }
                 }
+            }
+            if(flag0)
+            {
+                var harvesterlink1 = flag0.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_LINK);
+                    }
+                });
                 if(harvesterlink1[0] != undefined && harvesterlink1[0].store.getUsedCapacity("energy") > 300)
                 {
                     if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
@@ -523,6 +504,16 @@ module.exports.loop = function()
                         harvesterlink1[0].transferEnergy(linkto[0]);
                     }
                 }
+            }
+            var links = Game.rooms[roomname].find(FIND_MY_STRUCTURES,
+            {
+                filter:
+                {
+                    structureType: STRUCTURE_LINK
+                }
+            });
+            if(linkto.length != 0)
+            {
                 for(var o = 0; o < links.length; o++)
                 {
                     if(links[o].store.getUsedCapacity("energy") > 0 && linkto[0].store.getUsedCapacity("energy") == 0)
@@ -537,10 +528,8 @@ module.exports.loop = function()
                         }
                     }
                 }
-                var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
             }
-            catch (e)
-            {}
+            var Link_cpu_used = +Game.cpu.getUsed() - startCpu;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

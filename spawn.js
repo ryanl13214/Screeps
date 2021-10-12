@@ -61,10 +61,11 @@ var spwan = {
         {
             if(Game.spawns[roomname + "2"].spawning)
             {
-                Game.spawns[roomname + "2"].spawning.setDirections([TOP_LEFT, BOTTOM_RIGHT]);
+                Game.spawns[roomname + "2"].spawning.setDirections([TOP_LEFT, BOTTOM_RIGHT,RIGHT]);
             }
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+           var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         for(var i = 0; i < spawnss.length; i++)
         {
@@ -76,7 +77,7 @@ var spwan = {
                     return (creep.memory.memstruct.boosted == false && (creep.memory.memstruct.opportuniticRenew == true || creep.memory.memstruct.moveToRenew == true) && creep.ticksToLive < 1480);
                 }
             });
-            if(ajacentcreepstorenew.length != 0 && storagevalue != 0)
+            if(ajacentcreepstorenew.length != 0 && storagevalue != 0 && energyavailable > 1000)
             {
                 spawnss[i].renewCreep(ajacentcreepstorenew[0]);
             }
@@ -85,7 +86,7 @@ var spwan = {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         if(Game.time % 30 == 0   || levelOfController < 4)
         {
-            var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
+   
             var energycurrentlyavailable = Game.rooms[roomname].energyAvailable;
             var repairers = _.filter(creepsinroom, (creep) => creep.memory.role == 'repair');
             var towermover = _.filter(creepsinroom, (creep) => creep.memory.role == 'towermover');
@@ -205,7 +206,7 @@ var spwan = {
             //    console.log(brokenspawnstructure);
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////low energy management/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if(spawnmain != undefined &&(Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000) && movers.length == 0 && moveralt.length < 2 && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500))
+            if(spawnmain != undefined &&(Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000) && movers.length == 0 && moveralt.length < 2 &&  energycurrentlyavailable < 3500 )
             {
                 
                 
@@ -227,7 +228,7 @@ var spwan = {
                 {
                     memory:
                     {
-                        role: 'mover',
+                        role: 'moveralt',
                         cpuUsed: 0,
                         roomtarg: roomname,
                         target: "a",
@@ -236,9 +237,9 @@ var spwan = {
                     }
                 });
             }
-            else if( spawnmain != undefined && (  (Game.rooms[roomname].storage == undefined || Game.rooms[roomname].storage.store.getUsedCapacity("energy") < 10000) && ((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1) && (energycurrentlyavailable != energyavailable && energycurrentlyavailable < 3500) || brokenspawnstructure ||levelOfController < 4))
+            else if(  spawnmain != undefined && ( levelOfController < 4 || (((movers.length == 0 && moveralt.length < 2) || harvesters.length < 1)    ) || energyavailable < 500))
             {
-                
+          
                 spawnmain.spawnCreep([MOVE, MOVE, CARRY, CARRY], 'moverMIN' + roomname,
                 {
                     memory:

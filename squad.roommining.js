@@ -5,7 +5,7 @@ var roommining = {
         var mainMemoryObject = Memory.squadObject[squadID];
         var roomObj = Game.rooms[mainMemoryObject.squadHomeRoom];
         var myCreeps = roomObj.find(FIND_MY_CREEPS);
-        var numberofguardingcreeps = _.filter(myCreeps, (creep) => creep.memory.role == 'guard');
+        var numberofguardingcreeps = _.filter(myCreeps, (creep) => creep.memory.role == 'guard' && creep.memory.attackrole == "chasedown");
         if(numberofguardingcreeps.length != 0) // todo and home room is not under attack
         {
             if(numberofguardingcreeps[0].memory.memstruct.tasklist == 0)

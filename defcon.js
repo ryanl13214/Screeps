@@ -3,11 +3,90 @@ var squadmanage = require('squadManager');
 var defcon = {
     run: function(roomname, creepsinroom)
     {
-        var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
         var defconstuct = {
             defenceLevel: 10,
             attackLevel: 10
         };
+        
+        
+        
+        
+        
+        
+           var numberofpartsHARVESTER = Math.floor((Game.rooms[roomname].energyCapacityAvailable - 600) / 100);
+           var fullbody=[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY]
+                        if(numberofpartsHARVESTER > 38)
+                    {
+                        numberofpartsHARVESTER = 38;
+                    }
+                       for(let j = 0; j < numberofpartsHARVESTER; j++)
+                    {
+                        fullbody.push(WORK);
+                    }
+                
+                
+        
+        
+        
+        
+        
+    
+        
+        
+         
+         for(let q = 0; q < 5; q++)
+            {
+      
+             var flagsMain = Game.flags[roomname + "Rep"+q]
+               
+        
+        
+             
+        
+        var tasklistarr = [
+                                    ["boost", "XLH2O", numberofpartsHARVESTER],
+                                    ["moveToflag", roomname + "Rep"+q],
+                                    ["holdrepair"]
+                                ];
+        
+        
+        
+        
+        
+        
+        
+        if(flagsMain != undefined)
+        {
+            var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+            for(let i = 0; i < spawnss.length; i++)
+            {
+                spawnss[i].spawnCreep(
+                    fullbody, roomname + "Rep"+q,
+                    {
+                        memory:
+                        {
+                            role: 'multi',
+                            memstruct:
+                            {
+                                spawnRoom: roomname,
+                                tasklist: tasklistarr,
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: true,
+                                hastask: false
+                            }
+                        }
+                    });
+            }
+        }
+        
+        
+            }
+        
+        
+        
+        var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
         var mainflag = Game.flags[roomname];
         mainflag.memory.blocktranferIntoRoom = false;
         var numberofguardingcreeps = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
@@ -49,42 +128,80 @@ var defcon = {
         });
         if(spawnss.length != 0 && target != undefined && target.length != doretos.length)
         {
-             var roomLevel = Game.rooms[roomname].controller.level;
-        
+            var roomLevel = Game.rooms[roomname].controller.level;
+            Game.flags[roomname].memory.totalEnemyBodyParts = totalBodyParts;
+       //     console.log(Game.rooms[roomname].controller.isPowerEnabled, "--", roomname);
+            if(Game.rooms[roomname].controller.isPowerEnabled == true && totalBodyParts > 99)
+            {
+                var pwrspawn = Game.rooms[roomname].find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_POWER_SPAWN);
+                    }
+                });
+                if(pwrspawn.length != 0)
+                {
+                    Game.powerCreeps["defender1"].spawn(pwrspawn[0]);
+                }
+            }
+            
+            
+            
+            var numberOfRangersNeeded = 0;
+            var numberDamagePartsPerRanger=10;
+            var enemyHealPtentail = 0;
+            
+            if(roomLevel == 6){
+                numberDamagePartsPerRanger= numberDamagePartsPerRanger*12;
+            }
+            if(roomLevel == 7){
+                 numberDamagePartsPerRanger= numberDamagePartsPerRanger*34;
+            }
+            if(roomLevel == 8){
+                  numberDamagePartsPerRanger= numberDamagePartsPerRanger*40;  
+            }
+            enemyHealPtentail =   numberOfHealParts * 12;
+            // - TOWERS HERE 
+            
+            numberOfRangersNeeded = Math.ceil(enemyHealPtentail / numberDamagePartsPerRanger);
+       ///     console.log("numberOfRangersNeeded",numberOfRangersNeeded);
+            
+            if(numberOfRangersNeeded > 4 && roomLevel < 7)
+            {
+            //  console.log("aid");  
+                numberOfRangersNeeded = 4;
+                 this.CallForAid(roomname); 
+                  this.spawnBoostedarcher(roomname,4);
+            }
+            else
+            {
+                       if(numberOfRangersNeeded > 2 )
+            {
+                numberOfRangersNeeded=2;
+            }
+                 this.spawnBoostedarcher(roomname,numberOfRangersNeeded);
+            
+            }
+            
+            
+              
+            
+           if(numberOfAttackParts > 20){
+                    this.spawnBoostedattacker(roomname, 1);
+           }
+            
+            
+            
           
-            if(totalBodyParts >= 50 && totalBodyParts < 100)
-            {
-                  this.spawnBoostedarcher(roomname, 9 - roomLevel );
-            }
-              if(totalBodyParts ==   100)
-            {
-                  this.spawnBoostedarcher(roomname, 10 - roomLevel );
-                     this.spawnBoostedattacker(roomname, 1);
-            }
             
-        
-            else if(totalBodyParts > 100)
-            {
-                this.boostedBasicDefenders(roomname); 
-                defconstuct.defenceLevel = 0;
-            }
-            if(totalBodyParts > 99 && roomLevel < 7)
-            {
-            this.CallForAid(roomname);
-            
-            }
-                  if(totalBodyParts >= 300)
-            {
-             this.spawnBoostedattacker(roomname, 3);
-        this.spawnBoostedarcher(roomname, 3);
-            }
-            
-            
-            
-            if(spawnss[0].hits < 1000 && target.length != 0)
+             if(spawnss[0].hits < 1000 && target.length != 0)
             {
                 Game.rooms[roomname].controller.activateSafeMode()
             }
+            
+            
+            
             mainflag.memory.blocktranferIntoRoom = false;
         }
         else
@@ -112,66 +229,73 @@ var defcon = {
         }
         return defconstuct;
     },
-
-CallForAid: function(roomname)
+    CallForAid: function(roomname)
     {
-  
-  
-  
-  // find my rooms within 6 rooms and get a CloseCombatDuo 
-  
-  
-  
-  
-  var targroom = "E24N3";
-  
-  
-  
-  
-          var bodypartshead = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
-         var bodypartstail = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            if(Memory.squadObject['Gondor Calls For Aid'+roomname] == undefined)
-            {
-                squadmanage.initializeSquad('Gondor Calls For Aid'+roomname, [["forcemoveToRoom",roomname]], true, "duo", targroom,
+        
+                        var roominrange = [];
+                var roomsall = Object.keys(Game.rooms);
+                var roomsobj = Game.rooms;
+                for(var i = 0; i < roomsall.length; i++)
                 {
-                    "head": bodypartshead,
-                    "tail": bodypartstail,
-                },"chasedown");
-            }
-  
-  
-   
-  
-  
-  
-  
-  
-  
-   
-  
-
-},
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    if(roomsobj[roomsall[i]].controller != undefined)
+                    {
+                        if(roomsobj[roomsall[i]].controller.owner != undefined)
+                        {
+                            if( roomsobj[roomsall[i]].controller.owner.username === "Q13214" && roomsobj[roomsall[i]].controller.level == 8 )
+                            {
+                                if(Game.map.getRoomLinearDistance(roomname, roomsall[i]) < 6 && Game.map.getRoomLinearDistance(roomname, roomsall[i]) != 0)
+                                {
+                                    roominrange.push(roomsall[i]);
+                                }
+                            }
+                        }
+                    }
+                }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        if(roominrange.length != 0 ){
+                 // find my rooms within 6 rooms and get a CloseCombatDuo 
+        var targroom = roominrange[0];
+        var bodypartshead = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
+        var bodypartstail =  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
+        if(Memory.squadObject['Gondor Calls For Aid' + roomname] == undefined)
+        {
+            squadmanage.initializeSquad('Gondor Calls For Aid' + roomname, [
+                ["forcemoveToRoom", roomname]
+            ], true, "duo", targroom,
+            {
+                "head": bodypartshead,
+                "tail": bodypartstail,
+            }, "chasedown");
+        }
+        
+        }else{
+               this.spawnBoostedarcher(roomname,5);
+        }
+        
+        
+        
+        
+        
+        
+    
+        
+    },
     spawnBasicsquad: function(roomname)
     {
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         for(let i = 0; i < spawnss.length; i++)
         {
             spawnss[i].spawnCreep(
-                [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK]
-                ,'defenceduo'+roomname,
+                [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK], 'defenceduo' + roomname,
                 {
                     memory:
                     {
@@ -199,7 +323,6 @@ CallForAid: function(roomname)
         this.spawnBoostedattacker(roomname, 3);
         this.spawnBoostedarcher(roomname, 3);
     },
-   
     spawnBoostedattacker: function(roomname, number)
     {
         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
@@ -209,7 +332,6 @@ CallForAid: function(roomname)
         {
             numberofparts = 40;
         }
-      
         for(let j = 0; j < numberofparts; j++)
         {
             bodyparts.push(ATTACK);
@@ -243,10 +365,10 @@ CallForAid: function(roomname)
                 });
         }
     },
-    spawnBoostedarcher: function(roomname,number)
-    {
+    spawnBoostedarcher: function(roomname, number)
+    { 
         var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
-        var numberofparts = Math.floor((energyavailable - 500) / 150);
+        var numberofparts = Math.floor((energyavailable - 650) / 150);
         var bodyparts = [];
         if(numberofparts > 40)
         {
@@ -256,7 +378,7 @@ CallForAid: function(roomname)
         {
             bodyparts.push(RANGED_ATTACK);
         }
-        for(let j = 0; j < numberofparts; j++)
+        for(let j = 0; j < 10; j++)
         {
             bodyparts.push(MOVE);
         }
@@ -286,8 +408,10 @@ CallForAid: function(roomname)
                             }
                         }
                     });
+               
             }
         }
+   
     },
 }
 module.exports = defcon;

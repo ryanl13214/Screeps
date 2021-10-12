@@ -1,23 +1,20 @@
 var creepfunctions = require('prototype.creepfunctions');
 var guardCode = require('role.basicroomguard');
-
 var attackerCode = require('role.basicattacker');
-        /*
-        
-        var bodypartshead = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK];
-         var bodypartstail = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            if(Memory.squadObject.testDuo == undefined)
-            {
-                squadmanage.initializeSquad("testDuo", [["moveToRoom", "E25N4"]], false, "duo", "E24N3",
-                {
-                    "head": bodypartshead,
-                    "tail": bodypartstail,
-                },"chasedown");
-            }
-        
-        */
+/*
 
+var bodypartshead = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK];
+ var bodypartstail = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
+    if(Memory.squadObject.testDuo == undefined)
+    {
+        squadmanage.initializeSquad("testDuo", [["moveToRoom", "E25N4"]], false, "duo", "E24N3",
+        {
+            "head": bodypartshead,
+            "tail": bodypartstail,
+        },"chasedown");
+    }
 
+*/
 var Duo = {
     allowSlave: function(creep)
     {
@@ -48,14 +45,11 @@ var Duo = {
         }
         var tail;
         var head;
+        if(all.length == 0 && mainMemoryObject.squadisready == true)
+        { 
         
-        
-        if(all.length ==0 ){
-               delete Memory.squadObject[squadID];
+            delete Memory.squadObject[squadID];
         }
-        
-        
-        
         for(var c = 0; c < all.length; c++)
         {
             var creepername = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]).name.substring(0, 4);
@@ -73,73 +67,83 @@ var Duo = {
             head.memory.memstruct.tasklist = mainMemoryObject.arrayOfSquadGoals;
         }
         ///////////////////////////////////////////////////////////////////////////////
-        if(head){
-        var check = creepfunctions.checkglobaltasks(head);
-        if(check)
+        if(head && tail)
         {
-            if(mainMemoryObject.squadSubType == "chasedown")
+            var check = creepfunctions.checkglobaltasks(head);
+            if(check)
             {
-                head.say("a");
-                this.chaseDown(head,tail);
-            }
-            if(mainMemoryObject.squadSubType == "DismantleOuterBunker")
-            {
-                this.chaseDown(head,tail);
-            }
-            if(mainMemoryObject.squadSubType == "dismantlerRoom")
-            {
-                this.chaseDown(head,tail);
-            }
-            if(mainMemoryObject.squadSubType == "roomDefence")
-            {
-                this.chaseDown(head,tail);
-            }
-        }
-        }
-        ///////////////////////////////////
-        var slave = tail;
-        if(slave && head){
-        const range = head.pos.getRangeTo(slave);
-        var counter = 1;
-        if(slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
-        {
-            counter = 3;
-        }
-        if(range > counter && head.room.name == slave.room.name && Game.time % 3 == 0)
-        {
-            head.say("come");
-            head.moveTo(slave);
-        }
-        ///////////////////////////////////////////   
-        var master = head;
-        if(master == null)
-        {
-            tail.suicide();
-        }
-        tail.moveTo(master);
-        if(master != undefined && master != null)
-        {
-            if(tail.hits == tail.hitsMax)
-            {
-                tail.heal(master);
+                if(mainMemoryObject.squadSubType == "chasedown")
+                {
+                    head.say("a");
+                    this.chaseDown(head, tail);
+                }
+                if(mainMemoryObject.squadSubType == "DismantleOuterBunker")
+                {
+                    this.chaseDown(head, tail);
+                }
+                if(mainMemoryObject.squadSubType == "dis")
+                {
+                    this.flagDismantle(head, tail);
+                }
+                if(mainMemoryObject.squadSubType == "roomDefence")
+                {
+                    this.chaseDown(head, tail);
+                }
             }
             else
             {
-                if(Game.time & 2 == 0)
+                var range = head.pos.getRangeTo(tail);
+                if(head.room.name == tail.room.name && range > 1)
                 {
-                    tail.heal(master);
+                    head.cancelOrder('move');
+                    head.moveTo(tail);
+                    head.say("ba1");
+                }else if(head.room.name != tail.room.name){
+                       head.cancelOrder('move');
+                }
+                
+            }
+        
+        ///////////////////////////////////
+        var slave = tail;
+        var master = head;
+      
+            ///////////////////////////////////////////   
+            if(master == null)
+            {
+                tail.suicide();
+            }
+            tail.moveTo(master);
+            if(head != undefined && head != null)
+            {
+                if(tail.hits == tail.hitsMax)
+                {
+                    tail.heal(head);
                 }
                 else
                 {
-                    tail.heal(creep);
+                    if(Game.time % 2 == 0)
+                    {
+                        tail.heal(head);
+                    }
+                    else
+                    {
+                        tail.heal(tail);
+                    }
                 }
             }
-        }
+        }else{
+             if(mainMemoryObject.squadSubType == "chasedown")
+                {
+                    head.say("a");
+                    guardCode.cavalry(head );
+                }
         }
     },
-    chaseDown: function(creep,Healer)
+    chaseDown: function(creep, Healer)
     {
-       
+        
+     
         var target = creepfunctions.getcombattagetsclosest(creep);
         if(target == undefined)
         {
@@ -208,198 +212,219 @@ var Duo = {
             }
         }
         
-        
-         var range = creep.pos.getRangeTo(Healer);
-        
+        if(Healer != "a"){
+        var range = creep.pos.getRangeTo(Healer);
         /////////////////////////////
-        if(range==1 || Game.time % 5 != 0)
+        if((range == 1 || Game.time % 5 != 0) && Healer.fatigue == 0)
         {
             creep.moveTo(target);
         }
         else
         {
-     
-            creep.moveTo(Healer);
-       
+            if(creep.room.name == Healer.room.name)
+            {
+                creep.moveTo(Healer);
+                creep.say("come");
+            }
         }
+        
+        }else{
+          creep.moveTo(target);   
+        }
+        
+        
+        
         ////////////////////////////
     },
-    
-    
-    
-    
-    
-    
-    
-      flagDismantle: function(creep,Healer)
+    flagDismantle: function(creep, Healer)
     {
-    
-    var movetarg ;
-                 creep.rangedMassAttack();
-                var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1,
+        var movetarg;
+        creep.rangedMassAttack();
+        var a = false;
+        if(creep.body.find(elem => elem.type === "work") != undefined  )
+            {
+                 a = true;
+            }
+            else
+            {
+                
+                
+                
+                
+                 if(creep.hits != creep.hitsMax)
                 {
-                    filter: (res) =>
-                    {
-                        return (res.structureType != STRUCTURE_STORAGE && res.structureType != STRUCTURE_TERMINAL && res.structureType != STRUCTURE_FACTORY);
-                    }
-                });
-                if(target.length != 0)
-                {
-                    creep.dismantle(target[0]);
-                }
-                var found = [];
-                var flagsinrange = creep.pos.findClosestByPath(FIND_FLAGS);
-                if(flagsinrange  != undefined)
-                {
-                    found = creep.room.lookForAt(LOOK_STRUCTURES, flagsinrange.pos);
-                    
-                    
-                    if( flagsinrange.pos.x == creep.pos.x   &&  flagsinrange.pos.x == creep.pos.x    &&  flagsinrange.pos.y  == creep.pos.y  &&  flagsinrange.pos.y == creep.pos.y){
-                        flagsinrange.remove();
-                    }else{
-                     movetarg =flagsinrange;   
-                    }
-                    
-                    
-                    if(found.length != 0)
-                    {
-                        //       found = creep.room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsinrange[0].pos);
-                    }
-                }
-                if(found.length != 0)
-                {
-                    if(creep.dismantle(found[0]) == ERR_NOT_IN_RANGE)
-                    {
-                        var findNewtarget = creep.moveTo(found[0]);
-                        if(findNewtarget == -2)
-                        {
-                            var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
-                            if(target.length != 0)
-                            {
-                                creep.dismantle(target[0]);
-                            }
-                        }
-                    }
+                    creep.heal(creep);
                 }
                 else
                 {
-                    var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                    if(Game.time % 2 == 0)
                     {
-                        filter: (res) =>
-                        {
-                            return (res.structureType == STRUCTURE_TOWER);
-                        }
-                    });
-                    if(target == undefined)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_SPAWN);
-                            }
-                        });
-                    }
-                    if(target == undefined)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_NUKER);
-                            }
-                        });
-                    }
-                    if(target == undefined && 1 == 2)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_TERMINAL);
-                            }
-                        });
-                    }
-                    if(target == undefined && 1 == 2)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_STORAGE);
-                            }
-                        });
-                    }
-                    if(target == undefined && 1 == 2)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_FACTORY);
-                            }
-                        });
-                    }
-                    if(target == undefined)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_LAB);
-                            }
-                        });
-                    }
-                    if(target == undefined)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
-                        {
-                            filter: (res) =>
-                            {
-                                return (res.structureType == STRUCTURE_EXTENSION);
-                            }
-                        });
-                    }
-                    if(target == undefined)
-                    {
-                        //  var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
-                    }
-                    if(target != undefined)
-                    {
-                        if(creep.dismantle(target) == ERR_NOT_IN_RANGE)
-                        {
-                  movetarg = target;
-                        }
                         
+                        creep.heal(creep);
+                    }
+                    else
+                    {
+                        
+                        creep.heal(Healer);
                     }
                 }
-               
-               
-         var range = creep.pos.getRangeTo(Healer);
-        
-        /////////////////////////////
-        if(range==1 || Game.time % 5 != 0)
+                
+       
+            }
+        var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1,
         {
-            creep.moveTo(    movetarg    );
+            filter: (res) =>
+            {
+                return (res.structureType != STRUCTURE_STORAGE && res.structureType != STRUCTURE_TERMINAL && res.structureType != STRUCTURE_FACTORY);
+            }
+        });
+           
+        if(target.length != 0 && a)
+        {
+            creep.dismantle(target[0]);
+        }
+        
+        var found = [];
+        var flagsinrange = creep.pos.findClosestByPath(FIND_FLAGS);
+        if(flagsinrange != undefined)
+        {
+            found = creep.room.lookForAt(LOOK_STRUCTURES, flagsinrange.pos);
+            if(flagsinrange.pos.x == creep.pos.x && flagsinrange.pos.x == creep.pos.x && flagsinrange.pos.y == creep.pos.y && flagsinrange.pos.y == creep.pos.y)
+            {
+                flagsinrange.remove();
+            }
+            else
+            {
+                movetarg = flagsinrange;
+            }
+            if(found.length != 0)
+            {
+                //       found = creep.room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsinrange[0].pos);
+            }
+        }
+        if(found.length != 0 && a)
+        {
+            if(creep.dismantle(found[0]) == ERR_NOT_IN_RANGE)
+            {
+                var findNewtarget = creep.moveTo(found[0]);
+                  movetarg = found[0];
+                if(findNewtarget == -2)
+                {
+                    var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+                    if(target.length != 0)
+                    {
+                        creep.dismantle(target[0]);
+                    }
+                }
+            }
         }
         else
         {
-     
-            creep.moveTo(Healer);
-       
+            var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+            {
+                filter: (res) =>
+                {
+                    return (res.structureType == STRUCTURE_TOWER);
+                }
+            });
+            if(target == undefined)
+            {
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.structureType == STRUCTURE_SPAWN);
+                    }
+                });
+            }
+            if(target == undefined)
+            {
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.structureType == STRUCTURE_NUKER);
+                    }
+                });
+            }
+            if(target == undefined && 1 == 2)
+            {
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.structureType == STRUCTURE_TERMINAL);
+                    }
+                });
+            }
+            if(target == undefined && 1 == 2)
+            {
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.structureType == STRUCTURE_STORAGE);
+                    }
+                });
+            }
+            if(target == undefined && 1 == 2)
+            {
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.structureType == STRUCTURE_FACTORY);
+                    }
+                });
+            }
+            if(target == undefined)
+            {
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.structureType == STRUCTURE_LAB);
+                    }
+                });
+            }
+            if(target == undefined)
+            {
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.structureType == STRUCTURE_EXTENSION);
+                    }
+                });
+            }
+            if(target == undefined)
+            {
+                //  var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+            }
+            if(target != undefined && a)
+            {
+                if(creep.dismantle(target) == ERR_NOT_IN_RANGE)
+                {
+                    movetarg = target;
+                }
+            }
         }
-    
-    
+         
+        
+        
+        var range = creep.pos.getRangeTo(Healer);
+        /////////////////////////////
+        if((range == 1 || Game.time % 5 != 0) && Healer.fatigue == 0)
+        {
+            creep.moveTo(movetarg);
+        }
+        else
+        {
+            if(creep.room.name == Healer.room.name)
+            {
+                creep.moveTo(Healer);
+            }
+        }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
 module.exports = Duo;

@@ -1,5 +1,5 @@
 var squadmanage = require('squadManager');
-var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7","E28N4"];
+var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7","E28N4","E26N1"];
 var squadgenerator = {
     run: function(roomname)
     {
