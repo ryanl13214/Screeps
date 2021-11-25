@@ -2,11 +2,11 @@
 // yellow dismantle flags
 // blue ranged targets
 // brown stronghold Attack
+var roompathfind = require('roompathfinder');
 var squadmanage = require('squadManager');
 var tickcode = {
     run: function()
-    {
-        
+    {   
         // generic 10 tougbht 30 heal 
         //     var bodypartstail =  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
           
@@ -21,324 +21,25 @@ var tickcode = {
         {
             this.resetIntershardMemory();
         }
+
+        
         if(Game.shard.name == "shard2")
         {
-            // walkaround room is E21N5
             this.flagControl();
-            ///////////////////////////////////////////////////////////
-  
-         
-            var bodypartstail = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            var bodyphealer = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-    
-    // 12 tough 14 range 14 heal 
-    var bodyp = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-    
-            if(Memory.squadObject.test == undefined && 1==2)
-            {
-                squadmanage.initializeSquad("test", [
-                    ["forcemoveToRoom", "E23N4"],
-                    ["forcemoveToRoom", "E23N3"],
-                    ["forcemoveToRoom", "E23N2"],
-                    ["forcemoveToRoom", "E23N1"],
-                    ["forcemoveToRoom", "E23N0"],
-                    ["forcemoveToRoom", "E23S0"],
-                    ["forcemoveToRoom", "E20S0"],
-                    ["forcemoveToRoom", "E20S3"],
-                    ["forcemoveToRoom", "E22S4"],
-                    ["forcemoveToRoom", "E23S4"],
-                    ["flagAttack", "E23S4"]
-                ], true, "quad", "E24N3",
-                {
-                    "head1": bodyp,
-                    "tail1": bodyp,
-                    "head2": bodyp,
-                    "tail2": bodyp
-                }, "blinky");
-            }
             
             
+ 
             
             
             
             
             
-                var bodyhead = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK];
-      var bodytail = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-    
             
-                        if(Memory.squadObject.test == undefined && 1==2)
-            {
-                squadmanage.initializeSquad("test", [
-                    ["forcemoveToRoom", "E23N2"],
-                    ["flagAttack", "E23N2"]
-                ], false, "quad", "E24N3",
-                {
-                    "head1": bodyhead,
-                    "tail1": bodytail,
-                    "head2": bodyhead,
-                    "tail2": bodytail
-                }, "dis");
-            }
             
             
             
             
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-                var bodypartshead =  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            var bodypartstail =  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            var targroom = "E24N1";
-            var roomname = "E24N3";
-            if(Memory.squadObject['MarvinTest2' + roomname] == undefined && 1==2 )
-            {
-                squadmanage.initializeSquad('MarvinTest2' + roomname, [["forcemoveToRoom", targroom]], true, "duo", roomname,
-                {
-                    "head": bodypartshead,
-                    "tail": bodypartstail,
-                }, "dis");
-            }
-            
-            
-            
-            
-            
-            
-            if(1==2){
-            
-             
-
-            
-            
-              Game.spawns["E25N1"].spawnCreep(
-            [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY]
-             , 'tester',
-                        {
-                            memory:
-                            {
-                                role: 'multi',
-                                attackrole: "",
-                                memstruct:
-                                {
-                                    spawnRoom: "E24N3",
-                                    tasklist: [
-                ["forcemoveToRoom", "E21S1"],
-["upgrade"],
-["harvest"],
-["repeat",2]
-],
-                                    objectIDStorage: "",
-                                    boosted: false,
-                                    moveToRenew: false,
-                                    opportuniticRenew: true,
-                                    hastask: false
-                                }
-                            }
-                        });
-            
-            
-            
-            
-            
-            
-              Game.spawns["E25N1"].spawnCreep(
-            [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,CARRY,CARRY,CARRY]
-             , 'tester2',
-                        {
-                            memory:
-                            {
-                                role: 'multi',
-                                attackrole: "",
-                                memstruct:
-                                {
-                                    spawnRoom: "E24N3",
-                                    tasklist: [
-                ["forcemoveToRoom", "E21S1"],
-["buildGeneral"],
-["harvest"],
-["repeat",2]
-],
-                                    objectIDStorage: "",
-                                    boosted: false,
-                                    moveToRenew: false,
-                                    opportuniticRenew: true,
-                                    hastask: false
-                                }
-                            }
-                        });
-            
-            
-            }
-             
-            
-             
-            
-            
-            
-            
-            
-            
-            /*
-                     
-       var bodypartshead = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK];
-         var bodypartstail = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            if(Memory.squadObject.testDuo == undefined)
-            {
-                squadmanage.initializeSquad("testDuo", [["moveToRoom", "E25N4"]], false, "duo", "E24N3",
-                {
-                    "head": bodypartshead,
-                    "tail": bodypartstail,
-                },"chasedown");
-            }
-         
-             if(1 ==  11)
-                {
-                    Game.spawns["E24N3"].spawnCreep(
-             [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,RANGED_ATTACK] , 'tester',
-                        {
-                            memory:
-                            {
-                                role: 'guard',
-                                attackrole: "basicRoomDIS",
-                                memstruct:
-                                {
-                                    spawnRoom: "E24N3",
-                                    tasklist: [
-                                        ["createslaveBOOST"],
-                                        ["boosAllMax"],
-                                        ["forcemoveToRoom", "E23N9"],
-                                        ["forcemoveToRoom", "E21N9"]
-                                    ],
-                                    objectIDStorage: "",
-                                    boosted: false,
-                                    moveToRenew: false,
-                                    opportuniticRenew: true,
-                                    hastask: false
-                                }
-                            }
-                        });
-                        
-                        
-                      
-                        
-                        
-                }
-            
-         
-            
-          if(1 ==  11)
-                {   
-            
-            
-            
-            
-            
-            
-            
-            var bodyparts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            var Head =[TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK];
-            
-            
-            if(Memory.squadObject.strongholdattackfive == undefined)
-            {
-                squadmanage.initializeSquad("strongholdattackfive", [["HoldAttack", "E26N6"]], true, "quad", "E28N5",
-                {
-                    "head1": bodyparts,
-                    "tail1": bodyparts,
-                    "head2": bodyparts,
-                    "tail2": Head
-                },"corner");
-            }
-            
-            
-            
-            
-            
-                }   
-            
-            
-            
-            
-            */
-            ////////////////////////////////////////
-            // this.sendClaimSquad(targetRoom,HomeRoom)
-            //     this.sendClaimSquad("E21S1","E25N1");
-            //  this.preventRebuild();
-            ////////////////////////////////////////
-            /*
-            Game.spawns["E21S1"].spawnCreep(
-                [MOVE,MOVE,MOVE,MOVE,MOVE,CLAIM]
-            ,'repdfghfffk' ,
-                {
-                    memory:
-                    {
-                        role: 'multi',
-                        memstruct:
-                        {
-                            spawnRoom: "E21S1",
-                            tasklist: [
-                             
-                                ["forcemoveToRoom", "E21S0"],
-                                ["forcemoveToRoom", "E14S0"],
-                                ["forcemoveToRoom", "E11S2"],
-                                ["claim"],
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: true,
-                            hastask: false
-                        }
-                    }
-            });
-         
-            
-            
-             var bodyparts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            var Head = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK];
-            
-            if(Memory.squadObject.strongholdattackfive == undefined)
-            {
-                squadmanage.initializeSquad("strongholdattackfive", [["HoldAttack", "E24N4"]], true, "quad", "E24N3",
-                {
-                    "head1": bodyparts,
-                    "tail1": bodyparts,
-                    "head2": bodyparts,
-                    "tail2": Head
-                });
-            }
-            
-            
-            
-                
-            
-              var bodyparts = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-            var Head = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK];
-            
-            if(Memory.squadObject.strongholdattackfive == undefined)
-            {
-                squadmanage.initializeSquad("strongholdattackfive", [["HoldAttack", "E24N4"]], true, "quad", "E24N3",
-                {
-                    "head1": bodyparts,
-                    "tail1": bodyparts,
-                    "head2": bodyparts,
-                    "tail2": Head
-                });
-            }
-       
-            
-               */
         }
     },
     createBlinkySQuad: function(flagname)
@@ -376,6 +77,19 @@ var tickcode = {
                 "tail2": [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]
             }, "blinky");
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         if(1 == 2)
         {
             Game.spawns["E24N3"].spawnCreep([MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY],

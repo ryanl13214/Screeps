@@ -24,6 +24,7 @@ var spwan = {
     },
     run: function(roomname, defconstruct, storagevalue, roomExits, creepsinroom)
     {
+                var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         ///////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////
         if(Game.spawns[roomname + "1"] != undefined)
@@ -64,9 +65,50 @@ var spwan = {
                 Game.spawns[roomname + "2"].spawning.setDirections([TOP_LEFT, BOTTOM_RIGHT,RIGHT]);
             }
         }
+        
+        
+        
+        
+        
+        for(var i = 0; i < spawnss.length; i++)
+        {
+            if(spawnss[i].spawning       &&    spawnss[i].spawning.remainingTime < 2)
+            {
+                            var ajacentcreepstorenew = spawnss[i].pos.findInRange(FIND_MY_CREEPS, 1,
+            {
+                filter: (creep) =>
+                {
+                    return (creep.memory.memstruct.boosted == false && (creep.memory.memstruct.opportuniticRenew == true || creep.memory.memstruct.moveToRenew == true) && creep.ticksToLive < 1480);
+                }
+            });
+                    for(var q = 0; q < ajacentcreepstorenew.length; q++)
+                    {
+                        ajacentcreepstorenew[q].moveTo(new RoomPosition(0,0,roomname));
+                    }
+                
+            }
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
            var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
-        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+ 
         for(var i = 0; i < spawnss.length; i++)
         {
             //       try{

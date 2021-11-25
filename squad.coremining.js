@@ -3,7 +3,49 @@ var coremining = {
     run: function(squadID)
     {
         var mainMemoryObject = Memory.squadObject[squadID];
-        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
+        var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0]);
+        
+          
+                       if(!Game.creeps[squadID + "guard"])
+            {
+                delete Memory.creeps[squadID + "guard"];
+                
+                
+                
+                       Game.spawns[mainMemoryObject.squadHomeRoom].spawnCreep(
+               [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+                , squadID + "guard",
+                {
+                    memory:
+                    {
+                        role: 'multi',
+                        memstruct:
+                        {
+                            spawnRoom: creep.room.name,
+                            tasklist: [
+                                ["GuardCenterRoom",  mainMemoryObject.arrayOfSquadGoals[0]]
+                            ],
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: true,
+                            hastask: false
+                        }
+                    }
+                }); 
+                
+                
+                
+                
+                
+                
+                
+                
+            }
+        
+        
+        
+        
         //var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         var fixer = [];
         var movers = [];

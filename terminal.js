@@ -105,6 +105,10 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     }
                 }
                 var excessResources = terminalActual.store.getUsedCapacity(allCondensedResources[i][0]) - allCondensedResources[i][1];
+                
+                
+            
+                
                 if (buyOrders.length > 1 && excessResources > 5 && resourceInNeverSellList == false && terminalActual.store.getUsedCapacity(allCondensedResources[i][0]) != 0)
                 {
                     var hist = Game.market.getHistory(allCondensedResources[i][0]);
@@ -125,8 +129,17 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     ///
                     if (excessResources > buyOrders[index].remainingAmount)
                     {
+                        
                         excessResources = buyOrders[index].remainingAmount;
                     }
+                   
+                   if(excessResources < 1)
+                   {
+                        return false
+                   }
+                   
+                   
+                   
                     console.log(roomname, " is selling--", excessResources, "--", allCondensedResources[i][0], " comparing prices - selling  for:", buyOrders[index].price);
                     Game.market.deal(buyOrders[index].id, excessResources, roomname);
                     return true;
@@ -373,18 +386,39 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     }
                     q++;
                 }
-
-                if (Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY) < 100000 && roomOrders.length < 3)
+                
+                
+                                    var hist = Game.market.getHistory( "energy");
+                    var tmp = 0;
+                    var totalPrice = 0;
+                    for (let object of hist)
+                    {
+                        //   console.log(JSON.stringify(object));   
+                        totalPrice += object.avgPrice;
+                        tmp++;
+                    }
+                    let avgPriceOfenergy = totalPrice / tmp;
+                
+                
+                
+                
+                
+                
+                
+                if(avgPriceOfenergy > 9){
+                    
+                }
+                else                if (Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY) < 100000 && roomOrders.length < 3)
                 {
-                    console.log("buying energy", roomname);
-                    var hist = Game.market.getHistory(RESOURCE_ENERGY)
-                    if (hist[0].avgPrice * 1.5 < 9)
+                     
+                    
+                    if (avgPriceOfenergy * 1.5 < 9)
                     {
                         Game.market.createOrder(
                         {
                             type: ORDER_BUY,
                             resourceType: RESOURCE_ENERGY,
-                            price: (hist[0].avgPrice * 1.5),
+                            price: (avgPriceOfenergy * 1.5),
                             totalAmount: 175000,
                             roomName: roomname
                         });
@@ -401,6 +435,25 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                         });
                     }
                 }
+                else  if(Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY) < 100000 && roomOrders.length > 2)// keep the cost updated
+                {
+                       var hist = Game.market.getHistory(RESOURCE_ENERGY)
+                    for (var i = 0; i < roomOrders.length; i++)
+                    {
+                        Game.market.changeOrderPrice(roomOrders[i].id, (avgPriceOfenergy * 1.5)); 
+                    }
+                }
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
         }

@@ -89,7 +89,7 @@ var labs = {
         for (var i = 0; i < a.length; i++)
         {
             var currCheck = products[a[i][0]];
-            if (terminalActual.store.getUsedCapacity(a[i][0]) < a[i][1] + 1000  )
+            if (terminalActual.store.getUsedCapacity(a[i][0]) < a[i][1] - 1000  )
             {
                 if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000)
                 {
@@ -309,7 +309,7 @@ var labs = {
         var mainFlag = Game.flags[roomname];
         if (currentProduction != "" && currentProduction != undefined)
         {
-            console.log("labs stage 0 ", roomname);
+          //  console.log("labs stage 0 ", roomname);
             var currentProductForLab1 = products[currentProduction][0];
             var currentProductForLab2 = products[currentProduction][1];
             var strg = Game.rooms[roomname].storage;
@@ -360,11 +360,11 @@ var labs = {
 
             if (Memory.empire.roomsobj[roomname].labReady == false && Memory.empire.roomsobj[roomname].labDone == false && Memory.empire.roomsobj[roomname].labBoostCurr != "")
             {
-                console.log("labs stage 1 ", roomname);
+             //   console.log("labs stage 1 ", roomname);
                 if (mainLab1.length != 0 && mainLab1[0].store.getUsedCapacity(currentProductForLab1) > 999 && mainLab2.length != 0 && mainLab2[0].store.getUsedCapacity(currentProductForLab2) > 999)
                 {
-                    console.log("starlabs ")
-                    Memory.empire.roomsobj[roomname].labReady = true;
+                  //  console.log("starlabs ")
+                   Memory.empire.roomsobj[roomname].labReady = true;
                 }
                 else
                 {
@@ -397,7 +397,7 @@ var labs = {
             }
             else if (Memory.empire.roomsobj[roomname].labReady == true && mainLab1.length != 0 && mainLab2.length != 0)
             {
-                console.log("labs stage 2 ", roomname);
+            //    console.log("labs stage 2 ", roomname);
                 for (var i = 0; i < allLabs.length; i++)
                 {
                     if (allLabs[i].store.getUsedCapacity() - allLabs[i].store.getUsedCapacity(RESOURCE_ENERGY) == 0 || allLabs[i].store.getUsedCapacity(currentProduction) != 0)
@@ -421,7 +421,7 @@ var labs = {
             }
             else if (Memory.empire.roomsobj[roomname].labDone == true && mainFlag)
             {
-                console.log("labs stage 3 ", roomname);
+              //  console.log("labs stage 3 ", roomname);
 
                 var allLabsWithResinthem = (new RoomPosition(mainFlag.pos.x - 5, mainFlag.pos.y + 1, roomname)).findInRange(FIND_STRUCTURES, 2,
                 {
@@ -471,8 +471,8 @@ var labs = {
         }
         else
         {
-            console.log("labs no boost selected ", roomname);
-            Memory.empire.roomsobj[roomname].labDone = true;
+         //   console.log("labs no boost selected ", roomname);
+    //       
 
             var allLabsWithResinthem = (new RoomPosition(mainFlag.pos.x - 5, mainFlag.pos.y + 1, roomname)).findInRange(FIND_STRUCTURES, 2,
             {
@@ -495,6 +495,8 @@ var labs = {
                 Memory.empire.roomsobj[roomname].labDone = false;
                 Memory.empire.roomsobj[roomname].labReady = false;
                 Memory.empire.roomsobj[roomname].labBoostCurr = "";
+            }else{
+                 Memory.empire.roomsobj[roomname].labDone = true; 
             }
 
             if (movers.length != 0)

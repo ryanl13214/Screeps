@@ -22,6 +22,13 @@ var creepfunctions = {
         }
         return targets;
     },
+    
+    
+    
+    
+    
+    
+    
     repairLowestRampartInRange: function(creep)
     {
         var LowestRamparts = creep.pos.findInRange(FIND_STRUCTURES, 3,
@@ -1761,7 +1768,7 @@ var creepfunctions = {
                     var targets2 = nextPosition.findInRange(FIND_MY_CREEPS, 0);
                     var a = creep.moveByPath(pathh);
                     //creep.say(a);
-                    if(targets2.length != 0 && (pathh.length > 1 || targets2[0].memory.memstruct.tasklist.length == 0))
+                    if(targets2.length != 0 && (pathh.length > 1 || (targets2[0].memory.memstruct.tasklist.length == 0   || targets2[0].memory.memstruct.tasklist[0][0] !=  "boost")))
                     {
                         creep.say("blocked");
                         var blockingCreeps = creep.pos.findInRange(FIND_MY_CREEPS, 1);

@@ -412,6 +412,6 @@ var defcon = {
             }
         }
    
-    },
+    }
 }
 module.exports = defcon;
