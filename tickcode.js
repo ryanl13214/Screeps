@@ -26,10 +26,7 @@ var tickcode = {
         if(Game.shard.name == "shard2")
         {
             this.flagControl();
-            
-            
- 
-            
+            var squadname = "TEST"
             
             
             
@@ -37,6 +34,43 @@ var tickcode = {
             
             
             
+            
+            
+            /*
+   if(Memory.squadObject[squadname] == undefined )
+            {
+               squadmanage.initializeSquad(squadname, [
+                    ["movetoRoom", "E25N0"],
+                    ["test1", "E25N0"]
+                ], false, "quad", "E25N1",
+                {
+                    "head1": [MOVE],
+                    "tail1": [MOVE],
+                    "head2": [MOVE],
+                    "tail2": [MOVE]
+                }, "blinky");
+            
+            
+            }   
+               var squadname = "TEST2"
+            if(Memory.squadObject[squadname] == undefined )
+            {
+               squadmanage.initializeSquad(squadname, [
+                    ["movetoRoom", "E25N0"],
+                    ["test2", "E25N0"]
+                ], false, "quad", "E25N1",
+                {
+                    "head1": [MOVE,ATTACK],
+                    "tail1": [MOVE,ATTACK],
+                    "head2": [MOVE,ATTACK],
+                    "tail2": [MOVE,ATTACK]
+                }, "blinky");
+            
+            
+            }   
+             */  
+            
+    
             
             
             

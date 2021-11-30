@@ -161,7 +161,7 @@ module.exports.loop = function()
     var resourcekeys = Object.keys(attacks);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-      //  attackManager.run(resourcekeys[i]);
+           attackManager.run(resourcekeys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    START OF ROOMS LOOP
@@ -453,7 +453,7 @@ module.exports.loop = function()
             g = 1;
         }
         if(pwrspawn.length != 0){
-        if(Game.rooms[roomname].terminal   && Game.rooms[roomname].storage   && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 600000 && pwrspawn.length != 0 && Game.time % (g) == 0  )
+        if(Game.rooms[roomname].terminal   && Game.rooms[roomname].storage   && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 500000 && pwrspawn.length != 0 && Game.time % (g) == 0  )
         {
             pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
         }}

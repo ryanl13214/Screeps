@@ -1,7 +1,61 @@
 var roompathfind = require('roompathfinder');
 var squadmanage = require('squadManager');
 var attackManager = {
-
+  checkRuins: function(attackID)
+    {
+        var resourcesPot = Game.rooms[attackID].find(FIND_RUINS,
+        {
+            filter: (res) =>
+            {
+                return (res.resourceType != RESOURCE_ENERGY);
+            }
+        });
+        var target = Game.rooms[attackID].find(FIND_HOSTILE_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_TOWER);
+            }
+        });
+        var target2 =Game.rooms[attackID].find(FIND_HOSTILE_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_INVADER_CORE);
+            }
+        });
+        if((resourcesPot.length != 0 && target.length == 0) || (resourcesPot.length != 0 && target2.length == 0 && Game.rooms[attackID].controller == undefined))
+        {
+            //  creepfunctions.summonHauler(creep.room.name, creep.memory.memstruct.spawnRoom);
+            Game.spawns[ "E24N3"].spawnCreep(
+                [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL],attackID +'Support',
+                {
+                    memory:
+                    {
+                        role: 'multi',
+                        memstruct:
+                        {
+                            spawnRoom:"E24N3",
+                            tasklist: [
+                                
+                                ["forcemoveToRoom", attackID],
+                                ["gatherLooseResources"],
+                                ["gatherstoredResources"],
+                                ["forcemoveToRoom","E24N3"],
+                                ["deposit"],
+                                ["repeat", 6]
+                            ],
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: false,
+                            hastask: false
+                        }
+                    }
+                }
+            );
+        }
+    },
     getRoomdata: function(attackID) // get visuial of the room
     {
 
@@ -42,7 +96,7 @@ var attackManager = {
             if (Game.map.getRoomLinearDistance(attackID, ownedrooms[i]) < 10 && Game.rooms[ownedrooms[i]].controller.level == 8) // check that room has good amount of boosts
             {
                 console.log("a", i);
-                var pathacc = roompathfind.run(attackID, ownedrooms[i]);
+                var pathacc = roompathfind.run(attackID, ownedrooms[i],0);// 0 means allow through hostile rooms
                 pathacc.push(attackID);
                 Memory.attackManager[attackID].attackingRooms[ownedrooms[i]] = {};
                 Memory.attackManager[attackID].attackingRooms[ownedrooms[i]] = // "a"
@@ -79,15 +133,31 @@ var attackManager = {
 
     getPath: function(attackID, fromRoom, centerTarget, blockedPositions)
     {
-
-        var exit = new RoomPosition(29, 0, attackID);
-
-        //   console.log("centerTarget", centerTarget);
-        //   console.log("exit", exit);
+    
+        
+          
+            var exit = centerTarget.findClosestByRange(FIND_EXIT_LEFT);
+    
+    
+    if(exit == -10)
+    {
+         var exit = centerTarget.findClosestByRange(FIND_EXIT_BOTTOM);
+    }
+     if(exit == -10)
+    {
+        var exit = centerTarget.findClosestByRange(FIND_EXIT_RIGHT); 
+    }  
+        if(exit == -10)
+    {
+         var exit = centerTarget.findClosestByRange(FIND_EXIT_TOP);
+    }
+          
+        var exit = new RoomPosition(exit.x , exit.y , attackID);
+ 
 
         let ret = PathFinder.search(
-            new RoomPosition(29, 0, attackID),
-            new RoomPosition(32, 17, attackID),
+            exit,
+            new RoomPosition(centerTarget.x,centerTarget.y , attackID),
             {
                 // We need to set the defaults costs higher so that we
                 // can set the road cost lower in `roomCallback`
@@ -174,7 +244,7 @@ var attackManager = {
         var endPosition2 = new RoomPosition(centerTarget.x, centerTarget.y, attackID);
         var endPosition = new RoomPosition(ret.path[ret.path.length - 1].x, ret.path[ret.path.length - 1].y, attackID);
         var range = endPosition.getRangeTo(endPosition2);
-        if (range > 2)
+        if (range > 4)
         {
             console.log("path ends early");
             return "NOpATH";
@@ -196,7 +266,7 @@ var attackManager = {
     getRoomStarts: function(attackID)
     {
 
-        return ["E23S0"];
+        return ["E24N3"];// obsolete
     },
     getVectors: function(attackID, centerTarget)
     {
@@ -313,7 +383,7 @@ var attackManager = {
     run: function(attackID)
     {
         var mainMemoryObject = Memory.attackManager[attackID];
-        //   Memory.attackManager[attackID].attackingRooms = {};
+     //   Memory.attackManager["E23S1"] = {}///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////
         //                             decide what rooms are part oif the attack and the path to get to them.
         ///////////////////////////////////////////////////////////////////////////////////
@@ -366,10 +436,10 @@ var attackManager = {
         }
         // console.log("has vision");
         ////////////////////////////////////////////////////////////////////////////
-        //               manage the vectors 
+        //               creqate the vectors 
         ////////////////////////////////////////////////////////////////////////////
 
-        if (mainMemoryObject.vectors == undefined)
+        if (mainMemoryObject.vectors == undefined )
         {
             var centerTarget = this.getCenterTarg(attackID);
             var vectors = this.getVectors(attackID, centerTarget);
@@ -379,9 +449,9 @@ var attackManager = {
         ////////////////////////////////////////////////////////////////////////////
         //               manage the plan 
         ////////////////////////////////////////////////////////////////////////////
-        var basicStart = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
+        var basicStart = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
 
-        if (Memory.attackManager[attackID].plan == undefined)
+        if (Memory.attackManager[attackID].plan == undefined && Memory.attackManager[attackID].vectors != undefined)
         {
 
             Memory.attackManager[attackID].plan = {
@@ -402,12 +472,17 @@ var attackManager = {
                 EnemyWallsBreached: false
             }
         }
-
-        this.updateVectors(attackID);
-
-        this.ManageGenericSpawning(attackID);
-
+        // ckeeck for plunder
+        this.checkRuins(attackID);
+        if ( Memory.attackManager[attackID].vectors != undefined)
+        {
         // kee- vectors updated
+        this.updateVectors(attackID);
+        }
+        // spawnblinkys
+  //      this.ManageGenericSpawning(attackID);//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      
         // control the phalanc
         // power control 
 
@@ -415,7 +490,7 @@ var attackManager = {
 
     updateVectors: function(attackID)
     {
-
+  var foundtarg = false; 
         for (var i = 0; i < Memory.attackManager[attackID].vectors.length; i++)
         {
             if (Memory.attackManager[attackID].vectors[i].currentlyAssignedSquad != "" && Memory.attackManager[attackID].vectors[i].currentlyAssignedSquad != "transit")
@@ -433,8 +508,58 @@ var attackManager = {
                     Memory.attackManager[attackID].vectors[i].currentlyAssignedSquad = "";
                 }
             }
+            
+            
+            
+            
+            
+            //////  handle destroying completed vectors 
+            
+            
+                           var arrtemp = Memory.attackManager[attackID].vectors[i].targets;
+            //    console.log(JSON.stringify(arrtemp));
+               
+                for(var xx = 0; xx < arrtemp.length; xx++)
+                {
+                    var containers = new RoomPosition(arrtemp[xx][0], arrtemp[xx][1],attackID ).findInRange(FIND_STRUCTURES,0,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType != STRUCTURE_CONTAINER && structure.structureType != STRUCTURE_ROAD )  ;
+                        }
+                    });
+                    if(containers.length != 0 )
+                    {
+                       foundtarg=true;
+                    }
+            
+                }
+                
+               
+            
+            
 
         }
+
+
+
+
+
+
+
+if(foundtarg == false)
+{
+    console.log("delete");
+//delete Memory.attackManager[attackID];
+}
+ 
+
+
+
+
+
+
+
 
     },
 
@@ -486,8 +611,8 @@ var attackManager = {
 
                     finalPath.push(["joinAttack", attackID, ListOfsquads[i][0]]);
 
-                    console.log("listOfAvailableRooms", listOfAvailableRooms[i]);
-                    console.log("ListOfsquads", ListOfsquads[i]);
+                    //console.log("listOfAvailableRooms", listOfAvailableRooms[i]);
+                    //console.log("ListOfsquads", ListOfsquads[i]);
 
                     var bodyp1 = [];
                     var bodyp2 = [];
@@ -511,10 +636,10 @@ var attackManager = {
                         Game.flags[listOfAvailableRooms[i]].memory.flagstruct.squadspawning == ""
                         squadmanage.initializeSquad("am-" + attackID + "-v-" + ListOfsquads[i][0], finalPath, true, "quad", listOfAvailableRooms[i],
                         {
-                            "head1": bodyp1,
-                            "tail1": bodyp1,
+                            "head1": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
+                            "tail1": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL],
                             "head2": bodyp2,
-                            "tail2": bodyp2
+                            "tail2": [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
                         }, ListOfsquads[i][1]);
 
                         Memory.attackManager[attackID].vectors[ListOfsquads[i][0]].currentlyAssignedSquad = "transit";

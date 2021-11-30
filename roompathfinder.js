@@ -220,7 +220,7 @@ if(openroomKeys.length == 0){
                 
                 
     },
-    createTheCostMatrix: function(startroom, goalRoom, distancebetwenRooms)
+    createTheCostMatrix: function(startroom, goalRoom, distancebetwenRooms,allowRooms)
     {
         
         Game.map.visual.line(new RoomPosition(25, 25, goalRoom), new RoomPosition(25, 25, startroom),
@@ -288,14 +288,26 @@ if(openroomKeys.length == 0){
                     }
                     
          
+         if(allowRooms == 5 && roomObj.dangerLevel == 5 )
+         {
+          var dangerlvl = 99
+         }
+         else
+         {
+                var dangerlvl = roomObj.dangerLevel 
+         }
+         
+         
                     
                     roomlista[roomname] = {
-                        travelCost: roomObj.dangerLevel,
+                        travelCost: dangerlvl,
                         conections: allConnections,
                         H_cost: 9999,
                         F_cost: 9999,
                         parentt: ""
                     };
+                    
+                    
                 }
             }
         }
@@ -303,13 +315,13 @@ if(openroomKeys.length == 0){
         return this.aStar(roomlista, startroom, goalRoom);
         
     },
-    run: function(startroom, goalRoom)
+    run: function(startroom, goalRoom,allowRooms)
     {
 
         var roomlist = [];
         var distancebetwenRooms = Game.map.getRoomLinearDistance(startroom, goalRoom);
 
-        var roomlist = this.createTheCostMatrix(startroom, goalRoom, distancebetwenRooms);
+        var roomlist = this.createTheCostMatrix(startroom, goalRoom, distancebetwenRooms,allowRooms);
 
         return roomlist;
     },

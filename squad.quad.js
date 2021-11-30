@@ -13,14 +13,31 @@ var quadsquad = {
 
         // todo do not do this step for attack quads
         var positionBeingchecked = new RoomPosition(posision.x, posision.y, posroom);
-        var enemiesInRangeOfTarget = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
-        var positionBeingchecked = new RoomPosition(posision.x - 1, posision.y + 1, posroom);
-        var enemiesInRangeOfTarget2 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
+        var enemiesInRangeOfTarget1 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
+         
 
-        if (enemiesInRangeOfTarget.length != 0 || enemiesInRangeOfTarget2.length != 0)
+        var positionBeingchecked = new RoomPosition(posision.x - 1, posision.y, posroom);
+        var enemiesInRangeOfTarget2 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
+        
+        var positionBeingchecked = new RoomPosition(posision.x- 1, posision.y + 1, posroom);
+        var enemiesInRangeOfTarget3 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
+        
+
+        var positionBeingchecked = new RoomPosition(posision.x, posision.y + 1, posroom);
+        var enemiesInRangeOfTarget4 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
+        
+
+        if (enemiesInRangeOfTarget1.length != 0 || enemiesInRangeOfTarget2.length != 0 || enemiesInRangeOfTarget3.length != 0 || enemiesInRangeOfTarget4.length != 0 )
         {
             return false;
         }
+ 
+        
+        
+        
+        
+        
+        
 
         return true;
     },
@@ -34,9 +51,12 @@ var quadsquad = {
         var leader = Game.getObjectById(Memory.squadObject[squadID].leader);
         var returnValue = {
             booll: true,
-            posit: posision,
+            posit: {
+                targetx:posx,
+                targety:posy
+            },
             rank: rank,
-            cost:costs
+            cost: costs
         }
 
         //check costs are fine 
@@ -64,7 +84,12 @@ var quadsquad = {
 
     getProperPositionForQuadSquad: function(posision, creep, squadID)
     {
-
+                Game.rooms[posision.roomName].visual.circle(posision,
+                {
+                    fill: 'solid',
+                    radius: 0.19,
+                    stroke: 'white'
+                });
         var mainMemoryObject = Memory.squadObject[squadID];
         var posx = posision.x;
         var posy = posision.y;
@@ -111,42 +136,39 @@ var quadsquad = {
             [-1, 2],
             [0, 2],
             [1, 2],
-            [2, 2]
+            [2, 2],
+            [3, -3]
         ];
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // if squad is damaged check for position far way
 
-        if (Memory.squadObject[squadID].currentPositionsobj.targetx == posision.x && Memory.squadObject[squadID].currentPositionsobj.targety == posision.y && Memory.squadObject[squadID].currentPositionsobj.candidates.length != 0)
+        if (Memory.squadObject[squadID].currentPositionsobj.targetx == posision.x && Memory.squadObject[squadID].currentPositionsobj.targety == posision.y && Memory.squadObject[squadID].currentPositionsobj.candidates.length != 0 )
         {
-
+    
             var enemiesInRangeOfTarget2 = leader.pos.findInRange(FIND_HOSTILE_CREEPS, 3); // filter for combat 
 
-            if (enemiesInRangeOfTarget2.length != 0)
+            if (enemiesInRangeOfTarget2.length != 0 )
             {
                 for (var c = 0; c < Memory.squadObject[squadID].currentPositionsobj.candidates.length; c++)
                 {
-                                var posxx =   Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targetx;
-            var posyy =   Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targety;
-                    
-                    
-                    var checkpos = new RoomPosition(posxx , posyy , leader.room.name );
-                
-                    Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = this.gradePositoion(checkpos , squadID) // change to a position in room 
+                    var posxx = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targetx;
+                    var posyy = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targety;
+
+                    var checkpos = new RoomPosition(posxx, posyy, leader.room.name);
+
+                    Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = this.gradePositoion(checkpos, squadID) // change to a position in room 
 
                 }
             }
         }
         else
         {
-            if (Memory.squadObject[squadID].costsroom == posroom )
+            if (Memory.squadObject[squadID].costsroom == posroom)
             {
-               
+
                 Memory.squadObject[squadID].currentPositionsobj.targetx = posision.x;
                 Memory.squadObject[squadID].currentPositionsobj.targety = posision.y;
                 Memory.squadObject[squadID].currentPositionsobj.candidates = [];
-
-
-
 
                 var costs = PathFinder.CostMatrix.deserialize(Memory.squadObject[squadID].costscurr);
                 ////////////// close range 
@@ -154,7 +176,7 @@ var quadsquad = {
                 for (var c = 0; c < posArrayCQB.length; c++)
                 {
                     var positionBeingchecked = new RoomPosition(posx + posArrayCQB[c][0], posy + posArrayCQB[c][1], posroom)
-                    Memory.squadObject[squadID].currentPositionsobj.candidates.push(this.initPosition(positionBeingchecked, squadID, 1, costs.get(posx + posArrayCQB[c][0], posy + posArrayCQB[c][1]) ));
+                    Memory.squadObject[squadID].currentPositionsobj.candidates.push(this.initPosition(positionBeingchecked, squadID, 1, costs.get(posx + posArrayCQB[c][0], posy + posArrayCQB[c][1])));
                 }
 
                 ////////////// longerRange 
@@ -162,12 +184,13 @@ var quadsquad = {
                 for (var c = 0; c < posArrayRanged.length; c++)
                 {
                     var positionBeingchecked = new RoomPosition(posx + posArrayRanged[c][0], posy + posArrayRanged[c][1], posroom)
-                    Memory.squadObject[squadID].currentPositionsobj.candidates.push(this.initPosition(positionBeingchecked, squadID, 2,  costs.get(posx + posArrayRanged[c][0], posy + posArrayRanged[c][1]) ));
+                    Memory.squadObject[squadID].currentPositionsobj.candidates.push(this.initPosition(positionBeingchecked, squadID, 2, costs.get(posx + posArrayRanged[c][0], posy + posArrayRanged[c][1])));
                 }
 
             }
             else
-            { 
+            {
+                Memory.squadObject[squadID].quadVitalBool = true; // force quad
                 // get the costs for the room witha  move to center order 
                 return new RoomPosition(25, 25, posroom);
             }
@@ -176,74 +199,56 @@ var quadsquad = {
 
         // loop thoiguh candidates find the one with a true booll and a low rank
 
-
-  
-var cuurentRank = 444;
-var currentPosition = leader.pos;
-    for (var c = 0; c < Memory.squadObject[squadID].currentPositionsobj.candidates.length; c++)
-    {
-     
-        if(Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll == true)
+        var cuurentRank = 444;
+        var currentPosition = leader.pos;
+        for (var c = 0; c < Memory.squadObject[squadID].currentPositionsobj.candidates.length; c++)
         {
-            
-            var posxx =   Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.x;
-            var posyy =   Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.y;
-            Game.rooms[leader.room.name].visual.circle(new RoomPosition(posxx , posyy , leader.room.name ),
+
+            if (Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll == true   && Memory.squadObject[squadID].currentPositionsobj.candidates[c].cost < 10)
             {
-                fill: 'solid',
-                radius: 0.15,
-                stroke: 'blue'
-            });
-  if(cuurentRank >  Memory.squadObject[squadID].currentPositionsobj.candidates[c].rank)
-  {
-      cuurentRank =  Memory.squadObject[squadID].currentPositionsobj.candidates[c].rank;
-      currentPosition = new RoomPosition(posxx , posyy , leader.room.name );
-  }
-            
+
+
+
+ 
+
+
+                var posxx = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targetx;
+                var posyy = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targety;
+                Game.rooms[leader.room.name].visual.circle(new RoomPosition(posxx, posyy, leader.room.name),
+                {
+                    fill: 'solid',
+                    radius: 0.15,
+                    stroke: 'blue'
+                });
+                if (cuurentRank > Memory.squadObject[squadID].currentPositionsobj.candidates[c].rank)
+                {
+                    cuurentRank = Memory.squadObject[squadID].currentPositionsobj.candidates[c].rank;
+                    currentPosition = new RoomPosition(posxx, posyy, leader.room.name);
+                }
+
+            }
+            else  
+            {
+
+                var posxx = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targetx;
+                var posyy = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targety;
+                Game.rooms[leader.room.name].visual.circle(new RoomPosition(posxx, posyy, leader.room.name),
+                {
+                    fill: 'solid',
+                    radius: 0.15,
+                    stroke: 'red'
+                });
+
+            }
+
         }
 
-        if(!Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll)
+        Game.rooms[leader.room.name].visual.circle(currentPosition,
         {
-          
-            var posxx =   Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.x;
-            var posyy =   Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.y;
-            Game.rooms[leader.room.name].visual.circle(new RoomPosition(posxx , posyy , leader.room.name ),
-            {
-                fill: 'solid',
-                radius: 0.15,
-                stroke: 'red'
-            });
-  
-            
-        }
-
-
-
-
-    }
-
-
-
-
-
-
-
-            Game.rooms[leader.room.name].visual.circle(currentPosition,
-            {
-                fill: 'solid',
-                radius: 0.25,
-                stroke: 'green'
-            });
-
-
-
-
-
-
-
-
-
-
+            fill: 'solid',
+            radius: 0.25,
+            stroke: 'green'
+        });
 
         return currentPosition;
     },
@@ -980,7 +985,13 @@ var currentPosition = leader.pos;
                 return this.getProperPositionForQuadSquad(Game.flags["Flag2"].pos, leader, squadID);
 
             }
+             if (tasklist[0][0] == "test2")
+            {
 
+                Memory.squadObject[squadID].quadVitalBool = true;
+                return this.getProperPositionForQuadSquad(Game.flags["Flag6"].pos, leader, squadID);
+
+            }
             if (tasklist[0][0] == "joinAttack")
             {
 
@@ -999,7 +1010,35 @@ var currentPosition = leader.pos;
                            squadTravelTime:0
                        };
                        */
-                var arrtemp = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].targets[0];
+                var arrtemp = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].targets;
+            //    console.log(JSON.stringify(arrtemp));
+                var foundtarg = false; 
+                for(var xx = 0; xx < arrtemp.length; xx++)
+                {
+                    var containers = new RoomPosition(arrtemp[xx][0], arrtemp[xx][1],leader.room.name ).findInRange(FIND_STRUCTURES,0,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType != STRUCTURE_CONTAINER && structure.structureType != STRUCTURE_ROAD )  ;
+                        }
+                    });
+                if(containers.length != 0 )
+                {
+                   arrtemp =  Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].targets[xx];
+                   foundtarg=true;
+                }
+        
+                }
+                
+                
+                if(!foundtarg)
+                {
+                    // change to the general attack
+                }
+                
+                
+                
+                
                 var targetpos = new RoomPosition(arrtemp[0], arrtemp[1], tasklist[0][1]);
 
                 var a = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].currentlyAssignedSquad;
@@ -1013,7 +1052,6 @@ var currentPosition = leader.pos;
                 {
                     Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].squadTravelTime = 1350 - leader.ticksToLive;
                 }
-
                 return this.getProperPositionForQuadSquad(targetpos, leader, squadID);
 
             }
@@ -1066,12 +1104,12 @@ var currentPosition = leader.pos;
                     }
                 }
 
-                if (exitNumber == undefined && tasklist[0].length != 0 &&  tasklist[0][1] != undefined)
+                if (exitNumber == undefined && tasklist[0].length != 0 && tasklist[0][1] != undefined)
                 {
                     // deteck hostile creeps and room match 
 
                     leader.say("fail move");
-                   // return new RoomPosition(25, 25, leader);
+                    // return new RoomPosition(25, 25, leader);
 
                 }
 
@@ -1525,7 +1563,7 @@ var currentPosition = leader.pos;
                 }
                 else
                 {
-                    leader.say("bl");
+                    leader.say("bgl");
                     leader.moveTo(target);
                 }
 
@@ -1729,7 +1767,11 @@ var currentPosition = leader.pos;
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //      leader.say(target);
             // leader.say(QuadVital);
-            leader.say("T-" + target.x + "," + target.y);
+            if (target != undefined)
+            {
+              leader.say("T-" + target.x + "," + target.y);
+            }
+                
             if (QuadVital == false && target != undefined)
             {
                 leader.say("lineMove1");

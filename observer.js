@@ -99,10 +99,13 @@ var obs = {
         else
         {
             // check if the room still needs observer by 
+               obsActual.observeRoom(Memory.empire.roomsobj[roomname].oberverobj.tasklist[0]);  
             
+            if(Game.time % 750 == 0 )
+            {
+             Memory.empire.roomsobj[roomname].oberverobj.tasklist =[];   
+            }
             
-            
-              obsActual.observeRoom(Memory.empire.roomsobj[roomname].oberverobj.tasklist[0]);  
             
             
             
