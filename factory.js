@@ -1,11 +1,8 @@
 var factoryManager = {
-         simpleVisualiser: function(roomname,topos,frompos,textActual,number)
+    simpleVisualiser: function(roomname,topos,frompos,textActual,number)
     {
-     
-    
-          new RoomVisual(roomname).line(topos.x,topos.y,frompos.x,frompos.y);
-                    new RoomVisual(roomname).text(textActual + number, frompos.x,frompos.y, {color: 'red', font: 0.3}); 
-    
+       new RoomVisual(roomname).line(topos.x,topos.y,frompos.x,frompos.y);
+       new RoomVisual(roomname).text(textActual + number, frompos.x,frompos.y, {color: 'red', font: 0.3}); 
     },
     run: function(roomname, termin, fact)
     {

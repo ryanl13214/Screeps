@@ -307,7 +307,7 @@ module.exports.loop = function()
         //                                            towers
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         var startCpu = Game.cpu.getUsed();
-        if(Game.time % (8) == 0 || defconlevel.defenceLevel < 10 || storagevalue > 800000)
+        if(Game.time % (16) == 0 || defconlevel.defenceLevel < 10 || storagevalue > 900000)
         {
             tower.run(roomname, storagevalue);
         }
