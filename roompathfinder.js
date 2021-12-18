@@ -248,9 +248,9 @@ if(openroomKeys.length == 0){
   
         
         
-        for (var xx = -10; xx < 10; xx++)
+        for (var xx = -15; xx < 15; xx++)
         {
-            for (var yy = -10; yy < 10; yy++)
+            for (var yy = -15; yy < 15; yy++)
             {
                 
                 var roomname = this.getRoomname(startroom, xx, yy);
@@ -290,7 +290,7 @@ if(openroomKeys.length == 0){
          
          if(allowRooms == 5 && roomObj.dangerLevel == 5 )
          {
-          var dangerlvl = 99
+          var dangerlvl = 250
          }
          else
          {

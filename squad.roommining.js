@@ -262,7 +262,9 @@ var roommining = {
                     if(creeper.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
                     {}
                 }
-                var targets =  creepfunctions.getHostilesInRange(creep,5);
+           
+           
+                var targets =  creepfunctions.getHostilesInRange(creeper,5);
                 
                  
                 if(targets.length != 0)
@@ -271,6 +273,8 @@ var roommining = {
                     target = creeper.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                     creeper.moveTo(new RoomPosition(25, 25, mainMemoryObject.arrayOfSquadGoals[0]));
                 }
+                
+                
             }
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

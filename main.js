@@ -9,6 +9,8 @@ var pwrspawnManager = require('powerspawn');
 var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
 var attackManager = require('attackManager');
+var claimManager = require('roomClaimer');
+ 
 var labs = require('labs');
 var visuals = require('visuals');
 var powerManager = require('powercreepManager');
@@ -132,13 +134,14 @@ module.exports.loop = function()
     //                                        SQUAD MANAGER
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     var startCpu = Game.cpu.getUsed();
-    var testingsquads = Memory.squadObject;
-    if(testingsquads == undefined)
+    var  squads = Memory.squadObject;
+    if(squads == undefined)
     {
         Memory.squadObject = {};
+       squads = {};
     }
-    var resourcevalues = Object.values(testingsquads);
-    var resourcekeys = Object.keys(testingsquads);
+    var resourcevalues = Object.values(squads);
+    var resourcekeys = Object.keys(squads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
         squadmanage.run(resourcekeys[i]);
@@ -156,6 +159,7 @@ module.exports.loop = function()
     if(attacks == undefined)
     {
         Memory.attackManager = {};
+         attacks = {};
     }
     var resourcevalues = Object.values(attacks);
     var resourcekeys = Object.keys(attacks);
@@ -163,6 +167,35 @@ module.exports.loop = function()
     {
            attackManager.run(resourcekeys[i]);
     }
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                        claim MANAGER
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    var startCpu = Game.cpu.getUsed();
+    var claims = Memory.claimManager;
+    if(claims == undefined)
+    {
+        Memory.claimManager = {};
+        claims = {};
+    }
+    var resourcevalues = Object.values(claims);
+    var resourcekeys = Object.keys(claims);
+    for(var i = 0; i < resourcekeys.length; i++)
+    {
+           claimManager.run(resourcekeys[i]);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //------------------------------------------------------------------------------------------------
     //                    START OF ROOMS LOOP
     //------------------------------------------------------------------------------------------------
