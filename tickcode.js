@@ -1,4 +1,4 @@
-// red + begin with quadf spawns a flag attack squad
+/// red + begin with quadf spawns a flag attack squad
 // yellow dismantle flags
 // blue ranged targets
 // brown stronghold Attack
@@ -29,7 +29,16 @@ var tickcode = {
             var squadname = "TEST"
             
             
-            
+              for(var name in Game.creeps)
+        {
+            if( Game.creeps[name])
+            {
+                if(Game.creeps[name].memory.role == "mover"){
+            //   Game.creeps[name].suicide()
+                }
+         
+            }
+        }
             
             
             

@@ -6,10 +6,12 @@ room considtions
   13*13 area
   sources with 2 accessable areas
  */
+ var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7","E28N4","E26N1"];
      var creepfunctions = require('prototype.creepfunctions');
      var rolescout = {
          run: function(creep)
          {
+             var roomname =creep.memory.memstruct.spawnRoom;
              if(creep.memory.roomhistory == undefined)
              {
                  creep.memory.roomhistory = [];
@@ -70,39 +72,7 @@ room considtions
                      });
                  creep.memory.prevRoom = creep.room.name;
                  creep.memory.exitchosen = "a";
-                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-                 //                                             add ally room code                                                                                                                    
-                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-                 if(creep.ticksToLive > 800 && creep.room.name != creep.memory.home && creep.room.controller != undefined && creep.room.controller.owner == "Q13214")
-                 {
-                     if(creep.memory.memstruct.spawnRoom != creep.memory.home)
-                     {
-                         var tempvar = Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange;
-                         var found = false;
-                         for(q = 0; q < tempvar.length; q++)
-                         {
-                             if(tempvar[q][0] == creep.memory.memstruct.spawnRoom)
-                             {
-                                 found = true;
-                             }
-                         }
-                         if(!found)
-                         {
-                             Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange.push([creep.memory.memstruct.spawnRoom, 1500 - creep.ticksToLive, creep.memory.roomhistory]);
-                         }
-                         if(found)
-                         {
-                             for(q = 0; q < tempvar.length; q++)
-                             {
-                                 if(tempvar[q][0] == creep.memory.memstruct.spawnRoom && tempvar[q][1] > 1500 - creep.ticksToLive)
-                                 {
-                                     Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange[q][1] = 1500 - creep.ticksToLive;
-                                     Game.flags[creep.room.name].memory.flagstruct.claimedroomstuct.allyRoomsInRange[q][2] = creep.memory.roomhistory;
-                                 }
-                             }
-                         }
-                     }
-                 }
+
                  if(creep.ticksToLive > 1400)
                  {
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,11 +83,11 @@ room considtions
                      //                                                     deciding what corridor rooms to mine 
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
                      var depo = creep.room.find(FIND_DEPOSITS);
-                     var tmpvar = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms;
+                     var tmpvar = Memory.empire.roomsobj[roomname].corridorRooms;
                      if(tmpvar == undefined)
                      {
-                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms = [];
-                         var tmpvar = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms;
+                         Memory.empire.roomsobj[roomname].corridorRooms = [];
+                         var tmpvar = Memory.empire.roomsobj[roomname].corridorRooms;
                      }
                      var found = false;
                      for(q = 0; q < tmpvar.length; q++)
@@ -129,15 +99,24 @@ room considtions
                      }
                      if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller == undefined && depo.length != 0)
                      {
-                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms.push(creep.room.name); /// 
+                         Memory.empire.roomsobj[roomname].corridorRooms.push(creep.room.name); /// 
                      }
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                      //                                                     deciding what rooms to mine 
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
                      var listEnemyStructures = creep.room.find(FIND_HOSTILE_STRUCTURES);
                      var listEnemycreeps = creep.room.find(FIND_HOSTILE_CREEPS);
-                     var tmpvar = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.MineRooms;
+                     var tmpvar = Memory.empire.roomsobj[roomname].MineRooms;
                      var found = false;
+                     
+                          if(tmpvar == undefined)
+                     {
+                         Memory.empire.roomsobj[roomname].MineRooms = [];
+                         var tmpvar = Memory.empire.roomsobj[roomname].MineRooms;
+                     }
+                     
+                     
+                     
                      for(q = 0; q < tmpvar.length; q++)
                      {
                          if(tmpvar[q] == creep.room.name)
@@ -145,6 +124,19 @@ room considtions
                              found = true;
                          }
                      }
+                       var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7","E28N4","E26N1"];
+                    
+                     for(q = 0; q < bannedMineRooms.length; q++)
+                     {
+                         if(bannedMineRooms[q] == creep.room.name)
+                         {
+                             found = true;
+                         }
+                     }
+                     
+                     
+                     
+                     
                      var available = true;
                      if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller != undefined)
                      {
@@ -159,14 +151,25 @@ room considtions
                          creep.say(available);
                          if(available && creep.ticksToLive > 1450 && listEnemyStructures.length == 0 && listEnemycreeps.length == 0)
                          {
-                             Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.MineRooms.push(creep.room.name); /// 
+                             Memory.empire.roomsobj[roomname].MineRooms.push(creep.room.name); /// 
                          }
                      }
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                      //                                                        deciding what center rooms to mine 
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                     var tmpvar = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.centerroomsinrange;
+                     var tmpvar = Memory.empire.roomsobj[roomname].centerroomsinrange;
                      var sources = Game.rooms[creep.room.name].find(FIND_SOURCES);
+                         
+                          if(tmpvar == undefined)
+                     {
+                         Memory.empire.roomsobj[roomname].centerroomsinrange = [];
+                         var tmpvar = Memory.empire.roomsobj[roomname].centerroomsinrange;
+                     }
+                     
+                     
+                     
+                     
+                     
                      var found = false;
                      for(q = 0; q < tmpvar.length; q++)
                      {
@@ -189,7 +192,7 @@ room considtions
                      }
                      if(!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller == undefined && sources.length != 0 && creep.ticksToLive > 1450)
                      {
-                         Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.centerroomsinrange.push(creep.room.name); /// this causes duplicates to need to remove dupes
+                         Memory.empire.roomsobj[roomname].centerroomsinrange.push(creep.room.name); /// this causes duplicates to need to remove dupes
                      }
                  }
                  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

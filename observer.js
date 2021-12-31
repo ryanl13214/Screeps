@@ -114,7 +114,6 @@ var obs = {
 
 
 
-
     },
     roomscan: function(roomname, scanroom) // make available for scout
     {

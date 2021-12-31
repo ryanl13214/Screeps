@@ -2,7 +2,7 @@ var creepfunctions = {
     //  :mover2-E28N5E29N5MiningSquad*[joinSquad,E28N5E29N5MiningSquad];$
     getcombattagets: function(creep)
     {
-        if(creep.body.length != 50)
+        if (creep.body.length != 50)
         {
             var targets = creep.room.find(FIND_HOSTILE_CREEPS,
             {
@@ -22,13 +22,9 @@ var creepfunctions = {
         }
         return targets;
     },
-    
-    
-    
-    
-    
-    
-    
+
+ 
+
     repairLowestRampartInRange: function(creep)
     {
         var LowestRamparts = creep.pos.findInRange(FIND_STRUCTURES, 3,
@@ -37,12 +33,12 @@ var creepfunctions = {
         });
         var tmp = 0;
         var tmprakmpat;
-        if(LowestRamparts.length != 0)
+        if (LowestRamparts.length != 0)
         {
             var value = 9999999999999999999;
-            for(var i = 0; i < LowestRamparts.length; i++)
+            for (var i = 0; i < LowestRamparts.length; i++)
             {
-                if(LowestRamparts[i].hits < value)
+                if (LowestRamparts[i].hits < value)
                 {
                     tmprakmpat = LowestRamparts[i];
                     value = LowestRamparts[i].hits
@@ -53,7 +49,7 @@ var creepfunctions = {
     },
     getcombattagetsclosest: function(creep)
     {
-        if(creep.body.length != 50)
+        if (creep.body.length != 50)
         {
             var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
             {
@@ -109,13 +105,13 @@ var creepfunctions = {
     convertToString: function(creep)
     {
         var mainString = ":" + creep.name + "*";
-        for(var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
+        for (var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
         {
             mainString += '[';
-            for(var j = 0; j < creep.memory.memstruct.tasklist[i].length; j++)
+            for (var j = 0; j < creep.memory.memstruct.tasklist[i].length; j++)
             {
                 mainString += creep.memory.memstruct.tasklist[i][j].toString();
-                if(j != creep.memory.memstruct.tasklist[i].length - 1)
+                if (j != creep.memory.memstruct.tasklist[i].length - 1)
                 {
                     mainString += ",";
                 }
@@ -135,24 +131,24 @@ var creepfunctions = {
         var mainString = string.split(''); // not NAme included 
         var outputArr = [];
         var outputArrl = string.split(',').length;
-        for(var i = 0; i < outputArrl; i++)
+        for (var i = 0; i < outputArrl; i++)
         {
             outputArr.push("a");
         }
         console.log("outputArr.length s", outputArr.length);
         var cound = 0;
-        if(mainString[0] == "[")
+        if (mainString[0] == "[")
         {
             var tempString = "";
-            for(var i = 1; i < mainString.length; i++)
+            for (var i = 1; i < mainString.length; i++)
             {
-                if(mainString[i] == ",")
+                if (mainString[i] == ",")
                 {
                     outputArr[cound] = tempString.toString(); // check for int vs string   
                     tempString = "";
                     cound++;
                 }
-                else if(mainString[i] == "]")
+                else if (mainString[i] == "]")
                 {
                     outputArr[cound] = tempString.toString(); // check for int vs string   
                     cound++;
@@ -169,7 +165,7 @@ var creepfunctions = {
     getStartAndEnd: function(string, creep)
     {
         console.log("string", string);
-        if(string == undefined || string == "")
+        if (string == undefined || string == "")
         {
             creep.say(")");
             return "a";
@@ -183,16 +179,16 @@ var creepfunctions = {
         var endofname = 999999;
         creep.say("bbb");
         startofname = string.indexOf(creep.name);
-        if(startofname == -1)
+        if (startofname == -1)
         {
             creep.say(")");
             return "a";
         }
         endofname = startofname + creepname.length;
         var endOfStringTasklist = 999999;
-        for(var j = endofname; j < mainString.length; j++)
+        for (var j = endofname; j < mainString.length; j++)
         {
-            if(mainString[j] == "$" && endOfStringTasklist == 999999)
+            if (mainString[j] == "$" && endOfStringTasklist == 999999)
             {
                 endOfStringTasklist = j;
             }
@@ -200,14 +196,14 @@ var creepfunctions = {
         var fullList = string.substring(endofname + 1, endOfStringTasklist - 1);
         var fullReturn = [];
         var returnarr = [];
-        if(startofname != 999999 && endofname != 999999)
+        if (startofname != 999999 && endofname != 999999)
         {
             var tmp = fullList.split(';');
-            for(var i = 0; i < tmp.length; i++)
+            for (var i = 0; i < tmp.length; i++)
             {
                 fullReturn.push(["a"]);
             }
-            for(var i = 0; i < tmp.length; i++)
+            for (var i = 0; i < tmp.length; i++)
             {
                 fullReturn[i] = this.convertFromString(tmp[i]);
             }
@@ -218,10 +214,10 @@ var creepfunctions = {
     addTaskListToInterShardMemory: function(shard, creep)
     {
         var data = JSON.parse(InterShardMemory.getLocal() || "{}");
-        if(data.creepsAndTasks != undefined)
+        if (data.creepsAndTasks != undefined)
         {
             var startofname = data.creepsAndTasks.indexOf(creep.name);
-            if(startofname == -1)
+            if (startofname == -1)
             {
                 data.creepsAndTasks += this.convertToString(creep);
                 console.log("adding to data.creepsAndTasks", data.creepsAndTasks);
@@ -240,11 +236,11 @@ var creepfunctions = {
     {
         var data = JSON.parse(InterShardMemory.getRemote('shard' + shardNo) || "{}");
         //  console.log("sffgggfs");
-        if(data.creepsAndTasks != undefined)
+        if (data.creepsAndTasks != undefined)
         {
             var startofname = data.creepsAndTasks.lastIndexOf(creep.name);
             console.log(shardNo, "startofname", startofname);
-            if(startofname == -1)
+            if (startofname == -1)
             {
                 return "a";
             }
@@ -257,7 +253,7 @@ var creepfunctions = {
             console.log("s s s");
             var returnArr = this.getStartAndEnd(data.creepsAndTasks, creep);
             // console.log("12data.message",data.creepsAndTasks);
-            if(returnArr == "a")
+            if (returnArr == "a")
             {
                 return "a";
             }
@@ -288,17 +284,35 @@ var creepfunctions = {
         }).path;
         creep.moveByPath(patha);
     },
+    noncombatMove: function(creep, avoidarray, avoidclosest) // check if creep has damage parts
+    {
+        let goals = _.map(avoidarray, function(host)
+        {
+            return {
+                pos: host.pos,
+                range: 5
+            };
+        });
+        let patha = PathFinder.search(creep.pos, goals,
+        {
+            flee: true
+        }).path;
+        creep.moveByPath(patha);
+    },
+    
+    
+    
     loopTasks: function(creep)
     {
         //   try
         //   {
         //     console.log(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
-        if(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1] != undefined)
+        if (creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1] != undefined)
         {
-            if(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0] == "repeat")
+            if (creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0] == "repeat")
             {
                 //   creep.say(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][0]);
-                if(creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][1] + 1 == creep.memory.memstruct.tasklist.length)
+                if (creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1][1] + 1 == creep.memory.memstruct.tasklist.length)
                 {
                     var tmpstore = creep.memory.memstruct.tasklist[creep.memory.memstruct.tasklist.length - 1]
                     var back = creep.memory.memstruct.tasklist.splice(0, 1);
@@ -328,35 +342,35 @@ var creepfunctions = {
     {
         try
         {
-            if(creep.memory.duoId != undefined)
+            if (creep.memory.duoId != undefined)
             {
                 var slave = Game.getObjectById(creep.memory.duoId);
                 const range = creep.pos.getRangeTo(slave);
                 var counter = 1;
-                if(slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
+                if (slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
                 {
                     counter = 3;
                 }
-                if(range > counter && creep.room.name == slave.room.name && Game.time % 3 == 0)
+                if (range > counter && creep.room.name == slave.room.name && Game.time % 3 == 0)
                 {
                     creep.say("come");
                     creep.moveTo(slave);
                 }
             }
-            if(creep.memory.duoId2 != undefined)
+            if (creep.memory.duoId2 != undefined)
             {
                 var slave = Game.getObjectById(creep.memory.duoId2);
                 const range = creep.pos.getRangeTo(slave);
                 var counter = 2;
-                if(creep.room.controller != undefined && creep.room.controller.level > 3 && creep.room.name != creep.memory.memstruct.spawnRoom)
+                if (creep.room.controller != undefined && creep.room.controller.level > 3 && creep.room.name != creep.memory.memstruct.spawnRoom)
                 {
                     var counter = 2;
                 }
-                if(slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
+                if (slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
                 {
                     counter = 3;
                 }
-                if(range > counter && creep.room.name == slave.room.name && Game.time % 2 == 0)
+                if (range > counter && creep.room.name == slave.room.name && Game.time % 2 == 0)
                 {
                     creep.say("WAIT");
                     creep.cancelOrder('move');
@@ -368,34 +382,34 @@ var creepfunctions = {
     },
     checkglobaltasks: function(creep)
     {
-        if(creep.memory.memstruct.tasklist.length == 0)
+        if (creep.memory.memstruct.tasklist.length == 0)
         {
             return true;
         }
         else
-        if(creep.memory.memstruct.tasklist[0] != undefined)
+        if (creep.memory.memstruct.tasklist[0] != undefined)
         {
             //    creep.memory.memstruct.tasklist = this.getStartAndEnd(this.convertToString(creep),creep);
-            if(creep.memory.memstruct.tasklist[0][0] == "getDataFromOldShard")
+            if (creep.memory.memstruct.tasklist[0][0] == "getDataFromOldShard")
             {
                 creep.memory.intershard = true;
                 creep.say("£");
                 // go through all shards and check them 
                 var shard0 = this.getTaskListToInterShardMemory(0, creep);
                 console.log("shard0", shard0);
-                if(shard0 == "a")
+                if (shard0 == "a")
                 {
                     creep.say("n0");
                     var shard1 = this.getTaskListToInterShardMemory(1, creep);
-                    if(shard1 == "a")
+                    if (shard1 == "a")
                     {
                         creep.say("n1");
                         var shard2 = this.getTaskListToInterShardMemory(2, creep);
-                        if(shard2 == "a")
+                        if (shard2 == "a")
                         {
                             creep.say("n2");
                             var shard3 = this.getTaskListToInterShardMemory(3, creep);
-                            if(shard3 == "a")
+                            if (shard3 == "a")
                             {
                                 creep.say("n3");
                             }
@@ -423,84 +437,86 @@ var creepfunctions = {
                     creep.memory.memstruct.tasklist = shard0;
                 }
             }
-            
-                 else   if(creep.memory.memstruct.tasklist[0][0] == "upgrade")
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "upgrade")
             {
-              if(creep.store[RESOURCE_ENERGY] == 0)
+                if (creep.store[RESOURCE_ENERGY] == 0)
                 {
                     creep.say("g");
                     this.loopTasks(creep);
                 }
                 else
                 {
-                    if(creep.room.controller){
-                        if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
+                    if (creep.room.controller)
+                    {
+                        if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
                         {
                             creep.moveTo(creep.room.controllerarget);
                         }
                     }
                 }
             }
-                 else   if(creep.memory.memstruct.tasklist[0][0] == "buildGeneral")
-            {     creep.say("buildGeneral");
-             if(creep.store[RESOURCE_ENERGY] == 0)
+            else if (creep.memory.memstruct.tasklist[0][0] == "buildGeneral")
+            {
+                creep.say("buildGeneral");
+                if (creep.store[RESOURCE_ENERGY] == 0)
                 {
-                     creep.say("ge");
-                  this.loopTasks(creep);
+                    creep.say("ge");
+                    this.loopTasks(creep);
                 }
                 else
                 {
                     var target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-                    if(target)
+                    if (target)
                     {
-                        if(creep.build(target) == ERR_NOT_IN_RANGE)
+                        if (creep.build(target) == ERR_NOT_IN_RANGE)
                         {
                             creep.moveTo(target);
                         }
                     }
                 }
             }
-             else   if(creep.memory.memstruct.tasklist[0][0] == "build")
+            else if (creep.memory.memstruct.tasklist[0][0] == "build")
             {
-                if(creep.store.getUsedCapacity() == 0)
+                if (creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
                 }
                 else
                 {
                     var target = Game.getObjectById(creep.memory.memstruct.tasklist[0][0]);
-                    if(target)
+                    if (target)
                     {
-                        if(creep.build(target) == ERR_NOT_IN_RANGE)
+                        if (creep.build(target) == ERR_NOT_IN_RANGE)
                         {
                             creep.moveTo(target);
                         }
                     }
                 }
             }
-            else   if(creep.memory.memstruct.tasklist[0][0] == "harvest")
+            else if (creep.memory.memstruct.tasklist[0][0] == "harvest")
             {
                 creep.say(creep.store[RESOURCE_ENERGY])
-                if(creep.store[RESOURCE_ENERGY] > 100)
+                if (creep.store[RESOURCE_ENERGY] > 100)
                 {
-                     creep.say("eeee")
+                    creep.say("eeee")
                     this.loopTasks(creep);
                 }
                 else
                 {
                     var target = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-                    if(target)
+                    if (target)
                     {
-                        if(creep.harvest(target) == ERR_NOT_IN_RANGE)
+                        if (creep.harvest(target) == ERR_NOT_IN_RANGE)
                         {
                             creep.moveTo(target);
                         }
                     }
                 }
             }
-             else   if(creep.memory.memstruct.tasklist[0][0] == "joinSquad")
+            else if (creep.memory.memstruct.tasklist[0][0] == "joinSquad")
             {
-                if(creep.ticksToLive < 1500)
+                if (creep.ticksToLive < 1500)
                 {
                     var tempid = creep.id;
                     //  console.log("adding creep to squad - " + tempid);
@@ -508,14 +524,14 @@ var creepfunctions = {
                     {
                         var listOfSquadMembers = Memory.squadObject[creep.memory.memstruct.tasklist[0][1]].SquadMembersCurrent
                         var itemfound = 0;
-                        for(var i = 0; i < listOfSquadMembers.length; i++)
+                        for (var i = 0; i < listOfSquadMembers.length; i++)
                         {
-                            if(listOfSquadMembers[i] == creep.id)
+                            if (listOfSquadMembers[i] == creep.id)
                             {
                                 itemfound = 1;
                             }
                         }
-                        if(itemfound == 0)
+                        if (itemfound == 0)
                         {
                             Memory.squadObject[creep.memory.memstruct.tasklist[0][1]].SquadMembersCurrent.push(tempid);
                             return true;
@@ -531,14 +547,14 @@ var creepfunctions = {
                     // creep.memory.memstruct.tasklist.splice(0, 1);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "changerole")
+            else if (creep.memory.memstruct.tasklist[0][0] == "changerole")
             {
                 creep.memory.role = creep.memory.memstruct.tasklist[0][1];
                 this.loopTasks(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "holdrepair")
+            else if (creep.memory.memstruct.tasklist[0][0] == "holdrepair")
             {
-                if(creep.store.getFreeCapacity("energy") > 0)
+                if (creep.store.getFreeCapacity("energy") > 0)
                 {
                     var containers = creep.pos.findInRange(FIND_STRUCTURES, 1,
                     {
@@ -547,53 +563,52 @@ var creepfunctions = {
                             return ((structure.structureType == STRUCTURE_CONTAINER && structure.store.energy > 20) || (structure.structureType == STRUCTURE_LINK && structure.store.energy > 700));
                         }
                     });
-                       var containers2 = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                    var containers2 = creep.pos.findInRange(FIND_STRUCTURES, 1,
                     {
                         filter: (structure) =>
                         {
-                            return ((structure.structureType == STRUCTURE_CONTAINER  )  );
+                            return ((structure.structureType == STRUCTURE_CONTAINER));
                         }
                     });
-                    
-                    
-                    
-                    
-                    if(containers.length != 0)
+
+                    if (containers.length != 0)
                     {
                         creep.withdraw(containers[0], RESOURCE_ENERGY)
-                    }else if(containers.length ==0 && containers2.length !=0 ){
-                          Game.spawns[creep.room.name].spawnCreep(
-                [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], creep.room.name + 'linkerrep1',
-                {
-                    memory:
-                    {
-                        role: 'multi',
-                        memstruct:
-                        {
-                            spawnRoom: creep.room.name,
-                            tasklist: [
-                                ["withdraw", "storage" , "energy", 800],
-                                ["transfer", containers2[0].id, "energy"],
-                                ["repeat", 2]
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: true,
-                            hastask: false
-                        }
                     }
-                }); 
+                    else if (containers.length == 0 && containers2.length != 0)
+                    {
+                        Game.spawns[creep.room.name].spawnCreep(
+                            [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], creep.room.name + 'linkerrep1',
+                            {
+                                memory:
+                                {
+                                    role: 'multi',
+                                    memstruct:
+                                    {
+                                        spawnRoom: creep.room.name,
+                                        tasklist: [
+                                            ["withdraw", "storage", "energy", 800],
+                                            ["transfer", containers2[0].id, "energy"],
+                                            ["repeat", 2]
+                                        ],
+                                        objectIDStorage: "",
+                                        boosted: false,
+                                        moveToRenew: false,
+                                        opportuniticRenew: true,
+                                        hastask: false
+                                    }
+                                }
+                            });
                     }
                 }
                 this.repairLowestRampartInRange(creep)
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "travelThroughPortal")
+            else if (creep.memory.memstruct.tasklist[0][0] == "travelThroughPortal")
             { // ["travelThroughPortal" , origin shard  , portalID]
                 var originshard = creep.memory.memstruct.tasklist[0][1];
                 creep.say(Game.shard.name);
                 //  
-                if(Game.shard.name == "shard" + originshard)
+                if (Game.shard.name == "shard" + originshard)
                 {
                     this.addTaskListToInterShardMemory(originshard, creep);
                     creep.say("originshard");
@@ -606,22 +621,22 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "downgrade")
+            else if (creep.memory.memstruct.tasklist[0][0] == "downgrade")
             {
-                if(creep.room.controller && !creep.room.controller.my)
+                if (creep.room.controller && !creep.room.controller.my)
                 {
-                    if(creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE)
+                    if (creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE)
                     {
                         creep.moveTo(Game.rooms[creep.memory.memstruct.tasklist[0][1]].controller);
                     }
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "waitForCreepsToSpawn")
+            else if (creep.memory.memstruct.tasklist[0][0] == "waitForCreepsToSpawn")
             {
                 var creepsSpawnedin2 = true;
-                for(var i = 0; i < creep.memory.memstruct.tasklist[0][1].length; i++)
+                for (var i = 0; i < creep.memory.memstruct.tasklist[0][1].length; i++)
                 {
-                    if(Game.creeps[creep.memory.memstruct.tasklist[0][1][i]] != undefined && Game.creeps[creep.memory.memstruct.tasklist[0][1][i]].spawning == false)
+                    if (Game.creeps[creep.memory.memstruct.tasklist[0][1][i]] != undefined && Game.creeps[creep.memory.memstruct.tasklist[0][1][i]].spawning == false)
                     {
                         creep.say("crfe ", Game.creeps[creep.memory.memstruct.tasklist[0][1][i]]);
                     }
@@ -631,142 +646,165 @@ var creepfunctions = {
                         creep.say("cre ", Game.creeps[creep.memory.memstruct.tasklist[0][1][i]]);
                     }
                 }
-                if(creepsSpawnedin2)
+                if (creepsSpawnedin2)
                 {
                     creep.say("creepsSpawnedin");
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "withdraw")
+            else if (creep.memory.memstruct.tasklist[0][0] == "withdraw")
             {
-             try{   
-                if(creep.store.getFreeCapacity() == 0   )
+                try
                 {
-                    creep.say("breakwithdraw");
-                    this.loopTasks(creep);
-                }
-                else
-                {
-                    //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue",optional value]
-                    // ad factory terminal storoage indicators
-                    if(creep.memory.memstruct.tasklist[0][1] == "terminal" && creep.room.terminal)
+                    if (creep.store.getFreeCapacity() == 0)
                     {
-                        creep.memory.memstruct.tasklist[0][1] = creep.room.terminal.id;
-                    }
-                    if(creep.memory.memstruct.tasklist[0][1] == "storage" && creep.room.storage)
-                    {
-                        creep.memory.memstruct.tasklist[0][1] = creep.room.storage.id;
-                    }
-                    var targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                    
-                    if( targ != null && targ.structureType == STRUCTURE_CONTROLLER){
-                       console.log("controller withdraw eerr");
-                         this.loopTasks(creep);
-                    }else if(!targ){
-                        
-                         this.loopTasks(creep);
-                    }
-                    
-                    
-                    else{
-                    
-                    //  creep.say(targ.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][2]));
-                    if(creep.memory.memstruct.tasklist[0].length == 3 && (targ.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][2]) < creep.memory.memstruct.tasklist[0][3]))
-                    {
-                        var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2]);
+                        creep.say("breakwithdraw");
+                        this.loopTasks(creep);
                     }
                     else
                     {
-                        var tempa = creep.memory.memstruct.tasklist[0][3];
-                        if(tempa > creep.store.getFreeCapacity())
+                        //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue",optional value]
+                        // ad factory terminal storoage indicators
+                        if (creep.memory.memstruct.tasklist[0][1] == "terminal" && creep.room.terminal)
                         {
-                            tempa = creep.store.getFreeCapacity();
+                            creep.memory.memstruct.tasklist[0][1] = creep.room.terminal.id;
                         }
-                        var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2], tempa);
-                    }
-                    if(a == ERR_NOT_IN_RANGE)
-                    {
-                        creep.moveTo(targ);// todo change this to task move to range 1 
-                    }
-                    else if(a == 0)
-                    {
-                        new RoomVisual(creep.room.name).line(targ.pos.x, targ.pos.y, creep.pos.x, creep.pos.y);
-                        new RoomVisual(creep.room.name).text(creep.memory.memstruct.tasklist[0][2], creep.pos.x, creep.pos.y,
+                        if (creep.memory.memstruct.tasklist[0][1] == "storage" && creep.room.storage)
                         {
-                            color: 'white',
-                            font: 0.3
-                        });
-                        this.loopTasks(creep);
+                            creep.memory.memstruct.tasklist[0][1] = creep.room.storage.id;
+                        }
+                        var targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
+
+                        if (targ != null && targ.structureType == STRUCTURE_CONTROLLER)
+                        {
+                            console.log("controller withdraw eerr");
+                            this.loopTasks(creep);
+                        }
+                        else if (!targ)
+                        {
+
+                            this.loopTasks(creep);
+                        }
+
+                        else
+                        {
+
+                            //  creep.say(targ.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][2]));
+                            if (creep.memory.memstruct.tasklist[0].length == 3 && (targ.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][2]) < creep.memory.memstruct.tasklist[0][3]))
+                            {
+                                var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2]);
+                            }
+                            else
+                            {
+                                var tempa = creep.memory.memstruct.tasklist[0][3];
+                                if (tempa > creep.store.getFreeCapacity())
+                                {
+                                    tempa = creep.store.getFreeCapacity();
+                                }
+                                var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2], tempa);
+                            }
+                            if (a == ERR_NOT_IN_RANGE)
+                            {
+                                creep.moveTo(targ); // todo change this to task move to range 1 
+                            }
+                            else if (a == 0)
+                            {
+                                new RoomVisual(creep.room.name).line(targ.pos.x, targ.pos.y, creep.pos.x, creep.pos.y);
+                                new RoomVisual(creep.room.name).text(creep.memory.memstruct.tasklist[0][2], creep.pos.x, creep.pos.y,
+                                {
+                                    color: 'white',
+                                    font: 0.3
+                                });
+                                this.loopTasks(creep);
+                            }
+                            else if (a == -6)
+                            {
+                                this.loopTasks(creep);
+                            }
+
+                        }
                     }
-                    else if(a == -6)
-                    {
-                        this.loopTasks(creep);
-                    }
-                
                 }
-                }
-             }catch(e){
+                catch (e)
+                {
                     console.log("controller withdraw eerrtry");
-                   this.loopTasks(creep);
-             }
-                
+                    this.loopTasks(creep);
+                }
+
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "transfer")
+            else if (creep.memory.memstruct.tasklist[0][0] == "transfer")
             {
+                
+                    
                 //     ["transfer" , "5f4e3d6138522b1096393b7d","tissue",50]
                 var targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
+
+                       
                 
-                
-                
-              
-                if(creep.memory.memstruct.tasklist[0].length == 4){
-                    var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
-                }else{
-                    var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2] );
+                if(creep.memory.role == "mover" && targ.structureType == STRUCTURE_CONTAINER)
+                {
+                    if(targ.store.getUsedCapacity() < 300)
+                    {  
+                        this.loopTasks(creep);
+                        
+                    }
                 }
                 
                 
+                
+                
+                
+     if (creep.memory.memstruct.tasklist[0].length == 4)
+                {
+                    var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
+                }
+                else
+                {
+                    var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2]);
+                }
+
                 new RoomVisual(creep.room.name).line(targ.pos.x, targ.pos.y, creep.pos.x, creep.pos.y);
                 new RoomVisual(creep.room.name).text(creep.memory.memstruct.tasklist[0][2], creep.pos.x, creep.pos.y,
                 {
                     color: 'green',
                     font: 0.3
                 });
-                if(a == ERR_NOT_IN_RANGE)
+                if (a == ERR_NOT_IN_RANGE)
                 {
                     creep.say("a");
                     creep.moveTo(targ);
                 }
-                else if(a == 0)
+                else if (a == 0)
                 {
                     this.loopTasks(creep);
                 }
-                else if(a == -6)
-                {
-                    this.loopTasks(creep);
-                }  else if(a == -7)
+                else if (a == -6)
                 {
                     this.loopTasks(creep);
                 }
-                else if(a == -8)
+                else if (a == -7)
                 {
                     this.loopTasks(creep);
                 }
-                else if(creep.store.getUsedCapacity() == 0)
+                else if (a == -8)
+                {
+                    this.loopTasks(creep);
+                }
+                else if (creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "withdrawBoost")
+            else if (creep.memory.memstruct.tasklist[0][0] == "withdrawBoost")
             {
-                if(creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200)
+                if (creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200)
                 {
                     this.loopTasks(creep);
                 }
                 const targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
                 var a = creep.withdraw(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
                 var b = creep.withdraw(targ, "energy", ((creep.memory.memstruct.tasklist[0][3] / 3) * 2));
-                if(a == 0)
+                if (a == 0)
                 {
                     new RoomVisual(creep.room.name).line(targ.pos.x, targ.pos.y, creep.pos.x, creep.pos.y);
                     new RoomVisual(creep.room.name).text(creep.memory.memstruct.tasklist[0][2], creep.pos.x, creep.pos.y,
@@ -776,12 +814,12 @@ var creepfunctions = {
                     });
                     this.loopTasks(creep);
                 }
-                else if(a == -6)
+                else if (a == -6)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "transferBoost")
+            else if (creep.memory.memstruct.tasklist[0][0] == "transferBoost")
             {
                 //     ["withdraw" , "5f4e3d6138522b1096393b7d","tissue"]
                 const targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
@@ -793,45 +831,45 @@ var creepfunctions = {
                     color: 'green',
                     font: 0.3
                 });
-                if(a == 0)
+                if (a == 0)
                 {
                     this.loopTasks(creep);
                 }
-                else if(a == -6)
+                else if (a == -6)
                 {
                     this.loopTasks(creep);
                 }
-                else if(a == -8)
+                else if (a == -8)
                 {
                     this.loopTasks(creep);
                 }
-                else if(creep.store.getUsedCapacity() == 0)
+                else if (creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "drop")
+            else if (creep.memory.memstruct.tasklist[0][0] == "drop")
             {
                 //     ["drop" , "what to drop"]
                 var a = creep.drop(creep.memory.memstruct.tasklist[0][1]);
-                if(a == ERR_NOT_IN_RANGE)
+                if (a == ERR_NOT_IN_RANGE)
                 {
                     creep.moveTo(targ);
                 }
-                else if(a == 0)
+                else if (a == 0)
                 {
                     this.loopTasks(creep);
                 }
-                else if(creep.store.getUsedCapacity() == 0)
+                else if (creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "reserve")
+            else if (creep.memory.memstruct.tasklist[0][0] == "reserve")
             {
                 //      if((roomObj.controller.reservation != undefined && roomObj.controller.reservation.ticksToEnd < 1000) || roomObj.controller.reservation == undefined    || roomObj.controller.reservation.username != "Q13214"  )
                 var range = creep.pos.getRangeTo(creep.room.controller);
-                if(range > 1)
+                if (range > 1)
                 {
                     creep.moveTo(creep.room.controller,
                     {
@@ -841,27 +879,27 @@ var creepfunctions = {
                         }
                     });
                 }
-                if(creep.room.controller.reservation != undefined && creep.room.controller.reservation.username == "Q13214")
+                if (creep.room.controller.reservation != undefined && creep.room.controller.reservation.username == "Q13214")
                 {
                     creep.reserveController(creep.room.controller)
                 }
-                if(creep.room.controller.reservation != undefined && creep.room.controller.reservation.username != "Q13214")
+                if (creep.room.controller.reservation != undefined && creep.room.controller.reservation.username != "Q13214")
                 {
                     creep.attackController(creep.room.controller)
                 }
-                if(creep.room.controller.reservation == undefined)
+                if (creep.room.controller.reservation == undefined)
                 {
                     creep.reserveController(creep.room.controller)
                 }
                 creep.signController(creep.room.controller, "Q's room");
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "steal")
+            else if (creep.memory.memstruct.tasklist[0][0] == "steal")
             {
-                if(creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200)
+                if (creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200)
                 {
                     this.loopTasks(creep);
                 }
-                if(creep.memory.memstruct.tasklist[0][1] == "terminal")
+                if (creep.memory.memstruct.tasklist[0][1] == "terminal")
                 {
                     creep.say(creep.memory.memstruct.tasklist[0][1]);
                     var targ = creep.room.find(FIND_STRUCTURES,
@@ -874,7 +912,7 @@ var creepfunctions = {
                     var resourcesToSteal = Object.keys(targ.store);
                     var listvalues = Object.values(targ.store);
                 }
-                else if(creep.memory.memstruct.tasklist[0][1] == "factory")
+                else if (creep.memory.memstruct.tasklist[0][1] == "factory")
                 {
                     var targ = creep.room.find(FIND_STRUCTURES,
                     {
@@ -886,7 +924,7 @@ var creepfunctions = {
                     var resourcesToSteal = Object.keys(targ.store);
                     var listvalues = Object.values(targ.store);
                 }
-                else if(creep.memory.memstruct.tasklist[0][1] == "storage")
+                else if (creep.memory.memstruct.tasklist[0][1] == "storage")
                 {
                     var targ = creep.room.storage;
                     var resourcesToSteal = Object.keys(targ.store);
@@ -901,34 +939,34 @@ var creepfunctions = {
                 creep.say(targ);
                 var steal = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "X", "power", 'utrium_bar', 'lemergium_bar', 'zynthium_bar', 'keanium_bar', 'ghodium_melt', 'oxidant', 'reductant', 'purifier', 'battery', 'composite', 'crystal', 'liquid', 'wire', 'switch', 'transistor', 'microchip', 'circuit', 'cell', 'phlegm', 'tissue', 'muscle', 'organoid', 'alloy', 'tube', 'fixtures', 'frame', 'hydraulics', 'condensate', 'concentrate', 'extract', 'spirit', 'emanation'];
                 var index = 0;
-                for(a = 0; a < resourcesToSteal.length; a++)
+                for (a = 0; a < resourcesToSteal.length; a++)
                 {
                     var found = false;
-                    for(q = 0; q < steal.length; q++)
+                    for (q = 0; q < steal.length; q++)
                     {
-                        if(steal[q] == resourcesToSteal[a])
+                        if (steal[q] == resourcesToSteal[a])
                         {
                             found = true;
                         }
                     }
-                    if(found == true)
+                    if (found == true)
                     {
                         index = a;
                     }
                 }
                 var a = creep.withdraw(targ, resourcesToSteal[index]);
-                if(a == ERR_NOT_IN_RANGE)
+                if (a == ERR_NOT_IN_RANGE)
                 {
                     creep.moveTo(targ);
                 }
-                else if(a == 0)
+                else if (a == 0)
                 {
                     creep.say("YOINK");
                 }
-                else if(a == -6)
+                else if (a == -6)
                 {}
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "basicrenew")
+            else if (creep.memory.memstruct.tasklist[0][0] == "basicrenew")
             {
                 var spawnss = creep.room.find(FIND_MY_SPAWNS);
                 creep.moveTo(spawnss[0],
@@ -945,61 +983,64 @@ var creepfunctions = {
                 catch (e)
                 {}
                 var found = false;
-                for(var ik = 0; ik < creep.body.length; ik++)
+                for (var ik = 0; ik < creep.body.length; ik++)
                 {
-                    if(creep.body[ik] == CLAIM)
+                    if (creep.body[ik] == CLAIM)
                     {
                         found = true;
                     }
                 }
                 var tmp = 1450;
-                if(found == true)
+                if (found == true)
                 {
                     tmp = 590;
                 }
-                if(creep.ticksToLive > tmp)
+                if (creep.ticksToLive > tmp)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "deposit")
+            else if (creep.memory.memstruct.tasklist[0][0] == "deposit")
             {
-                if(creep.room.terminal == undefined && creep.room.storage == undefined)
+                if (creep.room.terminal == undefined && creep.room.storage == undefined)
                 {
                     this.loopTasks(creep);
                 }
-                if(creep.store.getUsedCapacity() > 0)
+                if (creep.store.getUsedCapacity() > 0)
                 {
-                 
-                      if(creep.room.storage != undefined && creep.room.storage.store.getFreeCapacity() > 1500)
+
+                    if (creep.room.storage != undefined && creep.room.storage.store.getFreeCapacity() > 1500)
                     {
                         var targ = creep.room.storage;
                     }
-                      else  if(creep.room.terminal != undefined && creep.room.terminal.store.getFreeCapacity() > 1500)
+                    else if (creep.room.terminal != undefined && creep.room.terminal.store.getFreeCapacity() > 1500)
                     {
                         var targ = creep.room.terminal;
                     }
-                    
+
                     else
                     {
-                       this.loopTasks(creep);  
+                        this.loopTasks(creep);
                     }
                     const resourcevalues = Object.values(creep.store);
                     const resourcekeys = Object.keys(creep.store);
                     var range = creep.pos.getRangeTo(targ);
-                    if(range <= 1)
+                    if (range <= 1)
                     {
                         creep.transfer(targ, resourcekeys[0], resourcevalues[0]);
                     }
                     else
                     {
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         creep.moveTo(targ,
                         {
-                            reusePath: 20,
-                            visualizePathStyle:
-                            {
-                                stroke: '#ffaa00'
-                            },
+   reusePath:1,
                             maxRooms: 0
                         });
                     }
@@ -1010,7 +1051,7 @@ var creepfunctions = {
                     this.checkglobaltasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "mineCoridor")
+            else if (creep.memory.memstruct.tasklist[0][0] == "mineCoridor")
             {
                 var deposoits = creep.room.find(FIND_DEPOSITS);
                 var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES,
@@ -1028,14 +1069,14 @@ var creepfunctions = {
                             RESOURCE_ENERGY) > 30000000);
                     }
                 });
-                if(creep.store.getUsedCapacity(RESOURCE_ENERGY) != 0)
+                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) != 0)
                 {
                     creep.drop(RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY));
                 }
-                if(droppedresources != undefined)
+                if (droppedresources != undefined)
                 {
                     var range = creep.pos.getRangeTo(droppedresources);
-                    if(range <= 1)
+                    if (range <= 1)
                     {
                         creep.pickup(droppedresources);
                     }
@@ -1051,13 +1092,13 @@ var creepfunctions = {
                         });
                     }
                 }
-                else if(tombstones != undefined)
+                else if (tombstones != undefined)
                 {
                     creep.say("tomb");
                     var object = Game.getObjectById(tombstones);
                     var resourcekeys = [RESOURCE_ENERGY];
                     var range = creep.pos.getRangeTo(tombstones);
-                    if(range <= 1)
+                    if (range <= 1)
                     {
                         creep.withdraw(tombstones, resourcekeys[0]);
                     }
@@ -1075,39 +1116,39 @@ var creepfunctions = {
                 }
                 else
                 {
-                    if(deposoits.length != 0)
+                    if (deposoits.length != 0)
                     {
-                        if(creep.harvest(deposoits[0]) == ERR_NOT_IN_RANGE)
+                        if (creep.harvest(deposoits[0]) == ERR_NOT_IN_RANGE)
                         {
                             creep.moveTo(deposoits[0]);
                         }
                     }
-                    if(deposoits.length > 1)
+                    if (deposoits.length > 1)
                     {
-                        if(deposoits[0].cooldown > 25)
+                        if (deposoits[0].cooldown > 25)
                         {
-                            if(creep.harvest(deposoits[1]) == ERR_NOT_IN_RANGE)
+                            if (creep.harvest(deposoits[1]) == ERR_NOT_IN_RANGE)
                             {
                                 creep.moveTo(deposoits[1]);
                             }
                         }
                     }
                     var hostile = creep.room.find(FIND_HOSTILE_CREEPS);
-                    if(creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200 || hostile.length != 0 && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
+                    if (creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200 || hostile.length != 0 && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
                     {
                         this.loopTasks(creep);
                     }
                 }
-                if(creep.store.getFreeCapacity() == 0 && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
+                if (creep.store.getFreeCapacity() == 0 && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "clearRoomPassive")
+            else if (creep.memory.memstruct.tasklist[0][0] == "clearRoomPassive")
             {
                 var invaders = this.findHostiles(creep);
                 var hostileStructs = creep.room.find(FIND_HOSTILE_STRUCTURES);
-                if(invaders != undefined && invaders.length == 0 && hostileStructs.length == 0)
+                if (invaders != undefined && invaders.length == 0 && hostileStructs.length == 0)
                 {
                     this.loopTasks(creep);
                 }
@@ -1116,20 +1157,20 @@ var creepfunctions = {
                     return true;
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "createslave") // used by master
+            else if (creep.memory.memstruct.tasklist[0][0] == "createslave") // used by master
             {
                 creep.say("create healer");
                 var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]; // add a function to caUTOBUILD
                 var lvl = Game.rooms[creep.memory.memstruct.spawnRoom].controller.level;
-                if(lvl == 6)
+                if (lvl == 6)
                 {
                     var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
                 }
-                if(lvl == 7)
+                if (lvl == 7)
                 {
                     var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
                 }
-                if(lvl == 8)
+                if (lvl == 8)
                 {
                     var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
                 }
@@ -1152,7 +1193,7 @@ var creepfunctions = {
                         }
                     }
                 });
-                if(creep.memory.duoId == undefined)
+                if (creep.memory.duoId == undefined)
                 {}
                 else
                 {
@@ -1160,20 +1201,20 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "createslaveBOOST") // used by master// only rcl8
+            else if (creep.memory.memstruct.tasklist[0][0] == "createslaveBOOST") // used by master// only rcl8
             {
                 creep.say("create healer");
                 var mainflag = Game.flags[creep.room.name];
-                if(creep.pos.x == mainflag.pos.x - 1 && creep.pos.y == mainflag.pos.y - 3)
+                if (creep.pos.x == mainflag.pos.x - 1 && creep.pos.y == mainflag.pos.y - 3)
                 {
                     creep.move(LEFT);
                 }
                 var bgodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]; // add a function to caUTOBUILD
-                if(creep.room.controller.level == 7)
+                if (creep.room.controller.level == 7)
                 {
                     var bgodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
                 }
-                if(creep.room.controller.level == 6)
+                if (creep.room.controller.level == 6)
                 {
                     var bgodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
                 }
@@ -1197,7 +1238,7 @@ var creepfunctions = {
                         }
                     }
                 });
-                if(creep.memory.duoId == undefined)
+                if (creep.memory.duoId == undefined)
                 {}
                 else
                 {
@@ -1205,11 +1246,11 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "createslaveBOOST2") // used by master// only rcl8
+            else if (creep.memory.memstruct.tasklist[0][0] == "createslaveBOOST2") // used by master// only rcl8
             {
                 creep.say("create healer");
                 var mainflag = Game.flags[creep.room.name];
-                if(creep.pos.x == mainflag.pos.x - 1 && creep.pos.y == mainflag.pos.y - 3)
+                if (creep.pos.x == mainflag.pos.x - 1 && creep.pos.y == mainflag.pos.y - 3)
                 {
                     creep.move(LEFT);
                 }
@@ -1234,7 +1275,7 @@ var creepfunctions = {
                         }
                     }
                 });
-                if(creep.memory.duoId2 == undefined)
+                if (creep.memory.duoId2 == undefined)
                 {}
                 else
                 {
@@ -1242,10 +1283,10 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "findMaster") // used by slave
+            else if (creep.memory.memstruct.tasklist[0][0] == "findMaster") // used by slave
             {
                 const master = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                if(master == null)
+                if (master == null)
                 {
                     creep.suicide();
                 }
@@ -1255,21 +1296,21 @@ var creepfunctions = {
                 }
                 catch (e)
                 {}
-                if(master != undefined && master != null)
+                if (master != undefined && master != null)
                 {
-                    if(master.memory.duoId == undefined || master.memory.duoId == "erer")
+                    if (master.memory.duoId == undefined || master.memory.duoId == "erer")
                     {
                         master.memory.duoId = creep.id;
                     }
                     else
                     {
-                        if(creep.hits == creep.hitsMax)
+                        if (creep.hits == creep.hitsMax)
                         {
                             creep.heal(master);
                         }
                         else
                         {
-                            if(Game.time & 2 == 0)
+                            if (Game.time & 2 == 0)
                             {
                                 creep.heal(master);
                             }
@@ -1281,10 +1322,10 @@ var creepfunctions = {
                     }
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "findMaster2") // used by slave
+            else if (creep.memory.memstruct.tasklist[0][0] == "findMaster2") // used by slave
             {
                 const master = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                if(master == null)
+                if (master == null)
                 {
                     creep.suicide();
                 }
@@ -1294,21 +1335,21 @@ var creepfunctions = {
                 }
                 catch (e)
                 {}
-                if(master != undefined && master != null)
+                if (master != undefined && master != null)
                 {
-                    if(master.memory.duoId2 == undefined)
+                    if (master.memory.duoId2 == undefined)
                     {
                         master.memory.duoId2 = creep.id;
                     }
                     else
                     {
-                        if(creep.hits == creep.hitsMax)
+                        if (creep.hits == creep.hitsMax)
                         {
                             creep.heal(master);
                         }
                         else
                         {
-                            if(Game.time & 2 == 0)
+                            if (Game.time & 2 == 0)
                             {
                                 creep.heal(master);
                             }
@@ -1320,11 +1361,11 @@ var creepfunctions = {
                     }
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "waitTick")
+            else if (creep.memory.memstruct.tasklist[0][0] == "waitTick")
             {
                 this.loopTasks(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "GuardCenterRoom") // ["GuardCenterRoom","roomname]
+            else if (creep.memory.memstruct.tasklist[0][0] == "GuardCenterRoom") // ["GuardCenterRoom","roomname]
             {
                 var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                 var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
@@ -1337,46 +1378,46 @@ var creepfunctions = {
                 var range = creep.pos.getRangeTo(targets);
                 var meletargets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 2);
                 var melefound = false;
-                for(var c = 0; c < meletargets.length; c++)
+                for (var c = 0; c < meletargets.length; c++)
                 {
-                    for(var a = 0; a < meletargets[c].body.length; a++)
+                    for (var a = 0; a < meletargets[c].body.length; a++)
                     {
-                        if(meletargets[c].body[a].type == ATTACK)
+                        if (meletargets[c].body[a].type == ATTACK)
                         {
                             melefound = true;
                         }
                     }
                 }
-                if(!melefound)
+                if (!melefound)
                 {
                     creep.moveTo(targets);
                 }
-                if(creep.room.name != creep.memory.memstruct.tasklist[0][1])
+                if (creep.room.name != creep.memory.memstruct.tasklist[0][1])
                 {
                     creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
                 }
-                else if(range > 3 && creep.hits == creep.hitsMax)
+                else if (range > 3 && creep.hits == creep.hitsMax)
                 {
                     creep.moveTo(targets);
                 }
-                else if(creep.hits + 300 < creep.hitsMax || melefound)
+                else if (creep.hits + 300 < creep.hitsMax || melefound)
                 {
                     const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
                     var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    if(target != undefined)
+                    if (target != undefined)
                     {
                         creepfunctions.combatMove(creep, targetArr, target);
                     }
                 }
-                if(range <= 3)
+                if (range <= 3)
                 {
                     creep.rangedAttack(targets);
                 }
-                if(range == 1)
+                if (range == 1)
                 {
                     creep.rangedMassAttack();
                 }
-                if(targets == undefined)
+                if (targets == undefined)
                 {
                     var targets = creep.room.find(FIND_HOSTILE_STRUCTURES,
                     {
@@ -1387,19 +1428,19 @@ var creepfunctions = {
                     });
                     var temp = 9;
                     var counter = 9999;
-                    if(targets.length != 0)
+                    if (targets.length != 0)
                     {
                         creep.say(targets.length);
-                        for(var k = 0; k < targets.length; k++)
+                        for (var k = 0; k < targets.length; k++)
                         {
-                            if(targets[k].ticksToSpawn < counter)
+                            if (targets[k].ticksToSpawn < counter)
                             {
                                 counter = targets[k].ticksToSpawn;
                                 temp = k;
                             }
                         }
                         var range = creep.pos.getRangeTo(targets[temp]);
-                        if(range > 3)
+                        if (range > 3)
                         {
                             creep.say("no one to fighhtr");
                             creep.moveTo(targets[temp]);
@@ -1408,7 +1449,7 @@ var creepfunctions = {
                 }
                 creep.heal(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "patrolroom")
+            else if (creep.memory.memstruct.tasklist[0][0] == "patrolroom")
             {
                 creep.say("patrolroom");
                 var targets = this.getcombattagets(creep);
@@ -1418,11 +1459,11 @@ var creepfunctions = {
                 const range = creep.pos.getRangeTo(targposition);
                 var targe2t = creepfunctions.getcombattagets(creep);
                 var targcomparison = target = creep.room.find(FIND_HOSTILE_CREEPS);
-                if(targe2t.length < targcomparison)
+                if (targe2t.length < targcomparison)
                 {
                     this.loopTasks(creep); // avoid rooms with big defenders
                 }
-                if(range > 23 && targets.length == 0)
+                if (range > 23 && targets.length == 0)
                 {
                     creep.say("moveTo");
                     creep.moveTo(targposition);
@@ -1434,7 +1475,7 @@ var creepfunctions = {
                 }
                 else
                 {
-                    if(targets.length != 0)
+                    if (targets.length != 0)
                     {
                         creep.say("hostile");
                         return true;
@@ -1460,18 +1501,15 @@ var creepfunctions = {
                         return (res.resourceType != RESOURCE_ENERGY) || (res.amount > 200);
                     }
                 });
-                if(droppedresources != undefined || tombstones != undefined)
+                if (droppedresources != undefined || tombstones != undefined)
                 {
                     this.summonHauler(creep.room.name, creep.memory.memstruct.spawnRoom);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "gatherLooseResources")
+            else if (creep.memory.memstruct.tasklist[0][0] == "gatherLooseResources")
             {
-                if(creep.body.find(elem => elem.type === "heal") != undefined)
-                {
-                    creep.heal(creep);
-                }
-                if(creep.store.getFreeCapacity() == 0)
+
+                if (creep.store.getFreeCapacity() == 0)
                 {
                     this.loopTasks(creep);
                 }
@@ -1485,10 +1523,10 @@ var creepfunctions = {
                             return (res.amount > 0);
                         }
                     });
-                    if(droppedresources != undefined)
+                    if (droppedresources != undefined)
                     {
                         var range = creep.pos.getRangeTo(droppedresources);
-                        if(range <= 1)
+                        if (range <= 1)
                         {
                             creep.pickup(droppedresources);
                         }
@@ -1504,13 +1542,13 @@ var creepfunctions = {
                             });
                         }
                     }
-                    else if(tombstones != undefined)
+                    else if (tombstones != undefined)
                     {
                         creep.say("tomb");
                         var object = Game.getObjectById(tombstones);
                         var resourcekeys = Object.keys(tombstones.store);
                         var range = creep.pos.getRangeTo(tombstones);
-                        if(range <= 1)
+                        if (range <= 1)
                         {
                             creep.withdraw(tombstones, resourcekeys[0]);
                         }
@@ -1533,13 +1571,133 @@ var creepfunctions = {
                     ////////////////
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "gatherstoredResources") /////////////////////////////////////////////////////////////////////////
+            else if (creep.memory.memstruct.tasklist[0][0] == "gathermine") /////////////////////////////////////////////////////////////////////////
             {
-                if(creep.body.find(elem => elem.type === "heal") != undefined)
+                if (creep.store.getFreeCapacity() == 0)
+                {
+          
+                 
+                 if(Memory.roomlist[creep.room.name].movercontrol != undefined && Memory.roomlist[creep.room.name].movercontrol.moveCap != undefined)
+                 {
+                      Memory.roomlist[creep.room.name].movercontrol.moveCap =     Memory.roomlist[creep.room.name].movercontrol.moveCap - creep.store.getCapacity();
+                 }
+                 
+                 
+                 
+                 
+                    this.loopTasks(creep);
+                }
+                else
+                {
+                    var targ = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.getUsedCapacity() > 500);
+                        }
+                    });
+
+                    var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.amount > 500);
+                        }
+                    });
+
+                    var tombstones = creep.pos.findClosestByRange(FIND_TOMBSTONES,
+                    {
+                        filter: (res) =>
+                        {
+                            return (res.store.getUsedCapacity() > 500);
+                        }
+                    });
+                    if (droppedresources != undefined)
+                    {
+                        var range = creep.pos.getRangeTo(droppedresources);
+                        if (range <= 1)
+                        {
+                            creep.pickup(droppedresources);
+                        }
+                        else
+                        {
+                            creep.moveTo(droppedresources,
+                            {
+                                reusePath: range,
+                                visualizePathStyle:
+                                {
+                                    stroke: '#ffaa00'
+                                }
+                            });
+                        }
+                    }
+                    else if (tombstones != undefined)
+                    {
+                        creep.say("tomb");
+                        var object = Game.getObjectById(tombstones);
+                        var resourcekeys = Object.keys(tombstones.store);
+                        var range = creep.pos.getRangeTo(tombstones);
+                        if (range <= 1)
+                        {
+                            creep.withdraw(tombstones, resourcekeys[0]);
+                        }
+                        else
+                        {
+                            creep.moveTo(tombstones,
+                            {
+                                reusePath: range,
+                                visualizePathStyle:
+                                {
+                                    stroke: '#ffaa00'
+                                }
+                            });
+                        }
+                    }
+                    else if (targ != undefined)
+                    {
+                        var resourcekeys = Object.keys(targ.store);
+                        var range = creep.pos.getRangeTo(targ);
+                        if (range <= 1)
+                        {
+                            creep.withdraw(targ, resourcekeys[0]);
+                        }
+                        else
+                        {
+                            creep.moveTo(targ,
+                            {
+                                reusePath: range,
+                                visualizePathStyle:
+                                {
+                                    stroke: '#ffaa00'
+                                }
+                            });
+                        }
+                    }
+
+                    else
+                    {
+                        //  this.loopTasks(creep);
+                    }
+                    ////////////////
+                }
+
+                var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                var range2 = creep.pos.getRangeTo(targets);
+                if (range2 <= 6)
+                {
+                    const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
+                    target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    this.noncombatMove(creep, targetArr, target);
+                }
+
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "gatherstoredResources") /////////////////////////////////////////////////////////////////////////
+            {
+                if (creep.body.find(elem => elem.type === "heal") != undefined)
                 {
                     creep.heal(creep);
                 }
-                if(creep.store.getFreeCapacity() == 0)
+                if (creep.store.getFreeCapacity() == 0)
                 {
                     this.loopTasks(creep);
                 }
@@ -1552,7 +1710,7 @@ var creepfunctions = {
                             return (structure.structureType == STRUCTURE_STORAGE) && structure.store.getUsedCapacity() > 0;
                         }
                     });
-                    if(targ == undefined)
+                    if (targ == undefined)
                     {
                         targ = creep.pos.findClosestByRange(FIND_STRUCTURES,
                         {
@@ -1562,7 +1720,7 @@ var creepfunctions = {
                             }
                         });
                     }
-                    if(targ == undefined)
+                    if (targ == undefined)
                     {
                         targ = creep.pos.findClosestByRange(FIND_RUINS,
                         {
@@ -1572,7 +1730,7 @@ var creepfunctions = {
                             }
                         });
                     }
-                    if(targ == undefined)
+                    if (targ == undefined)
                     {
                         targ = creep.pos.findClosestByRange(FIND_STRUCTURES,
                         {
@@ -1582,11 +1740,11 @@ var creepfunctions = {
                             }
                         });
                     }
-                    if(targ != undefined)
+                    if (targ != undefined)
                     {
                         var resourcekeys = Object.keys(targ.store);
                         var range = creep.pos.getRangeTo(targ);
-                        if(range <= 1)
+                        if (range <= 1)
                         {
                             creep.withdraw(targ, resourcekeys[0]);
                         }
@@ -1609,9 +1767,9 @@ var creepfunctions = {
                     ////////////////
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "downgrade")
+            else if (creep.memory.memstruct.tasklist[0][0] == "downgrade")
             {
-                if(creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE)
+                if (creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE)
                 {
                     creep.moveTo(creep.room.controller,
                     {
@@ -1622,15 +1780,15 @@ var creepfunctions = {
                     });
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "claim")
+            else if (creep.memory.memstruct.tasklist[0][0] == "claim")
             {
-                if(creep.room.controller.reservation != undefined && creep.room.controller.reservation.username != "Q13214")
+                if (creep.room.controller.reservation != undefined && creep.room.controller.reservation.username != "Q13214")
                 {
                     creep.attackController(creep.room.controller)
                 }
-                if(creep.room.controller.reservation == undefined)
+                if (creep.room.controller.reservation == undefined)
                 {
-                    if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE)
+                    if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE)
                     {}
                 }
                 creep.moveTo(creep.room.controller,
@@ -1640,174 +1798,176 @@ var creepfunctions = {
                         stroke: '#ffaa00'
                     }
                 });
-                if(creep.body.find(elem => elem.type === "claim") == undefined)
+                if (creep.body.find(elem => elem.type === "claim") == undefined)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "boost") // [0][0] boost [0][1] boosy mineral typ3e [0][2]number of bodyparts
+            else if (creep.memory.memstruct.tasklist[0][0] == "boost") // [0][0] boost [0][1] boosy mineral typ3e [0][2]number of bodyparts
             {
                 var boostlab;
                 var flagmid = Game.flags[creep.room.name];
                 var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmid.pos.x - 2, flagmid.pos.y - 2);
-                for(var i = 0; i < temp.length; i++)
+                for (var i = 0; i < temp.length; i++)
                 {
-                    if(temp[i].structureType == STRUCTURE_LAB)
+                    if (temp[i].structureType == STRUCTURE_LAB)
                     {
                         boostlab = temp[i];
                     }
                 }
-                if(boostlab == undefined){
-                    
-                }else{
-                
-                
-                
-                var boostID = boostlab.id;
-                if(creep.pos.x == flagmid.pos.x - 1 && creep.pos.y == flagmid.pos.y - 3)
+                if (boostlab == undefined)
                 {
-                    // if the terminal has less then use storage vice versa
-                    if(boostlab != undefined)
-                    {
-                        creep.memory.memstruct.boosted = true;
-                        var temp2 = Object.keys(boostlab.store);
-                        var excesRes;
-                        for(var i = 0; i < temp2.length; i++)
-                        {
-                            if(temp2 != "energy")
-                            {
-                                //   console.log(temp2);
-                                excesRes = temp2[i];
-                            }
-                        }
-                        var resmoveractual = Game.creeps["resourcemover" + creep.room.name];
-                        if(resmoveractual != undefined && resmoveractual.memory.memstruct.tasklist.length == 0)
-                        {
-                            if(boostlab.store.getUsedCapacity("energy") < 1000) // stock e
-                            {
-                                resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                                resmoveractual.memory.memstruct.tasklist.push(["withdraw", resmoveractual.room.terminal.id, "energy", Math.min(2000 - boostlab.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity())]);
-                                resmoveractual.memory.memstruct.tasklist.push(["transfer", boostID, "energy", Math.min(2000 - boostlab.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity())]);
-                                resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
-                                // trNSFER ENERGY
-                                resmoveractual.say("lab E");
-                            }
-                            else if(excesRes != creep.memory.memstruct.tasklist[0][1] && temp2.length == 2) // clean resourtce
-                            {
-                                // console.log(excesRes + " " + creep.memory.memstruct.tasklist[0][1]);
-                                var temp = Object.keys(boostlab.store);
-                                var excesRes;
-                                for(var i = 0; i < temp.length; i++)
-                                {
-                                    if(temp != "energy")
-                                    {
-                                        excesRes = temp[i];
-                                    }
-                                }
-                                resmoveractual.say("clean" + excesRes);
-                                resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                                resmoveractual.memory.memstruct.tasklist.push(["withdraw", boostID, excesRes, boostlab.store.getUsedCapacity(excesRes)]);
-                                resmoveractual.memory.memstruct.tasklist.push(["transfer", resmoveractual.room.storage.id, excesRes, boostlab.store.getUsedCapacity(excesRes)]);
-                                resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
-                            }
-                            else if(boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) >= creep.memory.memstruct.tasklist[0][2] * 30) // boost
-                            {
-                                // lab boos creep here
-                                creep.say("hasboost");
-                                boostlab.boostCreep(creep, creep.memory.memstruct.tasklist[0][2])
-                                if(creep.memory.memstruct.tasklist.length > 1 && creep.memory.memstruct.tasklist[1][0] != "boost")
-                                {
-                                    creep.move(TOP);
-                                }
-                                this.loopTasks(creep);
-                            }
-                            else if(boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) < creep.memory.memstruct.tasklist[0][2] * 30) // stock resourtce
-                            {
-                                var resmoveractual = Game.creeps["resourcemover" + creep.room.name];
-                                resmoveractual.say("fill2");
-                                if(resmoveractual != undefined)
-                                {
-                                    var tempa = resmoveractual.room.terminal.id;
-                                    if(resmoveractual.room.terminal.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) < creep.memory.memstruct.tasklist[0][2] * 30)
-                                    {
-                                        if(resmoveractual.room.storage.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30)
-                                        {
-                                            tempa = resmoveractual.room.storage.id;
-                                        }
-                                        else
-                                        {
-                                            resmoveractual.say("no boost");
-                                             this.loopTasks(creep); // todo add flag to stop spawning boost creeps
-                                        }
-                                    }
-                                    var transferAmount = (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]);
-                                    if(transferAmount){
-                                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", tempa, creep.memory.memstruct.tasklist[0][1], transferAmount]);
-                                    resmoveractual.memory.memstruct.tasklist.push(["transfer", boostID, creep.memory.memstruct.tasklist[0][1], transferAmount]);
-                                    resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
-                                    }
-                                }
-                            }
-                        }
-                        // cleanup
-                    } //. BOOSTLAB UNDEFINED 
+
                 }
                 else
                 {
-                    creep.say("movetb");
-                    var roompos = new RoomPosition(creep.room.storage.pos.x - 1, creep.room.storage.pos.y - 3, creep.room.name);
-                    var pathh = creep.pos.findPathTo(roompos,
+
+                    var boostID = boostlab.id;
+                    if (creep.pos.x == flagmid.pos.x - 1 && creep.pos.y == flagmid.pos.y - 3)
                     {
-                        ignoreCreeps: true
-                    });
-                    creep.say(pathh.length);
-                    creep.say(pathh[0].y);
-                    var nextPosition = new RoomPosition(pathh[0].x, pathh[0].y, creep.room.name);
-                    // var blockingcreep = nextPosition.findInRange(FIND_MY_CREEPS);
-                    var targets2 = nextPosition.findInRange(FIND_MY_CREEPS, 0);
-                    var a = creep.moveByPath(pathh);
-                    //creep.say(a);
-                    if(targets2.length != 0 && (pathh.length > 1 || (targets2[0].memory.memstruct.tasklist.length == 0   || targets2[0].memory.memstruct.tasklist[0][0] !=  "boost")))
-                    {
-                        creep.say("blocked");
-                        var blockingCreeps = creep.pos.findInRange(FIND_MY_CREEPS, 1);
-                        for(var ii = 0; ii < blockingCreeps.length; ii++)
+                        // if the terminal has less then use storage vice versa
+                        if (boostlab != undefined)
                         {
-                            blockingCreeps[ii].moveTo(creep);
+                            creep.memory.memstruct.boosted = true;
+                            var temp2 = Object.keys(boostlab.store);
+                            var excesRes;
+                            for (var i = 0; i < temp2.length; i++)
+                            {
+                                if (temp2 != "energy")
+                                {
+                                    //   console.log(temp2);
+                                    excesRes = temp2[i];
+                                }
+                            }
+                            var resmoveractual = Game.creeps["resourcemover" + creep.room.name];
+                            if (resmoveractual != undefined && resmoveractual.memory.memstruct.tasklist.length == 0)
+                            {
+                                if (boostlab.store.getUsedCapacity("energy") < 1000) // stock e
+                                {
+                                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", resmoveractual.room.terminal.id, "energy", Math.min(2000 - boostlab.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity())]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["transfer", boostID, "energy", Math.min(2000 - boostlab.store.getUsedCapacity("energy"), resmoveractual.store.getCapacity())]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
+                                    // trNSFER ENERGY
+                                    resmoveractual.say("lab E");
+                                }
+                                else if (excesRes != creep.memory.memstruct.tasklist[0][1] && temp2.length == 2) // clean resourtce
+                                {
+                                    // console.log(excesRes + " " + creep.memory.memstruct.tasklist[0][1]);
+                                    var temp = Object.keys(boostlab.store);
+                                    var excesRes;
+                                    for (var i = 0; i < temp.length; i++)
+                                    {
+                                        if (temp != "energy")
+                                        {
+                                            excesRes = temp[i];
+                                        }
+                                    }
+                                    resmoveractual.say("clean" + excesRes);
+                                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", boostID, excesRes, boostlab.store.getUsedCapacity(excesRes)]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["transfer", resmoveractual.room.storage.id, excesRes, boostlab.store.getUsedCapacity(excesRes)]);
+                                    resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
+                                }
+                                else if (boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) >= creep.memory.memstruct.tasklist[0][2] * 30) // boost
+                                {
+                                    // lab boos creep here
+                                    creep.say("hasboost");
+                                    boostlab.boostCreep(creep, creep.memory.memstruct.tasklist[0][2])
+                                    if (creep.memory.memstruct.tasklist.length > 1 && creep.memory.memstruct.tasklist[1][0] != "boost")
+                                    {
+                                        creep.move(TOP);
+                                    }
+                                    this.loopTasks(creep);
+                                }
+                                else if (boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) < creep.memory.memstruct.tasklist[0][2] * 30) // stock resourtce
+                                {
+                                    var resmoveractual = Game.creeps["resourcemover" + creep.room.name];
+                                    resmoveractual.say("fill2");
+                                    if (resmoveractual != undefined)
+                                    {
+                                        var tempa = resmoveractual.room.terminal.id;
+                                        if (resmoveractual.room.terminal.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) < creep.memory.memstruct.tasklist[0][2] * 30)
+                                        {
+                                            if (resmoveractual.room.storage.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]) > creep.memory.memstruct.tasklist[0][2] * 30)
+                                            {
+                                                tempa = resmoveractual.room.storage.id;
+                                            }
+                                            else
+                                            {
+                                                resmoveractual.say("no boost");
+                                                this.loopTasks(creep); // todo add flag to stop spawning boost creeps
+                                            }
+                                        }
+                                        var transferAmount = (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]);
+                                        if (transferAmount)
+                                        {
+                                            resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                                            resmoveractual.memory.memstruct.tasklist.push(["withdraw", tempa, creep.memory.memstruct.tasklist[0][1], transferAmount]);
+                                            resmoveractual.memory.memstruct.tasklist.push(["transfer", boostID, creep.memory.memstruct.tasklist[0][1], transferAmount]);
+                                            resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
+                                        }
+                                    }
+                                }
+                            }
+                            // cleanup
+                        } //. BOOSTLAB UNDEFINED 
+                    }
+                    else
+                    {
+                        creep.say("movetb");
+                        var roompos = new RoomPosition(creep.room.storage.pos.x - 1, creep.room.storage.pos.y - 3, creep.room.name);
+                        var pathh = creep.pos.findPathTo(roompos,
+                        {
+                            ignoreCreeps: true
+                        });
+                        creep.say(pathh.length);
+                        creep.say(pathh[0].y);
+                        var nextPosition = new RoomPosition(pathh[0].x, pathh[0].y, creep.room.name);
+                        // var blockingcreep = nextPosition.findInRange(FIND_MY_CREEPS);
+                        var targets2 = nextPosition.findInRange(FIND_MY_CREEPS, 0);
+                        var a = creep.moveByPath(pathh);
+                        //creep.say(a);
+                        if (targets2.length != 0 && (pathh.length > 1 || (targets2[0].memory.memstruct.tasklist.length == 0 || targets2[0].memory.memstruct.tasklist[0][0] != "boost")))
+                        {
+                            creep.say("blocked");
+                            var blockingCreeps = creep.pos.findInRange(FIND_MY_CREEPS, 1);
+                            for (var ii = 0; ii < blockingCreeps.length; ii++)
+                            {
+                                blockingCreeps[ii].moveTo(creep);
+                            }
+                            creep.moveByPath(pathh);
                         }
-                        creep.moveByPath(pathh);
                     }
                 }
-                }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "moveToflag")
+            else if (creep.memory.memstruct.tasklist[0][0] == "moveToflag")
             {
                 creep.say("moveToflag");
                 var targobject = Game.flags[creep.memory.memstruct.tasklist[0][1]];
-                if(!targobject)
+                if (!targobject)
                 {
                     //         this.loopTasks(creep);
                 }
                 else
                 {
                     var range = creep.pos.getRangeTo(targobject);
-                    if(range > 0)
+                    if (range > 0)
                     {
                         creep.say("a");
                         creep.moveTo(targobject);
                     }
-                    else if(range == 0)
+                    else if (range == 0)
                     {
                         this.loopTasks(creep);
                     }
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "moveToObjectLoose")
+            else if (creep.memory.memstruct.tasklist[0][0] == "moveToObjectLoose")
             {
                 creep.say("e");
                 var targobject = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]).pos;
-                if(!targobject)
+                if (!targobject)
                 {
                     this.loopTasks(creep);
                 }
@@ -1817,12 +1977,12 @@ var creepfunctions = {
                     var targobject = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]).pos;
                     var range = creep.pos.getRangeTo(targobject);
                     creep.say("t-" + targobject.pos);
-                    if(range > 3)
+                    if (range > 3)
                     {
                         creep.moveTo(targobject);
                         creep.say("r-" + range);
                     }
-                    else if(range < 4)
+                    else if (range < 4)
                     {
                         creep.say("in range");
                         // this.loopTasks(creep);
@@ -1836,9 +1996,9 @@ var creepfunctions = {
                 }
                 this.allowSlave(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
+            else if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
             {
-                if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
+                if (creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
                 {
                     creep.heal(creep);
                 }
@@ -1847,7 +2007,7 @@ var creepfunctions = {
                 var pos1 = creep.pos;
                 var pos2 = targposition;
                 const range = creep.pos.getRangeTo(targposition);
-                if(range > 24)
+                if (range > 24)
                 { // might cause bug on nxt room wall 
                     creep.moveTo(targposition);
                     Game.map.visual.line(creep.pos, targposition,
@@ -1857,7 +2017,7 @@ var creepfunctions = {
                     });
                     var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                     var range2 = creep.pos.getRangeTo(targets);
-                    if(range2 <= 5)
+                    if (range2 <= 5)
                     {
                         const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
                         target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -1870,14 +2030,14 @@ var creepfunctions = {
                 }
                 this.allowSlave(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "forcemoveToRoom")
+            else if (creep.memory.memstruct.tasklist[0][0] == "forcemoveToRoom")
             {
-                if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
+                if (creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
                 {
                     creep.heal(creep);
                 }
                 var targetsa = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-                if(creep.body.find(elem => elem.type === "ranged_attack") != undefined && targetsa.length != 0)
+                if (creep.body.find(elem => elem.type === "ranged_attack") != undefined && targetsa.length != 0)
                 {
                     creep.rangedMassAttack();
                 }
@@ -1886,7 +2046,7 @@ var creepfunctions = {
                 var pos1 = creep.pos;
                 var pos2 = targposition;
                 const range = creep.pos.getRangeTo(targposition);
-                if(range > 23)
+                if (range > 23)
                 { // might cause bug on nxt room wall 
                     creep.moveTo(targposition);
                     Game.map.visual.line(creep.pos, targposition,
@@ -1896,7 +2056,7 @@ var creepfunctions = {
                     });
                     var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                     var range2 = creep.pos.getRangeTo(targets);
-                    if(range2 <= 5)
+                    if (range2 <= 5)
                     {
                         const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
                         target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -1909,44 +2069,44 @@ var creepfunctions = {
                 }
                 this.allowSlave(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "attackMoveToRoom")
+            else if (creep.memory.memstruct.tasklist[0][0] == "attackMoveToRoom")
             {
                 var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
                 var pos1 = creep.pos;
                 var pos2 = targetRoomFlag.pos;
                 var range = creep.pos.getRangeTo(targetRoomFlag.pos);
-                if(range > 23)
+                if (range > 23)
                 { // might cause bug on nxt room wall 
                     var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                     var range2 = creep.pos.getRangeTo(targets);
-                    if(range2 <= 4)
+                    if (range2 <= 4)
                     {
                         var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                         var targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
                         var targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-                        if(targets.length > 0)
+                        if (targets.length > 0)
                         {
                             creep.rangedAttack(targets[0]);
                         }
-                        if(creep.hits < creep.hitsMax)
+                        if (creep.hits < creep.hitsMax)
                         {
                             creep.heal(creep);
                         }
-                        if(creep.memory.attackrole == "ranger")
+                        if (creep.memory.attackrole == "ranger")
                         { // long range creeps here 
                             var range = creep.pos.getRangeTo(target);
-                            if(range > 3)
+                            if (range > 3)
                             {
                                 creep.moveTo(target);
                             }
-                            if(range < 3 || (creep.hits + 300 < creep.hitsMax && range < 5))
+                            if (range < 3 || (creep.hits + 300 < creep.hitsMax && range < 5))
                             {
                                 creepfunctions.combatMove(creep, targetArr, target);
                             }
                         }
                         else
                         {
-                            if(range > 1)
+                            if (range > 1)
                             {
                                 creep.moveTo(target);
                             }
@@ -1962,7 +2122,7 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "moveTo")
+            else if (creep.memory.memstruct.tasklist[0][0] == "moveTo")
             {
                 try
                 {
@@ -1972,7 +2132,7 @@ var creepfunctions = {
                 {}
                 var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.room.name);
                 var range = creep.pos.getRangeTo(targetposition);
-                if(range != 0)
+                if (range != 0)
                 {
                     creep.moveTo(targetposition);
                     // creep.say(range);
@@ -1982,11 +2142,11 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "moveToLoose")
+            else if (creep.memory.memstruct.tasklist[0][0] == "moveToLoose")
             {
                 var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.room.name);
                 var range = creep.pos.getRangeTo(targetposition);
-                if(range > 2)
+                if (range > 2)
                 {
                     creep.moveTo(targetposition);
                     creep.say(range);
@@ -1997,27 +2157,27 @@ var creepfunctions = {
                 }
                 this.allowSlave(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "moveToLooseinterRoom")
+            else if (creep.memory.memstruct.tasklist[0][0] == "moveToLooseinterRoom")
             {
                 creep.rangedMassAttack();
                 var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
                 var d = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.room.name);
                 var ranged = creep.pos.getRangeTo(d);
                 var range = creep.pos.getRangeTo(targetposition);
-                if(range > 2)
+                if (range > 2)
                 {
                     creep.moveTo(targetposition);
                     creep.say(range);
                 }
-                else if(creep.room.name == creep.memory.memstruct.tasklist[0][3] && ranged < 24)
+                else if (creep.room.name == creep.memory.memstruct.tasklist[0][3] && ranged < 24)
                 {
                     this.loopTasks(creep);
                 }
                 this.allowSlave(creep);
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "waituntil")
+            else if (creep.memory.memstruct.tasklist[0][0] == "waituntil")
             {
-                if(Game.time < creep.memory.memstruct.tasklist[0][1])
+                if (Game.time < creep.memory.memstruct.tasklist[0][1])
                 {
                     creep.say("wait");
                 }
@@ -2026,18 +2186,18 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "repair")
+            else if (creep.memory.memstruct.tasklist[0][0] == "repair")
             {
                 try
                 {
                     var target = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                    if(target.hits + 800 > target.hitsMax)
+                    if (target.hits + 800 > target.hitsMax)
                     {
                         this.loopTasks(creep);
                     }
-                    if(creep.store.getUsedCapacity("energy") != 0)
+                    if (creep.store.getUsedCapacity("energy") != 0)
                     {
-                        if(creep.repair(target) == ERR_NOT_IN_RANGE)
+                        if (creep.repair(target) == ERR_NOT_IN_RANGE)
                         {
                             creep.moveTo(target);
                         }
@@ -2052,7 +2212,7 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "renewfull")
+            else if (creep.memory.memstruct.tasklist[0][0] == "renewfull")
             {
                 var spawnss = creep.pos.findClosestByPath(FIND_MY_SPAWNS,
                 {
@@ -2071,7 +2231,7 @@ var creepfunctions = {
                         }
                     });
                     var range = creep.pos.getRangeTo(spawnss);
-                    if(range == 1)
+                    if (range == 1)
                     {
                         spawnss.renewCreep(creep);
                     }
@@ -2079,24 +2239,24 @@ var creepfunctions = {
                 catch (e)
                 {}
                 var found = false;
-                for(var ik = 0; ik < creep.body.length; ik++)
+                for (var ik = 0; ik < creep.body.length; ik++)
                 {
-                    if(creep.body[ik] == CLAIM)
+                    if (creep.body[ik] == CLAIM)
                     {
                         found = true;
                     }
                 }
                 var tmp = 1480;
-                if(found == true)
+                if (found == true)
                 {
                     tmp = 0;
                 }
-                if(creep.ticksToLive > tmp)
+                if (creep.ticksToLive > tmp)
                 {
                     this.loopTasks(creep);
                 }
             }
-            else if(creep.memory.memstruct.tasklist[0][0] == "boosAllMax") // used only by combat will deal with dismantel attack heal ranged_attack tough and move only 
+            else if (creep.memory.memstruct.tasklist[0][0] == "boosAllMax") // used only by combat will deal with dismantel attack heal ranged_attack tough and move only 
             {
                 var numberOfHealParts = 0;
                 var numberOfAttackParts = 0;
@@ -2106,67 +2266,67 @@ var creepfunctions = {
                 var numberOfToughParts = 0;
                 var numberOfcarryParts = 0;
                 var arraytopush = [];
-                for(var j = 0; j < creep.body.length; j++)
+                for (var j = 0; j < creep.body.length; j++)
                 {
-                    if(creep.body[j].type == HEAL)
+                    if (creep.body[j].type == HEAL)
                     {
                         numberOfHealParts++;
                     }
-                    if(creep.body[j].type == ATTACK)
+                    if (creep.body[j].type == ATTACK)
                     {
                         numberOfAttackParts++;
                     }
-                    if(creep.body[j].type == RANGED_ATTACK)
+                    if (creep.body[j].type == RANGED_ATTACK)
                     {
                         numberOfRangedParts++;
                     }
-                    if(creep.body[j].type == WORK)
+                    if (creep.body[j].type == WORK)
                     {
                         numberOfWorkParts++;
                     }
-                    if(creep.body[j].type == MOVE)
+                    if (creep.body[j].type == MOVE)
                     {
                         numberOfMoveParts++;
                     }
-                    if(creep.body[j].type == TOUGH)
+                    if (creep.body[j].type == TOUGH)
                     {
                         numberOfToughParts++;
                     }
-                    if(creep.body[j].type == CARRY)
+                    if (creep.body[j].type == CARRY)
                     {
                         numberOfcarryParts++;
                     }
                 }
-                if(numberOfHealParts != 0)
+                if (numberOfHealParts != 0)
                 {
                     arraytopush.push(["boost", "XLHO2", numberOfHealParts]);
                 }
-                if(numberOfcarryParts != 0)
+                if (numberOfcarryParts != 0)
                 {
                     arraytopush.push(["boost", "KH2O", numberOfcarryParts]);
                 }
-                if(numberOfAttackParts != 0)
+                if (numberOfAttackParts != 0)
                 {
                     arraytopush.push(["boost", "XUH2O", numberOfAttackParts]);
                 }
-                if(numberOfRangedParts != 0)
+                if (numberOfRangedParts != 0)
                 {
                     arraytopush.push(["boost", "XKHO2", numberOfRangedParts]);
                 }
-                if(numberOfWorkParts != 0)
+                if (numberOfWorkParts != 0)
                 {
                     arraytopush.push(["boost", "XZH2O", numberOfWorkParts]);
                 }
-                if(numberOfMoveParts != 0)
+                if (numberOfMoveParts != 0)
                 {
                     arraytopush.push(["boost", "XZHO2", numberOfMoveParts]);
                 }
-                if(numberOfToughParts != 0)
+                if (numberOfToughParts != 0)
                 {
                     arraytopush.push(["boost", "XGHO2", numberOfToughParts]);
                 }
                 this.loopTasks(creep);
-                for(var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
+                for (var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
                 {
                     arraytopush.push(creep.memory.memstruct.tasklist[i]);
                 }
@@ -2193,11 +2353,11 @@ var creepfunctions = {
             }
         });
         var homeflag = Game.flags[haulerHome];
-        if(homeflag.memory.flagstruct.haulerOUT == undefined)
+        if (homeflag.memory.flagstruct.haulerOUT == undefined)
         {
             homeflag.memory.flagstruct.haulerOUT = Game.time;
         }
-        if(Game.time - homeflag.memory.flagstruct.haulerOUT > 80 && haulersFREE.length != 0)
+        if (Game.time - homeflag.memory.flagstruct.haulerOUT > 80 && haulersFREE.length != 0)
         { // if a mover was NOT recently sent out
             console.log("summoning hauler");
             haulersFREE[0].memory.memstruct.tasklist = [
@@ -2227,10 +2387,10 @@ var creepfunctions = {
                 return (res.resourceType == RESOURCE_ENERGY) && (res.amount > creep.store.getFreeCapacity());
             }
         });
-        if(droppedresources != undefined)
+        if (droppedresources != undefined)
         {
             var range = creep.pos.getRangeTo(droppedresources);
-            if(range <= 1)
+            if (range <= 1)
             {
                 creep.pickup(droppedresources);
             }
@@ -2254,23 +2414,23 @@ var creepfunctions = {
     movehomeandrenew: function(creep, homeroom, timeer)
     {
         // check iff the renew spot is free and room is able to renew
-        if(creep.memory.isrenweing == undefined)
+        if (creep.memory.isrenweing == undefined)
         {
             creep.memory.isrenweing = false;
         }
-        if(creep.ticksToLive < timeer)
+        if (creep.ticksToLive < timeer)
         {
             creep.memory.isrenweing = true;
         }
-        if(creep.ticksToLive > 1400)
+        if (creep.ticksToLive > 1400)
         {
             creep.memory.isrenweing = false;
         }
-        if(creep.memory.isrenweing)
+        if (creep.memory.isrenweing)
         {
-            if(creep.room.name == homeroom)
+            if (creep.room.name == homeroom)
             {
-                if(creep.memory.isrenweing)
+                if (creep.memory.isrenweing)
                 {
                     var spawnss = creep.room.find(FIND_MY_SPAWNS);
                     creep.moveTo(spawnss[0],
@@ -2288,7 +2448,7 @@ var creepfunctions = {
                 var pos1 = creep.pos;
                 var pos2 = targetRoomFlag.pos;
                 const range = creep.pos.getRangeTo(targetRoomFlag.pos);
-                if(range > 23)
+                if (range > 23)
                 { // might cause bug on nxt room wall 
                     creep.moveTo(targetRoomFlag.pos);
                     Game.map.visual.line(creep.pos, targetRoomFlag.pos,
@@ -2310,12 +2470,12 @@ var creepfunctions = {
     stockstorage: function(creep)
     {
         var storageactual = creep.room.storage;
-        if(storageactual != undefined)
+        if (storageactual != undefined)
         {
-            if(storageactual.store.getUsedCapacity() < 20000)
+            if (storageactual.store.getUsedCapacity() < 20000)
             {
                 var range = creep.pos.getRangeTo(storageactual);
-                if(range <= 1)
+                if (range <= 1)
                 {
                     creep.transfer(storageactual, RESOURCE_ENERGY);
                 }
@@ -2345,7 +2505,7 @@ var creepfunctions = {
                 return s.structureType == STRUCTURE_CONTAINER && s.store.getUsedCapacity("energy") > energyleveltodrawfrom;
             }
         });
-        if(containers == undefined)
+        if (containers == undefined)
         {
             containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
             {
@@ -2355,9 +2515,9 @@ var creepfunctions = {
                 }
             });
         }
-        if(containers != undefined && containers != null)
+        if (containers != undefined && containers != null)
         {
-            if(creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+            if (creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
             {
                 creep.moveTo(containers,
                 {
@@ -2372,10 +2532,10 @@ var creepfunctions = {
         else
         {
             var storageMain = creep.room.storage;
-            if(storageMain != undefined && storageMain.store.getUsedCapacity() > 50000)
+            if (storageMain != undefined && storageMain.store.getUsedCapacity() > 50000)
             {
                 var range = creep.pos.getRangeTo(storageMain);
-                if(range <= 1)
+                if (range <= 1)
                 {
                     creep.withdraw(storageMain, RESOURCE_ENERGY);
                 }
@@ -2403,10 +2563,10 @@ var creepfunctions = {
     */
     checklocaltasks: function(creep)
     {
-        if(creep.memory.tasklist[0] == "moveto")
+        if (creep.memory.tasklist[0] == "moveto")
         {
             const path = creep.pos.findPathTo(creep.memory.targetroom);
-            if(path.length > 0)
+            if (path.length > 0)
             {
                 creep.move(path[0].direction);
             }
@@ -2432,10 +2592,10 @@ var creepfunctions = {
                 return (s.structureType == STRUCTURE_ROAD || s.structureType == STRUCTURE_CONTAINER) && s.hits < s.hitsMax * 0.7;
             }
         });
-        if(repairtarg)
+        if (repairtarg)
         {
             var range = creep.pos.getRangeTo(repairtarg);
-            if(range <= 3)
+            if (range <= 3)
             {
                 creep.repair(repairtarg);
             }
@@ -2465,10 +2625,10 @@ var creepfunctions = {
                 return (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART) && s.hits < s.hitsMax * 0.99;
             }
         });
-        if(repairtarg)
+        if (repairtarg)
         {
             var range = creep.pos.getRangeTo(repairtarg);
-            if(range <= 3)
+            if (range <= 3)
             {
                 creep.repair(repairtarg);
             }
@@ -2491,10 +2651,10 @@ var creepfunctions = {
                 return (s.structureType == STRUCTURE_WALL && s.hits < s.hitsMax * 0.1) || (s.structureType == STRUCTURE_RAMPART && s.hits < s.hitsMax * 0.5);
             }
         });
-        if(repairtarg)
+        if (repairtarg)
         {
             var range = creep.pos.getRangeTo(repairtarg);
-            if(range <= 3)
+            if (range <= 3)
             {
                 creep.repair(repairtarg);
             }
@@ -2510,7 +2670,7 @@ var creepfunctions = {
     },
     upgradecontroller: function(creep)
     {
-        if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
+        if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
         {
             creep.moveTo(creep.room.controller,
             {
@@ -2532,9 +2692,9 @@ var creepfunctions = {
                     (structure.structureType == STRUCTURE_EXTENSION && structure.energy < 50) || (structure.structureType == STRUCTURE_CONTAINER && structure.store.energy < 500) || (structure.structureType == STRUCTURE_SPAWN && structure.energy < 300));
             }
         });
-        if(buildingsneedingenergy.length > 0)
+        if (buildingsneedingenergy.length > 0)
         {
-            if(creep.transfer(creep.pos.findClosestByPath(buildingsneedingenergy), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+            if (creep.transfer(creep.pos.findClosestByPath(buildingsneedingenergy), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
             {
                 creep.moveTo(creep.pos.findClosestByPath(buildingsneedingenergy),
                 {
@@ -2558,19 +2718,19 @@ var creepfunctions = {
                 return (dep.lastCooldown < 120);
             }
         });
-        if(deposoits.length != 0 && Game.rooms[creep.memory.memstruct.spawnRoom].controller.level > 4)
+        if (deposoits.length != 0 && Game.rooms[creep.memory.memstruct.spawnRoom].controller.level > 4)
         {
-            if(!target)
+            if (!target)
             {
-                if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 5)
+                if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 5)
                 {
                     var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY];
                 }
-                else if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 6)
+                else if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level == 6)
                 {
                     var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY];
                 }
-                else if(Game.rooms[creep.memory.memstruct.spawnRoom].controller.level > 6)
+                else if (Game.rooms[creep.memory.memstruct.spawnRoom].controller.level > 6)
                 {
                     var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY];
                 }
@@ -2602,22 +2762,22 @@ var creepfunctions = {
             {
                 var lvl = Game.rooms[creep.memory.memstruct.spawnRoom].controller.level;
                 var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK];
-                if(lvl == 6)
+                if (lvl == 6)
                 {
                     bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK]
                 }
-                if(lvl > 6)
+                if (lvl > 6)
                 {
                     bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK]
                 }
                 var corridorRoomList = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms;
                 var tmptasklist = [];
-                if(corridorRoomList == undefined)
+                if (corridorRoomList == undefined)
                 {
                     Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms = [];
                 }
                 tmptasklist.push(["createslave", "healer"]);
-                for(var c = 0; c < corridorRoomList.length; c++)
+                for (var c = 0; c < corridorRoomList.length; c++)
                 {
                     tmptasklist.push(["patrolroom", corridorRoomList[c]]);
                 }
@@ -2646,10 +2806,10 @@ var creepfunctions = {
     buildstructs: function(creep)
     {
         var constructionsites = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-        if(constructionsites != undefined)
+        if (constructionsites != undefined)
         {
             var range = creep.pos.getRangeTo(constructionsites);
-            if(range <= 3)
+            if (range <= 3)
             {
                 creep.build(constructionsites);
             }

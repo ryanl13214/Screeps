@@ -135,6 +135,7 @@ var roletowermover = {
             // calc terminal ramparts needed
             for(var i = 0; i < nukeIncoming.length; i++)
             {
+                if( creep.room.terminal != undefined){
                 var range = creep.room.terminal.pos.getRangeTo(nukeIncoming[i]);
                 if(range == 0)
                 {
@@ -144,7 +145,7 @@ var roletowermover = {
                 {
                     terminalrampartsneeded += 5100000;
                 }
-                
+                }
                 
                 var range = creep.room.storage.pos.getRangeTo(nukeIncoming[i]);
                 if(range == 0)
@@ -179,6 +180,7 @@ var roletowermover = {
                     storagerampartActual = tmp[i];
                 }
             }
+            if( creep.room.terminal != undefined){
             var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.terminal.pos.x, creep.room.terminal.pos.y);
             for(var i = 0; i < tmp.length; i++)
             {
@@ -188,6 +190,8 @@ var roletowermover = {
                     terminalrapartActual = tmp[i];
                 }
             }
+            }
+            
             var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.storage.pos.x, creep.room.storage.pos.y - 1);
             for(var i = 0; i < tmp.length; i++)
             {
@@ -197,12 +201,13 @@ var roletowermover = {
                     factrapartActual = tmp[i];
                 }
             }
-            if(factrampartsneeded > factrampartsCurrent - 20000)
+            
+            if(factrampartsneeded > factrampartsCurrent - 20000 && creep.room.controller.level > 7)
             {
                 creep.repair(factrapartActual);
                 creep.say("nuketerminal");
             }
-            else if(terminalrampartsneeded > terminalrampartsCurrent - 20000)
+            else if(terminalrampartsneeded > terminalrampartsCurrent - 20000 &&  creep.room.terminal != undefined  )
             {
                 creep.repair(terminalrapartActual);
                 creep.say("nuketerminal");

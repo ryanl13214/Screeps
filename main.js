@@ -1,4 +1,4 @@
-var roles = require('roles');
+ var roles = require('roles');
 var spawnmain = require('spawn');
 var buildbase = require('buildbase');
 var tower = require('tower');
@@ -10,19 +10,15 @@ var squadgenerate = require('squadgenerator');
 var squadmanage = require('squadManager');
 var attackManager = require('attackManager');
 var claimManager = require('roomClaimer');
- 
 var labs = require('labs');
 var visuals = require('visuals');
 var powerManager = require('powercreepManager');
 var tickcode = require('tickcode');
 var observer = require('observer');
-var storecpu = 0;
-var ticks = 0;
-var counter = 0;
 var debug = false;
-var debugTime = 1500;
 module.exports.loop = function()
 {
+  
     var ownedrooms = [];
     var roomsall = Object.keys(Game.rooms);
     var roomsobj = Game.rooms;
@@ -83,7 +79,7 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     if(Game.cpu.bucket == 10000)
     {
-        Game.cpu.generatePixel()
+   //     Game.cpu.generatePixel()
     }
     //------------------------------------------------------------------------------------------------
     //                          deleting memory
@@ -144,7 +140,7 @@ module.exports.loop = function()
     var resourcekeys = Object.keys(squads);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-        squadmanage.run(resourcekeys[i]);
+      squadmanage.run(resourcekeys[i]);
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
     if(debug)
@@ -165,7 +161,7 @@ module.exports.loop = function()
     var resourcekeys = Object.keys(attacks);
     for(var i = 0; i < resourcekeys.length; i++)
     {
-           attackManager.run(resourcekeys[i]);
+          // attackManager.run(resourcekeys[i]);
     }
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,6 +198,26 @@ module.exports.loop = function()
     for(var i = 0; i < ownedrooms.length; i++)
     {
         var roomname = ownedrooms[i];
+        
+        
+        if (Memory.empire == undefined)
+        {
+            Memory.empire = {};
+        }
+        if (Memory.empire.roomsobj == undefined)
+        {
+            Memory.empire.roomsobj = {};
+        }
+        if (Memory.empire.roomsobj[roomname] == undefined ||  Memory.empire.roomsobj[roomname].centerroomsinrange == undefined    || Memory.empire.roomsobj[roomname].MineRooms == undefined )
+        {
+            Memory.empire.roomsobj[roomname] = {
+                centerroomsinrange:[],
+                MineRooms:[]
+
+                
+            }
+        }
+        
         var creepsInRoom = _.filter(Game.creeps, (creep) => (creep.memory.memstruct != undefined && creep.memory.memstruct.spawnRoom === ownedrooms[i]));
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            roles
@@ -290,9 +306,9 @@ module.exports.loop = function()
         var startCpu = Game.cpu.getUsed();
         if(Game.rooms[roomname].controller.level > 3 && storagevalue > 10000)
         {
-            if(Game.time % 150 == 0 || defconlevel.defenceLevel < 10)
+            if(Game.time % 99  == 0 || defconlevel.defenceLevel < 10)
             {
-                squadgenerate.run(roomname);
+               // squadgenerate.run(roomname);
             }
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
@@ -356,14 +372,14 @@ module.exports.loop = function()
         if(Game.rooms[roomname].controller.level > 6){
           //  labs.run(roomname);
         }
-        
+      
         
         
         
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined))
+        if((Game.time % (10 + i) == 0 && Game.rooms[roomname].terminal != undefined))
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
@@ -481,10 +497,7 @@ module.exports.loop = function()
             }
         });
         var g = 4;
-        if(Game.market.credits > 75000000)
-        {
-            g = 1;
-        }
+
         if(pwrspawn.length != 0){
         if(Game.rooms[roomname].terminal   && Game.rooms[roomname].storage   && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 500000 && pwrspawn.length != 0 && Game.time % (g) == 0  )
         {
@@ -585,19 +598,11 @@ module.exports.loop = function()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(Game.time % 4500 == 0)
-        {
-            var mainflags = Game.flags[roomname];
-            console.log("room ", roomname, " has harvested ", mainflags.memory.flagstruct.mineroomsProfitmargin, " |   and used ", mainflags.memory.flagstruct.mineroomsCPU, " CPU  | and cost ", mainflags.memory.flagstruct.mineroomsCost, " energy-- ", counter);
-            mainflags.memory.flagstruct.mineroomsProfitmargin = 0;
-            mainflags.memory.flagstruct.mineroomsCPU = 0;
-            mainflags.memory.flagstruct.mineroomsCost = 0;
-            counter = 0;
-        }
+ 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
         // } catch (e)        {            console.log("error in room : ", roomname, " ", e);        }
     } //end of rooms loop 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    counter++;
+   
 }

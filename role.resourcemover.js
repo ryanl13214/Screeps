@@ -11,12 +11,47 @@ var roleresourcemover = {
         {
             creep.heal(creep);
         }
+        
+        if(creep.memory.storcount == undefined)
+        {
+             creep.memory.storcount=0
+        }
+            else
+            {
+                creep.memory.storcount ++;
+                
+            }
+            
+             
+            
+            
         if (creep.room.storage)
         {
+            
             if (creep.pos.x != creep.room.storage.pos.x - 1 || creep.pos.y != creep.room.storage.pos.y - 1)
             {
                 creep.moveTo(new RoomPosition(creep.room.storage.pos.x - 1, creep.room.storage.pos.y - 1, creep.room.name))
             }
+              if(creep.memory.storcount > 4)
+        {
+             creep.memory.storcount=0
+            
+                    var s =  creep.room.storage.pos.findInRange(FIND_MY_CREEPS, 1,
+        {
+            filter: (creeper) => (creeper.memory.role == "mover")
+        });
+              for (var i = 0; i < s.length; i++)
+        {
+        s[i].moveTo(new RoomPosition(0,0, creep.room.name),
+                {
+                    ignoreCreeps: true
+                });
+        }
+        
+        }
+            
+            
+            
         }
 
         if (creep.memory.rescounter2 == undefined)

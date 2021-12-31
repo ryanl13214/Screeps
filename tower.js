@@ -177,7 +177,7 @@ var tower = {
             {
                 filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL
             });
-            if(woundedCreeps.length != 0 && i == 0)
+            if(woundedCreeps.length != 0 && i == 1)
             {
                 towers[i].heal(woundedCreeps[0]);
             }

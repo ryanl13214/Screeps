@@ -1199,8 +1199,67 @@ var quadsquad = {
                     }
                 }
             }
-            if (tasklist[0][0] == "killCreeps")
-            {}
+            if (tasklist[0][0] == "killcreeps")
+            {
+                
+                
+                
+                if (Memory.squadObject[squadID].leader != undefined)
+                {
+                    // deteck hostile creeps and room match 
+                    var leader = Game.getObjectById(leaderid);
+                    if (leader.room.name == tasklist[0][1])
+                    {
+                        
+                         var range = leader.pos.getRangeTo(new RoomPosition(25, 25, tasklist[0][1]));
+                        if (range < 23)
+                        {
+  Memory.squadObject[squadID].quadVitalBool = true;
+  
+                        }else{
+                            leader.moveTo(new RoomPosition(25, 25, tasklist[0][1]))
+                              return new RoomPosition(25, 25, tasklist[0][1]);
+                        }
+                        
+                        
+                        var targetTmp = 0;
+                        var flagsinrange = leader.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+
+                        if (flagsinrange != undefined && targetTmp == 0)
+                        {
+                            Game.rooms[leader.room.name].visual.circle(flagsinrange.pos.x, flagsinrange.pos.y,
+                            {
+                                fill: 'transparent',
+                                radius: 0.55,
+                                stroke: 'blue'
+                            });
+
+                            if (flagsinrange != undefined)
+                            {
+
+                                var found = flagsinrange.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+ 
+                                    targetTmp = found.pos;
+                               
+                            }
+                        }
+
+                        //  var targetTmp = this.targetAquisitionPURECOMBAT(squadID, leaderid);
+                        if (targetTmp == 0 || targetTmp == null || targetTmp == undefined)
+                        {
+                            //   flags are clear general room attack   
+                        }
+                        else
+                        {
+                            return this.getProperPositionForQuadSquad(targetTmp, leader, squadID);
+                        }
+                    }
+                    else
+                    {
+                        return new RoomPosition(25, 25, tasklist[0][1]);
+                    }
+                } 
+            }
             if (tasklist[0][0] == "HoldAttack") // tot reset hold flag // 
             {
                 if (leaderid != undefined)
@@ -1307,6 +1366,7 @@ var quadsquad = {
     },
     handleattacks: function(squadID)
     {
+        
         var mainMemoryObject = Memory.squadObject[squadID];
         var all = [];
         var target;
@@ -1320,6 +1380,7 @@ var quadsquad = {
         var index = 99;
         for (var c = 0; c < all.length; c++)
         {
+               
             if (all[c].hits < value && all[c].hits != all[c].hitsMax)
             {
                 value = all[c].hits;
@@ -1349,6 +1410,7 @@ var quadsquad = {
             {
                 targets = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
             }
+            
             var flagsInRange = all[c].pos.findInRange(FIND_FLAGS, 3);
             var targetFromflag = 0;
             var targetsTRUCTURES = all[c].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
@@ -1358,7 +1420,7 @@ var quadsquad = {
                     return (object.structureType != STRUCTURE_KEEPER_LAIR && object.structureType != STRUCTURE_PORTAL && object.structureType != STRUCTURE_POWER_BANK);
                 }
             });
-            if (flagsInRange.length != 0 && 1 == 1)
+            if (flagsInRange.length != 0 && 1==2)
             {
                 for (var q = 0; q < flagsInRange.length; q++)
                 {
@@ -1379,18 +1441,22 @@ var quadsquad = {
             var decideMassAttack = this.decideMassAttack(all[c]);
             if (targetFromflag != 0)
             {
+                   all[c].say("h");
                 all[c].rangedAttack(targetFromflag);
             }
             else if (decideMassAttack)
             {
+                   all[c].say("g");
                 all[c].rangedMassAttack();
             }
             else if (targets.length > 0)
             {
+                   all[c].say("f");
                 all[c].rangedAttack(targets[0]);
             }
             else if (targetsTRUCTURES.length > 0)
             {
+                 all[c].say("e");
                 all[c].rangedAttack(targetsTRUCTURES[0]);
             }
             else

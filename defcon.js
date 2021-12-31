@@ -1,5 +1,6 @@
 // if an attack is happening it is given prioruty if they are fufilled then the next stage is also done ie in a siege then we will also harrase the mining opperations if they exist .   
 var squadmanage = require('squadManager');
+var roompathfind = require('roompathfinder');
 var defcon = {
     run: function(roomname, creepsinroom)
     {
@@ -195,13 +196,16 @@ var defcon = {
             
           
             
-             if(spawnss[0].hits < 1000 && target.length != 0)
+             if(spawnss[0].hits < 5000 && target.length != 0)
             {
                 Game.rooms[roomname].controller.activateSafeMode()
             }
             
-            
-            
+          var cLOSETARGS = spawnss[0].pos.findInRange(FIND_HOSTILE_CREEPS,2)
+             if( cLOSETARGS.length != 0)
+            {
+               Game.rooms[roomname].controller.activateSafeMode()
+             }
             mainflag.memory.blocktranferIntoRoom = false;
         }
         else
@@ -227,6 +231,7 @@ var defcon = {
         {
             defconstuct.defenceLevel = 1;
         }
+       
         return defconstuct;
     },
     CallForAid: function(roomname)
@@ -262,20 +267,48 @@ var defcon = {
         
         
         if(roominrange.length != 0 ){
-                 // find my rooms within 6 rooms and get a CloseCombatDuo 
-        var targroom = roominrange[0];
-        var bodypartshead = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK];
-        var bodypartstail =  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
-        if(Memory.squadObject['Gondor Calls For Aid' + roomname] == undefined)
-        {
-            squadmanage.initializeSquad('Gondor Calls For Aid' + roomname, [
-                ["forcemoveToRoom", roomname]
-            ], true, "duo", targroom,
-            {
-                "head": bodypartshead,
-                "tail": bodypartstail,
-            }, "chasedown");
-        }
+                
+        
+          var finalPath = [];
+                
+                    
+                    
+                     var rawPath = roompathfind.run(roomname, roominrange[0], 0);
+                    for (var q = 0; q < rawPath.length; q++)
+                    {
+                        finalPath.push(["forcemoveToRoom", rawPath[q]])
+                    }
+
+                    finalPath.push(["killcreeps", roomname ]);
+
+                    //console.log("listOfAvailableRooms", listOfAvailableRooms[i]);
+                    //console.log("ListOfsquads", ListOfsquads[i]);
+
+                    var bodyp1 = [];
+                    var bodyp2 = [];
+
+                     bodyp2 = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+               
+                    if (Memory.squadObject["aid-" + roomname] == undefined)
+                    {
+
+                        Memory.empire.roomsobj[ roominrange[0]].squadSpawning = "aid-" + roomname;
+                        Game.flags[ roominrange[0]].memory.flagstruct.squadspawning == "aid-" + roomname
+                        squadmanage.initializeSquad("aid-" + roomname , finalPath, true, "quad", roominrange[0],
+                        {
+                            "head1": bodyp2,
+                            
+                          
+                          "tail1": bodyp2,
+                          
+                            "head2": bodyp2,
+                        
+                            "tail2": bodyp2
+                            
+                        },"blinky");
+
+        
+                    }
         
         }else{
                this.spawnBoostedarcher(roomname,5);

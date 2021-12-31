@@ -1,9 +1,125 @@
 var creepfunctions = require('prototype.creepfunctions');
 var roleMover = {
     //      ["withdraw" , "5f4e3d6138522b1096393b7d","tissue",optional value]
+
+    controlHaulers: function(creep, listOfRoomNames)
+    {
+
+        for (var i = 0; i < listOfRoomNames.length; i++)
+        {
+          
+            var roomObj = Game.rooms[listOfRoomNames[i]];
+            if (  roomObj != undefined)
+            {
+
+           
+                var containers = roomObj.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER && structure.store.energy > 1000);
+                    }
+                });
+
+                var droppedresources = roomObj.find(FIND_DROPPED_RESOURCES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.resourceType != RESOURCE_ENERGY) || (res.amount > 1000);
+                    }
+                });
+
+                var tombstones1 = roomObj.find(FIND_TOMBSTONES,
+                {
+                    filter: (tomb) =>
+                    {
+                        return (tomb.store.getUsedCapacity() != tomb.store.getUsedCapacity(RESOURCE_ENERGY));
+                    }
+                });
+                var tombstones2 = roomObj.find(FIND_TOMBSTONES,
+                {
+                    filter: (tomb) =>
+                    {
+                        return (tomb.store.getUsedCapacity(RESOURCE_ENERGY) > 500);
+                    }
+                });
+                var total = 1;
+
+                if (tombstones1.length != 0)
+                {
+                    for (var c = 0; c < tombstones1.length; c++)
+                    {
+                        total += tombstones1[c].store.getUsedCapacity();
+                
+                    }
+                }
+
+                // source keeper rooms allow exception 
+                if (tombstones2.length > 1)
+                {
+                    for (var c = 0; c < tombstones2.length; c++)
+                    {
+                        total += tombstones2[c].store.getUsedCapacity();
+                   
+                    }
+                }
+
+                if (droppedresources.length != 0)
+                {
+                    for (var c = 0; c < droppedresources.length; c++)
+                    {
+                        total += droppedresources[c].amount
+                    
+                    }
+                }
+
+                if (containers.length != 0)
+                {
+                    for (var c = 0; c < tombstones2.length; c++)
+                    {
+                        total += containers[c].store.getUsedCapacity();
+                        
+                    }
+                }
+
+                var offset = 0;
+
+                if (Memory.roomlist[listOfRoomNames[i]].movercontrol != undefined)
+                {
+                    offset = Memory.roomlist[listOfRoomNames[i]].movercontrol.moveCap;
+                }
+
+                if (total - offset > creep.store.getCapacity())
+                {
+                    
+                    creep.memory.memstruct.tasklist.push(["forcemoveToRoom", listOfRoomNames[i]]);
+                    creep.memory.memstruct.tasklist.push(["gathermine"]);
+                    creep.memory.memstruct.tasklist.push(["forcemoveToRoom", creep.room.name]);
+                     
+
+                    if (Memory.roomlist[listOfRoomNames[i]].movercontrol == undefined)
+                    {
+
+                        Memory.roomlist[listOfRoomNames[i]].movercontrol = {
+                            tot: total,
+                            moveCap: creep.store.getCapacity(),
+                            tick: Game.time
+
+                        }
+                    }
+                    else
+                    {
+                        Memory.roomlist[listOfRoomNames[i]].movercontrol.tot = total;
+                        Memory.roomlist[listOfRoomNames[i]].movercontrol.moveCap = creep.store.getCapacity() + Memory.roomlist[listOfRoomNames[i]].movercontrol.moveCap;
+                    }
+return true;
+                }
+            }
+        }
+return false;
+    },
     MaterialGathereing: function(creep)
     {
-       
 
         var droppedresources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES,
         {
@@ -19,8 +135,6 @@ var roleMover = {
                 return (tomb.store.getUsedCapacity() != tomb.store.getUsedCapacity(RESOURCE_ENERGY)) || (tomb.store.getUsedCapacity(RESOURCE_ENERGY) > 300);
             }
         });
-
- 
 
         //pcik up from recycle lab point
         var containers = creep.pos.findClosestByPath(FIND_STRUCTURES,
@@ -41,10 +155,24 @@ var roleMover = {
                 creep.memory.memstruct.tasklist.push(["withdraw", containers.id, input[i]]);
             }
 
-            if (input.length != 0)
+        }
+
+        if (tombstones != undefined)
+        {
+
+            var input = Object.keys(tombstones.store);
+
+            for (var i = 0; i < input.length; i++)
             {
-                creep.memory.memstruct.tasklist.push(["deposit"]);
+                creep.memory.memstruct.tasklist.push(["withdraw", tombstones.id, input[i]]);
             }
+
+        }
+
+        if (droppedresources != undefined)
+        {
+
+            creep.memory.memstruct.tasklist.push(["gatherLooseResources"]);
 
         }
 
@@ -52,27 +180,63 @@ var roleMover = {
     },
     lowRClEnergyGather: function(creep)
     {
-        var containers = creep.room.find(FIND_STRUCTURES,
+
+        var containers = [];
+        var roomname = creep.room.name;
+
+        var container1 = Game.flags[creep.memory.memstruct.spawnRoom + "container1"];
+
+        var input = Game.rooms[creep.memory.memstruct.spawnRoom].lookForAt(LOOK_STRUCTURES, container1.pos);
+
+        for (var i = 0; i < input.length; i++)
         {
-            filter: (structure) =>
+            if (input[i].structureType == STRUCTURE_CONTAINER)
             {
-                return (structure.structureType == STRUCTURE_CONTAINER && structure.store.energy > 1200);
+                if (input[i].store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity())
+                {
+                    containers.push(input[i]);
+                }
             }
-        });
+        }
+
+        var container0 = Game.flags[creep.memory.memstruct.spawnRoom + "container0"];
+
+        var input = Game.rooms[creep.memory.memstruct.spawnRoom].lookForAt(LOOK_STRUCTURES, container0.pos);
+
+        for (var i = 0; i < input.length; i++)
+        {
+            if (input[i].structureType == STRUCTURE_CONTAINER)
+            {
+                if (input[i].store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity())
+                {
+                    containers.push(input[i]);
+                }
+            }
+        }
+
         if (containers.length != 0)
         {
             creep.memory.memstruct.tasklist.push(["withdraw", containers[0].id, "energy"]);
         }
+
         else
         {
-            var storagemain = creep.room.storage;
-            if (storagemain && storagemain.store.getUsedCapacity(RESOURCE_ENERGY) > 2500)
+
+            var listofrooms = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange.concat(Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms)
+
+            this.controlHaulers(creep, listofrooms)
+
+            if (creep.memory.memstruct.tasklist.length == 0)
             {
-                creep.memory.memstruct.tasklist.push(["withdraw", "storage", "energy"]);
-            }
-            else
-            {
-                this.getLink(creep);
+                var storagemain = creep.room.storage;
+                if (storagemain && storagemain.store.getUsedCapacity(RESOURCE_ENERGY) > 2500)
+                {
+                    creep.memory.memstruct.tasklist.push(["withdraw", "storage", "energy"]);
+                }
+                else
+                {
+                    this.getLink(creep);
+                }
             }
 
         }
@@ -98,15 +262,31 @@ var roleMover = {
     HighRClEnergyGather: function(creep)
     {
         var storagemain = creep.room.storage;
-        if (storagemain && storagemain.store.getUsedCapacity(RESOURCE_ENERGY) > 2500)
+        
+                var listofrooms = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange.concat(Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms)
+
+     var a =        this.controlHaulers(creep, listofrooms)
+        
+        
+      
+        if (storagemain && storagemain.store.getUsedCapacity(RESOURCE_ENERGY) > 2500 && !a)
         {
-            creep.say("storageW");
+
+
+
+            creep.say("storeW");
             creep.memory.memstruct.tasklist.push(["withdraw", "storage", "energy"]);
+            
+            
+            
+            
         }
-        else
+        else if(creep.memory.memstruct.tasklist.length == 0  && !a)
         {
             this.getLink(creep);
         }
+        
+      
     },
     fillExtension: function(creep)
     {
@@ -252,20 +432,33 @@ var roleMover = {
     run: function(creep)
     {
         var check = creepfunctions.checkglobaltasks(creep);
-        
-       
-        
-        if( creep.room.controller){
-             var roomLevel = creep.room.controller.level;  
-        }else{
-               var roomLevel = 0;
+
+        if (creep.memory.memstruct.countlife == undefined)
+        {
+            creep.memory.memstruct.countlife = 0
         }
-        
-        
-        
+        else if (creep.memory.memstruct.countlife > 5000 && creep.store.getUsedCapacity() == 0)
+        {
+            creep.suicide();
+        }
+
+        else
+        {
+            creep.memory.memstruct.countlife++
+        }
+
+        if (creep.room.controller)
+        {
+            var roomLevel = creep.room.controller.level;
+        }
+        else
+        {
+            var roomLevel = 0;
+        }
+
         if (check)
         {
-           
+
             if (creep.store.getUsedCapacity() == 0)
             {
                 creep.memory.memstruct.full = false;
@@ -298,7 +491,7 @@ var roleMover = {
                 {
                     if (creep.room.storage || creep.room.terminal)
                     {
-                        creep.memory.memstruct.tasklist.push(["deposit"]);
+                        creep.memory.memstruct.tasklist.push(["deposit", "nonEnergy"]);
                     }
                 }
                 else
@@ -316,6 +509,15 @@ var roleMover = {
                             if (containersFull)
                             {
                                 var spawnsFull = this.fillSpawn(creep)
+                                if (containersFull)
+                                {
+                                    if (Game.time % 5 == 0)
+                                    {
+                                        creep.memory.memstruct.tasklist.push(["deposit"]);
+                                    }
+
+                                }
+
                             }
                         }
                     }

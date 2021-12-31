@@ -25,14 +25,43 @@ var visuals = {
             }
         }
         for(var i = 0; i < ownedrooms.length; i++)
-        {
+        {    var roomname = ownedrooms[i];
             try
             {
-                var roomname = ownedrooms[i];
+                
+                
+                 
+                
+                
+                new RoomVisual(roomname).text("centerroomsinrange-"+Memory.empire.roomsobj[roomname].centerroomsinrange.length, 10, 1, {color: 'green', font: 0.8}); 
+          new RoomVisual(roomname).text("MineRooms-"+Memory.empire.roomsobj[roomname].MineRooms.length, 10, 2, {color: 'green', font: 0.8});        
+                 new RoomVisual(roomname).text("ticksOfNeeded-"+Memory.empire.roomsobj[roomname].moversobj.ticksOfNeeded, 10, 3, {color: 'green', font: 0.8});       
+             new RoomVisual(roomname).text("ticksSinceLastCall-"+ Memory.empire.roomsobj[roomname].moversobj.ticksSinceLastCall, 10, 4, {color: 'green', font: 0.8});             
+               new RoomVisual(roomname).text("moversneeded-"+   Memory.empire.roomsobj[roomname].moversobj.numberOfMoveres, 10, 5, {color: 'green', font: 0.8});                  
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+             
                 ///////////////////////// 
-                var corridorRoomList = Game.flags[roomname].memory.flagstruct.claimedroomstuct.corridorRooms;
-                var MineRoomslist = Game.flags[roomname].memory.flagstruct.claimedroomstuct.MineRooms;
-                var centerroomsinrange = Game.flags[roomname].memory.flagstruct.claimedroomstuct.centerroomsinrange;
+                var corridorRoomList = Memory.empire.roomsobj[roomname].corridorRooms;
+                var MineRoomslist = Memory.empire.roomsobj[roomname].MineRooms;
+                var centerroomsinrange = Memory.empire.roomsobj[roomname].centerroomsinrange;
                 for(var iN = 0; iN < corridorRoomList.length; iN++)
                 {
                     Game.map.visual.line(new RoomPosition(25, 25, roomname), new RoomPosition(25, 25, corridorRoomList[iN]),

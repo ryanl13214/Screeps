@@ -79,7 +79,45 @@ var roleharvester = {
             }
             else
             {
+                
+                
+                
+                
+                
+                
+                
+                
                 creep.transfer(targets[Game.time % targets.length], RESOURCE_ENERGY);
+                
+                
+                
+                
+                
+                
+                
+                     var droppedresources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.resourceType != RESOURCE_ENERGY   );
+                    }
+                });
+                
+            if(droppedresources) {
+                 creep.pickup(droppedresources);
+            }
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
             }
             //creepfunctions.movehomeandrenew(creep,creep.memory.memstruct.spawnRoom,100);
         }

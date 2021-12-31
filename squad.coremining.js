@@ -5,7 +5,8 @@ var coremining = {
         var mainMemoryObject = Memory.squadObject[squadID];
         var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0]);
         
-          
+                     
+        
                        if(!Game.creeps[squadID + "guard"])
             {
                 delete Memory.creeps[squadID + "guard"];
@@ -21,7 +22,7 @@ var coremining = {
                         role: 'multi',
                         memstruct:
                         {
-                            spawnRoom: creep.room.name,
+                            spawnRoom: mainMemoryObject.squadHomeRoom,
                             tasklist: [
                                 ["GuardCenterRoom",  mainMemoryObject.arrayOfSquadGoals[0]]
                             ],

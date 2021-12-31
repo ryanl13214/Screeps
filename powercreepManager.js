@@ -9,7 +9,7 @@ var powercreepManager = {
             creep.usePower(PWR_SHIELD);
         }
     },
-      checkForcorpses: function(creep)
+    checkForcorpses: function(creep)
     {
              var droppedresources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1,
                  {
@@ -22,47 +22,6 @@ var powercreepManager = {
        creep.pickup(droppedresources[0]);
     }
     
-    },
-    Lvl5StrongohldCotroller: function(creep)
-    {
-        var enTowers = creep.room.find(FIND_HOSTILE_STRUCTURES,
-        {
-            filter: (structure) =>
-            {
-                return (structure.structureType == STRUCTURE_TOWER);
-            }
-        });
-        var encreeps = creep.room.find(FIND_HOSTILE_CREEPS); // filter for invaders              
-        if((enTowers.length == 6 || encreeps.length > 12) && creep.room.controller == undefined && 1 == 2)
-        {
-            var bodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-            if(Memory.squadObject.strongholdattackfive1 == undefined)
-            {
-                squadmanage.initializeSquad("strongholdattackfive1", [
-                    ["HoldAttack", creep.room.name]
-                ], true, "quad", creep.memory.memstruct.spawnRoom,
-                {
-                    "head1": bodyparts,
-                    "tail1": bodyparts,
-                    "head2": bodyparts,
-                    "tail2": bodyparts
-                });
-            }
-            /*
-            if(Memory.squadObject.strongholdattackfive2 == undefined)
-            {
-                squadmanage.initializeSquad("strongholdattackfive2", [
-                    ["GeneralAttack", creep.room.name]
-                ], true, "quad", creep.memory.memstruct.spawnRoom,
-                {
-                    "head1": bodyparts,
-                    "tail1": bodyparts,
-                    "head2": bodyparts,
-                    "tail2": bodyparts
-                });
-            }
-            */
-        }
     },
     loopTasks: function(creep)
     {
@@ -162,7 +121,7 @@ if(targets.length > 0) {
             }
             if(creep.memory.memstruct.tasklist[0][0] == "attackRoom111")
             {
-                this.Lvl5StrongohldCotroller(creep);
+                //this.Lvl5StrongohldCotroller(creep);
                 creep.say("attackRoom");
                 var renewPoint = 1800;
                 /////////////////////////////////////////////////
@@ -494,11 +453,27 @@ if(targets.length > 0) {
     },
     run: function(powerCreep)
     {
+        
+        
+                if (Memory.empire == undefined)
+        {
+            Memory.empire = {};
+        }
+                if (Memory.empire.powercreeps == undefined)
+        {
+            Memory.empire.powercreeps = {
+                attackers:[],
+                defenders:[],
+                outriders:[]
+            };
+        }
+        
+        
         var r;
         if(powerCreep.memory.memstruct == undefined)
         {
             powerCreep.memory.memstruct = {
-                spawnRoom: "E24N3",
+                spawnRoom: "",
                 tasklist: [],
                 objectIDStorage: "",
                 boosted: false,
@@ -517,47 +492,62 @@ if(targets.length > 0) {
         //   console.log(powerCreep.spawnCooldownTime );
         if(powerCreep.room == undefined) // creep is not in the world
         {
-            if(!(powerCreep.spawnCooldownTime > Date.now()) && powerCreep.name == "eco1" || powerCreep.name == "attack1")
+            
+   
+      
+            if(!(powerCreep.spawnCooldownTime > Date.now()) )
             {
                 try
                 {
-                    var pwrspawn = Game.rooms["E24N3"].find(FIND_STRUCTURES,
+                  var  myArray = powerCreep.name.split("-");
+                  
+ 
+                  
+                    var pwrspawn = Game.rooms[myArray[0]].find(FIND_STRUCTURES,
                     {
                         filter: (structure) =>
                         {
                             return (structure.structureType == STRUCTURE_POWER_SPAWN);
                         }
                     });
-                    //     console.log(powerCreep.spawn(pwrspawn[0]));
+                 
                     if(pwrspawn.length != 0)
                     {
+                        
+                        
+                                          if(myArray.length == 3)
+                  {
+                      if(myArray[1] == "atk")
+                      {
+                //        Memory.empire.powercreeps.attackers.push(powerCreep.id)
+                      }
+                       if(myArray[1] == "def")
+                      {
+              //          Memory.empire.powercreeps.defenders.push(powerCreep.id) 
+                      }
+                      
+                      
+                  }
+                   if(myArray.length == 1)// contains outrider
+                  {
+                   //  Memory.empire.powercreeps.outriders.push(powerCreep.id)    
+                  }
+                        
+                        
+                        
+                        
+                        
+                        
+                          powerCreep.memory.memstruct.spawnRoom = myArray[0];
                         powerCreep.spawn(pwrspawn[0]);
                     }
                 }
                 catch (e)
                 {}
             }
-            if(!(powerCreep.spawnCooldownTime > Date.now()) && (powerCreep.name == "eco2"))
-            {
-                try
-                {
-                    powerCreep.memory.memstruct.spawnRoom = "E28N5";
-                    var pwrspawn = Game.rooms["E28N5"].find(FIND_STRUCTURES,
-                    {
-                        filter: (structure) =>
-                        {
-                            return (structure.structureType == STRUCTURE_POWER_SPAWN);
-                        }
-                    });
-                    //     console.log(powerCreep.spawn(pwrspawn[0]));
-                    if(pwrspawn.length != 0)
-                    {
-                        powerCreep.spawn(pwrspawn[0]);
-                    }
-                }
-                catch (e)
-                {}
-            }
+            
+      
+            
         }
         else // creep is in the world
         {
@@ -972,7 +962,7 @@ if(targets.length > 0) {
             if(powerCreep.powers[PWR_OPERATE_POWER] != undefined && powerCreep.powers[PWR_OPERATE_POWER].cooldown < 15)
             {
                 powerCreep.say("PWR_POWER");
-                if(powerCreep.store.getUsedCapacity("ops") > 510) // creep is full
+                if(powerCreep.store.getUsedCapacity("ops") > 210) // creep is full
                 {
                     var pwrspawn = powerCreep.room.find(FIND_MY_STRUCTURES,
                     {

@@ -57,7 +57,7 @@ var pwrspawnManager = {
                     resmoveractual.memory.memstruct.tasklist.push(["transfer", pwrspawn.id, allResources[j]]);
                 }
             }
-        }
+        } 
     }
 }
 module.exports = pwrspawnManager;

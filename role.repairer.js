@@ -70,6 +70,12 @@ var rolerepair = {
                         });
                     }
                     var nukeIncoming = creep.room.find(FIND_NUKES);
+                    
+                    if(creep.body.length <15){
+                        nukeIncoming=[];
+                    }
+                    
+                    
                     var myspawns = creep.room.find(FIND_MY_SPAWNS);
                     var spawnsInDanger = [];
                     var terminalInDanger = false;
@@ -85,7 +91,7 @@ var rolerepair = {
                             var range = creep.room.storage.pos.getRangeTo(nukeIncoming[i]);
                             if(range == 0)
                             {
-                                storagerampartsneeded += 10100000;
+                                storagerampartsneeded += 10000000;
                             }
                             else if(range < 3)
                             {
@@ -94,17 +100,20 @@ var rolerepair = {
                         }
                         var terminalrampartsneeded = 0.;
                         // calc terminal ramparts needed
+                        if(  creep.room.terminal != undefined){
                         for(var i = 0; i < nukeIncoming.length; i++)
                         {
+                            
                             var range = creep.room.terminal.pos.getRangeTo(nukeIncoming[i]);
                             if(range == 0)
                             {
-                                terminalrampartsneeded += 10100000;
+                                terminalrampartsneeded += 10000000;
                             }
                             else if(range < 3)
                             {
                                 terminalrampartsneeded += 5100000;
                             }
+                        }
                         }
                         var storagerampartsCurrent = 0;
                         var terminalrampartsCurrent = 0;
@@ -118,7 +127,9 @@ var rolerepair = {
                                 storagerampartsCurrent = tmp[i].hits;
                                 storagerampartActual = tmp[i];
                             }
+  
                         }
+                           if(  creep.room.terminal != undefined){
                         var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.terminal.pos.x, creep.room.terminal.pos.y);
                         for(var i = 0; i < tmp.length; i++)
                         {
@@ -127,8 +138,9 @@ var rolerepair = {
                                 terminalrampartsCurrent = tmp[i].hits;
                                 terminalrapartActual = tmp[i];
                             }
-                        }
-                        if(terminalrampartsneeded > terminalrampartsCurrent)
+                        }}
+                        
+                        if(terminalrampartsneeded > terminalrampartsCurrent && creep.room.terminal != undefined)
                         {
                             var range = creep.pos.getRangeTo(terminalrapartActual);
                             if(range <= 3)

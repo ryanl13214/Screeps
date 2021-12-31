@@ -268,7 +268,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ['fixtures', 5, 0.1], ////////////////////////////////
                 ['frame', 0, 0.1],
                 ['hydraulics', 0, 0.1],
-                ["power", 5000, 0.2],
+                ["power", 15000, 0.6],
                 ["machine", 0, 0.2]
             ];
 
