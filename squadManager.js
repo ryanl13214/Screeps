@@ -7,16 +7,30 @@ var squadmanager = {
     run: function(squadID)
     {
         var mainMemoryObject = Memory.squadObject[squadID];
-        var numberOfLivingSqaudMembers = [];
-        for(var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+
+        try
         {
-            if(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]))
+            if (Memory.squadObject[Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning] == undefined)
+            {
+                Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+            }
+        }
+        catch (e)
+        {
+            // squad setup wrong
+            delete Memory.squadObject[squadID];
+        }
+
+        var numberOfLivingSqaudMembers = [];
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            if (Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]))
             {
                 numberOfLivingSqaudMembers.push(mainMemoryObject.SquadMembersCurrent[c]);
             }
         }
         mainMemoryObject.SquadMembersCurrent = numberOfLivingSqaudMembers;
-        if(mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || (mainMemoryObject.squadType == "quad" && mainMemoryObject.SquadMembersCurrent.length == 0 && mainMemoryObject.squadisready))
+        if (mainMemoryObject.squadcreationtime + 1500 < Game.time && numberOfLivingSqaudMembers.length == 0 || ((mainMemoryObject.squadType == "duo" || mainMemoryObject.squadType == "quad") && mainMemoryObject.SquadMembersCurrent.length == 0 && mainMemoryObject.squadisready))
         {
             console.log("deleting squad-", squadID);
             delete Memory.squadObject[squadID];
@@ -24,58 +38,67 @@ var squadmanager = {
         else
         {
             var squadMemberGoal = Object.values(mainMemoryObject.SquadMembersGoal);
-            if(mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level == 8))
+            if (mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && (Game.flags[mainMemoryObject.squadHomeRoom] && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level == 8)))
             {
-                if(Memory.squadObject[Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning] == undefined)
-                {
-                    Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
-                }
-                if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
+
+                if (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
                 {
                     Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = squadID;
+                    if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning != undefined)
+                    {
+                        Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = squadID;
+                    }
                 }
-                if(Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == squadID)
+                if (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == squadID)
                 {
-                    if(mainMemoryObject.squadType == "quad" && mainMemoryObject.squadisready == true)
+                    if (mainMemoryObject.squadType == "quad" && mainMemoryObject.squadisready == true)
                     {
-                             Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+                        Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
+
+                        if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning != undefined)
+                        {
+                            Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = "";
+                        }
                     }
-                    
-                    
-                      if(mainMemoryObject.squadType == "duo" && mainMemoryObject.squadisready == true)
+
+                    else if (mainMemoryObject.squadType == "duo" && mainMemoryObject.squadisready == true)
                     {
-                             Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+                        Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
                     }
-                    
+
                     else
                     {
                         this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
                     }
                 }
             }
-            else if(mainMemoryObject.SquadMembersCurrent.length == squadMemberGoal.length)
+            else if (mainMemoryObject.SquadMembersCurrent.length == squadMemberGoal.length)
             {
                 mainMemoryObject.squadisready = true;
                 Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
+                if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning != undefined)
+                {
+                    Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = "";
+                }
             }
             /////////////////////////////////////Solid GroupSquads////////////////////////////////////////////////////////////////////  squads that only fuinctiuon with set numbers 
-         
-            if(mainMemoryObject.squadType == "quad" && (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready))
+
+            if (mainMemoryObject.squadType == "quad" && (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready))
             {
                 quadsquad.run(squadID);
             }
-            if(mainMemoryObject.squadType == "duo" && (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready))
+            if (mainMemoryObject.squadType == "duo" && (mainMemoryObject.SquadMembersCurrent.length != 0 && mainMemoryObject.squadisready))
             {
-              duosquad.run(squadID);
+                duosquad.run(squadID);
             }
             ///////////////////////////////////////////////////////////////////////////////////////////////////////// squads that can function with looser restrictions
-            if(mainMemoryObject.SquadMembersCurrent.length != 0) //independant squads
+            if (mainMemoryObject.SquadMembersCurrent.length != 0) //independant squads
             {
-                if(mainMemoryObject.squadType == "centerMiningSquad")
+                if (mainMemoryObject.squadType == "centerMiningSquad")
                 {
                     coremining.run(squadID);
                 }
-                if(mainMemoryObject.squadType == "MiningSquad")
+                if (mainMemoryObject.squadType == "MiningSquad")
                 {
                     var startCpu = Game.cpu.getUsed();
                     roommining.run(squadID);
@@ -103,18 +126,19 @@ var squadmanager = {
         };
     },
     spawnnewcreep: function(squadID, squadHomeRoom)
-    {console.log("spawnnewcreep", squadID);
+    {
+
         // add in function fpor broken squads to be reincorpirated
         var mainMemoryObject = Memory.squadObject[squadID];
         var tasklistt = [
             ["joinSquad", squadID]
         ];
         var mainflag = Game.flags[squadHomeRoom];
-        if(mainMemoryObject.squadIsBoosted == true)
+        if (mainMemoryObject.squadIsBoosted == true)
         {
             var temp = [];
             var waitUntil = Object.keys(mainMemoryObject.SquadMembersGoal);
-            for(var c = 0; c < waitUntil.length; c++)
+            for (var c = 0; c < waitUntil.length; c++)
             {
                 temp.push(waitUntil[c] + "-" + squadID);
             }
@@ -122,7 +146,7 @@ var squadmanager = {
                 ["waitForCreepsToSpawn", temp],
                 ["renewfull"],
                 ["boosAllMax"],
-                ["moveToLoose", mainflag.pos.x - 7, mainflag.pos.y - 7],
+                //   ["moveToLoose", mainflag.pos.x - 7, mainflag.pos.y - 7],
                 ["joinSquad", squadID]
             ];
         }
@@ -156,12 +180,12 @@ var squadmanager = {
         var names = Object.keys(mainMemoryObject.SquadMembersGoal);
         var sucs3esscounter = 9;
         var total = 0;
-        for(var i = 0; i < allspawns.length; i++)
+        for (var i = 0; i < allspawns.length; i++)
         {
             var curspawn = allspawns[i];
-            for(var q = 0; q < names.length; q++)
+            for (var q = 0; q < names.length; q++)
             {
-                if(sucs3esscounter != 0 && Game.rooms[squadHomeRoom].storage.store.getUsedCapacity("energy") > 10000 || Game.rooms[squadHomeRoom].controller.level == 8)
+                if (sucs3esscounter != 0 && Game.rooms[squadHomeRoom].storage.store.getUsedCapacity("energy") > 10000 || Game.rooms[squadHomeRoom].controller.level == 8)
                 {
                     sucs3esscounter = curspawn.spawnCreep(resourcevalues[q], names[q] + "-" + squadID,
                     {
@@ -173,41 +197,41 @@ var squadmanager = {
                         }
                     });
                     //////////////////////////////////////////////////// resource tracking ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    if(sucs3esscounter == 0 && (Memory.squadObject[squadID].squadType == "MiningSquad" || Memory.squadObject[squadID].squadType == "centerMiningSquad" || Memory.squadObject[squadID].squadType == "solocenterdamager"))
+                    if (sucs3esscounter == 0 && (Memory.squadObject[squadID].squadType == "MiningSquad" || Memory.squadObject[squadID].squadType == "centerMiningSquad" || Memory.squadObject[squadID].squadType == "solocenterdamager"))
                     {
                         total = 0;
-                        for(var j = 0; j < resourcevalues[q].length; j++)
+                        for (var j = 0; j < resourcevalues[q].length; j++)
                         {
-                            if(resourcevalues[q][j] == HEAL)
+                            if (resourcevalues[q][j] == HEAL)
                             {
                                 total += 250;
                             }
-                            if(resourcevalues[q][j] == ATTACK)
+                            if (resourcevalues[q][j] == ATTACK)
                             {
                                 total += 80;
                             }
-                            if(resourcevalues[q][j] == RANGED_ATTACK)
+                            if (resourcevalues[q][j] == RANGED_ATTACK)
                             {
                                 total += 150;
                             }
-                            if(resourcevalues[q][j] == WORK)
+                            if (resourcevalues[q][j] == WORK)
                             {
                                 total += 100;
                             }
-                            if(resourcevalues[q][j] == MOVE)
+                            if (resourcevalues[q][j] == MOVE)
                             {
                                 total += 50;
                             }
-                            if(resourcevalues[q][j] == MOVE)
+                            if (resourcevalues[q][j] == MOVE)
                             {
                                 total += 50;
                             }
-                            if(resourcevalues[q][j] == TOUGH)
+                            if (resourcevalues[q][j] == TOUGH)
                             {
                                 total += 10;
                             }
                         }
-                        if(Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost == undefined)
+                        if (Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost == undefined)
                         {
                             Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost = 0;
                         }

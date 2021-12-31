@@ -130,10 +130,12 @@ var roletowermover = {
                     storagerampartsneeded += 5100000;
                 }
             }
-            var terminalrampartsneeded = 0.;
+            var terminalrampartsneeded = 0;
+            var factrampartsneeded = 0; 
             // calc terminal ramparts needed
             for(var i = 0; i < nukeIncoming.length; i++)
             {
+                if( creep.room.terminal != undefined){
                 var range = creep.room.terminal.pos.getRangeTo(nukeIncoming[i]);
                 if(range == 0)
                 {
@@ -143,11 +145,32 @@ var roletowermover = {
                 {
                     terminalrampartsneeded += 5100000;
                 }
+                }
+                
+                var range = creep.room.storage.pos.getRangeTo(nukeIncoming[i]);
+                if(range == 0)
+                {
+                    factrampartsneeded += 10100000;
+                }
+                else if(range < 3)
+                {
+                    factrampartsneeded += 5100000;
+                }
+                
+                
+                
+                
             }
+            
+            
+            
             var storagerampartsCurrent = 0;
+            var factrampartsCurrent = 0;       
             var terminalrampartsCurrent = 0;
             var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.storage.pos.x, creep.room.storage.pos.y);
             var terminalrapartActual;
+            var factrapartActual;
+            
             var storagerampartActual;
             for(var i = 0; i < tmp.length; i++)
             {
@@ -157,6 +180,7 @@ var roletowermover = {
                     storagerampartActual = tmp[i];
                 }
             }
+            if( creep.room.terminal != undefined){
             var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.terminal.pos.x, creep.room.terminal.pos.y);
             for(var i = 0; i < tmp.length; i++)
             {
@@ -166,7 +190,24 @@ var roletowermover = {
                     terminalrapartActual = tmp[i];
                 }
             }
-            if(terminalrampartsneeded > terminalrampartsCurrent - 20000)
+            }
+            
+            var tmp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, creep.room.storage.pos.x, creep.room.storage.pos.y - 1);
+            for(var i = 0; i < tmp.length; i++)
+            {
+                if(tmp[i].structureType == STRUCTURE_RAMPART)
+                {
+                    factrampartsCurrent = tmp[i].hits;
+                    factrapartActual = tmp[i];
+                }
+            }
+            
+            if(factrampartsneeded > factrampartsCurrent - 20000 && creep.room.controller.level > 7)
+            {
+                creep.repair(factrapartActual);
+                creep.say("nuketerminal");
+            }
+            else if(terminalrampartsneeded > terminalrampartsCurrent - 20000 &&  creep.room.terminal != undefined  )
             {
                 creep.repair(terminalrapartActual);
                 creep.say("nuketerminal");
@@ -231,7 +272,7 @@ var roletowermover = {
             // no nukes 
             if(nukeIncoming == 0 || creep.room.energyAvailable < 300)
             {
-                var closestDamagedStructure = creep.pos.findInRange(FIND_STRUCTURES, 0,
+                var closestDamagedStructure =  creep.room.storage.pos.findInRange(FIND_STRUCTURES, 2,
                 {
                     filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL
                 });

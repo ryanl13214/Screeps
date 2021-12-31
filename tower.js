@@ -1,4 +1,4 @@
- var tower = {
+var tower = {
     run: function(roomname, storagevalue)
     {
         var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
@@ -98,14 +98,32 @@
             }
             for(var l = 0; l < towers.length; l++)
             {
-                var range = Math.max(Math.abs(allHosiles[i].pos.x - towers[l].pos.x), Math.abs(allHosiles[i].pos.y - towers[l].pos.y));
-                var amount = TOWER_POWER_ATTACK;
-                if(range > TOWER_OPTIMAL_RANGE)
+                var range = towers[l].pos.getRangeTo(allHosiles[i]);
+                if(towers[l].effects != undefined && towers[l].effects.length > 0)
                 {
-                    if(range > TOWER_FALLOFF_RANGE)
+                    if(towers[l].effects.length == 2)
                     {
-                        range = TOWER_FALLOFF_RANGE;
+                        var amount = TOWER_POWER_ATTACK;
                     }
+                    else if(towers[l].effects.length == 1 && towers[l].effects[0] == PWR_OPERATE_TOWER)
+                    {
+                        var amount = TOWER_POWER_ATTACK * 1.4;
+                    }
+                    else if(towers[l].effects.length == 1 && towers[l].effects[0] == PWR_DISRUPT_TOWER)
+                    {
+                        var amount = TOWER_POWER_ATTACK / 2;
+                    }
+                }
+                else
+                {
+                    var amount = TOWER_POWER_ATTACK;
+                }
+                if(range > TOWER_OPTIMAL_RANGE && range <= 20)
+                {
+                    damagePotential += 150;
+                }
+                else if(range < 20 && range > 10)
+                {
                     damagePotential += amount * TOWER_FALLOFF * (range - TOWER_OPTIMAL_RANGE) / (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE);
                 }
                 else
@@ -116,7 +134,7 @@
             var boostedTough = false;
             for(var q = 0; q < allHosiles[i].body.length; q++)
             {
-                if(allHosiles[i].body[q].boost == "XGHO2")
+                if(allHosiles[i].body[q].boost == "XGHO2" && allHosiles[i].body[q].hits != 0)
                 {
                     boostedTough = true;
                 }
@@ -125,26 +143,22 @@
             {
                 damagePotential = damagePotential * 0.3;
             }
-       
-           
-           
-           if(allHosiles[i].pos.x< 3 ||   allHosiles[i].pos.x> 47 || allHosiles[i].pos.y< 3 ||   allHosiles[i].pos.y> 47 ){
-        //       console.log(healcapacity);
-               healcapacity+= 1500;
-                //  console.log(healcapacity+" "+damagePotential);
-           }
-           
-              //   console.log("creeep heal capacity " + healcapacity + " damage " + damagePotential);
-           
-           
-           
-           
-            if(healcapacity < damagePotential * 1.1   || allHosiles[i].body.length < 25)
+            var nearVBorder = false;
+            if(allHosiles[i].pos.x < 3 || allHosiles[i].pos.x > 47 || allHosiles[i].pos.y < 3 || allHosiles[i].pos.y > 47)
+            {
+                healcapacity += 1500;
+            }
+            if(allHosiles[i].pos.x < 4 || allHosiles[i].pos.x > 46 || allHosiles[i].pos.y < 4 || allHosiles[i].pos.y > 46)
+            {
+                nearVBorder = true;
+            }
+            
+            if(healcapacity < damagePotential || (nearVBorder == false && Game.rooms[roomname].controller.safeMode > 1))
             {
                 targetList.push(allHosiles[i]);
             }
         }
-        //   console.log(JSON.stringify(targetList));
+      
         /////////////////////////////
         var woundedPowerCreeps = Game.rooms[roomname].find(FIND_MY_POWER_CREEPS,
         {
@@ -163,11 +177,11 @@
             {
                 filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL
             });
-            if(woundedCreeps.length != 0 && i == 0)
+            if(woundedCreeps.length != 0 && i == 1)
             {
                 towers[i].heal(woundedCreeps[0]);
             }
-            else if(woundedPowerCreeps.length != 0  )
+            else if(woundedPowerCreeps.length != 0)
             {
                 towers[i].heal(woundedPowerCreeps[0]);
             }
