@@ -329,11 +329,11 @@ var spwan = {
 
             for (var i = 0; i < spawnss.length; i++)
             {
- if (!Game.creeps['towermover' + roomname] && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0 && energycurrentlyavailable <300)
+ if (!Game.creeps['towermover' + roomname] && spawnss[i].name == roomname && levelOfController >= 4 && storagevalue != 0 && energycurrentlyavailable <500)
                 {
                     //   console.log('towermover',roomname);
                        memstruct.opportuniticRenew = false
-                    var bpodyparts = [CARRY];
+                    var bpodyparts = [CARRY,WORK];
                spawnss[i].spawnCreep(bpodyparts, 'towermover' + roomname,
                     {
                         memory:
@@ -535,10 +535,7 @@ var spwan = {
                         bpodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
                     }
 
-                    if (roomname == "E33N8"  )
-                    {
-                        bpodyparts = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY]
-                    }
+           
       if (energyavailable == 300  )
                     {
                        bpodyparts = [CARRY, CARRY, WORK, CARRY, CARRY, WORK];
@@ -652,7 +649,7 @@ var spwan = {
 
                 }
 
-                else if (!Game.creeps['repair' + roomname] || energyavailable == 300)
+                else if (!Game.creeps['repair' + roomname] || energyavailable < 900)
                 {
                     var bodyparts = [];
                     var numberofparts = Math.floor(energyavailable / 350);
@@ -672,7 +669,7 @@ var spwan = {
                     }
                     
                     
-                    if(energyavailable == 300)
+                    if(energyavailable < 900)
                     {
                   
                         bodyparts = [MOVE,MOVE,MOVE,WORK,CARRY];

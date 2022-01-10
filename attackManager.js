@@ -95,7 +95,7 @@ var attackManager = {
         {
             if (Game.map.getRoomLinearDistance(attackID, ownedrooms[i]) < 10 && Game.rooms[ownedrooms[i]].controller.level == 8) // check that room has good amount of boosts
             {
-                
+
                 var pathacc = roompathfind.run(attackID, ownedrooms[i], 0); // 0 means allow through hostile rooms
                 pathacc.push(attackID);
                 Memory.attackManager[attackID].attackingRooms[ownedrooms[i]] = {};
@@ -242,7 +242,7 @@ var attackManager = {
         var range = endPosition.getRangeTo(endPosition2);
         if (range > 4)
         {
-  //          console.log("path ends early");
+            //          console.log("path ends early");
             return "NOpATH";
         }
 
@@ -260,27 +260,51 @@ var attackManager = {
 
     },
 
-    createphalanx: function(attackID)// does not do a path check    // TURN ALL THAT REPEATED SHIT INTO A FDUCKING FUCKTION
+    createphalanx: function(attackID) // does not do a path check    // TURN ALL THAT REPEATED SHIT INTO A FDUCKING FUCKTION
     {
         var terrain = new Room.Terrain(attackID);
+        var roomCenter = new RoomPosition(25, 25, attackID)
 
-        var allramparts = Game.rooms[attackID].find(FIND_HOSTILE_STRUCTURES,
+        var roomobj = Game.rooms[attackID]
+        var usernameacc = roomobj.controller.owner.username;
+      
+        if (roomobj.controller != undefined && roomobj.controller.owner != undefined && roomobj.controller.owner.username != undefined)
         {
-            filter: (res) =>
-            {
-                return (res.structureType == STRUCTURE_RAMPART);
-            }
-        });
 
-        var allrampartsreturnobj = {positionData:{}}
+            var allramparts = roomCenter.findInRange(FIND_HOSTILE_STRUCTURES, 20,
+            {
+                filter: (res) =>
+                {
+                    return (res.structureType == STRUCTURE_RAMPART && res.owner.username == usernameacc);
+                }
+            });
+        }
+
+        else
+        {
+
+            var allramparts = roomCenter.findInRange(FIND_HOSTILE_STRUCTURES, 20,
+            {
+                filter: (res) =>
+                {
+                    return (res.structureType == STRUCTURE_RAMPART);
+                }
+            });
+
+        }
+
+        var allrampartsreturnobj = {
+            positionData:
+            {}
+        }
 
         for (var i = 0; i < allramparts.length; i++)
         {
 
             var rampX = allramparts[i].pos.x;
             var rampY = allramparts[i].pos.y;
-            var label = String(rampX) + "-" +String(rampY);
- var positionA  = new RoomPosition(rampX, rampY  , attackID)
+            var label = String(rampX) + "-" + String(rampY);
+            var positionA = new RoomPosition(rampX, rampY, attackID)
             var allrampartsNear = positionA.findInRange(FIND_HOSTILE_STRUCTURES, 1,
             {
                 filter: (res) =>
@@ -288,9 +312,9 @@ var attackManager = {
                     return (res.structureType == STRUCTURE_RAMPART);
                 }
             });
- var positionAbove = new RoomPosition(rampX, rampY - 1, attackID)
+            var positionAbove = new RoomPosition(rampX, rampY - 1, attackID)
             // var positionabove 
-            
+
             var topacc = 0;
             ///////////////////////////////////////////////////////////////////////////////////////////
             var current = positionAbove.findInRange(FIND_HOSTILE_STRUCTURES, 0,
@@ -316,7 +340,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY - 1) == TERRAIN_MASK_WALL && current1.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY - 1) == TERRAIN_MASK_WALL && current1.length == 0) // remove the positive figure if any of these trigger
                     {
                         topacc = 0;
                     }
@@ -330,7 +354,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY - 2) == TERRAIN_MASK_WALL && current2.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY - 2) == TERRAIN_MASK_WALL && current2.length == 0) // remove the positive figure if any of these trigger
                     {
                         topacc = 0;
                     }
@@ -344,7 +368,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY - 3) == TERRAIN_MASK_WALL && current3.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY - 3) == TERRAIN_MASK_WALL && current3.length == 0) // remove the positive figure if any of these trigger
                     {
                         topacc = 0;
                     }
@@ -358,7 +382,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY - 4) == TERRAIN_MASK_WALL && current4.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY - 4) == TERRAIN_MASK_WALL && current4.length == 0) // remove the positive figure if any of these trigger
                     {
                         topacc = 0;
                     }
@@ -368,25 +392,6 @@ var attackManager = {
                 {}
 
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             var positionbellow = new RoomPosition(rampX, rampY + 1, attackID)
             var bottomacc = 0;
@@ -414,7 +419,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY + 1) == TERRAIN_MASK_WALL && current1.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY + 1) == TERRAIN_MASK_WALL && current1.length == 0) // remove the positive figure if any of these trigger
                     {
                         bottomacc = 0;
                     }
@@ -428,7 +433,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY + 2) == TERRAIN_MASK_WALL && current2.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY + 2) == TERRAIN_MASK_WALL && current2.length == 0) // remove the positive figure if any of these trigger
                     {
                         bottomacc = 0;
                     }
@@ -442,7 +447,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY + 3) == TERRAIN_MASK_WALL && current3.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY + 3) == TERRAIN_MASK_WALL && current3.length == 0) // remove the positive figure if any of these trigger
                     {
                         bottomacc = 0;
                     }
@@ -456,7 +461,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX, rampY + 4) == TERRAIN_MASK_WALL && current4.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX, rampY + 4) == TERRAIN_MASK_WALL && current4.length == 0) // remove the positive figure if any of these trigger
                     {
                         bottomacc = 0;
                     }
@@ -467,59 +472,7 @@ var attackManager = {
 
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            var positionleft = new RoomPosition(rampX - 1, rampY , attackID)
+            var positionleft = new RoomPosition(rampX - 1, rampY, attackID)
             var leftacc = 0;
             ///////////////////////////////////////////////////////////////////////////////////////////
             var current = positionleft.findInRange(FIND_HOSTILE_STRUCTURES, 0,
@@ -536,7 +489,7 @@ var attackManager = {
                 // check rampart has a viable position 
                 try
                 {
-                    var positionAbove1 = new RoomPosition(rampX - 1 , rampY , attackID)
+                    var positionAbove1 = new RoomPosition(rampX - 1, rampY, attackID)
                     var current1 = positionAbove1.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -545,12 +498,12 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX - 1 , rampY  ) == TERRAIN_MASK_WALL && current1.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX - 1, rampY) == TERRAIN_MASK_WALL && current1.length == 0) // remove the positive figure if any of these trigger
                     {
                         leftacc = 0;
                     }
 
-                    var positionAbove2 = new RoomPosition(rampX - 2 , rampY  , attackID)
+                    var positionAbove2 = new RoomPosition(rampX - 2, rampY, attackID)
                     var current2 = positionAbove2.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -559,12 +512,12 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX - 2, rampY ) == TERRAIN_MASK_WALL && current2.length==0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX - 2, rampY) == TERRAIN_MASK_WALL && current2.length == 0) // remove the positive figure if any of these trigger
                     {
                         leftacc = 0;
                     }
 
-                    var positionAbove3 = new RoomPosition(rampX - 3 , rampY  , attackID)
+                    var positionAbove3 = new RoomPosition(rampX - 3, rampY, attackID)
                     var current3 = positionAbove3.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -573,12 +526,12 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX - 3 , rampY  ) == TERRAIN_MASK_WALL && current3.length == 0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX - 3, rampY) == TERRAIN_MASK_WALL && current3.length == 0) // remove the positive figure if any of these trigger
                     {
                         leftacc = 0;
                     }
 
-                    var positionAbove4 = new RoomPosition(rampX - 4 , rampY , attackID)
+                    var positionAbove4 = new RoomPosition(rampX - 4, rampY, attackID)
                     var current4 = positionAbove3.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -587,7 +540,7 @@ var attackManager = {
                         }
                     });
 
-                    if (terrain.get(rampX - 4 , rampY ) == TERRAIN_MASK_WALL && current4.length == 0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX - 4, rampY) == TERRAIN_MASK_WALL && current4.length == 0) // remove the positive figure if any of these trigger
                     {
                         leftacc = 0;
                     }
@@ -598,41 +551,7 @@ var attackManager = {
 
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-            var positionright = new RoomPosition(rampX  , rampY , attackID)
+            var positionright = new RoomPosition(rampX, rampY, attackID)
             var rightacc = 0;
             ///////////////////////////////////////////////////////////////////////////////////////////
             var current = positionright.findInRange(FIND_HOSTILE_STRUCTURES, 0,
@@ -649,10 +568,8 @@ var attackManager = {
                 // check rampart has a viable position 
                 try
                 {
-                    
-                    
-                    
-                    var positionAbove1 = new RoomPosition(rampX + 1 , rampY , attackID)
+
+                    var positionAbove1 = new RoomPosition(rampX + 1, rampY, attackID)
                     var current1 = positionAbove1.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -660,15 +577,12 @@ var attackManager = {
                             return (res.structureType == STRUCTURE_RAMPART);
                         }
                     });
-                    if (terrain.get(rampX + 1 , rampY  ) == TERRAIN_MASK_WALL || current1.length != 0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX + 1, rampY) == TERRAIN_MASK_WALL || current1.length != 0) // remove the positive figure if any of these trigger
                     {
                         rightacc = 0;
                     }
-                    
-                    
-                    
-                    
-                    var positionAbove2 = new RoomPosition(rampX + 2 , rampY  , attackID)
+
+                    var positionAbove2 = new RoomPosition(rampX + 2, rampY, attackID)
                     var current2 = positionAbove2.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -676,14 +590,12 @@ var attackManager = {
                             return (res.structureType == STRUCTURE_RAMPART);
                         }
                     });
-                    if (terrain.get(rampX + 2, rampY ) == TERRAIN_MASK_WALL || current2.length != 0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX + 2, rampY) == TERRAIN_MASK_WALL || current2.length != 0) // remove the positive figure if any of these trigger
                     {
                         rightacc = 0;
                     }
-                    
-                    
-                    
-                    var positionAbove3 = new RoomPosition(rampX + 3 , rampY  , attackID)
+
+                    var positionAbove3 = new RoomPosition(rampX + 3, rampY, attackID)
                     var current3 = positionAbove3.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -691,14 +603,12 @@ var attackManager = {
                             return (res.structureType == STRUCTURE_RAMPART);
                         }
                     });
-                    if (terrain.get(rampX + 3 , rampY  ) == TERRAIN_MASK_WALL || current3.length != 0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX + 3, rampY) == TERRAIN_MASK_WALL || current3.length != 0) // remove the positive figure if any of these trigger
                     {
                         rightacc = 0;
                     }
-                    
-                    
-                    
-                    var positionAbove4 = new RoomPosition(rampX + 4 , rampY , attackID)
+
+                    var positionAbove4 = new RoomPosition(rampX + 4, rampY, attackID)
                     var current4 = positionAbove3.findInRange(FIND_HOSTILE_STRUCTURES, 0,
                     {
                         filter: (res) =>
@@ -706,48 +616,35 @@ var attackManager = {
                             return (res.structureType == STRUCTURE_RAMPART);
                         }
                     });
-                    if (terrain.get(rampX + 4 , rampY ) == TERRAIN_MASK_WALL ||  current4.length != 0) // remove the positive figure if any of these trigger
+                    if (terrain.get(rampX + 4, rampY) == TERRAIN_MASK_WALL || current4.length != 0) // remove the positive figure if any of these trigger
                     {
                         rightacc = 0;
                     }
-                    
+
                 }
                 catch (e)
                 {}
             }
-            
-            
-            if(topacc + bottomacc +  leftacc + rightacc != 0 ){
-            allrampartsreturnobj.positionData[String(label)] = {
-             
-                rampX: rampX,
-                rampY: rampY,
-                topq: topacc,
-                bottomq: bottomacc,
-                leftq: leftacc,
-                rightq: rightacc
-            };
+
+            if (topacc + bottomacc + leftacc + rightacc != 0)
+            {
+                allrampartsreturnobj.positionData[String(label)] = {
+
+                    rampX: rampX,
+                    rampY: rampY,
+                    topq: topacc,
+                    bottomq: bottomacc,
+                    leftq: leftacc,
+                    rightq: rightacc
+                };
             }
-            
-            
-        }// END OF FOOR LOOP
- 
-  console.log("aaaaaaq" ,  JSON.stringify(allrampartsreturnobj.positionData["32-16"] ));
-   console.log("bbbbbbb", JSON.stringify(allrampartsreturnobj.positionData["33-16"]  ));
- 
- 
- 
- 
- 
- 
-     this.findBestOpporunityForPalanx(attackID,allrampartsreturnobj.positionData)
 
+        } // END OF FOOR LOOP
 
+        console.log("aaaaaaq", JSON.stringify(allrampartsreturnobj.positionData["32-16"]));
+        console.log("bbbbbbb", JSON.stringify(allrampartsreturnobj.positionData["33-16"]));
 
-
-
-
-
+        this.findBestOpporunityForPalanx(attackID, allrampartsreturnobj.positionData)
 
         var returnobj = {
             // numberOfSquads:
@@ -757,147 +654,94 @@ var attackManager = {
         return returnobj;
 
     },
-    
-    
-    
-    findBestOpporunityForPalanx: function(attackID,allrampartsreturnobj) 
+    findBestOpporunityForPalanx: function(attackID, allrampartsreturnobj)
     {
-        
-            var listofnames = Object.keys(allrampartsreturnobj);
-    var listofvalues = Object.values(allrampartsreturnobj);
-        
-        
-          
-         
-        
+
+        var listofnames = Object.keys(allrampartsreturnobj);
+        var listofvalues = Object.values(allrampartsreturnobj);
+
         //  on the right 
         for (var i = 0; i < listofnames.length; i++)
         {
-           
+
             var currentrampartobj = allrampartsreturnobj[listofnames[i]];
-        
-            if(currentrampartobj.rightq != 0 )
+
+            if (currentrampartobj.rightq != 0)
             {
-                
-           
+
                 var breaker = false;
                 var counter = 1;
-                while (!breaker) {
-                  
-                  var thisx = currentrampartobj.rampX;
-                //   console.log("1-",thisx );
-                  var thisy = currentrampartobj.rampY;
-                  var thisy2 = currentrampartobj.rampY + counter;
-                  var belowlabel = String(thisx) + "-" + String(thisy2);
-                  
-                  if(allrampartsreturnobj[belowlabel] == undefined  )
-                  { // no rampart below this one 
-               //    console.log(listofnames[i]+"-q-",belowlabel );
-                      breaker = true;
-                  }
-                  else if(allrampartsreturnobj[belowlabel].rightq == 0   )
-                  {// rampart below this one is not part of the phalanx
-                   //   console.log("-qq" );
-                     
-                      
-                    //  Game.rooms[attackID].visual.circle(new RoomPosition(currentrampartobj.rampX + counter,currentrampartobj.rampY ,attackID ),{fill: 'red', radius: 0.55, stroke: 'red'});
-                      
-                      breaker = true; 
-                  }
-                  else
-                  {
-                     allrampartsreturnobj[listofnames[i]].rightq += allrampartsreturnobj[belowlabel].rightq;
-                     allrampartsreturnobj[belowlabel].rightq =0;
-                     console.log("---",allrampartsreturnobj[listofnames[i]].rightq);
-                     counter++;
-                  }
-                  
+                while (!breaker)
+                {
+
+                    var thisx = currentrampartobj.rampX;
+                    //   console.log("1-",thisx );
+                    var thisy = currentrampartobj.rampY;
+                    var thisy2 = currentrampartobj.rampY + counter;
+                    var belowlabel = String(thisx) + "-" + String(thisy2);
+
+                    if (allrampartsreturnobj[belowlabel] == undefined)
+                    { // no rampart below this one 
+                        //    console.log(listofnames[i]+"-q-",belowlabel );
+                        breaker = true;
+                    }
+                    else if (allrampartsreturnobj[belowlabel].rightq == 0)
+                    { // rampart below this one is not part of the phalanx
+                        //   console.log("-qq" );
+
+                        //  Game.rooms[attackID].visual.circle(new RoomPosition(currentrampartobj.rampX + counter,currentrampartobj.rampY ,attackID ),{fill: 'red', radius: 0.55, stroke: 'red'});
+
+                        breaker = true;
+                    }
+                    else
+                    {
+                        allrampartsreturnobj[listofnames[i]].rightq += allrampartsreturnobj[belowlabel].rightq;
+                        allrampartsreturnobj[belowlabel].rightq = 0;
+                        console.log("---", allrampartsreturnobj[listofnames[i]].rightq);
+                        counter++;
+                    }
+
                 };
-             //    console.log("-c-",counter);
+                //    console.log("-c-",counter);
             }
-             
-            if(allrampartsreturnobj[listofnames[i]].rightq > 5)
+
+            if (allrampartsreturnobj[listofnames[i]].rightq > 5)
             {
-                  console.log("-2-",allrampartsreturnobj[listofnames[i]].rightq);
-                 var thisx = allrampartsreturnobj[listofnames[i]].rampX;
-                  var thisy = allrampartsreturnobj[listofnames[i]].rampY;
-                  
-                   var pos1 = new RoomPosition(thisx + 1,thisy ,attackID )
-                   var pos2= new RoomPosition(thisx + 1 ,thisy + allrampartsreturnobj[listofnames[i]].rightq ,attackID )
-               Game.rooms[attackID].visual.line(pos1,pos2,
-    {color: 'green',width: 1, lineStyle: 'green'});
-    
-    
-    
-                   var pos1 = new RoomPosition(thisx + 2,thisy ,attackID )
-                   var pos2= new RoomPosition(thisx + 2 ,thisy + allrampartsreturnobj[listofnames[i]].rightq ,attackID )
-               Game.rooms[attackID].visual.line(pos1,pos2,
-    {color: 'orange',width: 1, lineStyle: 'orange'});       
-                
-                   var pos1 = new RoomPosition(thisx + 3,thisy ,attackID )
-                   var pos2= new RoomPosition(thisx + 3 ,thisy + allrampartsreturnobj[listofnames[i]].rightq ,attackID )
-               Game.rooms[attackID].visual.line(pos1,pos2,
-    {color: 'red',width: 1, lineStyle: 'red'});
+                console.log("-2-", allrampartsreturnobj[listofnames[i]].rightq);
+                var thisx = allrampartsreturnobj[listofnames[i]].rampX;
+                var thisy = allrampartsreturnobj[listofnames[i]].rampY;
+
+                var pos1 = new RoomPosition(thisx + 1, thisy, attackID)
+                var pos2 = new RoomPosition(thisx + 1, thisy + allrampartsreturnobj[listofnames[i]].rightq, attackID)
+                Game.rooms[attackID].visual.line(pos1, pos2,
+                {
+                    color: 'green',
+                    width: 1,
+                    lineStyle: 'green'
+                });
+
+                var pos1 = new RoomPosition(thisx + 2, thisy, attackID)
+                var pos2 = new RoomPosition(thisx + 2, thisy + allrampartsreturnobj[listofnames[i]].rightq, attackID)
+                Game.rooms[attackID].visual.line(pos1, pos2,
+                {
+                    color: 'orange',
+                    width: 1,
+                    lineStyle: 'orange'
+                });
+
+                var pos1 = new RoomPosition(thisx + 3, thisy, attackID)
+                var pos2 = new RoomPosition(thisx + 3, thisy + allrampartsreturnobj[listofnames[i]].rightq, attackID)
+                Game.rooms[attackID].visual.line(pos1, pos2,
+                {
+                    color: 'red',
+                    width: 1,
+                    lineStyle: 'red'
+                });
             }
-            
-            
-            
-            
+
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
     },
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     getRoomStarts: function(attackID)
     {
 
@@ -908,7 +752,7 @@ var attackManager = {
 
         if (Game.rooms[attackID] == undefined)
         {
-           // console.log("getVectorsbreak");
+            // console.log("getVectorsbreak");
             return false
         }
         // loop through all the rooms that the attacks come from
@@ -940,7 +784,7 @@ var attackManager = {
                 }
                 else
                 {
-                    for (var q = 0; q < pathOBJ.length; q++)
+                    for (var q = 2; q < pathOBJ.length; q++)
                     {
                         var position = new RoomPosition(pathOBJ[q].x, pathOBJ[q].y, attackID);
 
@@ -1002,7 +846,7 @@ var attackManager = {
                 }
                 if (counter > 9)
                 {
-                 //   console.log("count break");
+                    //   console.log("count break");
                     breaker = true;
                 }
 
@@ -1018,8 +862,9 @@ var attackManager = {
     run: function(attackID)
     {
         var mainMemoryObject = Memory.attackManager[attackID];
-        if(Game.time % 5 == 0 ){
-        //Memory.attackManager["E23S1"] = {} ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (Game.time % 5 == 0)
+        {
+       //     Memory.attackManager[attackID] = {} ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         /////////////////////////////////////////////////////////////
         //                             decide what rooms are part oif the attack and the path to get to them.
@@ -1034,7 +879,7 @@ var attackManager = {
         // console.log(" ng rooms", numberOfattackingRooms);
         if (numberOfattackingRooms == 0)
         {
-          
+
             this.selectAttackingRoms(attackID);
         }
         //   console.log(JSON.stringify(Memory.attackManager[attackID]));
@@ -1057,7 +902,7 @@ var attackManager = {
                         lineStyle: 'solid'
                     });
                 }
-                //     Game.map.visual.text("PATH"+ q , new RoomPosition(25,25,pathacc[q]), {color: '#FF0000', fontSize: 10}); 
+              
             }
 
         }
@@ -1071,15 +916,15 @@ var attackManager = {
             this.getRoomdata(attackID);
             return false
         }
-        // console.log("has vision");
+        
         ////////////////////////////////////////////////////////////////////////////
         //               creqate phalanx
         ////////////////////////////////////////////////////////////////////////////
         if (mainMemoryObject.phalanx == undefined)
         {
 
-             var a = this.createphalanx(attackID);
-                   Memory.attackManager[attackID].phalanx = a;
+            var a = this.createphalanx(attackID);
+            Memory.attackManager[attackID].phalanx = a;
 
         }
 
@@ -1128,7 +973,7 @@ var attackManager = {
             this.updateVectors(attackID);
         }
         // spawnblinkys
-        //      this.ManageGenericSpawning(attackID);//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              this.ManageGenericSpawning(attackID);//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // control the phalanc
         // power control 
@@ -1191,6 +1036,10 @@ var attackManager = {
     {
         var ListOfsquads = [];
 
+
+
+
+
         for (var i = 0; i < Memory.attackManager[attackID].vectors.length; i++)
         {
             if (Memory.attackManager[attackID].vectors[i].currentlyAssignedSquad == "")
@@ -1202,6 +1051,8 @@ var attackManager = {
 
         var listOfAvailableRooms = [];
         var participatingRooms = Object.keys(Memory.attackManager[attackID].attackingRooms)
+        
+    //    console.log("participatingRooms",participatingRooms);
         //     Memory.attackManager[attackID].attackingRooms
         for (var i = 0; i < participatingRooms.length; i++)
         {
@@ -1257,7 +1108,8 @@ var attackManager = {
                     {
 
                         Memory.empire.roomsobj[participatingRooms[i]].squadSpawning = "am-" + attackID + "-v-" + ListOfsquads[i][0];
-                        Game.flags[listOfAvailableRooms[i]].memory.flagstruct.squadspawning == ""
+                      
+                         Memory.empire.roomsobj[listOfAvailableRooms[i]].squadSpawning =""
                         squadmanage.initializeSquad("am-" + attackID + "-v-" + ListOfsquads[i][0], finalPath, true, "quad", listOfAvailableRooms[i],
                         {
                             "head1": [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL],

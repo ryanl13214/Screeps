@@ -177,7 +177,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                                 if ((transferAmou8nt > 5 && allCondensedResources[i][1] < 200) || (transferAmou8nt > 150 && allCondensedResources[i][1] > 200))
                                 {
                                     console.log("transfer-", allCondensedResources[i][0], "--", transferAmou8nt);
-                                    terminalActual.send(allCondensedResources[i][0], transferAmou8nt, roominrange[j], '0');
+                                   terminalActual.send(allCondensedResources[i][0], transferAmou8nt, roominrange[j], '0');
                                     return true;
                                 }
                             }
@@ -219,7 +219,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ["XZHO2", 8000, 0.8],
                 ["XKHO2", 8000, 0.8],
                 ["KH2O", 4000, 0.6],
-                ["XGH2O", 4000, 1.4],
+                ["XGH2O", 4000, 1.6],
                 ['ops', 3000, 0.4],
                 ["H", 7000, 0.2],
                 ["O", 7000, 0.2],
@@ -333,7 +333,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 }
                 if (terminalInUse == false)
                 {
-                    //  terminalInUse =   this.averageEnergy(roomname, allCondensedResources, terminalActual,roominrange)
+                     terminalInUse =   this.averageEnergy(roomname, allCondensedResources, terminalActual,roominrange)
                 }
                 /////////////////////////////////////////////////////////////
                 if (terminalInUse == false)
@@ -341,9 +341,9 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                     terminalInUse = this.buyItemsFromResourceList(roomname, allCondensedResources, terminalActual)
                 }
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                if (terminalInUse == false && Game.time % 30 == 0)
+                if (terminalInUse == false && Game.time % 30 == 0 && Game.rooms[roomname].controller.level == 8  )
                 {
-                    terminalInUse = this.transferNonEnergy(roomname, allCondensedResources, terminalActual, roominrange)
+            //        terminalInUse = this.transferNonEnergy(roomname, allCondensedResources, terminalActual, roominrange)
                 }
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
                 if (terminalInUse == false)
@@ -418,7 +418,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                         {
                             type: ORDER_BUY,
                             resourceType: RESOURCE_ENERGY,
-                            price: (avgPriceOfenergy * 1.5),
+                            price: (avgPriceOfenergy * 1.7),
                             totalAmount: 175000,
                             roomName: roomname
                         });

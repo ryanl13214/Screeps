@@ -44,15 +44,17 @@ var labs = {
             "KH2O": ["OH", "KH"],
             "GH2O": ["OH", "GH"],
             "XGHO2": ["X", "GHO2"],
+            "XGH2O": ["X", "GH2O"],
+
             "XUH2O": ["X", "UH2O"],
             "XLH2O": ["X", "LH2O"],
             "XLHO2": ["X", "LHO2"],
             "XZH2O": ["X", "ZH2O"],
             "XZHO2": ["X", "ZHO2"],
-            "XKHO2": ["X", "KHO2"],
-            "XGH2O": ["X", "GH2O"]
+            "XKHO2": ["X", "KHO2"]
         };
         var a = [
+        
             ["XGHO2", 8000],
             ["XUH2O", 8000],
             ["XLH2O", 8000],
@@ -63,43 +65,102 @@ var labs = {
             ["KH2O", 4000],
             ["XGH2O", 4000]
         ];
-        
-        
-        if(Game.time % 1  == 0)
+
+        var b = [
+    ["GHO2", 15000],
+            ["UH2O", 15000],
+            ["LH2O", 15000],
+            ["LHO2", 15000],
+            ["ZH2O", 15000],
+            ["ZHO2", 15000],
+            ["KHO2", 15000],
+            ["GH2O", 15000]
+        ];
+
+        if (Game.time % 1 == 0)
         {
-                //                Memory.empire.roomsobj[roomname].labDone = true;
-                 //
-                    //        Memory.empire.roomsobj[roomname].labReady = false;
-                      //      Memory.empire.roomsobj[roomname].labBoostCurr = "";  
+            //                Memory.empire.roomsobj[roomname].labDone = true;
+            //
+            //        Memory.empire.roomsobj[roomname].labReady = false;
+            //      Memory.empire.roomsobj[roomname].labBoostCurr = "";  
         }
-        
-        
-                    var basics = ["H", "O", "U", "L", "Z", "X", "G"];
+
+        var basics = ["H", "O", "U", "L", "Z", "X", "G"];
 
         var isBasic = basics.indexOf(Memory.empire.roomsobj[roomname].labBoostCurr);
-            
-            
-            if (isBasic != -1)
+
+        if (isBasic != -1)
         {
-              console.log("reset 3");
+            console.log("reset 3");
             Memory.empire.roomsobj[roomname].labBoostCurr = "";
 
-        }else  if (Memory.empire.roomsobj[roomname].labBoostCurr == "")
-        {
-        for (var i = 0; i < a.length; i++)
-        {
-            var currCheck = products[a[i][0]];
-            if (terminalActual.store.getUsedCapacity(a[i][0]) < a[i][1] - 1000  )
-            {
-                if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000)
-                {
-                      console.log("assingn 1", a[i][0]);
-                    Memory.empire.roomsobj[roomname].labBoostCurr = a[i][0];
-                }
-            }
         }
 
-       
+        else if (Memory.empire.roomsobj[roomname].labBoostCurr == "")
+        {
+
+
+
+
+
+
+// lower level boosts first
+
+
+            for (var i = 0; i < b.length; i++)
+            {
+                var currCheck = products[b[i][0]];
+                if (terminalActual.store.getUsedCapacity(b[i][0]) < b[i][1] - 1000)
+                {
+                    if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000)
+                    {
+                        console.log(roomname," assingn 1", b[i][0]);
+                        Memory.empire.roomsobj[roomname].labBoostCurr = b[i][0];
+                    }
+                }
+            }
+
+            var b = Object.keys(products);
+            for (var i = 0; i < b.length; i++)
+            {
+                var currCheck = products[b[i]];
+                if (terminalActual.store.getUsedCapacity(b[i]) < 1000 && (Memory.empire.roomsobj[roomname].labBoostCurr == ""))
+                {
+                    if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000)
+                    {
+                        console.log("assingn 2");
+                        Memory.empire.roomsobj[roomname].labBoostCurr = b[i];
+                    }
+                }
+            }
+            
+            
+            
+
+
+
+
+
+ if (Memory.empire.roomsobj[roomname].labBoostCurr == "")// do the a lot
+                {
+
+
+
+
+
+            for (var i = 0; i < a.length; i++)
+            {
+                var currCheck = products[a[i][0]];
+                if (terminalActual.store.getUsedCapacity(a[i][0]) < a[i][1] - 1000)
+                {
+                    if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000)
+                    {
+                        console.log("assingn 1", a[i][0]);
+                        Memory.empire.roomsobj[roomname].labBoostCurr = a[i][0];
+                    }
+                }
+            }
+
             var a = Object.keys(products);
             for (var i = 0; i < a.length; i++)
             {
@@ -107,22 +168,26 @@ var labs = {
                 if (terminalActual.store.getUsedCapacity(a[i]) < 1000 && (Memory.empire.roomsobj[roomname].labBoostCurr == ""))
                 {
                     if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000)
-                    {     console.log("assingn 2");
+                    {
+                        console.log("assingn 2");
                         Memory.empire.roomsobj[roomname].labBoostCurr = a[i];
                     }
                 }
             }
             
+                }
             
-     
             
             
+            
+            
+            
+            
+            
+
         }
 
- 
-    
-
-    else    if (Memory.empire.roomsobj[roomname].labBoostCurr != "")
+        else if (Memory.empire.roomsobj[roomname].labBoostCurr != "")
         {
             /////////////////////////
 
@@ -190,16 +255,12 @@ var labs = {
                 }
                 else if (isBasic != -1 && moverscarrynonenergy.length == 0)
                 {
-                      console.log("reset 2");
+                    console.log("reset 2");
                     Memory.empire.roomsobj[roomname].labBoostCurr = "";
                 }
                 //     console.log("  fff  ", Memory.empire.roomsobj[roomname].labBoostCurr);
             }
         }
-
-
-
-
 
     },
 
@@ -309,7 +370,7 @@ var labs = {
         var mainFlag = Game.flags[roomname];
         if (currentProduction != "" && currentProduction != undefined)
         {
-          //  console.log("labs stage 0 ", roomname);
+            //  console.log("labs stage 0 ", roomname);
             var currentProductForLab1 = products[currentProduction][0];
             var currentProductForLab2 = products[currentProduction][1];
             var strg = Game.rooms[roomname].storage;
@@ -330,9 +391,9 @@ var labs = {
                     {
                         if (input[t] != currentProductForLab1)
                         {
-                                Memory.empire.roomsobj[roomname].labDone = true;
-                                                    Memory.empire.roomsobj[roomname].labReady = false;
-                         //   Memory.empire.roomsobj[roomname].labBoostCurr = "";
+                            Memory.empire.roomsobj[roomname].labDone = true;
+                            Memory.empire.roomsobj[roomname].labReady = false;
+                            //   Memory.empire.roomsobj[roomname].labBoostCurr = "";
                         }
                     }
                 }
@@ -348,23 +409,21 @@ var labs = {
                         if (input[t] != currentProductForLab2)
                         {
 
-                                Memory.empire.roomsobj[roomname].labDone = true;
-                                                    Memory.empire.roomsobj[roomname].labReady = false;
-                         //   Memory.empire.roomsobj[roomname].labBoostCurr = "";
+                            Memory.empire.roomsobj[roomname].labDone = true;
+                            Memory.empire.roomsobj[roomname].labReady = false;
+                            //   Memory.empire.roomsobj[roomname].labBoostCurr = "";
                         }
                     }
                 }
             }
 
- 
-
             if (Memory.empire.roomsobj[roomname].labReady == false && Memory.empire.roomsobj[roomname].labDone == false && Memory.empire.roomsobj[roomname].labBoostCurr != "")
             {
-             //   console.log("labs stage 1 ", roomname);
+                //   console.log("labs stage 1 ", roomname);
                 if (mainLab1.length != 0 && mainLab1[0].store.getUsedCapacity(currentProductForLab1) > 999 && mainLab2.length != 0 && mainLab2[0].store.getUsedCapacity(currentProductForLab2) > 999)
                 {
-                  //  console.log("starlabs ")
-                   Memory.empire.roomsobj[roomname].labReady = true;
+                    //  console.log("starlabs ")
+                    Memory.empire.roomsobj[roomname].labReady = true;
                 }
                 else
                 {
@@ -397,7 +456,7 @@ var labs = {
             }
             else if (Memory.empire.roomsobj[roomname].labReady == true && mainLab1.length != 0 && mainLab2.length != 0)
             {
-            //    console.log("labs stage 2 ", roomname);
+                //    console.log("labs stage 2 ", roomname);
                 for (var i = 0; i < allLabs.length; i++)
                 {
                     if (allLabs[i].store.getUsedCapacity() - allLabs[i].store.getUsedCapacity(RESOURCE_ENERGY) == 0 || allLabs[i].store.getUsedCapacity(currentProduction) != 0)
@@ -421,7 +480,7 @@ var labs = {
             }
             else if (Memory.empire.roomsobj[roomname].labDone == true && mainFlag)
             {
-              //  console.log("labs stage 3 ", roomname);
+                //  console.log("labs stage 3 ", roomname);
 
                 var allLabsWithResinthem = (new RoomPosition(mainFlag.pos.x - 5, mainFlag.pos.y + 1, roomname)).findInRange(FIND_STRUCTURES, 2,
                 {
@@ -471,8 +530,8 @@ var labs = {
         }
         else
         {
-         //   console.log("labs no boost selected ", roomname);
-    //       
+            //   console.log("labs no boost selected ", roomname);
+            //       
 
             var allLabsWithResinthem = (new RoomPosition(mainFlag.pos.x - 5, mainFlag.pos.y + 1, roomname)).findInRange(FIND_STRUCTURES, 2,
             {
@@ -495,8 +554,10 @@ var labs = {
                 Memory.empire.roomsobj[roomname].labDone = false;
                 Memory.empire.roomsobj[roomname].labReady = false;
                 Memory.empire.roomsobj[roomname].labBoostCurr = "";
-            }else{
-                 Memory.empire.roomsobj[roomname].labDone = true; 
+            }
+            else
+            {
+                Memory.empire.roomsobj[roomname].labDone = true;
             }
 
             if (movers.length != 0)

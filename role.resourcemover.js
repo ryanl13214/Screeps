@@ -227,8 +227,8 @@ var roleresourcemover = {
     {
         creep.say("storage");
         var roomname = creep.room.name;
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "XLH2O", "XKH2O", "G", "OH", "UH", "LH", "ZH", "KH", "GH", "KO", "LO", "GO", "ZO", "GHO2", "UH2O", "LH2O", "LHO2", "ZH2O", "ZHO2", "KHO2", "KH2O", "GH2O", "H", "O", "U", "L", "Z", "X"];
-        var allValues = [20000, 20000, 20000, 20000, 20000, 20000, 20000, 5000, 5000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 5000, 5000, 5000, 5000, 5000, 5000];
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "XLH2O", "XKH2O", "G", "OH",   "UH", "LH", "ZH", "KH", "GH", "KO", "LO", "GO", "ZO", "GHO2", "UH2O", "LH2O", "LHO2", "ZH2O", "ZHO2", "KHO2", "KH2O", "GH2O", "H", "O", "U", "L", "Z", "X"];
+        var allValues = [40000      , 40000  , 40000 , 40000  , 40000  , 40000  , 40000  , 5000    , 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 15000,  15000,   15000,  15000,  15000,  15000,  15000,  15000,  15000, 5000, 5000, 5000, 5000, 5000, 5000];
 
         if (Game.rooms[roomname].controller.isPowerEnabled)
         {
@@ -238,7 +238,7 @@ var roleresourcemover = {
         else
         {
             allResources.push("ops");
-            allValues.push(0);
+            allValues.push(5000);
         }
 
         var termin = Game.rooms[roomname].terminal;

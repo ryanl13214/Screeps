@@ -1,6 +1,7 @@
 var tower = {
     run: function(roomname, storagevalue)
-    {
+    {  
+        var allHosiles = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
         var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
         {
             filter: (s) =>
@@ -10,8 +11,31 @@ var tower = {
         });
         var woundedCreeps = Game.rooms[roomname].find(FIND_MY_CREEPS,
         {
-            filter: (structure) => (structure.hits < structure.hitsMax)
+            filter: (creep) => (creep.hits < creep.hitsMax )
         });
+        
+        var guardsNotUnderRampartsThatAreNearRangedCreeps =[]
+          for(var i = 0; i < allHosiles.length; i++)
+        {
+              var needed = allHosiles[i].pos.findInRange(FIND_MY_CREEPS, 3,
+        {
+            filter: (structure) => (creep.memory.role =="guard" && creep.memory.isSafe == false)
+        }); 
+        for(var q= 0; q < needed.length; q++)
+        {
+            guardsNotUnderRampartsThatAreNearRangedCreeps.push(needed[q])  
+        } 
+              
+             
+        }
+        
+        Game.rooms[roomname].find(FIND_MY_CREEPS,
+        {
+            filter: (creep) => (creep.hits < creep.hitsMax )
+        });      
+        
+        
+        
         var fullbuild = Game.rooms[roomname].find(FIND_STRUCTURES,
         {
             filter: (structure) => (structure.hits < structure.hitsMax && structure.structureType == STRUCTURE_RAMPART) || (structure.hits < structure.hitsMax && structure.structureType == STRUCTURE_WALL)
@@ -28,7 +52,7 @@ var tower = {
         }
         var mainflag = Game.flags[roomname];
         var targetList = [];
-        var allHosiles = mainflag.room.find(FIND_HOSTILE_CREEPS);
+
         for(var i = 0; i < allHosiles.length; i++)
         {
             var healcapacity = 0;
@@ -118,9 +142,23 @@ var tower = {
                 {
                     var amount = TOWER_POWER_ATTACK;
                 }
+                
                 if(range > TOWER_OPTIMAL_RANGE && range <= 20)
                 {
-                    damagePotential += 150;
+                     if(towers[l].effects != undefined && towers[l].effects.length == 2)
+                    {
+                        damagePotential += 150;
+                    }
+                    else if(towers[l].effects != undefined &&towers[l].effects.length == 1 && towers[l].effects[0] == PWR_OPERATE_TOWER)
+                    {
+                     damagePotential += 210;
+                    }
+                    else if(towers[l].effects != undefined &&towers[l].effects.length == 1 && towers[l].effects[0] == PWR_DISRUPT_TOWER)
+                    {
+                     damagePotential += 75;
+                    }
+                    
+                    
                 }
                 else if(range < 20 && range > 10)
                 {
@@ -128,7 +166,7 @@ var tower = {
                 }
                 else
                 {
-                    damagePotential += TOWER_POWER_ATTACK;
+                    damagePotential += amount;
                 }
             }
             var boostedTough = false;
@@ -143,17 +181,9 @@ var tower = {
             {
                 damagePotential = damagePotential * 0.3;
             }
-            var nearVBorder = false;
-            if(allHosiles[i].pos.x < 3 || allHosiles[i].pos.x > 47 || allHosiles[i].pos.y < 3 || allHosiles[i].pos.y > 47)
-            {
-                healcapacity += 1500;
-            }
-            if(allHosiles[i].pos.x < 4 || allHosiles[i].pos.x > 46 || allHosiles[i].pos.y < 4 || allHosiles[i].pos.y > 46)
-            {
-                nearVBorder = true;
-            }
+       
             
-            if(healcapacity < damagePotential || (nearVBorder == false && Game.rooms[roomname].controller.safeMode > 1))
+            if(healcapacity + 550 < damagePotential )
             {
                 targetList.push(allHosiles[i]);
             }
@@ -164,6 +194,9 @@ var tower = {
         {
             filter: (structure) => (structure.hits < structure.hitsMax)
         });
+        
+        
+        
         for(var i = 0; i < towers.length; i++)
         {
             var doretos = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS,
@@ -177,7 +210,20 @@ var tower = {
             {
                 filter: (structure) => (structure.hits < structure.hitsMax * 0.1) && structure.structureType != STRUCTURE_WALL
             });
-            if(woundedCreeps.length != 0 && i == 1)
+              var closestcreep = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS  )
+            
+            
+            
+            
+                     if(Game.rooms[roomname].controller.safeMode != undefined && closestcreep  != undefined && Game.rooms[roomname].controller.level != 8 )// for upgrading bodge 
+            {
+                  towers[i].attack(closestcreep);
+            }
+            else            if(guardsNotUnderRampartsThatAreNearRangedCreeps.length != 0)
+            {
+                  towers[i].heal(guardsNotUnderRampartsThatAreNearRangedCreeps[0]);
+            }
+            else if(woundedCreeps.length != 0 && i == 1) // add ability for creeps to call in heals 
             {
                 towers[i].heal(woundedCreeps[0]);
             }
@@ -197,10 +243,16 @@ var tower = {
             {
                 towers[i].repair(closestDamagedStructure[0]);
             }
-            else if(fullbuild.length != 0 && towers[i].room.controller.level > 3 && Game.rooms[roomname].storage != undefined && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000)
+            else if(fullbuild.length != 0 && towers[i].room.controller.level > 3 &&   Game.rooms[roomname].storage != undefined   &&  Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 10000  )
             {
                 towers[i].repair(fullbuild[tmp]);
             }
+            
+                   else if(fullbuild.length != 0 && storagevalue  == 99590000)// temple rooms
+            {
+                towers[i].repair(fullbuild[tmp]);
+            }
+             
         }
     }
 }

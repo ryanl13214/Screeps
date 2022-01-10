@@ -14,30 +14,58 @@ var quadsquad = {
         // todo do not do this step for attack quads
         var positionBeingchecked = new RoomPosition(posision.x, posision.y, posroom);
         var enemiesInRangeOfTarget1 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
-         
 
         var positionBeingchecked = new RoomPosition(posision.x - 1, posision.y, posroom);
         var enemiesInRangeOfTarget2 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
-        
-        var positionBeingchecked = new RoomPosition(posision.x- 1, posision.y + 1, posroom);
+
+        var positionBeingchecked = new RoomPosition(posision.x - 1, posision.y + 1, posroom);
         var enemiesInRangeOfTarget3 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
-        
 
         var positionBeingchecked = new RoomPosition(posision.x, posision.y + 1, posroom);
         var enemiesInRangeOfTarget4 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
-        
 
-        if (enemiesInRangeOfTarget1.length != 0 || enemiesInRangeOfTarget2.length != 0 || enemiesInRangeOfTarget3.length != 0 || enemiesInRangeOfTarget4.length != 0 )
+        if (Memory.squadObject[squadID].blockedPosition == undefined)
+        {
+            Memory.squadObject[squadID].blockedPosition = {}
+        }
+
+        if (Memory.squadObject[squadID].blockedPosition[posision.x + "-" + posision.y] == undefined)
+        {
+            var path = leader.room.findPath(leader.pos, posision);
+
+            if (path.length > 0)
+            {
+                if (path[path.length - 1].x == posision.x && path[path.length - 1].y == posision.y)
+                {
+                    Memory.squadObject[squadID].blockedPosition[posision.x + "-" + posision.y] = true
+                    var validpath = true
+                }
+                else
+                {
+                    Memory.squadObject[squadID].blockedPosition[posision.x + "-" + posision.y] = false
+                    var validpath = false
+                }
+
+                if (validpath == false)
+                {
+                    return false;
+                }
+
+            }
+        }
+        else
+        {
+            var validpath = Memory.squadObject[squadID].blockedPosition[posision.x + "-" + posision.y]
+            if (validpath == false)
+            {
+                return false;
+            }
+        }
+
+        if (enemiesInRangeOfTarget1.length != 0 || enemiesInRangeOfTarget2.length != 0 || enemiesInRangeOfTarget3.length != 0 || enemiesInRangeOfTarget4.length != 0)
         {
             return false;
         }
- 
-        
-        
-        
-        
-        
-        
 
         return true;
     },
@@ -51,9 +79,10 @@ var quadsquad = {
         var leader = Game.getObjectById(Memory.squadObject[squadID].leader);
         var returnValue = {
             booll: true,
-            posit: {
-                targetx:posx,
-                targety:posy
+            posit:
+            {
+                targetx: posx,
+                targety: posy
             },
             rank: rank,
             cost: costs
@@ -71,7 +100,7 @@ var quadsquad = {
         var path = leader.room.findPath(leader.pos, posision);
 
         if (path && path.length != 0 && path[path.length - 1] != null && path[path.length - 1].x == posision.x && path[path.length - 1].y == posision.y)
-        { // valid path
+        {  
 
         }
         else
@@ -84,12 +113,12 @@ var quadsquad = {
 
     getProperPositionForQuadSquad: function(posision, creep, squadID)
     {
-                Game.rooms[posision.roomName].visual.circle(posision,
-                {
-                    fill: 'solid',
-                    radius: 0.19,
-                    stroke: 'white'
-                });
+        Game.rooms[posision.roomName].visual.circle(posision,
+        {
+            fill: 'solid',
+            radius: 0.19,
+            stroke: 'white'
+        });
         var mainMemoryObject = Memory.squadObject[squadID];
         var posx = posision.x;
         var posy = posision.y;
@@ -142,12 +171,12 @@ var quadsquad = {
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // if squad is damaged check for position far way
 
-        if (Memory.squadObject[squadID].currentPositionsobj.targetx == posision.x && Memory.squadObject[squadID].currentPositionsobj.targety == posision.y && Memory.squadObject[squadID].currentPositionsobj.candidates.length != 0 )
+        if (Memory.squadObject[squadID].currentPositionsobj.targetx == posision.x && Memory.squadObject[squadID].currentPositionsobj.targety == posision.y && Memory.squadObject[squadID].currentPositionsobj.candidates.length != 0)
         {
-    
+
             var enemiesInRangeOfTarget2 = leader.pos.findInRange(FIND_HOSTILE_CREEPS, 3); // filter for combat 
 
-            if (enemiesInRangeOfTarget2.length != 0 )
+            if (enemiesInRangeOfTarget2.length != 0)
             {
                 for (var c = 0; c < Memory.squadObject[squadID].currentPositionsobj.candidates.length; c++)
                 {
@@ -183,8 +212,13 @@ var quadsquad = {
 
                 for (var c = 0; c < posArrayRanged.length; c++)
                 {
-                    var positionBeingchecked = new RoomPosition(posx + posArrayRanged[c][0], posy + posArrayRanged[c][1], posroom)
-                    Memory.squadObject[squadID].currentPositionsobj.candidates.push(this.initPosition(positionBeingchecked, squadID, 2, costs.get(posx + posArrayRanged[c][0], posy + posArrayRanged[c][1])));
+                    try
+                    {
+                        var positionBeingchecked = new RoomPosition(posx + posArrayRanged[c][0], posy + posArrayRanged[c][1], posroom)
+                        Memory.squadObject[squadID].currentPositionsobj.candidates.push(this.initPosition(positionBeingchecked, squadID, 2, costs.get(posx + posArrayRanged[c][0], posy + posArrayRanged[c][1])));
+                    }
+                    catch (e)
+                    {}
                 }
 
             }
@@ -201,16 +235,12 @@ var quadsquad = {
 
         var cuurentRank = 444;
         var currentPosition = leader.pos;
+        var allpositionsvalid = [];
         for (var c = 0; c < Memory.squadObject[squadID].currentPositionsobj.candidates.length; c++)
         {
 
-            if (Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll == true   && Memory.squadObject[squadID].currentPositionsobj.candidates[c].cost < 10)
+            if (Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll == true && Memory.squadObject[squadID].currentPositionsobj.candidates[c].cost < 10)
             {
-
-
-
- 
-
 
                 var posxx = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targetx;
                 var posyy = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targety;
@@ -227,7 +257,7 @@ var quadsquad = {
                 }
 
             }
-            else  
+            else
             {
 
                 var posxx = Memory.squadObject[squadID].currentPositionsobj.candidates[c].posit.targetx;
@@ -248,6 +278,12 @@ var quadsquad = {
             fill: 'solid',
             radius: 0.25,
             stroke: 'green'
+        });
+
+        Game.rooms[leader.room.name].visual.line(leader.pos, currentPosition,
+        {
+            color: 'red',
+            lineStyle: 'dashed'
         });
 
         return currentPosition;
@@ -679,17 +715,53 @@ var quadsquad = {
         return leader.pos.getDirectionTo(pos);
     },
 
+
+
+
+  linemoveDirectioncache: function(squadID, leaderid, target)
+    {
+        var pathacc = Memory.squadObject[squadID].linemovepath
+          for (var c = 0; c < pathacc.length; c++)
+                {
+        console.log(pathacc[c]);
+        
+        }
+
+
+
+
+return false;
+},
+
+
     linemoveDirection: function(squadID, leaderid, target)
     {
 
         var leader = Game.getObjectById(leaderid); // pathfinding here
-        var path = leader.pos.findPathTo(target);
-        // use the target finder for the displaced targets
+   //     var path = leader.pos.findPathTo(target);
+       var mainMemoryObject = Memory.squadObject[squadID];
+          var cachedPath =    false
+       if(Memory.squadObject[squadID].linemovepath != undefined)
+       {
+    cachedPath =         this.linemoveDirectioncache(squadID, leaderid, target);
+       }
+       
+       
+       
+       if(cachedPath == false){
+       
+       
+       
+       
+       
+       
+       
+       
         let goals = {
             pos: target,
             range: 0
         };
-        var mainMemoryObject = Memory.squadObject[squadID];
+         
         var all = [];
         for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
         {
@@ -799,17 +871,17 @@ var quadsquad = {
                             if (terrain.get(xx - 1, yy) == TERRAIN_MASK_WALL)
                             {
                                 //  Game.rooms[roomName].visual.circle(xx , yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
-                                costs.set(xx, yy, 200);
+                             //   costs.set(xx, yy, 240);
                             }
                             if (terrain.get(xx, yy + 1) == TERRAIN_MASK_WALL)
                             {
                                 // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
-                                costs.set(xx, yy, 200);
+                              //  costs.set(xx, yy, 240);
                             }
                             if (terrain.get(xx - 1, yy + 1) == TERRAIN_MASK_WALL)
                             {
                                 // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
-                                costs.set(xx, yy, 200);
+                              //  costs.set(xx, yy, 240);
                             }
                         }
                     }
@@ -818,6 +890,8 @@ var quadsquad = {
                 },
             }
         );
+        Memory.squadObject[squadID].linemovepath = ret.path;
+     
         var pos = ret.path[0];
         if (ret.path.length == 0)
         {
@@ -837,8 +911,14 @@ var quadsquad = {
                 stroke: 'red'
             });
         }
+        
+           return leader.pos.getDirectionTo(pos);
+       }
+        
+        
+        
 
-        return leader.pos.getDirectionTo(pos);
+     
     },
     targetAquisitionPURECOMBAT: function(squadID, leaderid)
     {
@@ -933,6 +1013,7 @@ var quadsquad = {
         }
         Memory.squadObject[squadID].arrayOfSquadGoals = tasklist;
     },
+
     TaskList: function(squadID)
     {
         //tasks 
@@ -985,7 +1066,7 @@ var quadsquad = {
                 return this.getProperPositionForQuadSquad(Game.flags["Flag2"].pos, leader, squadID);
 
             }
-             if (tasklist[0][0] == "test2")
+            if (tasklist[0][0] == "test2")
             {
 
                 Memory.squadObject[squadID].quadVitalBool = true;
@@ -993,73 +1074,89 @@ var quadsquad = {
 
             }
             if (tasklist[0][0] == "joinAttack")
-            {
-
+            { // Memory.squadObject[squadID].tasklistHasControl = true;
                 var leader = Game.getObjectById(leaderid);
 
-                //  finalPath.push("joinAttack",attackID,ListOfsquads[i][0]);
-                /*
-                       Memory.attackManager[attackID].vectors[i].
-                       
-                        Memory.attackManager[attackID]
-                          var vec = {
-                           currentlyAssignedSquad: "",
-                           targets: vectorTargets,
-                           ticksWhereSquadIsCloseToRamparts: 0,
-                           desiredSquad:"blinky",
-                           squadTravelTime:0
-                       };
-                       */
-                var arrtemp = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].targets;
-            //    console.log(JSON.stringify(arrtemp));
-                var foundtarg = false; 
-                for(var xx = 0; xx < arrtemp.length; xx++)
+                var nearest = leader.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+                if (leader.room.name != tasklist[0][1])
                 {
-                    var containers = new RoomPosition(arrtemp[xx][0], arrtemp[xx][1],leader.room.name ).findInRange(FIND_STRUCTURES,0,
+                    this.lineMove(squadID, new RoomPosition(25, 25, tasklist[0][1]));
+                }
+
+                else if (leader.pos.getRangeTo(new RoomPosition(25, 25, tasklist[0][1])) >= 21 && leader.pos.getRangeTo(nearest) > 5 &&  Memory.squadObject[squadID].SquadFormation == false)
+                {
+
+                    Memory.squadObject[squadID].blockLeaderchange = true;
+
+                    Memory.squadObject[squadID].breakQuad = true;
+                    this.lineMove(squadID, new RoomPosition(25, 25, tasklist[0][1]));
+                    return new RoomPosition(25, 25, tasklist[0][1])
+                }
+                else
+                {
+
+                    //  finalPath.push("joinAttack",attackID,ListOfsquads[i][0]);
+                    /*
+                           Memory.attackManager[attackID].vectors[i].
+                           
+                            Memory.attackManager[attackID]
+                              var vec = {
+                               currentlyAssignedSquad: "",
+                               targets: vectorTargets,
+                               ticksWhereSquadIsCloseToRamparts: 0,
+                               desiredSquad:"blinky",
+                               squadTravelTime:0
+                           };
+                           */
+                    var arrtemp = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].targets;
+                    //    console.log(JSON.stringify(arrtemp));
+                    var foundtarg = false;
+                    for (var xx = 0; xx < arrtemp.length; xx++)
                     {
-                        filter: (structure) =>
+                        var containers = new RoomPosition(arrtemp[xx][0], arrtemp[xx][1], leader.room.name).findInRange(FIND_STRUCTURES, 0,
                         {
-                            return (structure.structureType != STRUCTURE_CONTAINER && structure.structureType != STRUCTURE_ROAD )  ;
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType != STRUCTURE_CONTAINER && structure.structureType != STRUCTURE_ROAD);
+                            }
+                        });
+
+                        if (containers.length != 0)
+                        {
+                            arrtemp = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].targets[xx];
+                            foundtarg = true;
                         }
-                    });
-                if(containers.length != 0 )
-                {
-                   arrtemp =  Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].targets[xx];
-                   foundtarg=true;
-                }
-        
-                }
-                
-                
-                if(!foundtarg)
-                {
-                    // change to the general attack
-                }
-                
-                
-                
-                
-                var targetpos = new RoomPosition(arrtemp[0], arrtemp[1], tasklist[0][1]);
 
-                var a = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].currentlyAssignedSquad;
+                    }
 
-                if (a == "" || a == "transit")
-                {
-                    Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].currentlyAssignedSquad = squadID;
-                }
+                    if (!foundtarg)
+                    {
+                        // change to the general attack
+                    }
 
-                if (Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].squadTravelTime == 0)
-                {
-                    Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].squadTravelTime = 1350 - leader.ticksToLive;
+                    var targetpos = new RoomPosition(arrtemp[0], arrtemp[1], tasklist[0][1]);
+
+                    var a = Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].currentlyAssignedSquad;
+
+                    if (a == "" || a == "transit")
+                    {
+                        Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].currentlyAssignedSquad = squadID;
+                    }
+
+                    if (Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].squadTravelTime == 0)
+                    {
+                        Memory.attackManager[tasklist[0][1]].vectors[tasklist[0][2]].squadTravelTime = 1350 - leader.ticksToLive;
+                    }
+                    return this.getProperPositionForQuadSquad(targetpos, leader, squadID);
                 }
-                return this.getProperPositionForQuadSquad(targetpos, leader, squadID);
 
             }
 
             if (tasklist[0][0] == "movetoRoom" || tasklist[0][0] == "moveToRoom" || tasklist[0][0] == "forcemoveToRoom")
             {
                 var leader = Game.getObjectById(leaderid);
-
+                leader.say("forcemoveToRoom");
                 if (leader.room.name == tasklist[0][1])
                 {
                     leader.say("loop");
@@ -1201,29 +1298,40 @@ var quadsquad = {
             }
             if (tasklist[0][0] == "killcreeps")
             {
-                
-                
-                
+
                 if (Memory.squadObject[squadID].leader != undefined)
                 {
                     // deteck hostile creeps and room match 
                     var leader = Game.getObjectById(leaderid);
                     if (leader.room.name == tasklist[0][1])
                     {
-                        
-                         var range = leader.pos.getRangeTo(new RoomPosition(25, 25, tasklist[0][1]));
+
+                        var range = leader.pos.getRangeTo(new RoomPosition(25, 25, tasklist[0][1]));
                         if (range < 23)
                         {
-  Memory.squadObject[squadID].quadVitalBool = true;
-  
-                        }else{
-                            leader.moveTo(new RoomPosition(25, 25, tasklist[0][1]))
-                              return new RoomPosition(25, 25, tasklist[0][1]);
+                            Memory.squadObject[squadID].quadVitalBool = true;
+
                         }
-                        
-                        
+                        else
+                        {
+                            leader.moveTo(new RoomPosition(25, 25, tasklist[0][1]))
+                            return new RoomPosition(25, 25, tasklist[0][1]);
+                        }
+    var whitelist = ["MarvinTMB","marvintmb"]
                         var targetTmp = 0;
-                        var flagsinrange = leader.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+                        var flagsinrange = leader.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
+        {
+            filter: function(object)
+            {
+                return whitelist.indexOf(object.owner.username) == -1;
+            }
+        });
+                        
+                         
+                        
+                        
+                        
+                        
 
                         if (flagsinrange != undefined && targetTmp == 0)
                         {
@@ -1237,10 +1345,16 @@ var quadsquad = {
                             if (flagsinrange != undefined)
                             {
 
-                                var found = flagsinrange.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
- 
-                                    targetTmp = found.pos;
-                               
+                                var found = flagsinrange.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
+        {
+            filter: function(object)
+            {
+                return whitelist.indexOf(object.owner.username) == -1;
+            }
+        });
+
+                                targetTmp = found.pos;
+
                             }
                         }
 
@@ -1258,7 +1372,7 @@ var quadsquad = {
                     {
                         return new RoomPosition(25, 25, tasklist[0][1]);
                     }
-                } 
+                }
             }
             if (tasklist[0][0] == "HoldAttack") // tot reset hold flag // 
             {
@@ -1366,7 +1480,7 @@ var quadsquad = {
     },
     handleattacks: function(squadID)
     {
-        
+
         var mainMemoryObject = Memory.squadObject[squadID];
         var all = [];
         var target;
@@ -1380,7 +1494,7 @@ var quadsquad = {
         var index = 99;
         for (var c = 0; c < all.length; c++)
         {
-               
+
             if (all[c].hits < value && all[c].hits != all[c].hitsMax)
             {
                 value = all[c].hits;
@@ -1410,7 +1524,7 @@ var quadsquad = {
             {
                 targets = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
             }
-            
+
             var flagsInRange = all[c].pos.findInRange(FIND_FLAGS, 3);
             var targetFromflag = 0;
             var targetsTRUCTURES = all[c].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3,
@@ -1420,7 +1534,7 @@ var quadsquad = {
                     return (object.structureType != STRUCTURE_KEEPER_LAIR && object.structureType != STRUCTURE_PORTAL && object.structureType != STRUCTURE_POWER_BANK);
                 }
             });
-            if (flagsInRange.length != 0 && 1==2)
+            if (flagsInRange.length != 0 && 1 == 2)
             {
                 for (var q = 0; q < flagsInRange.length; q++)
                 {
@@ -1441,22 +1555,22 @@ var quadsquad = {
             var decideMassAttack = this.decideMassAttack(all[c]);
             if (targetFromflag != 0)
             {
-                   all[c].say("h");
+                all[c].say("h");
                 all[c].rangedAttack(targetFromflag);
             }
             else if (decideMassAttack)
             {
-                   all[c].say("g");
+                all[c].say("g");
                 all[c].rangedMassAttack();
             }
             else if (targets.length > 0)
             {
-                   all[c].say("f");
+                all[c].say("f");
                 all[c].rangedAttack(targets[0]);
             }
             else if (targetsTRUCTURES.length > 0)
             {
-                 all[c].say("e");
+                all[c].say("e");
                 all[c].rangedAttack(targetsTRUCTURES[0]);
             }
             else
@@ -1788,9 +1902,15 @@ var quadsquad = {
     },
     run: function(squadID)
     {
+        var startCpu = Game.cpu.getUsed();
+
         this.handleattacks(squadID);
         var mainMemoryObject = Memory.squadObject[squadID];
         Memory.squadObject[squadID].quadVitalBool = false;
+        Memory.squadObject[squadID].blockLeaderchange = false;
+        Memory.squadObject[squadID].tasklistHasControl = false;
+        Memory.squadObject[squadID].breakQuad = false;
+          Memory.squadObject[squadID].SquadFormation=false;
         var all = [];
         var target;
         for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
@@ -1809,18 +1929,21 @@ var quadsquad = {
         }
         if (leader != null && leader != undefined && leader)
         {
-
+       var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
+           Memory.squadObject[squadID].SquadFormation = SquadIsInFormation
+       
+       
             /////////////////////////////////////////////////      
             //                   decide targets 
 
             target = this.TaskList(squadID);
 
             var QuadVital = this.DecideIfQuadIsVital(squadID);
-            var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
+      
 
             var rangeToTarget = leader.pos.getRangeTo(target);
 
-            if (Memory.squadObject[squadID].leader == undefined || (this.leaderBlocked2(squadID) && QuadVital == true && SquadIsInFormation == false))
+            if ((this.leaderBlocked2(squadID) && QuadVital == true && SquadIsInFormation == false && Memory.squadObject[squadID].blockLeaderchange != true))
             {
                 Memory.squadObject[squadID].leader = this.decideLeader(squadID);
             }
@@ -1830,45 +1953,53 @@ var quadsquad = {
                 QuadVital = true;
             }
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //      leader.say(target);
-            // leader.say(QuadVital);
-            if (target != undefined)
+            if (Memory.squadObject[squadID].breakQuad == true)
             {
-              leader.say("T-" + target.x + "," + target.y);
+                QuadVital = false;
             }
-                
-            if (QuadVital == false && target != undefined)
+            if (Memory.squadObject[squadID].tasklistHasControl == false)
             {
-                leader.say("lineMove1");
-                this.lineMove(squadID, target);
-            }
-            else if (QuadVital == true && !SquadIsInFormation)
-            {
-                leader.say("moveIntoFormation");
-                if (Memory.squadObject[squadID].leader != undefined)
+                //////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //      leader.say(target);
+                // leader.say(QuadVital);
+                if (target != undefined)
                 {
-                    this.moveIntoFormation(Memory.squadObject[squadID].leader, squadID);
+                  //  leader.say("T-" + target.x + "," + target.y);
                 }
-            }
-            else if (SquadIsInFormation && target != undefined && (leader.pos.x != target.x || leader.pos.y != target.y))
-            {
-                leader.say("moveAsOne");
-                var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
-                this.moveAsOne(squadID, Direction);
-            }
-            else if (leader != undefined && target != undefined && SquadIsInFormation && Memory.squadObject[squadID].squadSubType != "blinky")
-            {
-                if (leader.pos.x == target.x && leader.pos.y == target.y)
+
+                if (QuadVital == false && target != undefined || (Memory.squadObject[squadID].breakQuad == true && target != undefined))
                 {
-                    this.internalRearange(squadID);
+                   // leader.say("lineMove1");
+                    this.lineMove(squadID, target);
+                }
+                else if (QuadVital == true && !SquadIsInFormation)
+                {
+                    //leader.say("moveIntoFormation");
+                    if (Memory.squadObject[squadID].leader != undefined)
+                    {
+                        this.moveIntoFormation(Memory.squadObject[squadID].leader, squadID);
+                    }
+                }
+                else if (SquadIsInFormation && target != undefined && (leader.pos.x != target.x || leader.pos.y != target.y))
+                {
+                   // leader.say("moveAsOne");
+                    var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
+                    this.moveAsOne(squadID, Direction);
+                }
+                else if (leader != undefined && target != undefined && SquadIsInFormation && Memory.squadObject[squadID].squadSubType != "blinky")
+                {
+                    if (leader.pos.x == target.x && leader.pos.y == target.y)
+                    {
+                        this.internalRearange(squadID);
+                    }
                 }
             }
         }
         /////////////////////////////////////////////////////
         //                  deal damage / heal
         /////////////////////////////////////////
-
+        console.log("quad", squadID, "-", Game.cpu.getUsed() - startCpu);
         /////
     }
 }

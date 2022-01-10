@@ -23,8 +23,6 @@ var creepfunctions = {
         return targets;
     },
 
- 
-
     repairLowestRampartInRange: function(creep)
     {
         var LowestRamparts = creep.pos.findInRange(FIND_STRUCTURES, 3,
@@ -299,9 +297,7 @@ var creepfunctions = {
         }).path;
         creep.moveByPath(patha);
     },
-    
-    
-    
+
     loopTasks: function(creep)
     {
         //   try
@@ -440,7 +436,7 @@ var creepfunctions = {
 
             else if (creep.memory.memstruct.tasklist[0][0] == "upgrade")
             {
-                if (creep.store[RESOURCE_ENERGY] == 0)
+                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
                 {
                     creep.say("g");
                     this.loopTasks(creep);
@@ -451,11 +447,35 @@ var creepfunctions = {
                     {
                         if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
                         {
-                            creep.moveTo(creep.room.controllerarget);
+                            creep.moveTo(creep.room.controller);
                         }
                     }
                 }
             }
+            else if (creep.memory.memstruct.tasklist[0][0] == "findPathBetweenRooms") // ["","goalRoom","starroom",dangerlevel]
+            {
+
+                var finalPath = [];
+
+                var goalRoom = creep.memory.memstruct.tasklist[0][1]
+                var starroom = creep.memory.memstruct.tasklist[0][2]
+                var dangerlevel = creep.memory.memstruct.tasklist[0][3]
+
+                var rawPath = roompathfind.run(goalRoom, starroom, dangerlevel);
+                for (var q = 0; q < rawPath.length; q++)
+                {
+                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+                }
+
+                creep.memory.memstruct.tasklist.splice(0, 1);
+
+                for (var q = 0; q < creep.memory.memstruct.tasklist.length; q++)
+                {
+                    finalPath.push(creep.memory.memstruct.tasklist[q]);
+                }
+                creep.memory.memstruct.tasklist = finalPath
+            }
+
             else if (creep.memory.memstruct.tasklist[0][0] == "buildGeneral")
             {
                 creep.say("buildGeneral");
@@ -476,6 +496,222 @@ var creepfunctions = {
                     }
                 }
             }
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "templeUP")
+            {
+    var tewers = creep.pos.findInRange(FIND_MY_STRUCTURES, 1,
+                        {
+                            filter: (structure) => (structure.structureType == STRUCTURE_TOWER && structure.store.getUsedCapacity() < 500)
+                        });
+                creep.memory.timer = 0;
+                var positiongoal;
+                var goalflag = Game.flags["temple" + creep.memory.memstruct.tasklist[0][1]]
+                if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple" + "-0")
+                {
+                    positiongoal = new RoomPosition(goalflag.pos.x - 1, goalflag.pos.y - 1, creep.memory.memstruct.tasklist[0][1])
+                }
+                if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple" + "-1")
+                {
+                    positiongoal = new RoomPosition(goalflag.pos.x, goalflag.pos.y - 1, creep.memory.memstruct.tasklist[0][1])
+                }
+                if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple" + "-2")
+                {
+                    positiongoal = new RoomPosition(goalflag.pos.x + 1, goalflag.pos.y - 1, creep.memory.memstruct.tasklist[0][1])
+                }
+                if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple" + "-3")
+                {
+                    positiongoal = new RoomPosition(goalflag.pos.x + 1, goalflag.pos.y + 1, creep.memory.memstruct.tasklist[0][1])
+                }
+
+        
+                var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+                var spawnns = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_SPAWN && structure.store.energy > 100);
+                    }
+                });
+                var term = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_TERMINAL && structure.store.energy > 1000);
+                    }
+                });
+
+                if (creep.store.getFreeCapacity() >= 100 && term.length != 0)
+                {
+                    creep.withdraw(term[0], RESOURCE_ENERGY)
+                }
+
+                else if (creep.store.getFreeCapacity() >= 100 && spawnns.length != 0)
+                {
+                    creep.withdraw(spawnns[0], RESOURCE_ENERGY)
+                }
+
+                if (hostiles.length != 0)
+                {
+
+                    if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple-3")
+                    {
+                        creep.say("3")
+                     
+
+                        if (tewers.length != 0 && creep.store.getUsedCapacity() >= 100 )
+                        {
+                            creep.transfer(tewers[0], RESOURCE_ENERGY)
+                        }
+
+                    }
+                    else
+                    {
+
+                        var LowestRamparts = creep.pos.findInRange(FIND_STRUCTURES, 3,
+                        {
+                            filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
+                        });
+                        var tmp = 0;
+                        if (LowestRamparts.length != 0)
+                        {
+                            var value = 9999999999999999999;
+                            for (var i = 0; i < LowestRamparts.length; i++)
+                            {
+                                if (LowestRamparts[i].hits < value)
+                                {
+                                    value = LowestRamparts[i].hits;
+                                    tmp = i;
+                                }
+                            }
+                            creep.repair(LowestRamparts[tmp])
+                        }
+                    }
+
+                }
+                else if (creep.store.getUsedCapacity() >= 100)
+                {
+                             creep.moveTo(positiongoal)
+                    creep.upgradeController(creep.room.controller);
+                }
+
+                if (creep.ticksToLive < 1000)
+                {
+
+                    var spawnns = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_SPAWN && structure.store.energy > 100);
+                        }
+                    });
+
+                    if (spawnns.length != 0)
+                    {
+                        spawnns[0].renewCreep(creep)
+                    }
+
+                }
+
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "templeBuild")
+            {
+                creep.memory.timer = 0;
+                var goalflag = Game.flags["temple" + creep.memory.memstruct.tasklist[0][1]]
+                var roomname = creep.room.name
+                var positiongoal = new RoomPosition(goalflag.pos.x - 1, goalflag.pos.y + 1, creep.memory.memstruct.tasklist[0][1])
+
+                creep.moveTo(positiongoal)
+
+                var term = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_TERMINAL && structure.store.energy > 1000);
+                    }
+                });
+
+                if (creep.store.getFreeCapacity() >= 100 && term.length != 0)
+                {
+                    creep.withdraw(term[0], RESOURCE_ENERGY)
+                }
+
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x - 1, goalflag.pos.y - 1, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x - 1, goalflag.pos.y, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x - 1, goalflag.pos.y + 1, STRUCTURE_RAMPART);
+
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x, goalflag.pos.y - 1, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x, goalflag.pos.y, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x, goalflag.pos.y + 1, STRUCTURE_RAMPART);
+
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x + 1, goalflag.pos.y - 1, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x + 1, goalflag.pos.y, STRUCTURE_RAMPART);
+                Game.rooms[roomname].createConstructionSite(goalflag.pos.x + 1, goalflag.pos.y + 1, STRUCTURE_RAMPART);
+
+                var spawnns = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_SPAWN && structure.store.energy < 150);
+                    }
+                });
+                if (spawnns.length != 0)
+                {
+
+                    creep.transfer(spawnns[0], RESOURCE_ENERGY)
+
+                }
+
+                var target = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 3);
+                if (target.length != 0)
+                {
+                    creep.build(target[0])
+
+                }
+
+                else
+                {
+
+                    var LowestRamparts = creep.pos.findInRange(FIND_STRUCTURES, 3,
+                    {
+                        filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
+                    });
+                    var tmp = 0;
+                    if (LowestRamparts.length != 0)
+                    {
+                        var value = 9999999999999999999;
+                        for (var i = 0; i < LowestRamparts.length; i++)
+                        {
+                            if (LowestRamparts[i].hits < value)
+                            {
+                                value = LowestRamparts[i].hits;
+                                tmp = i;
+                            }
+                        }
+                        creep.repair(LowestRamparts[tmp])
+                    }
+
+                }
+
+                if (creep.ticksToLive < 1000)
+                {
+
+                    var spawnns = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                    {
+                        filter: (structure) =>
+                        {
+                            return (structure.structureType == STRUCTURE_SPAWN && structure.store.energy > 100);
+                        }
+                    });
+
+                    if (spawnns.length != 0)
+                    {
+                        spawnns[0].renewCreep(creep)
+                    }
+
+                }
+
+            }
+
             else if (creep.memory.memstruct.tasklist[0][0] == "build")
             {
                 if (creep.store.getUsedCapacity() == 0)
@@ -494,12 +730,35 @@ var creepfunctions = {
                     }
                 }
             }
+            else if (creep.memory.memstruct.tasklist[0][0] == "buildconsites")
+            {
+                if (creep.store.getUsedCapacity() == 0)
+                {
+                    this.loopTasks(creep);
+                }
+                else
+                {
+                    const target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+                    if (target)
+                    {
+                        if (creep.build(target) == ERR_NOT_IN_RANGE)
+                        {
+                            creep.moveTo(target);
+                        }
+                    }
+                    else
+                    {
+                        this.loopTasks(creep);
+                    }
+                }
+            }
+
             else if (creep.memory.memstruct.tasklist[0][0] == "harvest")
             {
                 creep.say(creep.store[RESOURCE_ENERGY])
-                if (creep.store[RESOURCE_ENERGY] > 100)
+                if (creep.store[RESOURCE_ENERGY] == creep.store.getCapacity())
                 {
-                    creep.say("eeee")
+
                     this.loopTasks(creep);
                 }
                 else
@@ -513,6 +772,33 @@ var creepfunctions = {
                         }
                     }
                 }
+            }
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "guardRoom")
+            {
+
+                var targposition = new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]);
+
+                const range = creep.pos.getRangeTo(targposition);
+
+                var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+                if (target == undefined && range > 20 && creep.room.name == creep.memory.memstruct.tasklist[0][1])
+                {
+                    creep.moveTo(targposition);
+                }
+
+                if (range > 23)
+                {
+
+                    creep.moveTo(targposition);
+                    return true;
+                }
+                else
+                {
+                    return true;
+                }
+
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "joinSquad")
             {
@@ -603,8 +889,37 @@ var creepfunctions = {
                 }
                 this.repairLowestRampartInRange(creep)
             }
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "fillTowers")
+            {
+
+                var targets = creep.room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_TOWER && structure.energy < 500);
+                    }
+                });
+
+                if (targets.length != 0 && creep.store.getUsedCapacity() != 0)
+                {
+
+                    var a = [
+                        ["transfer", targets[0].id, "energy"]
+                    ]
+                    a = a.concat(creep.memory.memstruct.tasklist)
+                    creep.memory.memstruct.tasklist = a
+                }
+                else
+                {
+                    this.loopTasks(creep);
+                }
+
+            }
+
             else if (creep.memory.memstruct.tasklist[0][0] == "travelThroughPortal")
-            { // ["travelThroughPortal" , origin shard  , portalID]
+            {
+                // ["travelThroughPortal" , origin shard  , portalID]
                 var originshard = creep.memory.memstruct.tasklist[0][1];
                 creep.say(Game.shard.name);
                 //  
@@ -633,6 +948,32 @@ var creepfunctions = {
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "waitForCreepsToSpawn")
             {
+
+                var spawnss = creep.pos.findClosestByRange(FIND_MY_SPAWNS,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.spawning == undefined);
+                    }
+                });
+                try
+                {
+                    creep.moveTo(spawnss,
+                    {
+                        visualizePathStyle:
+                        {
+                            stroke: '#ffaa00'
+                        }
+                    });
+                    var range = creep.pos.getRangeTo(spawnss);
+                    if (range == 1)
+                    {
+                        spawnss.renewCreep(creep);
+                    }
+                }
+                catch (e)
+                {}
+
                 var creepsSpawnedin2 = true;
                 for (var i = 0; i < creep.memory.memstruct.tasklist[0][1].length; i++)
                 {
@@ -734,27 +1075,29 @@ var creepfunctions = {
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "transfer")
             {
-                
-                    
+
                 //     ["transfer" , "5f4e3d6138522b1096393b7d","tissue",50]
                 var targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
 
-                       
-                
-                if(creep.memory.role == "mover" && targ.structureType == STRUCTURE_CONTAINER)
+                if (creep.memory.role == "mover" && targ.structureType == STRUCTURE_CONTAINER)
                 {
-                    if(targ.store.getUsedCapacity() < 300)
-                    {  
+                    if (targ.store.getFreeCapacity() < 300)
+                    {
                         this.loopTasks(creep);
-                        
+                        return true
                     }
                 }
-                
-                
-                
-                
-                
-     if (creep.memory.memstruct.tasklist[0].length == 4)
+
+                if (creep.memory.memstruct.tasklist[0] == undefined)
+                {
+                    this.loopTasks(creep);
+                }
+                else if (creep.memory.memstruct.tasklist[0].length < 3)
+                {
+                    this.loopTasks(creep);
+                }
+
+                if (creep.memory.memstruct.tasklist[0].length == 4)
                 {
                     var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
                 }
@@ -764,11 +1107,13 @@ var creepfunctions = {
                 }
 
                 new RoomVisual(creep.room.name).line(targ.pos.x, targ.pos.y, creep.pos.x, creep.pos.y);
+
                 new RoomVisual(creep.room.name).text(creep.memory.memstruct.tasklist[0][2], creep.pos.x, creep.pos.y,
                 {
                     color: 'green',
                     font: 0.3
                 });
+
                 if (a == ERR_NOT_IN_RANGE)
                 {
                     creep.say("a");
@@ -794,7 +1139,18 @@ var creepfunctions = {
                 {
                     this.loopTasks(creep);
                 }
+
             }
+            else if (creep.memory.memstruct.tasklist[0][0] == "renewsafemode")
+            {
+
+                if (creep.generateSafeMode(Game.rooms[creep.memory.memstruct.tasklist[0][1]].controller) == ERR_NOT_IN_RANGE)
+                {
+                    creep.moveTo(Game.rooms[creep.memory.memstruct.tasklist[0][1]].controller);
+                }
+
+            }
+
             else if (creep.memory.memstruct.tasklist[0][0] == "withdrawBoost")
             {
                 if (creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200)
@@ -1031,16 +1387,10 @@ var creepfunctions = {
                     }
                     else
                     {
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+
                         creep.moveTo(targ,
                         {
-   reusePath:1,
+                            reusePath: 1,
                             maxRooms: 0
                         });
                     }
@@ -1575,16 +1925,12 @@ var creepfunctions = {
             {
                 if (creep.store.getFreeCapacity() == 0)
                 {
-          
-                 
-                 if(Memory.roomlist[creep.room.name].movercontrol != undefined && Memory.roomlist[creep.room.name].movercontrol.moveCap != undefined)
-                 {
-                      Memory.roomlist[creep.room.name].movercontrol.moveCap =     Memory.roomlist[creep.room.name].movercontrol.moveCap - creep.store.getCapacity();
-                 }
-                 
-                 
-                 
-                 
+
+                    if (Memory.roomlist[creep.room.name].movercontrol != undefined && Memory.roomlist[creep.room.name].movercontrol.moveCap != undefined)
+                    {
+                        Memory.roomlist[creep.room.name].movercontrol.moveCap = Memory.roomlist[creep.room.name].movercontrol.moveCap - creep.store.getCapacity();
+                    }
+
                     this.loopTasks(creep);
                 }
                 else
@@ -1805,6 +2151,12 @@ var creepfunctions = {
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "boost") // [0][0] boost [0][1] boosy mineral typ3e [0][2]number of bodyparts
             {
+
+                if (creep.room.controller.level < 6)
+                {
+                    this.loopTasks(creep);
+                }
+
                 var boostlab;
                 var flagmid = Game.flags[creep.room.name];
                 var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmid.pos.x - 2, flagmid.pos.y - 2);
@@ -2037,9 +2389,17 @@ var creepfunctions = {
                     creep.heal(creep);
                 }
                 var targetsa = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
+
+                if (targetsa.length != 0)
+                {
+                    Memory.roomlist[creep.room.name].dangerLevel = 8;
+
+                }
+
                 if (creep.body.find(elem => elem.type === "ranged_attack") != undefined && targetsa.length != 0)
                 {
-                    creep.rangedMassAttack();
+
+                    //         creep.rangedMassAttack();
                 }
                 //   var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
                 var targposition = new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]);
@@ -2303,7 +2663,7 @@ var creepfunctions = {
                 }
                 if (numberOfcarryParts != 0)
                 {
-                    arraytopush.push(["boost", "KH2O", numberOfcarryParts]);
+                    arraytopush.push(["boost", "XKH2O", numberOfcarryParts]);
                 }
                 if (numberOfAttackParts != 0)
                 {

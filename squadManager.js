@@ -38,22 +38,22 @@ var squadmanager = {
         else
         {
             var squadMemberGoal = Object.values(mainMemoryObject.SquadMembersGoal);
-            if (mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length && (Game.flags[mainMemoryObject.squadHomeRoom] && (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.spawnfree == true || Game.rooms[mainMemoryObject.squadHomeRoom].controller.level == 8)))
+            if (mainMemoryObject.SquadMembersCurrent.length < squadMemberGoal.length )
             {
 
-                if (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "")
+                if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning == "")
                 {
-                    Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = squadID;
+                    Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = squadID;
                     if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning != undefined)
                     {
                         Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = squadID;
                     }
                 }
-                if (Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == squadID)
+                if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning == squadID)
                 {
                     if (mainMemoryObject.squadType == "quad" && mainMemoryObject.squadisready == true)
                     {
-                        Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
+                        Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = "";
 
                         if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning != undefined)
                         {
@@ -63,7 +63,7 @@ var squadmanager = {
 
                     else if (mainMemoryObject.squadType == "duo" && mainMemoryObject.squadisready == true)
                     {
-                        Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
+                        Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = "";
                     }
 
                     else
@@ -75,7 +75,7 @@ var squadmanager = {
             else if (mainMemoryObject.SquadMembersCurrent.length == squadMemberGoal.length)
             {
                 mainMemoryObject.squadisready = true;
-                Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning = "";
+                Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = "";
                 if (Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning != undefined)
                 {
                     Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning = "";

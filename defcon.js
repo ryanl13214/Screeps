@@ -89,7 +89,7 @@ var defcon = {
         
         var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
         var mainflag = Game.flags[roomname];
-        mainflag.memory.blocktranferIntoRoom = false;
+      
         var numberofguardingcreeps = _.filter(creepsinroom, (creep) => creep.memory.role == 'guard');
         var numberOfHealParts = 0;
         var numberOfAttackParts = 0;
@@ -143,7 +143,7 @@ var defcon = {
                 });
                 if(pwrspawn.length != 0)
                 {
-                    Game.powerCreeps["defender1"].spawn(pwrspawn[0]);
+            //        Game.powerCreeps["defender1"].spawn(pwrspawn[0]);
                 }
             }
             
@@ -162,13 +162,13 @@ var defcon = {
             if(roomLevel == 8){
                   numberDamagePartsPerRanger= numberDamagePartsPerRanger*40;  
             }
-            enemyHealPtentail =   numberOfHealParts * 12;
+            enemyHealPtentail =   numberOfHealParts * 48;
             // - TOWERS HERE 
             
             numberOfRangersNeeded = Math.ceil(enemyHealPtentail / numberDamagePartsPerRanger);
        ///     console.log("numberOfRangersNeeded",numberOfRangersNeeded);
             
-            if(numberOfRangersNeeded > 4 && roomLevel < 7)
+            if( (numberOfRangersNeeded > 4 && roomLevel < 7) |  roomLevel < 6  )
             {
             //  console.log("aid");  
                 numberOfRangersNeeded = 4;
@@ -206,26 +206,13 @@ var defcon = {
             {
                Game.rooms[roomname].controller.activateSafeMode()
              }
-            mainflag.memory.blocktranferIntoRoom = false;
+            
         }
-        else
-        {
-            var mainflag = Game.flags[roomname];
-            var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-            if(spawnss.length == 0)
-            {
-                mainflag.memory.blocktranferIntoRoom = true;
-                for(const id in Game.market.orders)
-                {
-                    //    console.log(JSON.stringify(Game.market.orders[id]));
-                    if(Game.market.orders[id].roomName == roomname)
-                    {
-                        console.log("cancelling orders");
-                        //         Game.market.cancelOrder(id);
-                    }
-                }
-            }
-        }
+ 
+ 
+ 
+ 
+ 
         var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
         if(target.length != 0)
         {
@@ -263,10 +250,10 @@ var defcon = {
         
         
         
+          var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
         
         
-        
-        if(roominrange.length != 0 ){
+        if(roominrange.length != 0 &&  target.length >2){
                 
         
           var finalPath = [];
@@ -309,7 +296,7 @@ var defcon = {
 
         
                     }
-        
+                    
         }else{
                this.spawnBoostedarcher(roomname,5);
         }

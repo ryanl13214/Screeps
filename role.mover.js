@@ -125,9 +125,14 @@ return false;
         {
             filter: (res) =>
             {
-                return (res.resourceType != RESOURCE_ENERGY) || (res.amount > 200);
+                return (res.resourceType != RESOURCE_ENERGY) || (res.amount > creep.store.getCapacity());
             }
         });
+        
+        
+        
+        
+        
         var tombstones = creep.pos.findClosestByPath(FIND_TOMBSTONES,
         {
             filter: (tomb) =>
@@ -224,7 +229,16 @@ return false;
 
             var listofrooms = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange.concat(Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms)
 
-            this.controlHaulers(creep, listofrooms)
+       
+if(target.length != 0)
+{
+      var a = false  
+}
+else
+{
+    var a =        this.controlHaulers(creep, listofrooms)
+}
+
 
             if (creep.memory.memstruct.tasklist.length == 0)
             {
@@ -265,9 +279,25 @@ return false;
         
                 var listofrooms = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange.concat(Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms)
 
-     var a =        this.controlHaulers(creep, listofrooms)
-        
-        
+
+    var  target = creep.room.find(FIND_HOSTILE_CREEPS );
+
+
+
+
+if(target.length != 0)
+{
+      var a = false  
+}
+else
+{
+    var a =        this.controlHaulers(creep, listofrooms)
+}
+
+
+
+      
+     
       
         if (storagemain && storagemain.store.getUsedCapacity(RESOURCE_ENERGY) > 2500 && !a)
         {
@@ -471,7 +501,21 @@ return false;
             //////////////////////////////////////////////////////////////////////////
             if (creep.memory.memstruct.full == false)
             {
-                var valuablematerialsTogather = this.MaterialGathereing(creep);
+                    var  target = creep.room.find(FIND_HOSTILE_CREEPS );
+
+
+
+
+if(target.length != 0)
+{
+      var valuablematerialsTogather = false  
+}
+else
+{
+ var valuablematerialsTogather = this.MaterialGathereing(creep);
+}
+              //  var valuablematerialsTogather = this.MaterialGathereing(creep);
+                
                 if (!valuablematerialsTogather)
                 {
                     if (roomLevel < 6)

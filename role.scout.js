@@ -6,7 +6,7 @@ room considtions
   13*13 area
   sources with 2 accessable areas
  */
- var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7","E28N4","E26N1"];
+ var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7","E28N4","E26N1","E27N4",];
      var creepfunctions = require('prototype.creepfunctions');
      var rolescout = {
          run: function(creep)
