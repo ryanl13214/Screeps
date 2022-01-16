@@ -1,5 +1,5 @@
- var observer = require('observer');
-  var roles = require('roles');
+var observer = require('observer');
+var roles = require('roles');
 var spawnmain = require('spawn');
 var buildbase = require('buildbase');
 var tower = require('tower');
@@ -8,21 +8,15 @@ var terminalManager = require('terminal');
 var factoryManager = require('factory');
 var pwrspawnManager = require('powerspawn');
 var squadgenerate = require('squadgenerator');
- 
+
 var labs = require('labs');
-  
- var roomController = {
-     run: function(roomname )
-     {
- 
- var debug = false;
- 
- 
- 
- 
- 
- 
-        
+
+var roomController = {
+    run: function(roomname)
+    {
+
+        var debug = false;
+
         if (Memory.empire == undefined)
         {
             Memory.empire = {};
@@ -31,16 +25,15 @@ var labs = require('labs');
         {
             Memory.empire.roomsobj = {};
         }
-        if (Memory.empire.roomsobj[roomname] == undefined ||  Memory.empire.roomsobj[roomname].centerroomsinrange == undefined    || Memory.empire.roomsobj[roomname].MineRooms == undefined )
+        if (Memory.empire.roomsobj[roomname] == undefined || Memory.empire.roomsobj[roomname].centerroomsinrange == undefined || Memory.empire.roomsobj[roomname].MineRooms == undefined)
         {
             Memory.empire.roomsobj[roomname] = {
-                centerroomsinrange:[],
-                MineRooms:[]
+                centerroomsinrange: [],
+                MineRooms: []
 
-                
             }
         }
-        
+
         var creepsInRoom = _.filter(Game.creeps, (creep) => (creep.memory.memstruct != undefined && creep.memory.memstruct.spawnRoom === roomname));
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            roles
@@ -48,18 +41,18 @@ var labs = require('labs');
         var startCpu = Game.cpu.getUsed();
         roles.run(creepsInRoom);
         var roles_cpu_used = +Game.cpu.getUsed() - startCpu;
-        if(debug)
+        if (debug)
         {
             Memory.cpuUsage.roles += roles_cpu_used;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var mainflag = Game.flags[roomname];
-        if(Game.time % 50 == 0)
+        if (Game.time % 50 == 0)
         {
             mainflag.memory.flagstruct.squadspawning = "";
         }
-          var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-        if(mainflag == undefined)
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        if (mainflag == undefined)
         {
             var flagstruct = {
                 squadspawning: "",
@@ -79,9 +72,9 @@ var labs = require('labs');
                     dismantelrooms: []
                 }
             };
-           
+
             //  console.log(roomname);
-            if(spawnss.length > 0)
+            if (spawnss.length > 0)
             {
                 Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x - 2, Game.spawns[roomname].pos.y - 2, roomname);
             }
@@ -97,30 +90,21 @@ var labs = require('labs');
         //                                            defcon
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         var storagevalue = 0;
-        var defconlevel;
-        if(Game.rooms[roomname].storage != undefined)
+
+        if (Game.rooms[roomname].storage != undefined)
         {
             storagevalue = Game.rooms[roomname].storage.store.getUsedCapacity();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();
-        if(Game.rooms[roomname].controller.level > 3 )
+        if (Game.rooms[roomname].controller.level > 3)
         {
-            var defconlevel = {
-                defenceLevel: 10,
-                attackLevel: 10
-            };
+
             defconlevel = defcon.run(roomname, creepsInRoom);
         }
-        else
-        {
-            var defconlevel = {
-                defenceLevel: 10,
-                attackLevel: 10
-            };
-        }
+
         var defcon_cpu_used = +Game.cpu.getUsed() - startCpu;
-        if(debug)
+        if (debug)
         {
             Memory.cpuUsage.defcon += defcon_cpu_used;
         }
@@ -128,15 +112,15 @@ var labs = require('labs');
         //                                            SQUAD CREATION
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
         var startCpu = Game.cpu.getUsed();
-        if(Game.rooms[roomname].controller.level > 3 && storagevalue > 10000)
+        if (Game.rooms[roomname].controller.level > 3 && storagevalue > 10000)
         {
-            if(Game.time % 99  == 0 || defconlevel.defenceLevel < 10)
+            if (Game.time % 99 == 0)
             {
-               // squadgenerate.run(roomname);
+                // squadgenerate.run(roomname);
             }
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;
-        if(debug)
+        if (debug)
         {
             Memory.cpuUsage.generatingsquads += squadgenerator_cpu_used;
         }
@@ -150,24 +134,24 @@ var labs = require('labs');
         //                                            spawning
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
         var startCpu = Game.cpu.getUsed();
-        spawnmain.run(roomname, defconlevel, storagevalue, roomExits, creepsInRoom);
+        spawnmain.run(roomname, storagevalue, roomExits, creepsInRoom);
         var spawnmain_cpu_used = +Game.cpu.getUsed() - startCpu;
-        if(debug)
+        if (debug)
         {
             Memory.cpuUsage.spawnin += spawnmain_cpu_used;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            basebuild
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-        if(Game.time % (3500 ) == 0)
+        if (Game.time % (3500) == 0)
         {
             var checkflag = Game.flags[roomname + "noTemplate"];
             try
             {
                 var startCpu = Game.cpu.getUsed();
-                if(checkflag == undefined)
+                if (checkflag == undefined)
                 {
-              //      buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
+                    //      buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
                 }
                 var buildbase_cpu_used = +Game.cpu.getUsed() - startCpu;
             }
@@ -180,36 +164,35 @@ var labs = require('labs');
         //                                            towers
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         var startCpu = Game.cpu.getUsed();
-        if(Game.time % (16) == 0 || defconlevel.defenceLevel < 10 || storagevalue > 900000)
-        {
-            tower.run(roomname, storagevalue);
-        }
+        var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
+        // if(target.length > 0)
+        //  {
+        tower.run(roomname, storagevalue);
+        //   }
         var tower_cpu_used = +Game.cpu.getUsed() - startCpu;
-        if(debug)
+        if (debug)
         {
             Memory.cpuUsage.towers += tower_cpu_used;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            labs
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        if(Game.rooms[roomname].controller.level > 6){
-           labs.run(roomname);
+
+        if (Game.rooms[roomname].controller.level > 6)
+        {
+            labs.run(roomname);
         }
-      
-     
-        
-        
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            terminals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if((Game.time % (10 ) == 0 && Game.rooms[roomname].terminal != undefined) && roomname != "E33N8")
+        if ((Game.time % (10) == 0 && Game.rooms[roomname].terminal != undefined) && roomname != "E33N8")
         {
             //markets here
             var startCpu = Game.cpu.getUsed();
-            terminalManager.run(roomname, Game.rooms[roomname].terminal, defconlevel, storagevalue);
+            terminalManager.run(roomname, Game.rooms[roomname].terminal, storagevalue);
             var Terminal_cpu_used = +Game.cpu.getUsed() - startCpu;
-            if(debug)
+            if (debug)
             {
                 Memory.cpuUsage.terminals += Terminal_cpu_used;
             }
@@ -226,9 +209,9 @@ var labs = require('labs');
         });
         try
         {
-            if(nuker.length == 1)
+            if (nuker.length == 1)
             {
-                if(nuker[0].store.getFreeCapacity("energy") != 0)
+                if (nuker[0].store.getFreeCapacity("energy") != 0)
                 {
                     Game.spawns[roomname].spawnCreep(
                         [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], roomname + 'nukerenergy',
@@ -253,7 +236,7 @@ var labs = require('labs');
                             }
                         });
                 }
-                if(nuker[0].store.getFreeCapacity("G") != 0)
+                if (nuker[0].store.getFreeCapacity("G") != 0)
                 {
                     Game.spawns[roomname].spawnCreep(
                         [MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], roomname + 'nukerg',
@@ -292,7 +275,7 @@ var labs = require('labs');
                 structureType: STRUCTURE_FACTORY
             }
         });
-        if(factorys.length != 0 && factorys[0].cooldown < 1)
+        if (factorys.length != 0 && factorys[0].cooldown < 1)
         {
             factoryManager.run(roomname, Game.rooms[roomname].terminal, factorys[0]);
         }
@@ -306,9 +289,9 @@ var labs = require('labs');
                 structureType: STRUCTURE_OBSERVER
             }
         });
-        if(obs.length != 0)
+        if (obs.length != 0)
         {
-           observer.run(roomname, obs[0]);
+            observer.run(roomname, obs[0]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                       pwrspawnManager
@@ -322,16 +305,21 @@ var labs = require('labs');
         });
         var g = 4;
 
-        if(pwrspawn.length != 0){
-        if(Game.rooms[roomname].terminal   && Game.rooms[roomname].storage   && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 500000 && pwrspawn.length != 0 && Game.time % (g) == 0  )
+        if (pwrspawn.length != 0)
         {
-            pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
-        }}
+            if (Game.rooms[roomname].terminal && Game.rooms[roomname].storage && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 500000 && pwrspawn.length != 0 && Game.time % (g) == 0)
+            {
+                pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
+            }
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            LINKS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if(Game.rooms[roomname].controller.level > 3)
+        if (Game.rooms[roomname].controller.level > 3)
         {
+
+            var altflag = Game.flags[roomname + "AltTower"]
+
             var mainflags = Game.flags[roomname];
             var flag1 = Game.flags[roomname + "container1"];
             var flag0 = Game.flags[roomname + "container0"];
@@ -351,7 +339,21 @@ var labs = require('labs');
                     return (structure.structureType == STRUCTURE_LINK);
                 }
             });
-            if(flag1)
+
+            var alttower = [];
+
+            if (altflag)
+            {
+                alttower = altflag.pos.findInRange(FIND_STRUCTURES, 1,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_LINK && structure.store.getUsedCapacity() < 500);
+                    }
+                });
+            }
+
+            if (flag1)
             {
                 var harvesterlink0 = flag1.pos.findInRange(FIND_STRUCTURES, 1,
                 {
@@ -360,11 +362,18 @@ var labs = require('labs');
                         return (structure.structureType == STRUCTURE_LINK);
                     }
                 });
-                if(harvesterlink0[0] != undefined && harvesterlink0[0].store.getUsedCapacity("energy") > 300)
+
+                if (harvesterlink0[0] != undefined && harvesterlink0[0].store.getUsedCapacity("energy") > 300)
                 {
-                    if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
+
+              if (controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
                     {
                         harvesterlink0[0].transferEnergy(controllerlink[0]);
+                    }
+                         else  if (alttower.length != 0)
+                    {
+                        harvesterlink0[0].transferEnergy(alttower[0]);
+
                     }
                     else
                     {
@@ -372,7 +381,7 @@ var labs = require('labs');
                     }
                 }
             }
-            if(flag0)
+            if (flag0)
             {
                 var harvesterlink1 = flag0.pos.findInRange(FIND_STRUCTURES, 1,
                 {
@@ -381,11 +390,16 @@ var labs = require('labs');
                         return (structure.structureType == STRUCTURE_LINK);
                     }
                 });
-                if(harvesterlink1[0] != undefined && harvesterlink1[0].store.getUsedCapacity("energy") > 300)
+                if (harvesterlink1[0] != undefined && harvesterlink1[0].store.getUsedCapacity("energy") > 300)
                 {
-                    if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400   && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
+               
+                if (controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
                     {
                         harvesterlink1[0].transferEnergy(controllerlink[0]);
+                    }   else       if (alttower.length != 0)
+                    {
+                        harvesterlink1[0].transferEnergy(alttower[0]);
+
                     }
                     else
                     {
@@ -400,17 +414,28 @@ var labs = require('labs');
                     structureType: STRUCTURE_LINK
                 }
             });
-            if(linkto.length != 0)
+            if (linkto.length != 0)
             {
-                for(var o = 0; o < links.length; o++)
+                for (var o = 0; o < links.length; o++)
                 {
-                    if(links[o].store.getUsedCapacity("energy") > 0 && linkto[0].store.getUsedCapacity("energy") == 0)
+                    if (links[o].store.getUsedCapacity("energy") > 0 && linkto[0].store.getUsedCapacity("energy") == 0)
                     {
-                        if(controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 )
+                       
+                      if (controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400)
                         {
                             links[o].transferEnergy(controllerlink[0]);
                         }
-                        else if(linkto[0] != undefined && (controllerlink[0] == undefined || (controllerlink[0] != undefined && links[o].id != controllerlink[0].id)))
+  else   if (alttower.length != 0)
+                        {
+                            links[0].transferEnergy(alttower[0]);
+
+                        }
+                        else if (alttower.length != 0 && links[o].id == alttower[0].id)
+                        {
+                           
+                        }
+
+                        else if (linkto[0] != undefined && (controllerlink[0] == undefined || (controllerlink[0] != undefined && links[o].id != controllerlink[0].id)))
                         {
                             links[o].transferEnergy(linkto[0]);
                         }
@@ -422,20 +447,7 @@ var labs = require('labs');
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
- 
- 
-     }
- }
- module.exports = roomController;
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+    }
+}
+module.exports = roomController;

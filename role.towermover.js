@@ -20,13 +20,35 @@ var roletowermover = {
         }
         var nukeIncoming = creep.room.find(FIND_NUKES);
         var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
-        var sources = creep.room.find(FIND_STRUCTURES,
+        var sources = creep.pos.findInRange(FIND_STRUCTURES,1,
         {
             filter: (structure) =>
             {
                 return (structure.structureType == STRUCTURE_STORAGE);
             }
         });
+        
+        if(sources.length == 0 )
+        {
+            sources = creep.pos.findInRange(FIND_STRUCTURES,1,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_LINK);
+            }
+        }); 
+        }
+        if(creep.name ==   "towermoveralt" +  creep.room.name )
+        {
+           var altflag = Game.flags[creep.room.name+  "AltTower"] 
+           creep.moveTo(altflag)
+        }
+        
+        
+        
+        
+        
+        
         if(creep.store.getUsedCapacity() < creep.store.getCapacity() / 2)
         {
             creep.withdraw(creep.pos.findClosestByRange(sources), RESOURCE_ENERGY);

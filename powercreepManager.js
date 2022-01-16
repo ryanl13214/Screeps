@@ -89,6 +89,7 @@ var powercreepManager = {
         else
         if (creep.memory.memstruct.tasklist[0] != undefined)
         {
+                   creep.say(creep.memory.memstruct.tasklist[0][0])
             if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
             {
                 var targposition = new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]);
@@ -117,14 +118,15 @@ var powercreepManager = {
                     this.loopTasks(creep);
                 }
                 this.allowSlave(creep);
-
+}
                 if (creep.memory.memstruct.tasklist[0][0] == "wait")
                 {
+                    creep.say(creep.memory.waittimer)
                     if (!creep.memory.waittimer)
                     {
                         creep.memory.waittimer = 0;
                     }
-                    creep.memory.waittimer++;
+                    creep.memory.waittimer =  creep.memory.waittimer + 1 ;
 
                     if (creep.memory.waittimer < creep.memory.memstruct.tasklist[0][1])
                     { // might cause bug on nxt room wall 
@@ -132,11 +134,12 @@ var powercreepManager = {
                     }
                     else
                     {
+                            creep.memory.waittimer = 0;
                         this.loopTasks(creep);
                     }
 
                 }
-            }
+            
 
         }
     },
@@ -325,6 +328,8 @@ var powercreepManager = {
 
     roomManager: function(powerCreep)
     {
+               var target = Game.rooms[powerCreep.memory.memstruct.spawnRoom].find(FIND_HOSTILE_CREEPS);
+      
         ////////////////////////////////////gen ops//////////////////////////////////////////////////////////////////////////////////////////
         if (Game.time % 50 == 0)
         {
@@ -349,6 +354,28 @@ var powercreepManager = {
                 powerCreep.transfer(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getUsedCapacity("ops"));
             }
         }
+      else if (powerCreep.store.getUsedCapacity() < powerCreep.store.getCapacity() / 2) // creep is full
+        {
+            var range = powerCreep.pos.getRangeTo(powerCreep.room.storage);
+            if (range > 1)
+            {
+                powerCreep.moveTo(powerCreep.room.storage,
+                {
+                    visualizePathStyle:
+                    {
+                        stroke: '#ff0000'
+                    }
+                });
+            }
+            else
+            {
+                powerCreep.withdraw(powerCreep.room.storage, RESOURCE_OPS, powerCreep.store.getCapacity() / 2);
+            }
+        }
+        
+        
+        
+        
         else
         {
             var mainflag = Game.flags[powerCreep.memory.memstruct.spawnRoom];
@@ -423,13 +450,7 @@ var powercreepManager = {
             var targetArr = powerCreep.room.find(FIND_HOSTILE_CREEPS);
             powerCreep.say(powerCreep.powers[PWR_OPERATE_TOWER] != undefined);
             ////////////////////////////////////  PWR_OPERATE_FACTORY//////////////////////////////////////////////////////////////////////////////////////////
-            if (powerCreep.powers[PWR_OPERATE_TOWER] != undefined && hasAtask == false && targetArr.length != 0)
-            {
-                powerCreep.say("b");
-                hasAtask = this.opTower(powerCreep)
-                powerCreep.say(hasAtask);
-            }
-
+       
             if (powerCreep.powers[PWR_OPERATE_SPAWN] != undefined && powerCreep.powers[PWR_OPERATE_SPAWN].cooldown < 15 && hasAtask == false)
             {
                 hasAtask = this.opSpawn(powerCreep)
@@ -440,7 +461,7 @@ var powercreepManager = {
                 hasAtask = this.opFact(powerCreep)
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-            if (powerCreep.powers[PWR_REGEN_SOURCE] != undefined && hasAtask == false)
+            if (powerCreep.powers[PWR_REGEN_SOURCE] != undefined && hasAtask == false && target.length ==0 )
             {
                 hasAtask = this.regenSource(powerCreep)
             }
@@ -462,6 +483,12 @@ var powercreepManager = {
                 hasAtask = this.opPower(powerCreep)
             }
             /////////////////////////////////////////////////
+     if (powerCreep.powers[PWR_OPERATE_TOWER] != undefined && hasAtask == false)// && targetArr.length != 0)
+            {
+                powerCreep.say("b");
+                hasAtask = this.opTower(powerCreep)
+                powerCreep.say(hasAtask);
+            }
 
         }
     },
@@ -591,17 +618,22 @@ var powercreepManager = {
             {
                 if (target[q].effects[0].ticksRemaining < 20 || target[q].effects.length == 0)
                 {
-                    powerCreep.moveTo(target[q],
-                    {
-                        visualizePathStyle:
-                        {
-                            stroke: '#ff0000'
-                        }
-                    });
+                    powerCreep.moveTo(target[q]);   
+                    powerCreep.room.visual.line(powerCreep.pos, target[q].pos,
+                {
+                    color: 'green',
+                    lineStyle: 'dashed'
+                });
+                    
+                       powerCreep.usePower(PWR_REGEN_SOURCE, target[q]);
+                return true  
+                    
+                    
                 }
 
-                powerCreep.usePower(PWR_REGEN_SOURCE, target[q]);
-                return true
+           
+                
+                
             }
 
             else if (target[q].effects.length == 0)
@@ -612,6 +644,11 @@ var powercreepManager = {
                     {
                         stroke: '#ff0000'
                     }
+                });
+                   powerCreep.room.visual.line(powerCreep.pos, target[q].pos,
+                {
+                    color: 'red',
+                    lineStyle: 'dashed'
                 });
                 powerCreep.usePower(PWR_REGEN_SOURCE, target[q]);
                 return true

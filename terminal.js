@@ -208,7 +208,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
             }
         },
  
-        run: function(roomname, terminalActual, defcon, storagevalue)
+        run: function(roomname, terminalActual, storagevalue)
         {
             var allCondensedResources = [
                 ["XGHO2", 8000, 0.8],
@@ -219,15 +219,15 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ["XZHO2", 8000, 0.8],
                 ["XKHO2", 8000, 0.8],
                 ["KH2O", 4000, 0.6],
-                ["XGH2O", 4000, 1.6],
+                ["XGH2O", 4000, 0.8],
                 ['ops', 3000, 0.4],
-                ["H", 7000, 0.2],
-                ["O", 7000, 0.2],
-                ["U", 7000, 0.2],
-                ["L", 7000, 0.2],
-                ["Z", 7000, 0.2],
-                ["X", 7000, 0.2],
-                ["G", 7000, 0.2],
+                ["H", 7000, 0.6],
+                ["O", 7000, 0.6],
+                ["U", 7000, 0.6],
+                ["L", 7000, 0.6],
+                ["Z", 7000, 0.6],
+                ["X", 7000, 0.6],
+                ["G", 7000, 0.6],
                 ["energy", 80000, 0.3],
                 ['utrium_bar', 5000, 0.4],
                 ['lemergium_bar', 5000, 0.4],
@@ -237,7 +237,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 ['oxidant', 5000, 0.4],
                 ['reductant', 5000, 0.4],
                 ['purifier', 5000, 0.4],
-                ['battery', 3000, 0.4],
+                ['battery', 9000, 0.4],
                 ['composite', 7000, 1],
                 ['crystal', 4000, 0.4],
                 ['liquid', 4000, 0.4],
@@ -321,35 +321,39 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                             }
                         }
                     }
-                }
-                ////////////////////////////////////////////////////////////
-                if (terminalInUse == false)
+                    
+                    
+                } 
+                  ////////////////////////////////////////////////////////////
+                
+                
+                
+                
+                              ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
+                if (terminalInUse == false )
                 {
-                    if (terminalActual.store.getUsedCapacity("energy") > 50000)
-                    {
-                        //       terminalActual.send("energy",2000, "E25N2", '0');
-                        //        terminalInUse=true;
-                    }
-                }
-                if (terminalInUse == false)
+                    terminalInUse = this.sellItemsFromResourceList(roomname, allCondensedResources, terminalActual)
+                }  
+                
+                if (terminalInUse == false  && Game.rooms[roomname].controller.level == 8  )
                 {
-                     terminalInUse =   this.averageEnergy(roomname, allCondensedResources, terminalActual,roominrange)
+                  terminalInUse = this.transferNonEnergy(roomname, allCondensedResources, terminalActual, roominrange)
                 }
-                /////////////////////////////////////////////////////////////
-                if (terminalInUse == false)
+                
+                       if (terminalInUse == false)
                 {
                     terminalInUse = this.buyItemsFromResourceList(roomname, allCondensedResources, terminalActual)
                 }
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                if (terminalInUse == false && Game.time % 30 == 0 && Game.rooms[roomname].controller.level == 8  )
-                {
-            //        terminalInUse = this.transferNonEnergy(roomname, allCondensedResources, terminalActual, roominrange)
-                }
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
+                ////////////////////////////////////////////////////////////
+            
                 if (terminalInUse == false)
                 {
-                    terminalInUse = this.sellItemsFromResourceList(roomname, allCondensedResources, terminalActual)
+                //     terminalInUse =   this.averageEnergy(roomname, allCondensedResources, terminalActual,roominrange)
                 }
+           
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              
+
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
 
@@ -403,22 +407,22 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 
                 
                 
-                
+                /*
                 
                 if(avgPriceOfenergy > 9){
                     
                 }
-                else                if (Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY) < 100000 && roomOrders.length < 3)
+                else                if (Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY) < 50000 && roomOrders.length < 3)
                 {
                      
                     
-                    if (avgPriceOfenergy * 1.5 < 9)
+                    if (avgPriceOfenergy * 1.2 < 9)
                     {
                         Game.market.createOrder(
                         {
                             type: ORDER_BUY,
                             resourceType: RESOURCE_ENERGY,
-                            price: (avgPriceOfenergy * 1.7),
+                            price: (avgPriceOfenergy * 1.2),
                             totalAmount: 175000,
                             roomName: roomname
                         });
@@ -435,7 +439,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                         });
                     }
                 }
-                else  if(Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY) < 100000 && roomOrders.length > 2)// keep the cost updated
+                else  if(Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY) < 50000 && roomOrders.length > 2)// keep the cost updated
                 {
                        var hist = Game.market.getHistory(RESOURCE_ENERGY)
                     for (var i = 0; i < roomOrders.length; i++)
@@ -445,7 +449,8 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 }
                 
                 
-                
+
+                */
                 
                 
                 

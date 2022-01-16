@@ -4,6 +4,48 @@ var roles = require('roles');
 var tower = require('tower');
 var roomClaimer = {
 
+
+
+    combatMove: function(creep, avoidarray ) // check if creep has damage parts
+    {
+        let goals = _.map(avoidarray, function(host)
+        {
+            return {
+                pos: host.pos,
+                range: 10
+            };
+        });
+        let patha = PathFinder.search(creep.pos, goals,
+        {
+            flee: true
+        }).path;
+        creep.moveByPath(patha);
+    },
+
+
+
+  creepsFleeHostiles: function(creepsInRoom)
+    {
+
+
+  for (var q = 0; q < creepsInRoom.length; q++)
+                {
+
+ var CloseHostiles = creepsInRoom[q].pos.findInRange(FIND_HOSTILE_CREEPS ,6);
+
+if(creepsInRoom[q].memory.attackrole != "guard"){
+this.combatMove(creepsInRoom[q],CloseHostiles);
+}
+
+
+
+
+}
+
+},
+
+
+
     run: function(roomID)
     {
 
@@ -16,10 +58,25 @@ var roomClaimer = {
 
         roles.run(creepsInRoom);
 
-
-
  
         //  var pathacc = roompathfind.run(attackID, ownedrooms[i], 0); // 0 means allow through hostile rooms
+     var doretos = Game.rooms[roomID].find(FIND_HOSTILE_CREEPS ,
+        {
+            filter: (s) =>
+            {
+                return (s.body.length == 50);// contans attack parts
+            }
+        });
+        
+        if(doretos.length != 0 )
+        {
+            this.creepsFleeHostiles(creepsInRoom)
+
+
+            
+        }
+        
+        
 
         var roomss = this.selectRooms(roomID);
         //   console.log("roomss".roomss);
@@ -29,23 +86,24 @@ var roomClaimer = {
             var templeflag = Game.flags["temple" + roomID]
             if (Game.rooms[roomID].terminal == undefined || templeflag == undefined)
             {
+                
+                if(doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined ){
                 this.sendClaimSquad(roomID, roomss[0]);
+                }
             }
             else
             {
+                if(doretos.length == 0 ){
+   
                 this.sendClaimSquad(roomID, roomss[0]);
+                }
+                
+                
                 this.sendTempleSquad(roomID, roomss[0]);
                 this.manageTempleEnergy(roomID)
             }
 
         }
-     var doretos = Game.rooms[roomID].find (FIND_HOSTILE_CREEPS ,
-        {
-            filter: (s) =>
-            {
-                return (s.body.length == 50);// contans attack parts
-            }
-        });
 
 
 if(doretos.length != 0 ){
@@ -378,8 +436,7 @@ if(doretos.length != 0 ){
     },
     sendClaimSquad: function(targetRoom, HomeRoom)
     {
-
-        var rawPath = roompathfind.run(targetRoom, HomeRoom, 5);
+         var rawPath = roompathfind.run(targetRoom, HomeRoom, 5);
         var Path = [
 
         ];
@@ -400,6 +457,31 @@ if(doretos.length != 0 ){
 
         Path.push(["forcemoveToRoom", targetRoom])
         path2.push(["forcemoveToRoom", targetRoom])
+
+
+          Game.spawns[HomeRoom].spawnCreep([MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+,
+                targetRoom + 'chasedown-' ,
+                {
+                    memory:
+                    {
+                        role: 'guard',
+                        attackrole: 'chasedown',
+                        memstruct:
+                        {
+                            spawnRoom: targetRoom,
+                            tasklist: path2,
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: true,
+                            hastask: false
+                        }
+                    }
+                });
+
+
+
 
         for (var c = 0; c < 2; c++)
         {

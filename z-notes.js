@@ -76,6 +76,14 @@
         
       
       
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType: "energy",
+    price: 10,
+    totalAmount: 10000,
+    roomName: "E33N8"   
+});      
+        
       
       
       
@@ -100,9 +108,9 @@
         Game.market.createOrder({
     type: ORDER_BUY,
     resourceType: "energy",
-    price: 3,
+    price: 7,
     totalAmount: 100000,
-    roomName: "E24N3"   
+    roomName: "E33N8"   
 });      
         
         

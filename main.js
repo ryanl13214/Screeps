@@ -4,6 +4,7 @@ var claimManager = require('roomClaimer');
 var visuals = require('visuals');
 var powerManager = require('powercreepManager');
 var tickcode = require('tickcode');
+
 var roles = require('roles');
 var roomController = require('roomController');
 var templeController = require('templeRoomManager');
@@ -134,9 +135,9 @@ module.exports.loop = function()
     var resourcekeys = Object.keys(squads);
     for (var i = 0; i < resourcekeys.length; i++)
     {
-        try{
+     //   try{
         squadmanage.run(resourcekeys[i]);
-    }catch(e){}
+   // }catch(e){}
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
     if (debug)

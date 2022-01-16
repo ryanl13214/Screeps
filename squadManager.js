@@ -10,9 +10,9 @@ var squadmanager = {
 
         try
         {
-            if (Memory.squadObject[Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning] == undefined)
+            if (Memory.squadObject[Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning] == undefined)
             {
-                Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.squadspawning == "";
+               Memory.empire.roomsobj[mainMemoryObject.squadHomeRoom].squadSpawning= "";
             }
         }
         catch (e)

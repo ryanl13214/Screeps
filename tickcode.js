@@ -41,36 +41,88 @@ var tickcode = {
             }
             
             
+             
+             
             
             
             
-                        var squadname = "blocker"
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            ////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////
+            
+            
+            // attack red idiot 
+            
+            
+            
+            
+                 var squadname = "attacktest24"
 
-            if (Memory.squadObject[squadname] == undefined)
+            if (Memory.squadObject[squadname] == undefined && 1==2)
             {
 
                 var finalPath = [];
-
-                var nonboosted = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
-                
-                var rawPath = roompathfind.run("E28N11", "E28N5", 5);
+var deathBlinker =   [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK]
+var deathBlinker2 = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+         
+                var rawPath = roompathfind.run("E23S4", "E25N1", 5);
                 for (var q = 0; q < rawPath.length; q++)
                 {
                     finalPath.push(["forcemoveToRoom", rawPath[q]])
                 }
-                finalPath.push(["killcreeps", "E38N11"]);
-
-                squadmanage.initializeSquad(squadname, finalPath, false, "quad", "E28N5",
+                finalPath.push(["flagattack", "E23S4"]);
+ 
+                squadmanage.initializeSquad(squadname, finalPath, true, "quad", "E25N1",
                 {
-                    "head1": nonboosted,
-                    "tail1": nonboosted,
-                    "head2": nonboosted,
-                    "tail2": nonboosted
+                    "head1": deathBlinker,
+                    "tail1": deathBlinker2,
+                    "head2": deathBlinker,
+                    "tail2": deathBlinker2
                 }, "blinky");
-
+ 
             }
             
             
+                 var squadname = "attacktest"
+
+            if (Memory.squadObject[squadname] == undefined  && 1==2)
+            {
+
+                var finalPath = [];
+var deathBlinker =  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+                var rawPath = roompathfind.run("E23S4", "E25N1", 5);
+                for (var q = 0; q < rawPath.length; q++)
+                {
+                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+                }
+                finalPath.push(["flagattack", "E23S4"]);
+ 
+                squadmanage.initializeSquad(squadname, finalPath, true, "quad", "E25N1",
+                {
+                    "head1": deathBlinker,
+                    "tail1": deathBlinker,
+                    "head2": deathBlinker,
+                    "tail2": deathBlinker
+                }, "blinky");
+            
+            }
             
             
             
@@ -162,13 +214,22 @@ var tickcode = {
             
             
             
-            
+            /*
+            const source = Game.getObjectById(creep.memory.sourceId);
+    E25N1        6179ff29f80f54491c09b9b4
+    E24N3        605688241132db6d0a6622b2
+    E28N5        611c20ddff5d6464f2d084f1
+            nuker.launchNuke(new RoomPosition(20,30, 'W1N1'));
+            */
             
             
             
             
              
 /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   this.launchNukea();
+
         }
     },
     createBlinkySQuad: function(flagname)
@@ -192,6 +253,60 @@ var tickcode = {
             }
         }
     },
+     launchNukea: function()
+    {
+         var manNukeFlag = Game.flags["nuke"];
+       
+         if(manNukeFlag == undefined)
+         {
+             return 0
+         }else{
+         var   roomname = manNukeFlag.pos.roomName;
+         
+                var roominrange = [];
+                var roomsall = Object.keys(Game.rooms);
+                var roomsobj = Game.rooms;
+                for (var i = 0; i < roomsall.length; i++)
+                {
+               
+                                if (Game.map.getRoomLinearDistance(roomname, roomsall[i]) < 10 &&  Game.flags["nuke"] != undefined)
+                                {
+                                    
+                                    
+                                    
+                                    
+                                            var nuker = Game.rooms[ roomsall[i]].find(FIND_MY_STRUCTURES,
+                                        {
+                                            filter:
+                                            {
+                                                structureType: STRUCTURE_NUKER
+                                            }
+                                        });
+                                        if(nuker.length == 1){
+                                    var a = nuker[0].launchNuke(Game.flags["nuke"].pos);
+                                    if(a == 0 )
+                                    {
+                                         Game.flags["nuke"].remove()
+                                        
+                                        
+                                          return 0
+                                    }
+                                            
+                                        }
+                                    
+                                    
+                                }
+                    
+                } 
+                
+                
+                
+                
+         }
+                
+    },
+    
+    
     clearStronghold: function(roomname)
     {
         if (Memory.squadObject.testQuad2 == undefined && 3 == 1)

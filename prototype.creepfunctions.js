@@ -2,16 +2,18 @@ var creepfunctions = {
     //  :mover2-E28N5E29N5MiningSquad*[joinSquad,E28N5E29N5MiningSquad];$
     getcombattagets: function(creep)
     {
+           var whitelist = ["slowmotionghost","MarvinTMB","marvintmb"]
         if (creep.body.length != 50)
         {
             var targets = creep.room.find(FIND_HOSTILE_CREEPS,
             {
                 filter: (targ) =>
                 {
-                    return (
+                    return ((
                         (targ.body.filter(x => x === "ranged_attack").length - 5 < (creep.body.filter(x => x === "ranged_attack").length * 3) && targ.body.filter(x => x === "heal").length < creep.body.filter(x => x === "ranged_attack").length * 0.8) ||
                         (targ.body.find(elem => elem.type === "work") != undefined) ||
                         (targ.body.filter(x => x === "attack").length < creep.body.filter(x => x === "attack").length)
+                )&& whitelist.indexOf(object.owner.username) == -1
                     );
                 }
             });
@@ -47,16 +49,18 @@ var creepfunctions = {
     },
     getcombattagetsclosest: function(creep)
     {
+             var whitelist = ["slowmotionghost","MarvinTMB","marvintmb"] 
         if (creep.body.length != 50)
         {
             var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
             {
                 filter: (targ) =>
                 {
-                    return (
+                    return ((
                         (targ.body.filter(x => x === "ranged_attack").length - 5 < (creep.body.filter(x => x === "ranged_attack").length * 3) && targ.body.filter(x => x === "heal").length < creep.body.filter(x => x === "ranged_attack").length * 0.8) ||
                         (targ.body.find(elem => elem.type === "work") != undefined) ||
                         (targ.body.filter(x => x === "attack").length < creep.body.filter(x => x === "attack").length)
+                        )&& whitelist.indexOf(object.owner.username) == -1
                     );
                 }
             });
@@ -69,7 +73,7 @@ var creepfunctions = {
     },
     getHostilesInRange: function(creep, range)
     {
-        var whitelist = ["slowmotionghost"]
+        var whitelist = ["slowmotionghost","MarvinTMB","marvintmb"]
         return targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, range,
         {
             filter: function(object)
@@ -80,7 +84,7 @@ var creepfunctions = {
     },
     findHostiles: function(creep)
     {
-        var whitelist = ["slowmotionghost"]
+            var whitelist = ["slowmotionghost","MarvinTMB","marvintmb"]
         return targets = creep.room.find(FIND_HOSTILE_CREEPS,
         {
             filter: function(object)
@@ -91,7 +95,7 @@ var creepfunctions = {
     },
     findCloseHostiles: function(creep)
     {
-        var whitelist = ["slowmotionghost"]
+         var whitelist = ["slowmotionghost","MarvinTMB","marvintmb"]
         return creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
         {
             filter: function(object)
@@ -273,7 +277,7 @@ var creepfunctions = {
         {
             return {
                 pos: host.pos,
-                range: 3
+                range: 5
             };
         });
         let patha = PathFinder.search(creep.pos, goals,
@@ -499,10 +503,10 @@ var creepfunctions = {
 
             else if (creep.memory.memstruct.tasklist[0][0] == "templeUP")
             {
-    var tewers = creep.pos.findInRange(FIND_MY_STRUCTURES, 1,
-                        {
-                            filter: (structure) => (structure.structureType == STRUCTURE_TOWER && structure.store.getUsedCapacity() < 500)
-                        });
+                var tewers = creep.pos.findInRange(FIND_MY_STRUCTURES, 1,
+                {
+                    filter: (structure) => (structure.structureType == STRUCTURE_TOWER && structure.store.getUsedCapacity() < 500)
+                });
                 creep.memory.timer = 0;
                 var positiongoal;
                 var goalflag = Game.flags["temple" + creep.memory.memstruct.tasklist[0][1]]
@@ -522,9 +526,10 @@ var creepfunctions = {
                 {
                     positiongoal = new RoomPosition(goalflag.pos.x + 1, goalflag.pos.y + 1, creep.memory.memstruct.tasklist[0][1])
                 }
+                creep.moveTo(positiongoal)
 
-        
                 var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+                //  var hostiles = creep.room.find(FIND_STRUCTURES);
                 var spawnns = creep.pos.findInRange(FIND_STRUCTURES, 1,
                 {
                     filter: (structure) =>
@@ -556,9 +561,8 @@ var creepfunctions = {
                     if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple-3")
                     {
                         creep.say("3")
-                     
 
-                        if (tewers.length != 0 && creep.store.getUsedCapacity() >= 100 )
+                        if (tewers.length != 0 && creep.store.getUsedCapacity() >= 100)
                         {
                             creep.transfer(tewers[0], RESOURCE_ENERGY)
                         }
@@ -590,7 +594,7 @@ var creepfunctions = {
                 }
                 else if (creep.store.getUsedCapacity() >= 100)
                 {
-                             creep.moveTo(positiongoal)
+                    creep.moveTo(positiongoal)
                     creep.upgradeController(creep.room.controller);
                 }
 
@@ -1361,6 +1365,7 @@ var creepfunctions = {
                 if (creep.room.terminal == undefined && creep.room.storage == undefined)
                 {
                     this.loopTasks(creep);
+                    
                 }
                 if (creep.store.getUsedCapacity() > 0)
                 {
@@ -1399,6 +1404,7 @@ var creepfunctions = {
                 {
                     this.loopTasks(creep);
                     this.checkglobaltasks(creep);
+                    
                 }
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "mineCoridor")
@@ -1923,6 +1929,15 @@ var creepfunctions = {
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "gathermine") /////////////////////////////////////////////////////////////////////////
             {
+                   var targets = creep.room.find(FIND_HOSTILE_CREEPS);
+                
+                    
+                if (targets.length !=0)
+                {
+                   this.loopTasks(creep);
+                }
+                
+                
                 if (creep.store.getFreeCapacity() == 0)
                 {
 
@@ -1931,7 +1946,7 @@ var creepfunctions = {
                         Memory.roomlist[creep.room.name].movercontrol.moveCap = Memory.roomlist[creep.room.name].movercontrol.moveCap - creep.store.getCapacity();
                     }
 
-                    this.loopTasks(creep);
+                 
                 }
                 else
                 {
@@ -2247,10 +2262,45 @@ var creepfunctions = {
                                             }
                                             else
                                             {
-                                                resmoveractual.say("no boost");
-                                                this.loopTasks(creep); // todo add flag to stop spawning boost creeps
+
+                                                var products = [
+                                                    ["GHO2", "GO"],
+                                                    ["UH2O", "UH"],
+                                                    ["LH2O", "LH"],
+                                                    ["LHO2", "LO"],
+                                                    ["ZH2O", "ZH"],
+                                                    ["ZHO2", "ZO"],
+                                                    ["KHO2", "KO"],
+                                                    ["KH2O", "KH"],
+                                                    ["GH2O", "GH"],
+                                                    ["XGHO2", "GHO2"],
+                                                    ["XUH2O", "UH2O"],
+                                                    ["XLH2O", "LH2O"],
+                                                    ["XLHO2", "LHO2"],
+                                                    ["XZH2O", "ZH2O"],
+                                                    ["XZHO2", "ZHO2"],
+                                                    ["XKHO2", "KHO2"],
+                                                    ["XGH2O", "GH2O"]
+                                                ];
+                                                var found = false;
+                                                for (qw = 0; qw < products.length; qw++)
+                                                {
+                                                    if (products[qw][0] == creep.memory.memstruct.tasklist[0][1])
+                                                    {
+                                                        creep.memory.memstruct.tasklist[0][1] = products[qw][1]
+                                                        found = true;
+                                                    }
+                                                }
+
+                                                if (found == false)
+                                                {
+                                                    resmoveractual.say("nb ", creep.memory.memstruct.tasklist[0][1]);
+                                                    this.loopTasks(creep); // todo add flag to stop spawning boost creeps       
+                                                }
+
                                             }
                                         }
+                                        console.log("boost bug ",JSON.stringify(creep.memory.memstruct.tasklist[0]))
                                         var transferAmount = (creep.memory.memstruct.tasklist[0][2] * 30) - boostlab.store.getUsedCapacity(creep.memory.memstruct.tasklist[0][1]);
                                         if (transferAmount)
                                         {
@@ -2259,6 +2309,9 @@ var creepfunctions = {
                                             resmoveractual.memory.memstruct.tasklist.push(["transfer", boostID, creep.memory.memstruct.tasklist[0][1], transferAmount]);
                                             resmoveractual.memory.memstruct.tasklist.push(["waitTick"]);
                                         }
+                                        
+                                        
+                                        
                                     }
                                 }
                             }

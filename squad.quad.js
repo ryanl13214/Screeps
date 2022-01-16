@@ -113,6 +113,12 @@ var quadsquad = {
 
     getProperPositionForQuadSquad: function(posision, creep, squadID)
     {
+     //   creep.say("pos");
+        try{
+        creep.room.visual.line(creep.pos, posision,
+    {color: 'red', lineStyle: 'dashed'});
+        }catch(e){}
+        
         Game.rooms[posision.roomName].visual.circle(posision,
         {
             fill: 'solid',
@@ -123,7 +129,7 @@ var quadsquad = {
         var posx = posision.x;
         var posy = posision.y;
         var posroom = posision.roomName;
-        if (Memory.squadObject[squadID].currentPositionsobj == undefined)
+        if (Memory.squadObject[squadID].currentPositionsobj == undefined || Game.time % 50 == 0 )
         {
             Memory.squadObject[squadID].currentPositionsobj = {
                 targetx: posx,
@@ -168,6 +174,81 @@ var quadsquad = {
             [2, 2],
             [3, -3]
         ];
+        /////////////////////////////////////////
+        
+      var  posArrayCQB2=[];
+           var  posArrayRanged2=[]; 
+        for (var c = 0; c < posArrayCQB.length; c++)
+                {
+        
+        if(posx +posArrayCQB[c][0] >= 49 )
+        {
+             
+        }
+         else if(posx +posArrayCQB[c][0] <= 1 )
+        {
+              
+        } else if(posy +posArrayCQB[c][1] >= 49 )
+        {
+             
+        }
+         else if(posy +posArrayCQB[c][1] <= 1 )
+        {
+              
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        else
+        {
+            posArrayCQB2.push(posArrayCQB[c])
+        }
+        
+        
+        
+                }
+        
+        
+        
+            for (var c = 0; c < posArrayRanged.length; c++)
+                {
+        
+        
+        
+             
+        if(posx +posArrayRanged[c][0] >= 49 )
+        {
+             
+        }
+         else if(posx +posArrayRanged[c][0] <= 1 )
+        {
+              
+        }else if(posy +posArrayRanged[c][1] >= 49 )
+        {
+             
+        }
+         else if(posy +posArrayRanged[c][1] <= 1 )
+        {
+              
+        }
+        
+        else
+        {
+            posArrayRanged2.push(posArrayRanged[c])
+        }
+        
+        
+                }
+        //        console.log(posArrayRanged2);
+        posArrayRanged =posArrayRanged2;
+        
+        posArrayCQB = posArrayCQB2;
+      
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // if squad is damaged check for position far way
 
@@ -185,7 +266,17 @@ var quadsquad = {
 
                     var checkpos = new RoomPosition(posxx, posyy, leader.room.name);
 
-                    Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = this.gradePositoion(checkpos, squadID) // change to a position in room 
+
+if(posyy > 49 || posyy < 2 || posxx > 49 || posxx < 2 )
+{
+      Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = false
+}
+else
+{
+       Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = this.gradePositoion(checkpos, squadID) // change to a position in room 
+
+}
+                 
 
                 }
             }
@@ -368,7 +459,7 @@ var quadsquad = {
                 InCube++;
             }
         }
-        if (InCube == 3)
+        if (InCube ==all.length - 1)
         {
             return true;
         }
@@ -673,6 +764,8 @@ var quadsquad = {
                             costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
                             costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
                             costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
+                            
+                            
                         }
                     });
                     room.find(FIND_MY_POWER_CREEPS).forEach(function(struct)
@@ -688,6 +781,23 @@ var quadsquad = {
                         costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
                         costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
                     });
+                     room.find(FIND_HOSTILE_CREEPS).forEach(function(struct)
+                    {
+                        room.visual.circle(struct.pos.x, struct.pos.y,
+                        {
+                            fill: 'transparent',
+                            radius: 0.08,
+                            stroke: 'black'
+                        });
+                        costs.set(struct.pos.x, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x - 1, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x - 1, struct.pos.y + 1, 0xff);
+                        costs.set(struct.pos.x, struct.pos.y + 1, 0xff);
+                    });
+                    
+                    
+                    
+                    
                     return costs;
                 },
             }
@@ -723,7 +833,7 @@ var quadsquad = {
         var pathacc = Memory.squadObject[squadID].linemovepath
           for (var c = 0; c < pathacc.length; c++)
                 {
-        console.log(pathacc[c]);
+     //   console.log(pathacc[c]);
         
         }
 
@@ -1243,15 +1353,17 @@ return false;
                     }
                 }
             }
-            if (tasklist[0][0] == "flagAttack")
+            if (tasklist[0][0] == "flagAttack" || tasklist[0][0] == "flagattack" )
             {
+   //   console.log("flagAttackc ",flagAttack);
                 if (Memory.squadObject[squadID].leader != undefined)
                 {
+                   //     console.log("Memory.squadObjec ",Memory.squadObject[squadID].leader);
                     // deteck hostile creeps and room match 
                     var leader = Game.getObjectById(leaderid);
                     if (leader.room.name == tasklist[0][1])
                     {
-
+ //   console.log("leader.room.name ",leader.room.name);
                         var targetTmp = 0;
                         var flagsinrange = leader.pos.findClosestByPath(FIND_FLAGS);
 
@@ -1264,22 +1376,50 @@ return false;
                                 stroke: 'blue'
                             });
 
-                            if (flagsinrange != undefined)
-                            {
-
-                                var found = flagsinrange.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
-
+                     
+  //  console.log("flagsinrange ",flagsinrange);
+                         
+                                var found = flagsinrange.pos.findInRange(FIND_STRUCTURES,0);
+                                
                                 if (!found)
                                 {
+                                      var found = flagsinrange.pos.findInRange(FIND_HOSTILE_STRUCTURES,0);
+                                 
+                                }
+                                
+                  
+   // console.log("found ",found);
+                                if (!found)
+                                {
+                                  
+                                    
+                                    
                                     flagsinrange.remove();
                                 }
                                 else
                                 {
-                                    targetTmp = found.pos;
+                                    
+                                    try{
+                                    
+                                    
+                                      if(found[0].structureType == STRUCTURE_WALL|| found[0].structureType == STRUCTURE_ROAD)
+                                    {
+                                        Memory.squadObject[squadID].hardTarget = found[0].id;
+                                    }
+                                    else
+                                    {
+                                         
+                                    }
+                                    }catch(e){
+                                              flagsinrange.remove();
+                                    }
+                                    
+                                    
+                                    targetTmp = found[0].pos;
                                 }
-                            }
+                          
                         }
-
+  //console.log("targetTmp ",targetTmp);
                         //  var targetTmp = this.targetAquisitionPURECOMBAT(squadID, leaderid);
                         if (targetTmp == 0 || targetTmp == null || targetTmp == undefined)
                         {
@@ -1287,14 +1427,31 @@ return false;
                         }
                         else
                         {
-                            return this.getProperPositionForQuadSquad(targetTmp, leader, squadID);
+                      //   return targetTmp
+                      //console.log("flag attack target ",JSON.stringify(targetTmp));
+                         
+                         return this.getProperPositionForQuadSquad(targetTmp, leader, squadID);
                         }
                     }
                     else
                     {
-                        return new RoomPosition(25, 25, tasklist[0][1]);
+                   return new RoomPosition(25, 25, tasklist[0][1]);
                     }
                 }
+                
+                
+                
+           // return this.getProperPositionForQuadSquad(new RoomPosition(33,2,"E23S5"), leader, squadID);
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
             }
             if (tasklist[0][0] == "killcreeps")
             {
@@ -1534,6 +1691,7 @@ return false;
                     return (object.structureType != STRUCTURE_KEEPER_LAIR && object.structureType != STRUCTURE_PORTAL && object.structureType != STRUCTURE_POWER_BANK);
                 }
             });
+            
             if (flagsInRange.length != 0 && 1 == 2)
             {
                 for (var q = 0; q < flagsInRange.length; q++)
@@ -1541,6 +1699,7 @@ return false;
 
                     var found = all[c].room.lookForAt(LOOK_CREEPS, flagsInRange[q].pos);
                     var found2 = all[c].room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsInRange[q].pos);
+                    
                     if (found.length != 0)
                     {
                         targetFromflag = found[0];
@@ -1553,6 +1712,23 @@ return false;
                 }
             }
             var decideMassAttack = this.decideMassAttack(all[c]);
+            
+            
+              
+            
+            if (targets.length > 0)
+            {
+          //      all[c].say("f");
+                all[c].rangedAttack(targets[0]);
+            }
+            
+            
+         else      if ( Memory.squadObject[squadID].hardTarget != false)
+           {
+         
+               all[c].rangedAttack( Game.getObjectById(Memory.squadObject[squadID].hardTarget));
+           }
+        else 
             if (targetFromflag != 0)
             {
                 all[c].say("h");
@@ -1560,17 +1736,13 @@ return false;
             }
             else if (decideMassAttack)
             {
-                all[c].say("g");
+             //   all[c].say("g");
                 all[c].rangedMassAttack();
             }
-            else if (targets.length > 0)
-            {
-                all[c].say("f");
-                all[c].rangedAttack(targets[0]);
-            }
+           
             else if (targetsTRUCTURES.length > 0)
             {
-                all[c].say("e");
+             //   all[c].say("e");
                 all[c].rangedAttack(targetsTRUCTURES[0]);
             }
             else
@@ -1833,12 +2005,12 @@ return false;
 
                 if (heads[a].body.find(elem => elem.type === WORK) != undefined || heads[a].body.find(elem => elem.type === ATTACK) != undefined)
                 {
-                    var found = heads[a].pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+                    var found = heads[a].pos.findInRange(FIND_STRUCTURES, 1);
                     found += heads[a].pos.findInRange(FIND_HOSTILE_CREEPS, 1);
                     for (var b = 0; b < tails.length; b++)
                     {
 
-                        var found2 = tails[b].pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+                        var found2 = tails[b].pos.findInRange(FIND_STRUCTURES, 1);
                         found2 += tails[b].pos.findInRange(FIND_HOSTILE_CREEPS, 1);
 
                         if (found.length < found2.length)
@@ -1851,12 +2023,12 @@ return false;
                 }
                 else if (heads[a].body.find(elem => elem.type === RANGED_ATTACK) != undefined)
                 {
-                    var found = heads[a].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3);
+                    var found = heads[a].pos.findInRange(FIND_STRUCTURES, 3);
                     found += heads[a].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
                     for (var b = 0; b < tails.length; b++)
                     {
 
-                        var found2 = tails[b].pos.findInRange(FIND_HOSTILE_STRUCTURES, 3);
+                        var found2 = tails[b].pos.findInRange(FIND_STRUCTURES, 3);
                         found2 += tails[b].pos.findInRange(FIND_HOSTILE_CREEPS, 3);
 
                         if (found.length < found2.length)
@@ -1871,8 +2043,9 @@ return false;
             }
 
         }
-
-        this.reAssignLeader(squadID);
+        
+ Memory.squadObject[squadID].reassignLeaderNextTick = true;
+       
 
     },
 
@@ -1906,6 +2079,20 @@ return false;
 
         this.handleattacks(squadID);
         var mainMemoryObject = Memory.squadObject[squadID];
+        
+        if(Memory.squadObject[squadID].reassignLeaderNextTick == undefined)
+        {
+             Memory.squadObject[squadID].reassignLeaderNextTick = false;
+        }
+        
+        if(Memory.squadObject[squadID].reassignLeaderNextTick == true)
+        {
+            this.reAssignLeader(squadID);
+            Memory.squadObject[squadID].reassignLeaderNextTick = false;
+        }
+         
+        
+          Memory.squadObject[squadID].hardTarget =false;
         Memory.squadObject[squadID].quadVitalBool = false;
         Memory.squadObject[squadID].blockLeaderchange = false;
         Memory.squadObject[squadID].tasklistHasControl = false;
@@ -1923,12 +2110,19 @@ return false;
             Memory.squadObject[squadID].leader = this.decideLeader(squadID);
         }
         var leader = Game.getObjectById(Memory.squadObject[squadID].leader);
+     //   console.log(leader);
         if (leader == null)
         {
             Memory.squadObject[squadID].leader = this.decideLeader(squadID);
         }
         if (leader != null && leader != undefined && leader)
         {
+            Game.rooms[leader.room.name].visual.circle(leader.pos.x,leader.pos.y,
+    {color: 'red' });
+            
+            
+          
+            
        var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
            Memory.squadObject[squadID].SquadFormation = SquadIsInFormation
        
@@ -1937,7 +2131,7 @@ return false;
             //                   decide targets 
 
             target = this.TaskList(squadID);
-
+//    console.log("target",target);
             var QuadVital = this.DecideIfQuadIsVital(squadID);
       
 
@@ -1965,17 +2159,17 @@ return false;
                 // leader.say(QuadVital);
                 if (target != undefined)
                 {
-                  //  leader.say("T-" + target.x + "," + target.y);
+                    leader.say("T-" + target.x + "," + target.y);
                 }
 
                 if (QuadVital == false && target != undefined || (Memory.squadObject[squadID].breakQuad == true && target != undefined))
                 {
-                   // leader.say("lineMove1");
+                    leader.say("lineMove1");
                     this.lineMove(squadID, target);
                 }
                 else if (QuadVital == true && !SquadIsInFormation)
                 {
-                    //leader.say("moveIntoFormation");
+                    leader.say("moveIntoFormation");
                     if (Memory.squadObject[squadID].leader != undefined)
                     {
                         this.moveIntoFormation(Memory.squadObject[squadID].leader, squadID);
@@ -1983,7 +2177,7 @@ return false;
                 }
                 else if (SquadIsInFormation && target != undefined && (leader.pos.x != target.x || leader.pos.y != target.y))
                 {
-                   // leader.say("moveAsOne");
+                   leader.say("moveAsOne");
                     var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
                     this.moveAsOne(squadID, Direction);
                 }
