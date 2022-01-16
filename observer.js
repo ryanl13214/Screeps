@@ -339,7 +339,7 @@ var obs = {
 
             if (targets.length == 0)
             {
-                dangerlevel = 1;
+                dangerlevel = 2;
             }
             else
             {

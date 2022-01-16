@@ -11,47 +11,42 @@ var roleresourcemover = {
         {
             creep.heal(creep);
         }
-        
-        if(creep.memory.storcount == undefined)
+
+        if (creep.memory.storcount == undefined)
         {
-             creep.memory.storcount=0
+            creep.memory.storcount = 0
         }
-            else
-            {
-                creep.memory.storcount ++;
-                
-            }
-            
-             
-            
-            
+        else
+        {
+            creep.memory.storcount++;
+
+        }
+
         if (creep.room.storage)
         {
-            
+
             if (creep.pos.x != creep.room.storage.pos.x - 1 || creep.pos.y != creep.room.storage.pos.y - 1)
             {
                 creep.moveTo(new RoomPosition(creep.room.storage.pos.x - 1, creep.room.storage.pos.y - 1, creep.room.name))
             }
-              if(creep.memory.storcount > 4)
-        {
-             creep.memory.storcount=0
-            
-                    var s =  creep.room.storage.pos.findInRange(FIND_MY_CREEPS, 1,
-        {
-            filter: (creeper) => (creeper.memory.role == "mover")
-        });
-              for (var i = 0; i < s.length; i++)
-        {
-        s[i].moveTo(new RoomPosition(0,0, creep.room.name),
+            if (creep.memory.storcount > 4)
+            {
+                creep.memory.storcount = 0
+
+                var s = creep.room.storage.pos.findInRange(FIND_MY_CREEPS, 1,
                 {
-                    ignoreCreeps: true
+                    filter: (creeper) => (creeper.memory.role == "mover")
                 });
-        }
-        
-        }
-            
-            
-            
+                for (var i = 0; i < s.length; i++)
+                {
+                    s[i].moveTo(new RoomPosition(0, 0, creep.room.name),
+                    {
+                        ignoreCreeps: true
+                    });
+                }
+
+            }
+
         }
 
         if (creep.memory.rescounter2 == undefined)
@@ -204,11 +199,10 @@ var roleresourcemover = {
             Memory.empire.roomsobj[roomname].Defcon = {};
         }
 
-  if (Memory.empire.roomsobj[roomname].squadSpawning == undefined)
-                    {
-                        Memory.empire.roomsobj[roomname].squadSpawning = "";
-                    }
-
+        if (Memory.empire.roomsobj[roomname].squadSpawning == undefined)
+        {
+            Memory.empire.roomsobj[roomname].squadSpawning = "";
+        }
 
     },
 
@@ -227,9 +221,11 @@ var roleresourcemover = {
     {
         creep.say("storage");
         var roomname = creep.room.name;
-        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "XLH2O", "XKH2O", "G", "OH", "UH", "LH", "ZH", "KH", "GH", "KO", "LO", "GO", "ZO", "GHO2", "UH2O", "LH2O", "LHO2", "ZH2O", "ZHO2", "KHO2", "KH2O", "GH2O", "H", "O", "U", "L", "Z", "X"];
-        var allValues = [20000, 20000, 20000, 20000, 20000, 20000, 20000, 5000, 5000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 5000, 5000, 5000, 5000, 5000, 5000];
-
+        var allResources = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "XLH2O", "battery", "XKH2O", "G", "OH", "UH", "LH", "ZH", "KH", "GH", "KO", "LO", "GO", "ZO", "GHO2", "UH2O", "LH2O", "LHO2", "ZH2O", "ZHO2", "KHO2", "KH2O", "GH2O", "H", "O", "U", "L", "Z", "X"];
+        var allValues = [40000, 40000, 40000, 40000, 40000, 40000, 40000, 100000, 5000, 5000, 5000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 5000, 5000, 5000, 5000, 5000, 5000];
+        //550000 boosts
+        //650000 boosts - boost + battery
+        //750000 boosts - boost + battery + ops
         if (Game.rooms[roomname].controller.isPowerEnabled)
         {
             allResources.push("ops");
@@ -238,7 +234,7 @@ var roleresourcemover = {
         else
         {
             allResources.push("ops");
-            allValues.push(0);
+            allValues.push(5000);
         }
 
         var termin = Game.rooms[roomname].terminal;
@@ -267,15 +263,32 @@ var roleresourcemover = {
                 allValues[i] = 0;
             }
         }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////  return  resources over time if the terminal is running very low          ////////////////////////////////////////////////////////////////// 
+        var allResources2 = ["XGHO2", "XUH2O", "XLHO2", "XZH2O", "XZHO2", "XKHO2", "XLH2O", "XKH2O"];
 
-        // get the resources from therminal
+        for (q = 0; q < allResources2.length; q++)
+        {
+            if (strg.store.getUsedCapacity(allResources2[q]) > 10000 && termin.store.getUsedCapacity(allResources2[q]) < 1000 && creep.memory.memstruct.tasklist.length == 0)
+            {
+                creep.memory.memstruct.tasklist.push(["deposit"]);
+                creep.memory.memstruct.tasklist.push(["withdraw", strg.id, allResources2[q], 500]);
+                creep.memory.memstruct.tasklist.push(["transfer", termin.id, allResources2[q]]);
+
+            }
+
+        }
+
+        //////////////////////////////// // get the resources from therminal   //////////////////////////////////////////////////////////////////////////
+
+        
 
         for (var i = 0; i < allResources.length; i++)
         {
             var currentTerminalValue = termin.store.getUsedCapacity(allResources[i]);
             var currentStorageValue = strg.store.getUsedCapacity(allResources[i]);
 
-            if (currentStorageValue < allValues[i] && currentTerminalValue > 0)
+            if (currentStorageValue < allValues[i] && currentTerminalValue > 0 && currentTerminalValue > 3500)
             {
 
                 var moveAmount = 0;
@@ -295,8 +308,8 @@ var roleresourcemover = {
 
         }
 
-        /////////////////////////////////////
-        // return anyt resources not in the list 
+        ////////////////////////////////// return anyt resources not in the list    //////////////////////////////////////////////////////////
+         
 
         var tmpresourcekeys = Object.keys(strg.store);
         var tmpresourcevalues = Object.values(strg.store);
@@ -327,10 +340,11 @@ var roleresourcemover = {
                     creep.memory.memstruct.tasklist.push(["transfer", termin.id, tmpresourcekeys[i]]);
                 }
             }
+
         }
 
-        ///////////////////////////////////////////////////
-        // return any overflow resources 
+        ///////////////////////////////////////// return any overflow resources  /////////////////////////////////////////////////////////////
+          
 
         for (var i = 0; i < allResources.length; i++)
         {
@@ -349,6 +363,9 @@ var roleresourcemover = {
                 }
             }
         }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
     }
 
 };

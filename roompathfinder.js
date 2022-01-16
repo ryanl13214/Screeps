@@ -197,7 +197,10 @@ if(openroomKeys.length == 0){
                     }
                       
                     
-                }
+                } 
+                
+                
+                roomlistEnd.push(startroom);
                  
                 
                 
@@ -291,6 +294,10 @@ if(openroomKeys.length == 0){
          if(allowRooms == 5 && roomObj.dangerLevel == 5 )
          {
           var dangerlvl = 250
+         }
+         else if(allowRooms == 0 && roomObj.dangerLevel == 5 )
+         {
+          var dangerlvl = 9
          }
          else
          {

@@ -39,6 +39,7 @@ var visuals = {
              new RoomVisual(roomname).text("ticksSinceLastCall-"+ Memory.empire.roomsobj[roomname].moversobj.ticksSinceLastCall, 10, 4, {color: 'green', font: 0.8});             
                new RoomVisual(roomname).text("moversneeded-"+   Memory.empire.roomsobj[roomname].moversobj.numberOfMoveres, 10, 5, {color: 'green', font: 0.8});                  
                 
+                   new RoomVisual(roomname).text("squadSpawning-"+   Memory.empire.roomsobj[roomname].squadSpawning, 10, 6, {color: 'green', font: 0.8});                  
                 
                 
                 

@@ -107,8 +107,17 @@ var Duo = {
         ///////////////////////////////////
         var slave = tail;
         var master = head;
-      
+       tail.heal(tail);
+           var target = creepfunctions.getcombattagetsclosest(tail);
             ///////////////////////////////////////////   
+            
+               if(tail.body.find(elem => elem.type === RANGED_ATTACK) != undefined && target)
+            {
+ tail.rangedAttack(target);
+            }
+            
+            
+            
             if(master == null)
             {
                 tail.suicide();
@@ -116,26 +125,21 @@ var Duo = {
             tail.moveTo(master);
             if(head != undefined && head != null)
             {
-                if(tail.hits == tail.hitsMax)
+                if(head.hits != head.hitsMax)
                 {
                     tail.heal(head);
                 }
                 else
                 {
-                    if(Game.time % 2 == 0)
-                    {
-                        tail.heal(head);
-                    }
-                    else
-                    {
-                        tail.heal(tail);
-                    }
+                    tail.heal(tail);
                 }
+               
             }
         }else{
-             if(mainMemoryObject.squadSubType == "chasedown")
+             if(mainMemoryObject.squadSubType == "chasedown" && head)
                 {
-                    head.say("a");
+                  
+   //                 head.say("a");
                     guardCode.cavalry(head );
                 }
         }
@@ -143,8 +147,30 @@ var Duo = {
     chaseDown: function(creep, Healer)
     {
         
+        
+            
+   var towers = Game.rooms[creep.room.name].find(FIND_MY_STRUCTURES,
+        {
+            filter: (s) =>
+            {
+                return (s.structureType == STRUCTURE_TOWER);
+            }
+        });
+        if(towers.length != 0 )
+        {
+               var target =towers[0].pos.findClosestByRange(FIND_HOSTILE_CREEPS );
+               
+               
+               
+               
+        }else{
      
         var target = creepfunctions.getcombattagetsclosest(creep);
+        
+        
+        }
+        
+        
         if(target == undefined)
         {
             target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
@@ -204,12 +230,12 @@ var Duo = {
             }
             creep.rangedAttack(target);
         }
-        else
+        else if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
         {
-            if(creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
-            {
+            
+             
                 creep.heal(creep);
-            }
+            
         }
         
         if(Healer != "a"){

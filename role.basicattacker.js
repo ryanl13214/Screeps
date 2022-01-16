@@ -535,7 +535,7 @@ var roleguard = {
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             else if(creep.memory.attackrole == "healer")
             {
-                const target = creep.pos.findClosestByRange(FIND_MY_CREEPS,
+                var target = creep.pos.findClosestByRange(FIND_MY_CREEPS,
                 {
                     filter: function(object)
                     {
