@@ -895,18 +895,7 @@ var spwan = {
                         }
                     });
                 }
-                else if (!Game.creeps['mineGuardChasedown' + roomname] && Memory.empire.roomsobj[roomname].MineRooms.length > 2)
-                {
-                    spawnss[i].spawnCreep(this.createBiggestsChasedown(roomname), 'mineGuardChasedown' + roomname,
-                    {
-                        memory:
-                        {
-                            memstruct: memstruct,
-                            role: 'guard',
-                            attackrole: "chasedown"
-                        }
-                    });
-                }
+                
                 else
                 {
                     Game.flags[roomname].memory.flagstruct.spawnfree = true;
@@ -915,30 +904,6 @@ var spwan = {
 
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    },
-    createBiggestsChasedown: function(roomname)
-    {
-        var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
-        var numberofparts = Math.floor((energyavailable - 310) / 880);
-        var bodyparts = [MOVE, MOVE, MOVE, ATTACK, ATTACK];
-        if (numberofparts > 5)
-        {
-            numberofparts = 5;
-        }
-        for (let j = 0; j < numberofparts; j++)
-        {
-            bodyparts.push(MOVE);
-            bodyparts.push(MOVE);
-            bodyparts.push(MOVE);
-            bodyparts.push(MOVE);
-            bodyparts.push(MOVE);
-            bodyparts.push(ATTACK);
-            bodyparts.push(RANGED_ATTACK);
-            bodyparts.push(RANGED_ATTACK);
-            bodyparts.push(HEAL);
-        }
-        return bodyparts;
     }
-
 }
 module.exports = spwan;

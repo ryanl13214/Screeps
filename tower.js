@@ -1,4 +1,5 @@
 var tower = {
+ 
     run: function(roomname, storagevalue)
     {
         var allHosiles = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
@@ -13,29 +14,15 @@ var tower = {
         {
             filter: (creep) => (creep.hits < creep.hitsMax)
         });
-
-        var guardsNotUnderRampartsThatAreNearRangedCreeps = []
-        for (var i = 0; i < allHosiles.length; i++)
-        {
-            var needed = allHosiles[i].pos.findInRange(FIND_MY_CREEPS, 3,
-            {
-                filter: (structure) => (creep.memory.role == "guard" && creep.memory.isSafe == false)
-            });
-            for (var q = 0; q < needed.length; q++)
-            {
-                guardsNotUnderRampartsThatAreNearRangedCreeps.push(needed[q])
-            }
-
-        }
-
+        
         Game.rooms[roomname].find(FIND_MY_CREEPS,
         {
             filter: (creep) => (creep.hits < creep.hitsMax)
         });
-
+        
         var fullbuild = Game.rooms[roomname].find(FIND_STRUCTURES,
         {
-            filter: (structure) => (structure.hits < structure.hitsMax && structure.structureType == STRUCTURE_RAMPART) || (structure.hits < structure.hitsMax && structure.structureType == STRUCTURE_WALL)
+            filter: (structure) => (structure.hits < structure.hitsMax && structure.structureType == STRUCTURE_RAMPART)
         });
         var tmp = 0;
         var value = 9999999999999999999;
@@ -139,11 +126,11 @@ var tower = {
                         var amount = TOWER_POWER_ATTACK;
                     }
 
-                    if (range < 20 && range > 10)
+                    if (range < 20 && range > 5)
                     {
                         damagePotential += amount * TOWER_FALLOFF * (range - TOWER_OPTIMAL_RANGE) / (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE);
                     }
-                    if (range < 10)
+                    if (range < 5)
                     {
                         damagePotential += amount
                     }
@@ -168,13 +155,17 @@ var tower = {
                 }
 
             }
-
+var unmodifiedDamage = damagePotential;
             var boostedTough = false;
             for (var q = 0; q < allHosiles[i].body.length; q++)
             {
                 if (allHosiles[i].body[q].boost == "XGHO2" && allHosiles[i].body[q].hits != 0)
                 {
-                    damagePotential  = damagePotential - 233;
+                    if(healcapacity >= 100)
+                    {
+                           damagePotential  = damagePotential - 333;
+                         healcapacity -= 100;
+                    }
                 }
             }
             
@@ -183,7 +174,7 @@ var tower = {
            
              new RoomVisual(roomname).text(healcapacity,  allHosiles[i].pos.x - 0.5,  allHosiles[i].pos.y +  0.5, {align: 'left',color: 'green'}); 
            
-            if (healcapacity  < damagePotential)
+            if (healcapacity  + 100 < damagePotential)
             {
                 targetList.push(allHosiles[i]);
             }
@@ -206,6 +197,7 @@ var tower = {
             });
 
             var closestcreep = towers[i].pos.findClosestByRange(FIND_HOSTILE_CREEPS)
+ var closestcreeploist = towers[i].room.find(FIND_HOSTILE_CREEPS)
 
             var closestDamagedStructurelow = towers[i].room.find(FIND_STRUCTURES,
             {
@@ -227,10 +219,30 @@ var tower = {
                     soloNeedsHeal = true;
                 }
             }
-
-            if (soloNeedsHeal == true)
+              if (soloNeedsHeal == true )
             {
+                     var healingRecuitred =  soloNeedingHeal[0].memory.damagetakenThisTick
+            }else{
+                 var healingRecuitred  = 0;
+            }
+            
+            
+            
+            
+
+            if (soloNeedsHeal == true && healingRecuitred > 0)
+            {
+                
+                 soloNeedingHeal[0].memory.damagetakenThisTick =- Math.floor(unmodifiedDamage*0.66)
                 towers[i].heal(soloNeedingHeal[0]);
+                
+            }
+             else if (soloNeedsHeal == true &&  soloNeedingHeal[0].memory.combatStruct != undefined && soloNeedingHeal[0].memory.combatStruct.currentTarget  != undefined)
+            {
+                  var memtarg = Game.getObjectById(soloNeedingHeal[0].memory.combatStruct.currentTarget)
+
+                  towers[i].attack(memtarg);
+                
             }
 
             else if (Game.rooms[roomname].controller.safeMode != undefined && closestcreep != undefined && Game.rooms[roomname].controller.level != 8)

@@ -97,10 +97,11 @@ var roomController = {
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();
-        if (Game.rooms[roomname].controller.level > 3)
+        if (Game.rooms[roomname].controller.level > 3 && Game.time % 20 == 0 )//' run every 100 ticks ti give better chance of seeing whole attack. 
         {
 
-            defconlevel = defcon.run(roomname, creepsInRoom);
+            //
+            defcon.run(roomname, creepsInRoom);
         }
 
         var defcon_cpu_used = +Game.cpu.getUsed() - startCpu;
@@ -165,10 +166,10 @@ var roomController = {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
         var startCpu = Game.cpu.getUsed();
         var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
-        // if(target.length > 0)
-        //  {
-        tower.run(roomname, storagevalue);
-        //   }
+   
+    
+       tower.run(roomname, storagevalue);
+       
         var tower_cpu_used = +Game.cpu.getUsed() - startCpu;
         if (debug)
         {
@@ -248,7 +249,7 @@ var roomController = {
                                 {
                                     spawnRoom: roomname,
                                     tasklist: [
-                                        ["withdraw", Game.rooms[roomname].storage.id, "G", 250],
+                                        ["withdraw", Game.rooms[roomname].terminal.id, "G", 250],
                                         ["transfer", nuker[0].id, "G"],
                                         ["repeat", 2]
                                     ],
@@ -370,7 +371,7 @@ var roomController = {
                     {
                         harvesterlink0[0].transferEnergy(controllerlink[0]);
                     }
-                         else  if (alttower.length != 0)
+                         else  if (alttower.length != 0  && alttower[0].store.getUsedCapacity("energy") < 400)
                     {
                         harvesterlink0[0].transferEnergy(alttower[0]);
 
@@ -396,7 +397,7 @@ var roomController = {
                 if (controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
                     {
                         harvesterlink1[0].transferEnergy(controllerlink[0]);
-                    }   else       if (alttower.length != 0)
+                    }   else       if (alttower.length != 0  && alttower[0].store.getUsedCapacity("energy") < 400)
                     {
                         harvesterlink1[0].transferEnergy(alttower[0]);
 
@@ -425,7 +426,7 @@ var roomController = {
                         {
                             links[o].transferEnergy(controllerlink[0]);
                         }
-  else   if (alttower.length != 0)
+  else   if (alttower.length != 0      && alttower[0].store.getUsedCapacity("energy") < 400)
                         {
                             links[0].transferEnergy(alttower[0]);
 

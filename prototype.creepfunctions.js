@@ -60,7 +60,7 @@ var creepfunctions = {
                         (targ.body.filter(x => x === "ranged_attack").length - 5 < (creep.body.filter(x => x === "ranged_attack").length * 3) && targ.body.filter(x => x === "heal").length < creep.body.filter(x => x === "ranged_attack").length * 0.8) ||
                         (targ.body.find(elem => elem.type === "work") != undefined) ||
                         (targ.body.filter(x => x === "attack").length < creep.body.filter(x => x === "attack").length)
-                        )&& whitelist.indexOf(object.owner.username) == -1
+                        )&& whitelist.indexOf(targ.owner.username) == -1
                     );
                 }
             });
@@ -104,173 +104,6 @@ var creepfunctions = {
             }
         });
     },
-    convertToString: function(creep)
-    {
-        var mainString = ":" + creep.name + "*";
-        for (var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
-        {
-            mainString += '[';
-            for (var j = 0; j < creep.memory.memstruct.tasklist[i].length; j++)
-            {
-                mainString += creep.memory.memstruct.tasklist[i][j].toString();
-                if (j != creep.memory.memstruct.tasklist[i].length - 1)
-                {
-                    mainString += ",";
-                }
-                else
-                {
-                    mainString += ']';
-                }
-            }
-            mainString += ';';
-        }
-        mainString += '$';
-        return mainString;
-    },
-    convertFromString: function(string) // [repair,5fd7e06bf5fef76aca211482]
-    {
-        console.log("convertFromString:", string);
-        var mainString = string.split(''); // not NAme included 
-        var outputArr = [];
-        var outputArrl = string.split(',').length;
-        for (var i = 0; i < outputArrl; i++)
-        {
-            outputArr.push("a");
-        }
-        console.log("outputArr.length s", outputArr.length);
-        var cound = 0;
-        if (mainString[0] == "[")
-        {
-            var tempString = "";
-            for (var i = 1; i < mainString.length; i++)
-            {
-                if (mainString[i] == ",")
-                {
-                    outputArr[cound] = tempString.toString(); // check for int vs string   
-                    tempString = "";
-                    cound++;
-                }
-                else if (mainString[i] == "]")
-                {
-                    outputArr[cound] = tempString.toString(); // check for int vs string   
-                    cound++;
-                }
-                else
-                {
-                    tempString += mainString[i].toString();
-                }
-            }
-            console.log("outputArr.length", outputArr.length);
-            return outputArr;
-        }
-    },
-    getStartAndEnd: function(string, creep)
-    {
-        console.log("string", string);
-        if (string == undefined || string == "")
-        {
-            creep.say(")");
-            return "a";
-        }
-        creep.say("aaaa");
-        var creepname = creep.name.split('');
-        creep.say("b");
-        var mainString = string.split('');
-        creep.say("bb");
-        var startofname = 999999;
-        var endofname = 999999;
-        creep.say("bbb");
-        startofname = string.indexOf(creep.name);
-        if (startofname == -1)
-        {
-            creep.say(")");
-            return "a";
-        }
-        endofname = startofname + creepname.length;
-        var endOfStringTasklist = 999999;
-        for (var j = endofname; j < mainString.length; j++)
-        {
-            if (mainString[j] == "$" && endOfStringTasklist == 999999)
-            {
-                endOfStringTasklist = j;
-            }
-        }
-        var fullList = string.substring(endofname + 1, endOfStringTasklist - 1);
-        var fullReturn = [];
-        var returnarr = [];
-        if (startofname != 999999 && endofname != 999999)
-        {
-            var tmp = fullList.split(';');
-            for (var i = 0; i < tmp.length; i++)
-            {
-                fullReturn.push(["a"]);
-            }
-            for (var i = 0; i < tmp.length; i++)
-            {
-                fullReturn[i] = this.convertFromString(tmp[i]);
-            }
-            return fullReturn;
-        }
-        return fullReturn;
-    },
-    addTaskListToInterShardMemory: function(shard, creep)
-    {
-        var data = JSON.parse(InterShardMemory.getLocal() || "{}");
-        if (data.creepsAndTasks != undefined)
-        {
-            var startofname = data.creepsAndTasks.indexOf(creep.name);
-            if (startofname == -1)
-            {
-                data.creepsAndTasks += this.convertToString(creep);
-                console.log("adding to data.creepsAndTasks", data.creepsAndTasks);
-                InterShardMemory.setLocal(JSON.stringify(data));
-            }
-            else
-            {}
-        }
-        else
-        {
-            data.creepsAndTasks = "";
-            InterShardMemory.setLocal(JSON.stringify(data));
-        }
-    },
-    getTaskListToInterShardMemory: function(shardNo, creep)
-    {
-        var data = JSON.parse(InterShardMemory.getRemote('shard' + shardNo) || "{}");
-        //  console.log("sffgggfs");
-        if (data.creepsAndTasks != undefined)
-        {
-            var startofname = data.creepsAndTasks.lastIndexOf(creep.name);
-            console.log(shardNo, "startofname", startofname);
-            if (startofname == -1)
-            {
-                return "a";
-            }
-            //  console.log("s ds s");
-            // if(data.creepsAndTasks == undefined)
-            //  {
-            //      data.creepsAndTasks = "";
-            //      console.log("reset intershard memory");
-            //  }
-            console.log("s s s");
-            var returnArr = this.getStartAndEnd(data.creepsAndTasks, creep);
-            // console.log("12data.message",data.creepsAndTasks);
-            if (returnArr == "a")
-            {
-                return "a";
-            }
-            else
-            {
-                return returnArr;
-            }
-            return returnArr;
-        }
-        else
-        {
-            console.log("creepsAndTasks undefined", shardNo);
-            return "a";
-        }
-    },
     combatMove: function(creep, avoidarray, avoidclosest) // check if creep has damage parts
     {
         let goals = _.map(avoidarray, function(host)
@@ -301,7 +134,6 @@ var creepfunctions = {
         }).path;
         creep.moveByPath(patha);
     },
-
     loopTasks: function(creep)
     {
         //   try
@@ -338,48 +170,6 @@ var creepfunctions = {
         //         console.log("  creep.memory.memstruct.tasklist",  creep.memory.memstruct.tasklist);
         //   }
     },
-    allowSlave: function(creep)
-    {
-        try
-        {
-            if (creep.memory.duoId != undefined)
-            {
-                var slave = Game.getObjectById(creep.memory.duoId);
-                const range = creep.pos.getRangeTo(slave);
-                var counter = 1;
-                if (slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
-                {
-                    counter = 3;
-                }
-                if (range > counter && creep.room.name == slave.room.name && Game.time % 3 == 0)
-                {
-                    creep.say("come");
-                    creep.moveTo(slave);
-                }
-            }
-            if (creep.memory.duoId2 != undefined)
-            {
-                var slave = Game.getObjectById(creep.memory.duoId2);
-                const range = creep.pos.getRangeTo(slave);
-                var counter = 2;
-                if (creep.room.controller != undefined && creep.room.controller.level > 3 && creep.room.name != creep.memory.memstruct.spawnRoom)
-                {
-                    var counter = 2;
-                }
-                if (slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
-                {
-                    counter = 3;
-                }
-                if (range > counter && creep.room.name == slave.room.name && Game.time % 2 == 0)
-                {
-                    creep.say("WAIT");
-                    creep.cancelOrder('move');
-                }
-            }
-        }
-        catch (e)
-        {}
-    },
     checkglobaltasks: function(creep)
     {
         if (creep.memory.memstruct.tasklist.length == 0)
@@ -389,56 +179,7 @@ var creepfunctions = {
         else
         if (creep.memory.memstruct.tasklist[0] != undefined)
         {
-            //    creep.memory.memstruct.tasklist = this.getStartAndEnd(this.convertToString(creep),creep);
-            if (creep.memory.memstruct.tasklist[0][0] == "getDataFromOldShard")
-            {
-                creep.memory.intershard = true;
-                creep.say("£");
-                // go through all shards and check them 
-                var shard0 = this.getTaskListToInterShardMemory(0, creep);
-                console.log("shard0", shard0);
-                if (shard0 == "a")
-                {
-                    creep.say("n0");
-                    var shard1 = this.getTaskListToInterShardMemory(1, creep);
-                    if (shard1 == "a")
-                    {
-                        creep.say("n1");
-                        var shard2 = this.getTaskListToInterShardMemory(2, creep);
-                        if (shard2 == "a")
-                        {
-                            creep.say("n2");
-                            var shard3 = this.getTaskListToInterShardMemory(3, creep);
-                            if (shard3 == "a")
-                            {
-                                creep.say("n3");
-                            }
-                            else
-                            {
-                                creep.say("3");
-                                creep.memory.memstruct.tasklist = shard3;
-                            }
-                        }
-                        else
-                        {
-                            creep.say("2");
-                            creep.memory.memstruct.tasklist = shard2;
-                        }
-                    }
-                    else
-                    {
-                        creep.say("1");
-                        creep.memory.memstruct.tasklist = shard1;
-                    }
-                }
-                else
-                {
-                    creep.say("0");
-                    creep.memory.memstruct.tasklist = shard0;
-                }
-            }
-
-            else if (creep.memory.memstruct.tasklist[0][0] == "upgrade")
+            if (creep.memory.memstruct.tasklist[0][0] == "upgrade")
             {
                 if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
                 {
@@ -451,7 +192,10 @@ var creepfunctions = {
                     {
                         if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
                         {
-                            creep.moveTo(creep.room.controller);
+                            creep.moveTo(creep.room.controller,
+                            {
+                                ignoreCreeps: true
+                            });
                         }
                     }
                 }
@@ -479,7 +223,6 @@ var creepfunctions = {
                 }
                 creep.memory.memstruct.tasklist = finalPath
             }
-
             else if (creep.memory.memstruct.tasklist[0][0] == "buildGeneral")
             {
                 creep.say("buildGeneral");
@@ -500,7 +243,6 @@ var creepfunctions = {
                     }
                 }
             }
-
             else if (creep.memory.memstruct.tasklist[0][0] == "templeUP")
             {
                 var tewers = creep.pos.findInRange(FIND_MY_STRUCTURES, 1,
@@ -510,6 +252,12 @@ var creepfunctions = {
                 creep.memory.timer = 0;
                 var positiongoal;
                 var goalflag = Game.flags["temple" + creep.memory.memstruct.tasklist[0][1]]
+                if(!goalflag && Game.rooms[creep.memory.memstruct.tasklist[0][1]].storage ){
+                    goalflag = Game.rooms[creep.memory.memstruct.tasklist[0][1]].storage 
+                }
+              
+                
+                
                 if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple" + "-0")
                 {
                     positiongoal = new RoomPosition(goalflag.pos.x - 1, goalflag.pos.y - 1, creep.memory.memstruct.tasklist[0][1])
@@ -544,24 +292,32 @@ var creepfunctions = {
                         return (structure.structureType == STRUCTURE_TERMINAL && structure.store.energy > 1000);
                     }
                 });
-
+                
+                if(term.length == 0 )
+                {
+                    term = creep.pos.findInRange(FIND_STRUCTURES, 1,
+                                {
+                                    filter: (structure) =>
+                                    {
+                                        return (structure.structureType == STRUCTURE_STORAGE && structure.store.energy > 1000);
+                                    }});
+                }
+                
                 if (creep.store.getFreeCapacity() >= 100 && term.length != 0)
                 {
                     creep.withdraw(term[0], RESOURCE_ENERGY)
                 }
-
+                
                 else if (creep.store.getFreeCapacity() >= 100 && spawnns.length != 0)
                 {
                     creep.withdraw(spawnns[0], RESOURCE_ENERGY)
                 }
-
+                
                 if (hostiles.length != 0)
                 {
-
                     if (creep.name == creep.memory.memstruct.tasklist[0][1] + "up-temple-3")
                     {
                         creep.say("3")
-
                         if (tewers.length != 0 && creep.store.getUsedCapacity() >= 100)
                         {
                             creep.transfer(tewers[0], RESOURCE_ENERGY)
@@ -598,7 +354,7 @@ var creepfunctions = {
                     creep.upgradeController(creep.room.controller);
                 }
 
-                if (creep.ticksToLive < 1000)
+                if (creep.ticksToLive < 50)
                 {
 
                     var spawnns = creep.pos.findInRange(FIND_STRUCTURES, 1,
@@ -715,7 +471,6 @@ var creepfunctions = {
                 }
 
             }
-
             else if (creep.memory.memstruct.tasklist[0][0] == "build")
             {
                 if (creep.store.getUsedCapacity() == 0)
@@ -756,7 +511,6 @@ var creepfunctions = {
                     }
                 }
             }
-
             else if (creep.memory.memstruct.tasklist[0][0] == "harvest")
             {
                 creep.say(creep.store[RESOURCE_ENERGY])
@@ -772,12 +526,22 @@ var creepfunctions = {
                     {
                         if (creep.harvest(target) == ERR_NOT_IN_RANGE)
                         {
-                            creep.moveTo(target);
+                            if(Game.time %3 ==0){
+                                 creep.moveTo(target,
+                {
+                    ignoreCreeps: true
+                });  
+                            }else{
+                                  creep.moveTo(target)
+                            }
+                         
+                
+                
+                
                         }
                     }
                 }
             }
-
             else if (creep.memory.memstruct.tasklist[0][0] == "guardRoom")
             {
 
@@ -893,7 +657,6 @@ var creepfunctions = {
                 }
                 this.repairLowestRampartInRange(creep)
             }
-
             else if (creep.memory.memstruct.tasklist[0][0] == "fillTowers")
             {
 
@@ -919,26 +682,6 @@ var creepfunctions = {
                     this.loopTasks(creep);
                 }
 
-            }
-
-            else if (creep.memory.memstruct.tasklist[0][0] == "travelThroughPortal")
-            {
-                // ["travelThroughPortal" , origin shard  , portalID]
-                var originshard = creep.memory.memstruct.tasklist[0][1];
-                creep.say(Game.shard.name);
-                //  
-                if (Game.shard.name == "shard" + originshard)
-                {
-                    this.addTaskListToInterShardMemory(originshard, creep);
-                    creep.say("originshard");
-                    var targPortal = Game.getObjectById(creep.memory.memstruct.tasklist[0][2]);
-                    creep.moveTo(targPortal.pos);
-                }
-                else
-                {
-                    creep.move(RIGHT);
-                    this.loopTasks(creep);
-                }
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "downgrade")
             {
@@ -1154,7 +897,6 @@ var creepfunctions = {
                 }
 
             }
-
             else if (creep.memory.memstruct.tasklist[0][0] == "withdrawBoost")
             {
                 if (creep.store.getFreeCapacity() == 0 || creep.ticksToLive < 200)
@@ -1511,210 +1253,6 @@ var creepfunctions = {
                 else
                 {
                     return true;
-                }
-            }
-            else if (creep.memory.memstruct.tasklist[0][0] == "createslave") // used by master
-            {
-                creep.say("create healer");
-                var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]; // add a function to caUTOBUILD
-                var lvl = Game.rooms[creep.memory.memstruct.spawnRoom].controller.level;
-                if (lvl == 6)
-                {
-                    var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                }
-                if (lvl == 7)
-                {
-                    var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                }
-                if (lvl == 8)
-                {
-                    var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                }
-                Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, creep.name + "'s healer",
-                {
-                    memory:
-                    {
-                        role: 'multi',
-                        memstruct:
-                        {
-                            spawnRoom: creep.memory.memstruct.spawnRoom,
-                            tasklist: [
-                                ["findMaster", creep.id]
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
-                        }
-                    }
-                });
-                if (creep.memory.duoId == undefined)
-                {}
-                else
-                {
-                    creep.say("a");
-                    this.loopTasks(creep);
-                }
-            }
-            else if (creep.memory.memstruct.tasklist[0][0] == "createslaveBOOST") // used by master// only rcl8
-            {
-                creep.say("create healer");
-                var mainflag = Game.flags[creep.room.name];
-                if (creep.pos.x == mainflag.pos.x - 1 && creep.pos.y == mainflag.pos.y - 3)
-                {
-                    creep.move(LEFT);
-                }
-                var bgodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]; // add a function to caUTOBUILD
-                if (creep.room.controller.level == 7)
-                {
-                    var bgodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                }
-                if (creep.room.controller.level == 6)
-                {
-                    var bgodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                }
-                Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, creep.name + "'s healer",
-                {
-                    memory:
-                    {
-                        role: 'multi',
-                        memstruct:
-                        {
-                            spawnRoom: creep.memory.memstruct.spawnRoom,
-                            tasklist: [
-                                ["boosAllMax"],
-                                ["findMaster", creep.id]
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
-                        }
-                    }
-                });
-                if (creep.memory.duoId == undefined)
-                {}
-                else
-                {
-                    creep.say("a");
-                    this.loopTasks(creep);
-                }
-            }
-            else if (creep.memory.memstruct.tasklist[0][0] == "createslaveBOOST2") // used by master// only rcl8
-            {
-                creep.say("create healer");
-                var mainflag = Game.flags[creep.room.name];
-                if (creep.pos.x == mainflag.pos.x - 1 && creep.pos.y == mainflag.pos.y - 3)
-                {
-                    creep.move(LEFT);
-                }
-                var bgodyparts = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]; // add a function to caUTOBUILD
-                Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, creep.name + "'s healer",
-                {
-                    memory:
-                    {
-                        role: 'multi',
-                        memstruct:
-                        {
-                            spawnRoom: creep.memory.memstruct.spawnRoom,
-                            tasklist: [
-                                ["boosAllMax"],
-                                ["findMaster2", creep.id]
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
-                        }
-                    }
-                });
-                if (creep.memory.duoId2 == undefined)
-                {}
-                else
-                {
-                    creep.say("a");
-                    this.loopTasks(creep);
-                }
-            }
-            else if (creep.memory.memstruct.tasklist[0][0] == "findMaster") // used by slave
-            {
-                const master = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                if (master == null)
-                {
-                    creep.suicide();
-                }
-                try
-                {
-                    creep.moveTo(master);
-                }
-                catch (e)
-                {}
-                if (master != undefined && master != null)
-                {
-                    if (master.memory.duoId == undefined || master.memory.duoId == "erer")
-                    {
-                        master.memory.duoId = creep.id;
-                    }
-                    else
-                    {
-                        if (creep.hits == creep.hitsMax)
-                        {
-                            creep.heal(master);
-                        }
-                        else
-                        {
-                            if (Game.time & 2 == 0)
-                            {
-                                creep.heal(master);
-                            }
-                            else
-                            {
-                                creep.heal(creep);
-                            }
-                        }
-                    }
-                }
-            }
-            else if (creep.memory.memstruct.tasklist[0][0] == "findMaster2") // used by slave
-            {
-                const master = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
-                if (master == null)
-                {
-                    creep.suicide();
-                }
-                try
-                {
-                    creep.moveTo(master);
-                }
-                catch (e)
-                {}
-                if (master != undefined && master != null)
-                {
-                    if (master.memory.duoId2 == undefined)
-                    {
-                        master.memory.duoId2 = creep.id;
-                    }
-                    else
-                    {
-                        if (creep.hits == creep.hitsMax)
-                        {
-                            creep.heal(master);
-                        }
-                        else
-                        {
-                            if (Game.time & 2 == 0)
-                            {
-                                creep.heal(master);
-                            }
-                            else
-                            {
-                                creep.heal(creep);
-                            }
-                        }
-                    }
                 }
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "waitTick")
@@ -2174,6 +1712,13 @@ var creepfunctions = {
 
                 var boostlab;
                 var flagmid = Game.flags[creep.room.name];
+                
+                if(!flagmid)
+                {
+                    flagmid = creep.room.storage
+                }
+                
+                
                 var temp = Game.rooms[creep.room.name].lookForAt(LOOK_STRUCTURES, flagmid.pos.x - 2, flagmid.pos.y - 2);
                 for (var i = 0; i < temp.length; i++)
                 {
@@ -2368,120 +1913,68 @@ var creepfunctions = {
                     }
                 }
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "moveToObjectLoose")
+        ////////////////
+        
+          else    if (creep.memory.memstruct.tasklist[0][0] == "movetoRoom" || creep.memory.memstruct.tasklist[0][0] == "moveToRoom" || creep.memory.memstruct.tasklist[0][0] == "forcemoveToRoom")
             {
-                creep.say("e");
-                var targobject = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]).pos;
-                if (!targobject)
+                var leader =creep;
+             
+                if (leader.room.name == creep.memory.memstruct.tasklist[0][1])
                 {
-                    this.loopTasks(creep);
+                    leader.say("loop");
+                  
+                    leader.moveTo(new RoomPosition(25, 25, leader.room.name));
+                     this.loopTasks(creep);
                 }
-                //   var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
-                try
+
+                var roomExits = Game.map.describeExits(leader.room.name);
+                var roomnames = Object.values(roomExits);
+                var roomkeys = Object.keys(roomExits);
+                var exitNumber;
+                for (var i = 0; i < roomnames.length; i++)
                 {
-                    var targobject = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]).pos;
-                    var range = creep.pos.getRangeTo(targobject);
-                    creep.say("t-" + targobject.pos);
-                    if (range > 3)
+                    if (roomnames[i] == creep.memory.memstruct.tasklist[0][1])
                     {
-                        creep.moveTo(targobject);
-                        creep.say("r-" + range);
-                    }
-                    else if (range < 4)
-                    {
-                        creep.say("in range");
-                        // this.loopTasks(creep);
-                        return false;
+                        exitNumber = roomkeys[i];
                     }
                 }
-                catch (e)
-                { // losing visual on object
-                    //     creep.say("error");
-                    this.loopTasks(creep);
+console.log("exitNumber",exitNumber);
+
+
+
+                if (exitNumber != undefined)
+                {
+                    leader.say("suc move");
+                    var exitDir = Game.map.findExit(leader.room, creep.memory.memstruct.tasklist[0][1]);
+                    var exit = leader.pos.findClosestByPath(exitDir);
+           console.log("exit",exit);  
+                    if (exit)
+                    {
+                       
+   creep.moveTo( exit );    leader.say(exit.x + "-" + exit.y);
+    
+                        new RoomVisual(leader.room.name).line( new RoomPosition(exit.x, exit.y, creep.memory.memstruct.tasklist[0][1]), exit,
+                        {
+                            color: '#ffffff',
+                            lineStyle: 'solid'
+                        });
+                       
+   creep.moveTo( new RoomPosition(exit.x, exit.y, creep.memory.memstruct.tasklist[0][1]));
+                       
+                    }
+                }else
+                {
+                      leader.say("fail move");
+               //    creep.moveTo( new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
+              
                 }
-                this.allowSlave(creep);
+
+           
+
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "moveToRoom")
-            {
-                if (creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
-                {
-                    creep.heal(creep);
-                }
-                //   var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
-                var targposition = new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]);
-                var pos1 = creep.pos;
-                var pos2 = targposition;
-                const range = creep.pos.getRangeTo(targposition);
-                if (range > 24)
-                { // might cause bug on nxt room wall 
-                    creep.moveTo(targposition);
-                    Game.map.visual.line(creep.pos, targposition,
-                    {
-                        color: '#000000',
-                        lineStyle: 'solid'
-                    });
-                    var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    var range2 = creep.pos.getRangeTo(targets);
-                    if (range2 <= 5)
-                    {
-                        const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
-                        target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                        this.combatMove(creep, targetArr, target);
-                    }
-                }
-                else
-                {
-                    this.loopTasks(creep);
-                }
-                this.allowSlave(creep);
-            }
-            else if (creep.memory.memstruct.tasklist[0][0] == "forcemoveToRoom")
-            {
-                if (creep.body.find(elem => elem.type === "heal") != undefined && creep.hits < creep.hitsMax)
-                {
-                    creep.heal(creep);
-                }
-                var targetsa = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
 
-                if (targetsa.length != 0)
-                {
-                    Memory.roomlist[creep.room.name].dangerLevel = 8;
-
-                }
-
-                if (creep.body.find(elem => elem.type === "ranged_attack") != undefined && targetsa.length != 0)
-                {
-
-                    //         creep.rangedMassAttack();
-                }
-                //   var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
-                var targposition = new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]);
-                var pos1 = creep.pos;
-                var pos2 = targposition;
-                const range = creep.pos.getRangeTo(targposition);
-                if (range > 23)
-                { // might cause bug on nxt room wall 
-                    creep.moveTo(targposition);
-                    Game.map.visual.line(creep.pos, targposition,
-                    {
-                        color: '#000000',
-                        lineStyle: 'solid'
-                    });
-                    var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    var range2 = creep.pos.getRangeTo(targets);
-                    if (range2 <= 5)
-                    {
-                        const targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
-                        target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                        //     this.combatMove(creep, targetArr, target);
-                    }
-                }
-                else
-                {
-                    this.loopTasks(creep);
-                }
-                this.allowSlave(creep);
-            }
+        
+      
             else if (creep.memory.memstruct.tasklist[0][0] == "attackMoveToRoom")
             {
                 var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
@@ -2568,25 +2061,7 @@ var creepfunctions = {
                 {
                     this.loopTasks(creep);
                 }
-                this.allowSlave(creep);
-            }
-            else if (creep.memory.memstruct.tasklist[0][0] == "moveToLooseinterRoom")
-            {
-                creep.rangedMassAttack();
-                var targetposition = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
-                var d = new RoomPosition(creep.memory.memstruct.tasklist[0][1], creep.memory.memstruct.tasklist[0][2], creep.room.name);
-                var ranged = creep.pos.getRangeTo(d);
-                var range = creep.pos.getRangeTo(targetposition);
-                if (range > 2)
-                {
-                    creep.moveTo(targetposition);
-                    creep.say(range);
-                }
-                else if (creep.room.name == creep.memory.memstruct.tasklist[0][3] && ranged < 24)
-                {
-                    this.loopTasks(creep);
-                }
-                this.allowSlave(creep);
+             
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "waituntil")
             {
@@ -2756,43 +2231,9 @@ var creepfunctions = {
             return true;
         }
     },
-    summonHauler: function(targroom, haulerHome)
-    {
-        var haulersFREE = Game.rooms[haulerHome].find(FIND_MY_CREEPS,
-        {
-            filter: (creep) =>
-            {
-                return (creep.memory.role == "mover" && creep.memory.memstruct.tasklist.length == 0);
-            }
-        });
-        var homeflag = Game.flags[haulerHome];
-        if (homeflag.memory.flagstruct.haulerOUT == undefined)
-        {
-            homeflag.memory.flagstruct.haulerOUT = Game.time;
-        }
-        if (Game.time - homeflag.memory.flagstruct.haulerOUT > 80 && haulersFREE.length != 0)
-        { // if a mover was NOT recently sent out
-            console.log("summoning hauler");
-            haulersFREE[0].memory.memstruct.tasklist = [
-                ["deposit"],
-                ["moveToRoom", targroom],
-                ["gatherLooseResources"],
-                ["gatherstoredResources"],
-                ["moveToRoom", haulerHome],
-                ["deposit"]
-            ];
-            homeflag.memory.flagstruct.haulerOUT = Game.time;
-        }
-    },
-    /*
-    USED BY: 
-        most eventually ranger primarily
-    
-    
-    
-    */
     findDroppedEnergy: function(creep)
     {
+        console.log("findDroppedEnergy");
         var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES,
         {
             filter: (res) =>
@@ -2816,311 +2257,7 @@ var creepfunctions = {
             }
             creep.memory.hastask = false;
         }
-    },
-    /*
-     USED BY: 
-         most eventually ranger primarily
-     
-     
-     
-     */
-    movehomeandrenew: function(creep, homeroom, timeer)
-    {
-        // check iff the renew spot is free and room is able to renew
-        if (creep.memory.isrenweing == undefined)
-        {
-            creep.memory.isrenweing = false;
-        }
-        if (creep.ticksToLive < timeer)
-        {
-            creep.memory.isrenweing = true;
-        }
-        if (creep.ticksToLive > 1400)
-        {
-            creep.memory.isrenweing = false;
-        }
-        if (creep.memory.isrenweing)
-        {
-            if (creep.room.name == homeroom)
-            {
-                if (creep.memory.isrenweing)
-                {
-                    var spawnss = creep.room.find(FIND_MY_SPAWNS);
-                    creep.moveTo(spawnss[0],
-                    {
-                        visualizePathStyle:
-                        {
-                            stroke: '#ffaa00'
-                        }
-                    });
-                }
-            }
-            else
-            {
-                var targetRoomFlag = Game.flags[homeroom];
-                var pos1 = creep.pos;
-                var pos2 = targetRoomFlag.pos;
-                const range = creep.pos.getRangeTo(targetRoomFlag.pos);
-                if (range > 23)
-                { // might cause bug on nxt room wall 
-                    creep.moveTo(targetRoomFlag.pos);
-                    Game.map.visual.line(creep.pos, targetRoomFlag.pos,
-                    {
-                        color: '#000000',
-                        lineStyle: 'solid'
-                    });
-                }
-            }
-        }
-    },
-    /*
-    USED BY: 
-        most eventually ranger primarily
-    
-    
-    
-    */
-    stockstorage: function(creep)
-    {
-        var storageactual = creep.room.storage;
-        if (storageactual != undefined)
-        {
-            if (storageactual.store.getUsedCapacity() < 20000)
-            {
-                var range = creep.pos.getRangeTo(storageactual);
-                if (range <= 1)
-                {
-                    creep.transfer(storageactual, RESOURCE_ENERGY);
-                }
-                else
-                {
-                    creep.moveTo(storageactual,
-                    {
-                        reusePath: range
-                    });
-                }
-                creep.memory.hastask = false;
-            }
-        }
-    },
-    /*
-    USED BY: 
-        jack
-        mover
-        repairer
-    */
-    findfullcontainers: function(creep, energyleveltodrawfrom)
-    {
-        var containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
-        {
-            filter: (s) =>
-            {
-                return s.structureType == STRUCTURE_CONTAINER && s.store.getUsedCapacity("energy") > energyleveltodrawfrom;
-            }
-        });
-        if (containers == undefined)
-        {
-            containers = creep.pos.findClosestByRange(FIND_STRUCTURES,
-            {
-                filter: (s) =>
-                {
-                    return s.structureType == STRUCTURE_LINK && s.store.getUsedCapacity("energy") > 500;
-                }
-            });
-        }
-        if (containers != undefined && containers != null)
-        {
-            if (creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-            {
-                creep.moveTo(containers,
-                {
-                    visualizePathStyle:
-                    {
-                        stroke: '#ffaa00'
-                    }
-                });
-            }
-            creep.memory.hastask = true;
-        }
-        else
-        {
-            var storageMain = creep.room.storage;
-            if (storageMain != undefined && storageMain.store.getUsedCapacity() > 50000)
-            {
-                var range = creep.pos.getRangeTo(storageMain);
-                if (range <= 1)
-                {
-                    creep.withdraw(storageMain, RESOURCE_ENERGY);
-                }
-                else
-                {
-                    creep.moveTo(storageMain,
-                    {
-                        reusePath: range,
-                        visualizePathStyle:
-                        {
-                            stroke: '#ffaa00'
-                        }
-                    });
-                }
-                creep.memory.hastask = true;
-            }
-        }
-    },
-    /*
-    USED BY: 
-        jack
-    
-    
-    
-    */
-    checklocaltasks: function(creep)
-    {
-        if (creep.memory.tasklist[0] == "moveto")
-        {
-            const path = creep.pos.findPathTo(creep.memory.targetroom);
-            if (path.length > 0)
-            {
-                creep.move(path[0].direction);
-            }
-            else
-            {
-                creep.memory.tasklist[0].splice(0, 1);
-            }
-        }
-    },
-    /*
-    USED BY: 
-        jack
-    
-    
-    
-    */
-    repairbuildings: function(creep)
-    {
-        var repairtarg = creep.pos.findClosestByRange(FIND_STRUCTURES,
-        {
-            filter: (s) =>
-            {
-                return (s.structureType == STRUCTURE_ROAD || s.structureType == STRUCTURE_CONTAINER) && s.hits < s.hitsMax * 0.7;
-            }
-        });
-        if (repairtarg)
-        {
-            var range = creep.pos.getRangeTo(repairtarg);
-            if (range <= 3)
-            {
-                creep.repair(repairtarg);
-            }
-            else
-            {
-                creep.moveTo(repairtarg,
-                {
-                    reusePath: 5
-                });
-            }
-            creep.memory.hastask = true;
-        }
-    },
-    /*
-    USED BY: 
-        repairer
-    
-    
-    
-    */
-    repairbuildingsfull: function(creep)
-    {
-        var repairtarg = creep.pos.findClosestByRange(FIND_STRUCTURES,
-        {
-            filter: (s) =>
-            {
-                return (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART) && s.hits < s.hitsMax * 0.99;
-            }
-        });
-        if (repairtarg)
-        {
-            var range = creep.pos.getRangeTo(repairtarg);
-            if (range <= 3)
-            {
-                creep.repair(repairtarg);
-            }
-            else
-            {
-                creep.moveTo(repairtarg,
-                {
-                    reusePath: 5
-                });
-            }
-            creep.memory.hastask = true;
-        }
-    },
-    upkeepwalls: function(creep)
-    {
-        var repairtarg = creep.pos.findClosestByRange(FIND_STRUCTURES,
-        {
-            filter: (s) =>
-            {
-                return (s.structureType == STRUCTURE_WALL && s.hits < s.hitsMax * 0.1) || (s.structureType == STRUCTURE_RAMPART && s.hits < s.hitsMax * 0.5);
-            }
-        });
-        if (repairtarg)
-        {
-            var range = creep.pos.getRangeTo(repairtarg);
-            if (range <= 3)
-            {
-                creep.repair(repairtarg);
-            }
-            else
-            {
-                creep.moveTo(repairtarg,
-                {
-                    reusePath: 5
-                });
-            }
-            creep.memory.hastask = true;
-        }
-    },
-    upgradecontroller: function(creep)
-    {
-        if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
-        {
-            creep.moveTo(creep.room.controller,
-            {
-                visualizePathStyle:
-                {
-                    stroke: '#ffffff'
-                }
-            });
-        }
-        creep.memory.hastask = true;
-    },
-    stockbuildingswithenergy: function(creep)
-    {
-        var buildingsneedingenergy = creep.room.find(FIND_STRUCTURES,
-        {
-            filter: (structure) =>
-            {
-                return (
-                    (structure.structureType == STRUCTURE_EXTENSION && structure.energy < 50) || (structure.structureType == STRUCTURE_CONTAINER && structure.store.energy < 500) || (structure.structureType == STRUCTURE_SPAWN && structure.energy < 300));
-            }
-        });
-        if (buildingsneedingenergy.length > 0)
-        {
-            if (creep.transfer(creep.pos.findClosestByPath(buildingsneedingenergy), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
-            {
-                creep.moveTo(creep.pos.findClosestByPath(buildingsneedingenergy),
-                {
-                    visualizePathStyle:
-                    {
-                        stroke: '#ffffff'
-                    }
-                });
-            }
-            creep.memory.hastask = true;
-        }
-    },
-    stocktowerswithenergy: function(creep) {},
+    }, 
     mineCorridor: function(creep)
     {
         const target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -3215,26 +2352,6 @@ var creepfunctions = {
                 });
             }
         }
-    },
-    buildstructs: function(creep)
-    {
-        var constructionsites = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-        if (constructionsites != undefined)
-        {
-            var range = creep.pos.getRangeTo(constructionsites);
-            if (range <= 3)
-            {
-                creep.build(constructionsites);
-            }
-            else
-            {
-                creep.moveTo(constructionsites,
-                {
-                    reusePath: range
-                });
-            }
-            creep.memory.hastask = true;
-        }
-    }
+    } 
 }
 module.exports = creepfunctions;

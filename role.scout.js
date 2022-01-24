@@ -8,6 +8,7 @@ room considtions
  */
  var bannedMineRooms = ["E27N3", "E26N3", "E23N3", "E23N4", "E22N4", "E22N5", "E27N6",   "E28N7","E28N4","E26N1","E27N4",];
      var creepfunctions = require('prototype.creepfunctions');
+     var observer = require('observer');
      var rolescout = {
          run: function(creep)
          {
@@ -62,6 +63,7 @@ room considtions
              }
              else if(creep.memory.exitchosen != "a" && creep.room.name != creep.memory.prevRoom) // if ceep has moved into new room
              {
+                 observer.addToRoomList(creep.room.name);
                  creep.moveTo(new RoomPosition(25, 25, creep.room.name), // move away from room edge
                      {
                          reusePath: 3,

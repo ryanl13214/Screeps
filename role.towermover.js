@@ -297,7 +297,11 @@ var roletowermover = {
                 var closestDamagedStructure =  creep.room.storage.pos.findInRange(FIND_STRUCTURES, 2,
                 {
                     filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL
-                });
+                })  
+                
+                
+                   
+                
                 var tmp = 0;
                 var value = 300000000;
                 for(var i = 0; i < closestDamagedStructure.length; i++)

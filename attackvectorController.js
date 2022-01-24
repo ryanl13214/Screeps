@@ -1,112 +1,8 @@
 var roompathfind = require('roompathfinder');
 var squadmanage = require('squadManager');
-var attackManager = {
-    checkRuins: function(attackID)
-    {
-        var resourcesPot = Game.rooms[attackID].find(FIND_RUINS,
-        {
-            filter: (res) =>
-            {
-                return (res.resourceType != RESOURCE_ENERGY);
-            }
-        });
-        var target = Game.rooms[attackID].find(FIND_HOSTILE_STRUCTURES,
-        {
-            filter: (structure) =>
-            {
-                return (structure.structureType == STRUCTURE_TOWER);
-            }
-        });
-        var target2 = Game.rooms[attackID].find(FIND_HOSTILE_STRUCTURES,
-        {
-            filter: (structure) =>
-            {
-                return (structure.structureType == STRUCTURE_INVADER_CORE);
-            }
-        });
-        if ((resourcesPot.length != 0 && target.length == 0) || (resourcesPot.length != 0 && target2.length == 0 && Game.rooms[attackID].controller == undefined))
-        {
-            //  creepfunctions.summonHauler(creep.room.name, creep.memory.memstruct.spawnRoom);
-            Game.spawns["E24N3"].spawnCreep(
-                [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL], attackID + 'Support',
-                {
-                    memory:
-                    {
-                        role: 'multi',
-                        memstruct:
-                        {
-                            spawnRoom: "E24N3",
-                            tasklist: [
-
-                                ["forcemoveToRoom", attackID],
-                                ["gatherLooseResources"],
-                                ["gatherstoredResources"],
-                                ["forcemoveToRoom", "E24N3"],
-                                ["deposit"],
-                                ["repeat", 6]
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
-                        }
-                    }
-                }
-            );
-        }
-    },
-    getRoomdata: function(attackID) // get visuial of the room
-    {
-
-        var mainMemoryObject = Memory.attackManager[attackID];
-
-        var allRooms = Object.keys(Memory.attackManager[attackID].attackingRooms);
-        var selectedRoom = "";
-        for (var i = 0; i < allRooms.length; i++)
-        {
-            if (selectedRoom == "")
-            {
-                if (Memory.empire.roomsobj[allRooms[i]].oberverobj.tasklist.length == 0 || Memory.empire.roomsobj[allRooms[i]].oberverobj.tasklist[0] == attackID)
-                {
-                    selectedRoom = allRooms[i];
-                }
-            }
-        }
-
-        if (selectedRoom != "")
-        {
-            console.log("attack requesting vision ", attackID, " from room  ", selectedRoom);
-            Memory.empire.roomsobj[selectedRoom].oberverobj.tasklist = [attackID];
-        }
-
-    },
-    // check if the room is A) part of another attack B) has enough Resources to launch an attack C) is not under attack   // once checked this room is assigned to this attack until one of the conditions fails
-    selectAttackingRoms: function(attackID)
-    {
-        var ownedrooms = [];
-        if (Memory.empire != undefined && Memory.empire.roomsobj != undefined)
-        {
-            ownedrooms = Object.keys(Memory.empire.roomsobj);
-        }
-        //  console.log("ownedrooms", ownedrooms);
-        var returnList = [];
-        for (var i = 0; i < ownedrooms.length; i++)
-        {
-            if (Game.map.getRoomLinearDistance(attackID, ownedrooms[i]) < 10 && Game.rooms[ownedrooms[i]].controller.level == 8) // check that room has good amount of boosts
-            {
-
-                var pathacc = roompathfind.run(attackID, ownedrooms[i], 0); // 0 means allow through hostile rooms
-                pathacc.push(attackID);
-                Memory.attackManager[attackID].attackingRooms[ownedrooms[i]] = {};
-                Memory.attackManager[attackID].attackingRooms[ownedrooms[i]] = // "a"
-                    {
-                        Path: pathacc
-                    }
-
-            }
-        }
-    },
+var attackVectorManager = {
+   
+ 
     getCenterTarg: function(attackID)
     {
 
@@ -639,12 +535,6 @@ var attackManager = {
             }
         }
 
-    },
-
-    GetAllRoomsMineRooms: function(attackID)
-    {
-        return [];
-    }
-
+    } 
 }
-module.exports = attackManager;
+module.exports = attackVectorManager;

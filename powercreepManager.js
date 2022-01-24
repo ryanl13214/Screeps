@@ -448,7 +448,7 @@ var powercreepManager = {
             var hasAtask = false;
             powerCreep.say("a");
             var targetArr = powerCreep.room.find(FIND_HOSTILE_CREEPS);
-            powerCreep.say(powerCreep.powers[PWR_OPERATE_TOWER] != undefined);
+          //  powerCreep.say(powerCreep.powers[PWR_OPERATE_TOWER] != undefined);
             ////////////////////////////////////  PWR_OPERATE_FACTORY//////////////////////////////////////////////////////////////////////////////////////////
        
             if (powerCreep.powers[PWR_OPERATE_SPAWN] != undefined && powerCreep.powers[PWR_OPERATE_SPAWN].cooldown < 15 && hasAtask == false)
@@ -461,7 +461,7 @@ var powercreepManager = {
                 hasAtask = this.opFact(powerCreep)
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-            if (powerCreep.powers[PWR_REGEN_SOURCE] != undefined && hasAtask == false && target.length ==0 )
+            if (powerCreep.powers[PWR_REGEN_SOURCE] != undefined && hasAtask == false   )
             {
                 hasAtask = this.regenSource(powerCreep)
             }
@@ -483,7 +483,7 @@ var powercreepManager = {
                 hasAtask = this.opPower(powerCreep)
             }
             /////////////////////////////////////////////////
-     if (powerCreep.powers[PWR_OPERATE_TOWER] != undefined && hasAtask == false)// && targetArr.length != 0)
+     if (powerCreep.powers[PWR_OPERATE_TOWER] != undefined && hasAtask == false && targetArr.length != 0)
             {
                 powerCreep.say("b");
                 hasAtask = this.opTower(powerCreep)
@@ -588,7 +588,7 @@ var powercreepManager = {
                     return (structure.structureType == STRUCTURE_FACTORY);
                 }
             })[0];
-            if (FACTORY.effects == undefined || FACTORY.effects.length == 0) ///////////////////////////////////////////////
+            if (FACTORY != undefined   && FACTORY.effects == undefined || FACTORY.effects.length == 0) ///////////////////////////////////////////////
             {
                 powerCreep.moveTo(FACTORY,
                 {

@@ -100,7 +100,7 @@ var quadsquad = {
         var path = leader.room.findPath(leader.pos, posision);
 
         if (path && path.length != 0 && path[path.length - 1] != null && path[path.length - 1].x == posision.x && path[path.length - 1].y == posision.y)
-        {  
+        {
 
         }
         else
@@ -113,12 +113,18 @@ var quadsquad = {
 
     getProperPositionForQuadSquad: function(posision, creep, squadID)
     {
-     //   creep.say("pos");
-        try{
-        creep.room.visual.line(creep.pos, posision,
-    {color: 'red', lineStyle: 'dashed'});
-        }catch(e){}
-        
+        //   creep.say("pos");
+        try
+        {
+            creep.room.visual.line(creep.pos, posision,
+            {
+                color: 'red',
+                lineStyle: 'dashed'
+            });
+        }
+        catch (e)
+        {}
+
         Game.rooms[posision.roomName].visual.circle(posision,
         {
             fill: 'solid',
@@ -129,7 +135,7 @@ var quadsquad = {
         var posx = posision.x;
         var posy = posision.y;
         var posroom = posision.roomName;
-        if (Memory.squadObject[squadID].currentPositionsobj == undefined || Game.time % 50 == 0 )
+        if (Memory.squadObject[squadID].currentPositionsobj == undefined || Game.time % 50 == 0)
         {
             Memory.squadObject[squadID].currentPositionsobj = {
                 targetx: posx,
@@ -175,80 +181,67 @@ var quadsquad = {
             [3, -3]
         ];
         /////////////////////////////////////////
-        
-      var  posArrayCQB2=[];
-           var  posArrayRanged2=[]; 
+
+        var posArrayCQB2 = [];
+        var posArrayRanged2 = [];
         for (var c = 0; c < posArrayCQB.length; c++)
-                {
-        
-        if(posx +posArrayCQB[c][0] >= 49 )
         {
-             
+
+            if (posx + posArrayCQB[c][0] >= 49)
+            {
+
+            }
+            else if (posx + posArrayCQB[c][0] <= 1)
+            {
+
+            }
+            else if (posy + posArrayCQB[c][1] >= 49)
+            {
+
+            }
+            else if (posy + posArrayCQB[c][1] <= 1)
+            {
+
+            }
+
+            else
+            {
+                posArrayCQB2.push(posArrayCQB[c])
+            }
+
         }
-         else if(posx +posArrayCQB[c][0] <= 1 )
+
+        for (var c = 0; c < posArrayRanged.length; c++)
         {
-              
-        } else if(posy +posArrayCQB[c][1] >= 49 )
-        {
-             
+
+            if (posx + posArrayRanged[c][0] >= 49)
+            {
+
+            }
+            else if (posx + posArrayRanged[c][0] <= 1)
+            {
+
+            }
+            else if (posy + posArrayRanged[c][1] >= 49)
+            {
+
+            }
+            else if (posy + posArrayRanged[c][1] <= 1)
+            {
+
+            }
+
+            else
+            {
+                posArrayRanged2.push(posArrayRanged[c])
+            }
+
         }
-         else if(posy +posArrayCQB[c][1] <= 1 )
-        {
-              
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        else
-        {
-            posArrayCQB2.push(posArrayCQB[c])
-        }
-        
-        
-        
-                }
-        
-        
-        
-            for (var c = 0; c < posArrayRanged.length; c++)
-                {
-        
-        
-        
-             
-        if(posx +posArrayRanged[c][0] >= 49 )
-        {
-             
-        }
-         else if(posx +posArrayRanged[c][0] <= 1 )
-        {
-              
-        }else if(posy +posArrayRanged[c][1] >= 49 )
-        {
-             
-        }
-         else if(posy +posArrayRanged[c][1] <= 1 )
-        {
-              
-        }
-        
-        else
-        {
-            posArrayRanged2.push(posArrayRanged[c])
-        }
-        
-        
-                }
         //        console.log(posArrayRanged2);
-        posArrayRanged =posArrayRanged2;
-        
+        posArrayRanged = posArrayRanged2;
+
         posArrayCQB = posArrayCQB2;
-      
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // if squad is damaged check for position far way
 
@@ -266,17 +259,15 @@ var quadsquad = {
 
                     var checkpos = new RoomPosition(posxx, posyy, leader.room.name);
 
+                    if (posyy > 49 || posyy < 2 || posxx > 49 || posxx < 2)
+                    {
+                        Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = false
+                    }
+                    else
+                    {
+                        Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = this.gradePositoion(checkpos, squadID) // change to a position in room 
 
-if(posyy > 49 || posyy < 2 || posxx > 49 || posxx < 2 )
-{
-      Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = false
-}
-else
-{
-       Memory.squadObject[squadID].currentPositionsobj.candidates[c].booll = this.gradePositoion(checkpos, squadID) // change to a position in room 
-
-}
-                 
+                    }
 
                 }
             }
@@ -459,7 +450,7 @@ else
                 InCube++;
             }
         }
-        if (InCube ==all.length - 1)
+        if (InCube == all.length - 1)
         {
             return true;
         }
@@ -764,8 +755,7 @@ else
                             costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
                             costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
                             costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
-                            
-                            
+
                         }
                     });
                     room.find(FIND_MY_POWER_CREEPS).forEach(function(struct)
@@ -781,7 +771,7 @@ else
                         costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
                         costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
                     });
-                     room.find(FIND_HOSTILE_CREEPS).forEach(function(struct)
+                    room.find(FIND_HOSTILE_CREEPS).forEach(function(struct)
                     {
                         room.visual.circle(struct.pos.x, struct.pos.y,
                         {
@@ -794,10 +784,7 @@ else
                         costs.set(struct.pos.x - 1, struct.pos.y + 1, 0xff);
                         costs.set(struct.pos.x, struct.pos.y + 1, 0xff);
                     });
-                    
-                    
-                    
-                    
+
                     return costs;
                 },
             }
@@ -825,109 +812,109 @@ else
         return leader.pos.getDirectionTo(pos);
     },
 
-
-
-
-  linemoveDirectioncache: function(squadID, leaderid, target)
+    linemoveDirectioncache: function(squadID, leaderid, target)
     {
         var pathacc = Memory.squadObject[squadID].linemovepath
-          for (var c = 0; c < pathacc.length; c++)
-                {
-     //   console.log(pathacc[c]);
-        
+        for (var c = 0; c < pathacc.length; c++)
+        {
+            //   console.log(pathacc[c]);
+
         }
 
-
-
-
-return false;
-},
-
+        return false;
+    },
 
     linemoveDirection: function(squadID, leaderid, target)
     {
 
         var leader = Game.getObjectById(leaderid); // pathfinding here
-   //     var path = leader.pos.findPathTo(target);
-       var mainMemoryObject = Memory.squadObject[squadID];
-          var cachedPath =    false
-       if(Memory.squadObject[squadID].linemovepath != undefined)
-       {
-    cachedPath =         this.linemoveDirectioncache(squadID, leaderid, target);
-       }
-       
-       
-       
-       if(cachedPath == false){
-       
-       
-       
-       
-       
-       
-       
-       
-        let goals = {
-            pos: target,
-            range: 0
-        };
-         
-        var all = [];
-        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        //     var path = leader.pos.findPathTo(target);
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var cachedPath = false
+        if (Memory.squadObject[squadID].linemovepath != undefined)
         {
-            // cound how many have rsanged
-            all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            cachedPath = this.linemoveDirectioncache(squadID, leaderid, target);
         }
-        let ret = PathFinder.search(
-            leader.pos, target,
+
+        if (cachedPath == false)
+        {
+
+            let goals = {
+                pos: target,
+                range: 0
+            };
+
+            var all = [];
+            for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
             {
-                // We need to set the defaults costs higher so that we
-                // can set the road cost lower in `roomCallback`
-                plainCost: 1,
-                swampCost: 5,
-                maxRooms: 1,
-                roomCallback: function(roomName)
+                // cound how many have rsanged
+                all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+            }
+            let ret = PathFinder.search(
+                leader.pos, target,
                 {
-                    let room = leader.room;
-                    // In this example `room` will always exist, but since 
-                    // PathFinder supports searches which span multiple rooms 
-                    // you should be careful!
-                    if (!room) return;
-                    let costs = new PathFinder.CostMatrix;
-                    var terrain = new Room.Terrain(roomName);
-                    for (var xx = 2; xx < 48; xx++)
+                    // We need to set the defaults costs higher so that we
+                    // can set the road cost lower in `roomCallback`
+                    plainCost: 1,
+                    swampCost: 5,
+                    maxRooms: 1,
+                    roomCallback: function(roomName)
                     {
-                        for (var yy = 2; yy < 48; yy++)
+                        let room = leader.room;
+                        // In this example `room` will always exist, but since 
+                        // PathFinder supports searches which span multiple rooms 
+                        // you should be careful!
+                        if (!room) return;
+                        let costs = new PathFinder.CostMatrix;
+                        var terrain = new Room.Terrain(roomName);
+                        for (var xx = 2; xx < 48; xx++)
                         {
-                            if (terrain.get(xx, yy) == TERRAIN_MASK_SWAMP)
+                            for (var yy = 2; yy < 48; yy++)
                             {
-                                costs.set(xx, yy, 5);
+                                if (terrain.get(xx, yy) == TERRAIN_MASK_SWAMP)
+                                {
+                                    costs.set(xx, yy, 5);
+                                }
                             }
                         }
-                    }
 
-                    for (var xx = 0; xx < 49; xx++)
-                    {
-                        costs.set(xx, 0, 52);
-                        costs.set(0, xx, 52);
-                        costs.set(xx, 49, 52);
-                        costs.set(49, xx, 52);
-
-                    }
-
-                    costs.set(target.x, target.y, 0);
-                    room.find(FIND_MY_CREEPS).forEach(function(struct)
-                    {
-                        var tmp = 0;
-                        for (var xx = 0; xx < all.length; xx++)
+                        for (var xx = 0; xx < 49; xx++)
                         {
-                            if (all[xx].pos.x == struct.pos.x && all[xx].pos.y == struct.pos.y)
-                            {
-                                tmp = 1;
-                            }
+                            costs.set(xx, 0, 52);
+                            costs.set(0, xx, 52);
+                            costs.set(xx, 49, 52);
+                            costs.set(49, xx, 52);
+
                         }
-                        if (tmp == 0)
+
+                        costs.set(target.x, target.y, 0);
+                        room.find(FIND_MY_CREEPS).forEach(function(struct)
                         {
+                            var tmp = 0;
+                            for (var xx = 0; xx < all.length; xx++)
+                            {
+                                if (all[xx].pos.x == struct.pos.x && all[xx].pos.y == struct.pos.y)
+                                {
+                                    tmp = 1;
+                                }
+                            }
+                            if (tmp == 0)
+                            {
+                                room.visual.circle(struct.pos.x, struct.pos.y,
+                                {
+                                    fill: 'transparent',
+                                    radius: 0.08,
+                                    stroke: 'black'
+                                });
+                                costs.set(struct.pos.x, struct.pos.y, 80);
+                                costs.set(struct.pos.x + 1, struct.pos.y, 80);
+                                costs.set(struct.pos.x + 1, struct.pos.y - 1, 80);
+                                costs.set(struct.pos.x, struct.pos.y - 1, 80);
+                            }
+                        });
+                        room.find(FIND_HOSTILE_CREEPS).forEach(function(struct)
+                        {
+
                             room.visual.circle(struct.pos.x, struct.pos.y,
                             {
                                 fill: 'transparent',
@@ -938,97 +925,92 @@ return false;
                             costs.set(struct.pos.x + 1, struct.pos.y, 80);
                             costs.set(struct.pos.x + 1, struct.pos.y - 1, 80);
                             costs.set(struct.pos.x, struct.pos.y - 1, 80);
-                        }
-                    });
 
-                    room.find(FIND_MY_POWER_CREEPS).forEach(function(struct)
-                    {
-                        room.visual.circle(struct.pos.x, struct.pos.y,
-                        {
-                            fill: 'transparent',
-                            radius: 0.08,
-                            stroke: 'black'
                         });
-                        costs.set(struct.pos.x, struct.pos.y, 0xff);
-                        costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
-                        costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
-                        costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
-                    });
-
-                    room.find(FIND_STRUCTURES).forEach(function(struct)
-                    {
-                        if (struct.structureType !== STRUCTURE_CONTAINER && struct.structureType !== STRUCTURE_ROAD && (struct.structureType !== STRUCTURE_RAMPART || !struct.my))
+                        room.find(FIND_MY_POWER_CREEPS).forEach(function(struct)
                         {
+                            room.visual.circle(struct.pos.x, struct.pos.y,
+                            {
+                                fill: 'transparent',
+                                radius: 0.08,
+                                stroke: 'black'
+                            });
                             costs.set(struct.pos.x, struct.pos.y, 0xff);
+                            costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
+                            costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
+                            costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
+                        });
 
-                            //    costs.set(struct.pos.x, struct.pos.y - 1, 20);
-
-                            //     costs.set(struct.pos.x + 1, struct.pos.y - 1, 20);
-
-                            //    costs.set(struct.pos.x + 1, struct.pos.y, 20);
-                        }
-                    });
-
-                    for (var xx = 0; xx < 50; xx++)
-                    {
-                        for (var yy = 0; yy < 50; yy++)
+                        room.find(FIND_STRUCTURES).forEach(function(struct)
                         {
-                            if (terrain.get(xx, yy) == TERRAIN_MASK_WALL)
+                            if (struct.structureType !== STRUCTURE_CONTAINER && struct.structureType !== STRUCTURE_ROAD && (struct.structureType !== STRUCTURE_RAMPART || !struct.my))
                             {
-                                //  Game.rooms[20].visual.circle(xx, yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
-                                costs.set(xx, yy, 0xff);
+                                costs.set(struct.pos.x, struct.pos.y, 0xff);
+
+                                //    costs.set(struct.pos.x, struct.pos.y - 1, 20);
+
+                                //     costs.set(struct.pos.x + 1, struct.pos.y - 1, 20);
+
+                                //    costs.set(struct.pos.x + 1, struct.pos.y, 20);
                             }
-                            if (terrain.get(xx - 1, yy) == TERRAIN_MASK_WALL)
+                        });
+
+                        for (var xx = 0; xx < 50; xx++)
+                        {
+                            for (var yy = 0; yy < 50; yy++)
                             {
-                                //  Game.rooms[roomName].visual.circle(xx , yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
-                             //   costs.set(xx, yy, 240);
-                            }
-                            if (terrain.get(xx, yy + 1) == TERRAIN_MASK_WALL)
-                            {
-                                // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
-                              //  costs.set(xx, yy, 240);
-                            }
-                            if (terrain.get(xx - 1, yy + 1) == TERRAIN_MASK_WALL)
-                            {
-                                // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
-                              //  costs.set(xx, yy, 240);
+                                if (terrain.get(xx, yy) == TERRAIN_MASK_WALL)
+                                {
+                                    //  Game.rooms[20].visual.circle(xx, yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                    costs.set(xx, yy, 0xff);
+                                }
+                                if (terrain.get(xx - 1, yy) == TERRAIN_MASK_WALL)
+                                {
+                                    //  Game.rooms[roomName].visual.circle(xx , yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                    //   costs.set(xx, yy, 240);
+                                }
+                                if (terrain.get(xx, yy + 1) == TERRAIN_MASK_WALL)
+                                {
+                                    // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                    //  costs.set(xx, yy, 240);
+                                }
+                                if (terrain.get(xx - 1, yy + 1) == TERRAIN_MASK_WALL)
+                                {
+                                    // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                    //  costs.set(xx, yy, 240);
+                                }
                             }
                         }
-                    }
 
-                    return costs;
-                },
-            }
-        );
-        Memory.squadObject[squadID].linemovepath = ret.path;
-     
-        var pos = ret.path[0];
-        if (ret.path.length == 0)
-        {
-            var path = leader.pos.findPathTo(target);
-            var pos = path[0];
-        }
-        else
-        {
+                        return costs;
+                    },
+                }
+            );
+            Memory.squadObject[squadID].linemovepath = ret.path;
+
             var pos = ret.path[0];
-        }
-        for (var xx = 0; xx < ret.path.length; xx++)
-        {
-            Game.rooms[leader.room.name].visual.circle(ret.path[xx].x, ret.path[xx].y,
+            if (ret.path.length == 0)
             {
-                fill: 'transparent',
-                radius: 0.15,
-                stroke: 'red'
-            });
-        }
-        
-           return leader.pos.getDirectionTo(pos);
-       }
-        
-        
-        
+                var path = leader.pos.findPathTo(target);
+                var pos = path[0];
+            }
+            else
+            {
+                var pos = ret.path[0];
+            }
+            for (var xx = 0; xx < ret.path.length; xx++)
+            {
+                Game.rooms[leader.room.name].visual.circle(ret.path[xx].x, ret.path[xx].y,
+                {
+                    fill: 'transparent',
+                    radius: 0.15,
+                    stroke: 'red'
+                });
+            }
 
-     
+            return leader.pos.getDirectionTo(pos);
+        }
+
     },
     targetAquisitionPURECOMBAT: function(squadID, leaderid)
     {
@@ -1194,7 +1176,7 @@ return false;
                     this.lineMove(squadID, new RoomPosition(25, 25, tasklist[0][1]));
                 }
 
-                else if (leader.pos.getRangeTo(new RoomPosition(25, 25, tasklist[0][1])) >= 21 && leader.pos.getRangeTo(nearest) > 5 &&  Memory.squadObject[squadID].SquadFormation == false)
+                else if (leader.pos.getRangeTo(new RoomPosition(25, 25, tasklist[0][1])) >= 21 && leader.pos.getRangeTo(nearest) > 5 && Memory.squadObject[squadID].SquadFormation == false)
                 {
 
                     Memory.squadObject[squadID].blockLeaderchange = true;
@@ -1353,17 +1335,17 @@ return false;
                     }
                 }
             }
-            if (tasklist[0][0] == "flagAttack" || tasklist[0][0] == "flagattack" )
+            if (tasklist[0][0] == "flagAttack" || tasklist[0][0] == "flagattack")
             {
-   //   console.log("flagAttackc ",flagAttack);
+                //   console.log("flagAttackc ",flagAttack);
                 if (Memory.squadObject[squadID].leader != undefined)
                 {
-                   //     console.log("Memory.squadObjec ",Memory.squadObject[squadID].leader);
+                    //     console.log("Memory.squadObjec ",Memory.squadObject[squadID].leader);
                     // deteck hostile creeps and room match 
                     var leader = Game.getObjectById(leaderid);
                     if (leader.room.name == tasklist[0][1])
                     {
- //   console.log("leader.room.name ",leader.room.name);
+                        //   console.log("leader.room.name ",leader.room.name);
                         var targetTmp = 0;
                         var flagsinrange = leader.pos.findClosestByPath(FIND_FLAGS);
 
@@ -1376,50 +1358,48 @@ return false;
                                 stroke: 'blue'
                             });
 
-                     
-  //  console.log("flagsinrange ",flagsinrange);
-                         
-                                var found = flagsinrange.pos.findInRange(FIND_STRUCTURES,0);
-                                
-                                if (!found)
+                            //  console.log("flagsinrange ",flagsinrange);
+
+                            var found = flagsinrange.pos.findInRange(FIND_STRUCTURES, 0);
+
+                            if (!found)
+                            {
+                                var found = flagsinrange.pos.findInRange(FIND_HOSTILE_STRUCTURES, 0);
+
+                            }
+
+                            // console.log("found ",found);
+                            if (!found)
+                            {
+
+                                flagsinrange.remove();
+                            }
+                            else
+                            {
+
+                                try
                                 {
-                                      var found = flagsinrange.pos.findInRange(FIND_HOSTILE_STRUCTURES,0);
-                                 
-                                }
-                                
-                  
-   // console.log("found ",found);
-                                if (!found)
-                                {
-                                  
-                                    
-                                    
-                                    flagsinrange.remove();
-                                }
-                                else
-                                {
-                                    
-                                    try{
-                                    
-                                    
-                                      if(found[0].structureType == STRUCTURE_WALL|| found[0].structureType == STRUCTURE_ROAD)
+
+                                    if (found[0].structureType == STRUCTURE_WALL   )
                                     {
                                         Memory.squadObject[squadID].hardTarget = found[0].id;
                                     }
                                     else
                                     {
-                                         
+                                        Memory.squadObject[squadID].hardTarget = false;
                                     }
-                                    }catch(e){
-                                              flagsinrange.remove();
-                                    }
-                                    
-                                    
-                                    targetTmp = found[0].pos;
                                 }
-                          
+                                catch (e)
+                                {
+                                    Memory.squadObject[squadID].hardTarget = false;
+                                    flagsinrange.remove();
+                                }
+
+                                targetTmp = found[0].pos;
+                            }
+
                         }
-  //console.log("targetTmp ",targetTmp);
+                        //console.log("targetTmp ",targetTmp);
                         //  var targetTmp = this.targetAquisitionPURECOMBAT(squadID, leaderid);
                         if (targetTmp == 0 || targetTmp == null || targetTmp == undefined)
                         {
@@ -1427,31 +1407,20 @@ return false;
                         }
                         else
                         {
-                      //   return targetTmp
-                      //console.log("flag attack target ",JSON.stringify(targetTmp));
-                         
-                         return this.getProperPositionForQuadSquad(targetTmp, leader, squadID);
+                            //   return targetTmp
+                            //console.log("flag attack target ",JSON.stringify(targetTmp));
+
+                            return this.getProperPositionForQuadSquad(targetTmp, leader, squadID);
                         }
                     }
                     else
                     {
-                   return new RoomPosition(25, 25, tasklist[0][1]);
+                        return new RoomPosition(25, 25, tasklist[0][1]);
                     }
                 }
-                
-                
-                
-           // return this.getProperPositionForQuadSquad(new RoomPosition(33,2,"E23S5"), leader, squadID);
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
+                // return this.getProperPositionForQuadSquad(new RoomPosition(33,2,"E23S5"), leader, squadID);
+
             }
             if (tasklist[0][0] == "killcreeps")
             {
@@ -1474,21 +1443,15 @@ return false;
                             leader.moveTo(new RoomPosition(25, 25, tasklist[0][1]))
                             return new RoomPosition(25, 25, tasklist[0][1]);
                         }
-    var whitelist = ["MarvinTMB","marvintmb"]
+                        var whitelist = ["MarvinTMB", "marvintmb"]
                         var targetTmp = 0;
                         var flagsinrange = leader.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
-        {
-            filter: function(object)
-            {
-                return whitelist.indexOf(object.owner.username) == -1;
-            }
-        });
-                        
-                         
-                        
-                        
-                        
-                        
+                        {
+                            filter: function(object)
+                            {
+                                return whitelist.indexOf(object.owner.username) == -1;
+                            }
+                        });
 
                         if (flagsinrange != undefined && targetTmp == 0)
                         {
@@ -1503,12 +1466,12 @@ return false;
                             {
 
                                 var found = flagsinrange.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
-        {
-            filter: function(object)
-            {
-                return whitelist.indexOf(object.owner.username) == -1;
-            }
-        });
+                                {
+                                    filter: function(object)
+                                    {
+                                        return whitelist.indexOf(object.owner.username) == -1;
+                                    }
+                                });
 
                                 targetTmp = found.pos;
 
@@ -1642,8 +1605,7 @@ return false;
         var all = [];
         var target;
         for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        {
-            // cound how many have rsanged
+        { 
             all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
         }
         ////////////////////
@@ -1651,7 +1613,6 @@ return false;
         var index = 99;
         for (var c = 0; c < all.length; c++)
         {
-
             if (all[c].hits < value && all[c].hits != all[c].hitsMax)
             {
                 value = all[c].hits;
@@ -1691,7 +1652,7 @@ return false;
                     return (object.structureType != STRUCTURE_KEEPER_LAIR && object.structureType != STRUCTURE_PORTAL && object.structureType != STRUCTURE_POWER_BANK);
                 }
             });
-            
+
             if (flagsInRange.length != 0 && 1 == 2)
             {
                 for (var q = 0; q < flagsInRange.length; q++)
@@ -1699,7 +1660,7 @@ return false;
 
                     var found = all[c].room.lookForAt(LOOK_CREEPS, flagsInRange[q].pos);
                     var found2 = all[c].room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsInRange[q].pos);
-                    
+
                     if (found.length != 0)
                     {
                         targetFromflag = found[0];
@@ -1712,37 +1673,39 @@ return false;
                 }
             }
             var decideMassAttack = this.decideMassAttack(all[c]);
+// defenders preventing goal attack
+          if (targets.length > 0 && decideMassAttack)
+             {
+                 all[c].rangedMassAttack();
+            }
             
-            
-              
-            
-            if (targets.length > 0)
-            {
-          //      all[c].say("f");
+       else   if (targets.length > 0)
+             {
+                  all[c].say("f");
                 all[c].rangedAttack(targets[0]);
             }
             
+        // defenders preventing goal attack    
             
-         else      if ( Memory.squadObject[squadID].hardTarget != false)
-           {
-         
-               all[c].rangedAttack( Game.getObjectById(Memory.squadObject[squadID].hardTarget));
-           }
-        else 
-            if (targetFromflag != 0)
+ 
+           else  if (Memory.squadObject[squadID].hardTarget != false)
+            {
+                all[c].rangedAttack(Game.getObjectById(Memory.squadObject[squadID].hardTarget));
+            }
+            else       if (targetFromflag != 0)
             {
                 all[c].say("h");
                 all[c].rangedAttack(targetFromflag);
             }
             else if (decideMassAttack)
             {
-             //   all[c].say("g");
+                //   all[c].say("g");
                 all[c].rangedMassAttack();
             }
-           
+
             else if (targetsTRUCTURES.length > 0)
             {
-             //   all[c].say("e");
+                //   all[c].say("e");
                 all[c].rangedAttack(targetsTRUCTURES[0]);
             }
             else
@@ -2043,9 +2006,8 @@ return false;
             }
 
         }
-        
- Memory.squadObject[squadID].reassignLeaderNextTick = true;
-       
+
+        Memory.squadObject[squadID].reassignLeaderNextTick = true;
 
     },
 
@@ -2073,31 +2035,271 @@ return false;
         }
 
     },
+
+    decideToFlee: function(squadID)
+    {
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var all = [];
+
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+        }
+
+        var fleeList = [];
+        for (var c = 0; c < all.length; c++)
+        {
+
+            var tmppppp = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 2 );
+            for (var i = 0; i < tmppppp.length; i++)
+            {
+                var coutner = 0;
+                for (var q = 0; q < tmppppp[i].body.length; q++)
+                {
+                    if (tmppppp[i].body[q].type == ATTACK )
+                    {
+                        coutner++
+                    }
+                }
+
+                if (coutner > 20 )
+                { 
+                    fleeList.push(tmppppp[i]);
+                }
+
+            }
+ 
+             var tmppppp=  all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 20 );
+
+            for (var q = 0; q < tmppppp.length; q++)
+            {
+            //   fleeList.push(tmppppp[q]);
+            }
+        }
+
+        return fleeList
+
+    },
+
+    fleeDirection: function(squadID, avoidarray, leaderid)
+    {
+
+        var leader = Game.getObjectById(leaderid); // pathfinding here
+        //    var path = leader.pos.findPathTo(avoidarray[0]);
+        // use the target finder for the displaced targets
+        let goals = _.map(avoidarray, function(host)
+        {
+            return {
+                pos: host.pos,
+                range: 5
+            };
+        });
+        var mainMemoryObject = Memory.squadObject[squadID];
+        var all = [];
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            // cound how many have rsanged
+            all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+        }
+
+        let ret = PathFinder.search(
+            leader.pos, goals,
+            {
+                flee: true,
+                // We need to set the defaults costs higher so that we
+                // can set the road cost lower in `roomCallback`
+                plainCost: 1,
+                swampCost: 5,
+                roomCallback: function(roomName)
+                {
+                    let room = leader.room;
+                    // In this example `room` will always exist, but since 
+                    // PathFinder supports searches which span multiple rooms 
+                    // you should be careful!
+                    if (!room) return;
+                    let costs = new PathFinder.CostMatrix;
+                    var terrain = new Room.Terrain(roomName);
+                    // set costs 
+
+                    for (var xx = 2; xx < 48; xx++)
+                    {
+                        for (var yy = 2; yy < 48; yy++)
+                        {
+                            if (terrain.get(xx, yy) == TERRAIN_MASK_SWAMP)
+                            {
+                                //  Game.rooms[roomName].visual.circle(xx, yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 15);
+                            }
+                            if (terrain.get(xx - 1, yy) == TERRAIN_MASK_SWAMP)
+                            {
+                                //  Game.rooms[roomName].visual.circle(xx , yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 15);
+                            }
+                            if (terrain.get(xx, yy + 1) == TERRAIN_MASK_SWAMP)
+                            {
+                                // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 15);
+                            }
+                            if (terrain.get(xx - 1, yy + 1) == TERRAIN_MASK_SWAMP)
+                            {
+                                // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 15);
+                            }
+                        }
+                    }
+                    for (var xx = 0; xx < 50; xx++)
+                    {
+                        costs.set(xx, 0, 0xff);
+                        costs.set(0, xx, 0xff);
+                        costs.set(xx, 50, 0xff);
+                        costs.set(50, xx, 0xff);
+                        costs.set(xx, 1, 0xff);
+                        costs.set(1, xx, 0xff);
+                        costs.set(xx, 49, 0xff);
+                        costs.set(49, xx, 0xff);
+                    }
+
+                    room.find(FIND_STRUCTURES).forEach(function(struct)
+                    {
+                        if (struct.structureType !== STRUCTURE_CONTAINER && struct.structureType !== STRUCTURE_ROAD && (struct.structureType !== STRUCTURE_RAMPART || !struct.my))
+                        {
+                            //  Game.rooms[roomName].visual.circle(struct.pos.x, struct.pos.y,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                            costs.set(struct.pos.x, struct.pos.y, 0xff);
+                            //   Game.rooms[roomName].visual.circle(struct.pos.x, struct.pos.y-1,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                            costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
+                            //       Game.rooms[roomName].visual.circle(struct.pos.x-1, struct.pos.y-1,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                            costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
+                            //     Game.rooms[roomName].visual.circle(struct.pos.x-1, struct.pos.y,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                            costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
+                        }
+                    });
+                    for (var xx = 0; xx < 50; xx++)
+                    {
+                        for (var yy = 0; yy < 50; yy++)
+                        {
+                            if (terrain.get(xx, yy) == TERRAIN_MASK_WALL)
+                            {
+                                //  Game.rooms[roomName].visual.circle(xx, yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 0xff);
+                            }
+                            if (terrain.get(xx - 1, yy) == TERRAIN_MASK_WALL)
+                            {
+                                //  Game.rooms[roomName].visual.circle(xx , yy,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 0xff);
+                            }
+                            if (terrain.get(xx, yy + 1) == TERRAIN_MASK_WALL)
+                            {
+                                // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 0xff);
+                            }
+                            if (terrain.get(xx - 1, yy + 1) == TERRAIN_MASK_WALL)
+                            {
+                                // Game.rooms[roomName].visual.circle(xx, yy ,    {fill: 'transparent', radius: 0.55, stroke: 'red'});
+                                costs.set(xx, yy, 0xff);
+                            }
+                        }
+                    }
+
+                    // variable 
+                    room.find(FIND_MY_CREEPS).forEach(function(struct)
+                    {
+                        var tmp = 0;
+                        for (var xx = 0; xx < all.length; xx++)
+                        {
+                            if (all[xx].pos.x == struct.pos.x && all[xx].pos.y == struct.pos.y)
+                            {
+                                tmp = 1;
+                            }
+                        }
+                        if (tmp == 0)
+                        {
+                            room.visual.circle(struct.pos.x, struct.pos.y,
+                            {
+                                fill: 'transparent',
+                                radius: 0.08,
+                                stroke: 'black'
+                            });
+                            costs.set(struct.pos.x, struct.pos.y, 0xff);
+                            costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
+                            costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
+                            costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
+
+                        }
+                    });
+                    room.find(FIND_MY_POWER_CREEPS).forEach(function(struct)
+                    {
+                        room.visual.circle(struct.pos.x, struct.pos.y,
+                        {
+                            fill: 'transparent',
+                            radius: 0.08,
+                            stroke: 'black'
+                        });
+                        costs.set(struct.pos.x, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x + 1, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x + 1, struct.pos.y - 1, 0xff);
+                        costs.set(struct.pos.x, struct.pos.y - 1, 0xff);
+                    });
+                    room.find(FIND_HOSTILE_CREEPS).forEach(function(struct)
+                    {
+                        room.visual.circle(struct.pos.x, struct.pos.y,
+                        {
+                            fill: 'transparent',
+                            radius: 0.08,
+                            stroke: 'black'
+                        });
+                        costs.set(struct.pos.x, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x - 1, struct.pos.y, 0xff);
+                        costs.set(struct.pos.x - 1, struct.pos.y + 1, 0xff);
+                        costs.set(struct.pos.x, struct.pos.y + 1, 0xff);
+                    });
+
+                    return costs;
+                },
+            }
+
+        );
+
+        var pos = ret.path[0];
+
+        for (var xx = 0; xx < ret.path.length; xx++)
+        {
+            Game.rooms[leader.room.name].visual.circle(ret.path[xx].x, ret.path[xx].y,
+            {
+                fill: 'transparent',
+                radius: 0.15,
+                stroke: 'yellow'
+            });
+        }
+        console.log("leader.pos.getDirectionTo(pos);", leader.pos.getDirectionTo(pos));
+        //     creep.move(leader.pos.getDirectionTo(pos));
+        return leader.pos.getDirectionTo(pos);
+
+    },
+
     run: function(squadID)
     {
         var startCpu = Game.cpu.getUsed();
 
         this.handleattacks(squadID);
         var mainMemoryObject = Memory.squadObject[squadID];
-        
-        if(Memory.squadObject[squadID].reassignLeaderNextTick == undefined)
+
+        if (Memory.squadObject[squadID].reassignLeaderNextTick == undefined)
         {
-             Memory.squadObject[squadID].reassignLeaderNextTick = false;
+            Memory.squadObject[squadID].reassignLeaderNextTick = false;
         }
-        
-        if(Memory.squadObject[squadID].reassignLeaderNextTick == true)
+
+        if (Memory.squadObject[squadID].reassignLeaderNextTick == true)
         {
             this.reAssignLeader(squadID);
             Memory.squadObject[squadID].reassignLeaderNextTick = false;
         }
-         
-        
-          Memory.squadObject[squadID].hardTarget =false;
+
+        Memory.squadObject[squadID].hardTarget = false;
         Memory.squadObject[squadID].quadVitalBool = false;
         Memory.squadObject[squadID].blockLeaderchange = false;
         Memory.squadObject[squadID].tasklistHasControl = false;
         Memory.squadObject[squadID].breakQuad = false;
-          Memory.squadObject[squadID].SquadFormation=false;
+        Memory.squadObject[squadID].SquadFormation = false;
         var all = [];
         var target;
         for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
@@ -2110,30 +2312,27 @@ return false;
             Memory.squadObject[squadID].leader = this.decideLeader(squadID);
         }
         var leader = Game.getObjectById(Memory.squadObject[squadID].leader);
-     //   console.log(leader);
+        //   console.log(leader);
         if (leader == null)
         {
             Memory.squadObject[squadID].leader = this.decideLeader(squadID);
         }
         if (leader != null && leader != undefined && leader)
         {
-            Game.rooms[leader.room.name].visual.circle(leader.pos.x,leader.pos.y,
-    {color: 'red' });
-            
-            
-          
-            
-       var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
-           Memory.squadObject[squadID].SquadFormation = SquadIsInFormation
-       
-       
+            Game.rooms[leader.room.name].visual.circle(leader.pos.x, leader.pos.y,
+            {
+                color: 'red'
+            });
+
+            var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
+            Memory.squadObject[squadID].SquadFormation = SquadIsInFormation
+
             /////////////////////////////////////////////////      
             //                   decide targets 
 
             target = this.TaskList(squadID);
-//    console.log("target",target);
+
             var QuadVital = this.DecideIfQuadIsVital(squadID);
-      
 
             var rangeToTarget = leader.pos.getRangeTo(target);
 
@@ -2151,8 +2350,32 @@ return false;
             {
                 QuadVital = false;
             }
-            if (Memory.squadObject[squadID].tasklistHasControl == false)
+
+            var creepsNeedToFlee = this.decideToFlee(squadID);
+             
+            var fleeing = false;
+            if (creepsNeedToFlee.length != 0)
             {
+                fleeing = true;
+                var aaada = this.fleeDirection(squadID, creepsNeedToFlee, Memory.squadObject[squadID].leader);
+                this.moveAsOne(squadID, aaada);
+                //    fleeDirection: function(squadID,avoidarray,Memory.squadObject[squadID].leader)
+            }
+            else
+            {
+                // todo add other method fo fleeing here
+            }
+
+            if (Memory.squadObject[squadID].tasklistHasControl == false && fleeing == false)
+            {
+                 leader.say("T-" );
+                 // if leader pos is same for more than 5 ticka and  not in range of target 
+                 
+                 
+              //  this.lineMove(squadID, target);
+                    
+                    
+                    
                 //////////////////////////////////////////////////
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //      leader.say(target);
@@ -2177,7 +2400,7 @@ return false;
                 }
                 else if (SquadIsInFormation && target != undefined && (leader.pos.x != target.x || leader.pos.y != target.y))
                 {
-                   leader.say("moveAsOne");
+                    leader.say("moveAsOne");
                     var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
                     this.moveAsOne(squadID, Direction);
                 }
@@ -2188,7 +2411,13 @@ return false;
                         this.internalRearange(squadID);
                     }
                 }
+                
+                 
             }
+            
+            
+            
+            
         }
         /////////////////////////////////////////////////////
         //                  deal damage / heal

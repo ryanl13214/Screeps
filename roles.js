@@ -1,117 +1,101 @@
- var rolerepair = require('role.repairer');
+var rolerepair = require('role.repairer');
 var roleHarvester = require('role.harvester');
 var rolemover = require('role.mover');
 var roleupgrader = require('role.upgrader');
 var roletowermover = require('role.towermover');
 var roleresourcemover = require('role.resourcemover');
 var roleextractor = require('role.extractor');
-var roleguard = require('role.basicroomguard');
 var rolescout = require('role.scout');
 var rolemulti = require('role.multi');
-var debug = true;
+/////////////////////////////////////////////////////
+var attackerChasedown = require('Guard.Chasedown');
+var attackerarcher = require('Guard.archer');
+var attackersolo = require('Guard.solo');
+var attackersword = require('Guard.sword');
+/////////////////////////////////////////////////////
+var attackerRoomattacker = require('Attacker.roomAttacker');
+/////////////////////////////////////////////////////
+var creepfunctions = require('prototype.creepfunctions');
 var roles = {
     run: function(creepsglobal)
     {
-        for(var i = 0; i < creepsglobal.length; i++)
+        for (var i = 0; i < creepsglobal.length; i++)
         {
             var startCpu = Game.cpu.getUsed();
             var creep = Game.creeps[creepsglobal[i].name];
-            if(creep.spawning == false)
+            if (creep.spawning == false)
             {
-                if(creep.memory.role == "repair")
+                        var check = creepfunctions.checkglobaltasks(creep);
+                if(check)
                 {
-                    rolerepair.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
+                  
+                    if (creep.memory.role == "guard")
                     {
-                        Memory.roleCPU.repairer += powerManager_cpu_used;
-                    }
-                }
-                else if(creep.memory.role == "harvester")
-                {
-                    roleHarvester.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
-                    {
-                        Memory.roleCPU.harvester += powerManager_cpu_used;
-                    }
-                }
-                else if(creep.memory.role == "harvesteralt")
-                {
-                    roleHarvester.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
-                    {
-                        Memory.roleCPU.harvester += powerManager_cpu_used;
-                    }
-                }
-                else if(creep.memory.role == "mover" ||creep.memory.role == "moveralt"  )
-                {
-                    rolemover.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
-                    {
-                        Memory.roleCPU.mover += powerManager_cpu_used;
-                    }
-                }
-                else if(creep.memory.role == "towermover")
-                {
-                    roletowermover.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
-                    {
-                        Memory.roleCPU.towerMover += powerManager_cpu_used;
-                    }
-                }
-                else if(creep.memory.role == "upgrader")
-                {
-                    roleupgrader.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
-                    {
-                        Memory.roleCPU.upgrader += powerManager_cpu_used;
-                    }
-                }
-                else if(creep.memory.role == "resmover")
-                {
-                    
-                    roleresourcemover.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
-                    {
-                        Memory.roleCPU.resourceMover += powerManager_cpu_used;
+                        try{
+                        if (creep.memory.attackrole == "solochaser")
+                        {
+                            attackersolo.run(creep);
+                        }
+                        if (creep.memory.attackrole == "chasedown")
+                        {
+                           // attackerChasedown.run(creep);
+                        }
+                        if (creep.memory.attackrole == "archer")
+                        {
+                            
+                            attackerarcher.run(creep);
+                        }
+                        if (creep.memory.attackrole == "sword")
+                        {
+                    //        attackersword.run(creep);
+                        }
+                        }catch(e){
+                            console.log("guard error")
+                        }
                     }
                    
-                }
-                else if(creep.memory.role == "extractor")
-                {
-                    roleextractor.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
+                    if (creep.memory.role == "repair")
                     {
-                        Memory.roleCPU.extractor += powerManager_cpu_used;
+                        rolerepair.run(creep);
                     }
-                }
-                else if(creep.memory.role == "guard")
-                {
-                 //   try{
-                    roleguard.run(creep);
-                        
-             //       }catch(e){}
-                }
-                else if(creep.memory.role == "scout")
-                {
-                    rolescout.run(creep);
-                    var powerManager_cpu_used = +Game.cpu.getUsed() - startCpu;
-                    if(debug)
+                    else if (creep.memory.role == "harvester")
                     {
-                        Memory.roleCPU.scout += powerManager_cpu_used;
+                        roleHarvester.run(creep);
                     }
-                }
-                else if(creep.memory.role == "multi")
-                {
-                    rolemulti.run(creep);
-                }
+                    else if (creep.memory.role == "harvesteralt")
+                    {
+                        roleHarvester.run(creep);
+                    }
+                    else if (creep.memory.role == "mover" || creep.memory.role == "moveralt")
+                    {
+                        rolemover.run(creep);
+                    }
+                    else if (creep.memory.role == "towermover")
+                    {
+                        roletowermover.run(creep);
+                    }
+                    else if (creep.memory.role == "upgrader")
+                    {
+                        roleupgrader.run(creep);
+                    }
+                    else if (creep.memory.role == "resmover")
+                    {
+                        roleresourcemover.run(creep);
+                    }
+                    else if (creep.memory.role == "extractor")
+                    {
+                        roleextractor.run(creep);
+                    }
+                    else if (creep.memory.role == "scout")
+                    {
+                        rolescout.run(creep);
+                    }
+                    else if (creep.memory.role == "multi")
+                    {
+                        rolemulti.run(creep);
+                    }
+                    
+                } 
             }
         }
     }

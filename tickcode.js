@@ -49,6 +49,46 @@ var tickcode = {
             
             
             
+             var   targetRoom =  "E28N7";
+            var HomeRoom = "E28N5";
+            var finalPath = [];
+            var rawPath = roompathfind.run(targetRoom, HomeRoom, 0);
+            for (var q = 0; q < rawPath.length; q++)
+            {
+                finalPath.push(["forcemoveToRoom", rawPath[q]])
+            }
+            
+                    
+        
+        if (Memory.squadObject['test-'] == undefined   )
+        {
+            var   targetRoom =  "E28N7";
+            var HomeRoom = "E28N5";
+            var finalPath = [];
+            var rawPath = roompathfind.run(targetRoom, HomeRoom, 0);
+            for (var q = 0; q < rawPath.length; q++)
+            {
+                finalPath.push(["forcemoveToRoom", rawPath[q]])
+            }
+            finalPath.push(["guardRoom", targetRoom]);// aka stay in room
+          
+            var bodypartshead = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK]
+            
+            
+            var bodypartstail = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+            
+       /*unboosted*/             var bodypartshead = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK]
+        
+        
+       /*unboosted*/       var bodypartstail = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+       
+            squadmanage.initializeSquad('test-',
+                finalPath, false, "duo", HomeRoom,
+                {
+                    "head": bodypartshead,
+                    "tail": bodypartstail,
+                }, "dis");
+        }
             
             
             
@@ -57,79 +97,44 @@ var tickcode = {
             
             
             
+  
             
-            
-            
-            
-            
-            
-            
+                     
             ////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////
             
             
             // attack red idiot 
             
-            
-            
-            
-                 var squadname = "attacktest24"
-
-            if (Memory.squadObject[squadname] == undefined && 1==2)
+            for(var a = 0; a <0; a++)
             {
-
-                var finalPath = [];
-var deathBlinker =   [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK]
-var deathBlinker2 = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
-         
-                var rawPath = roompathfind.run("E23S4", "E25N1", 5);
-                for (var q = 0; q < rawPath.length; q++)
+                var squadname = "attacktes2t" + a;
+                
+                if (Memory.squadObject[squadname] == undefined)// && Game.time % 1500 < 100)
                 {
-                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+                    var finalPath = [];
+          
+                  var deathBlinker =     [TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
+                 
+                     var dis =[TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK]
+                     
+                 
+                 
+                    var rawPath = roompathfind.run("E28N9", "E28N5", 5);
+                    for (var q = 0; q < rawPath.length; q++)
+                    {
+                        finalPath.push(["forcemoveToRoom", rawPath[q]])
+                    }
+                    finalPath.push(["flagattack", "E28N9"]);
+                    squadmanage.initializeSquad(squadname, finalPath, true, "quad", "E28N5",
+                    {
+                        "head1": dis,
+                        "tail1": deathBlinker,
+                        "head2": dis,
+                        "tail2": deathBlinker
+                    }, "dis");
                 }
-                finalPath.push(["flagattack", "E23S4"]);
- 
-                squadmanage.initializeSquad(squadname, finalPath, true, "quad", "E25N1",
-                {
-                    "head1": deathBlinker,
-                    "tail1": deathBlinker2,
-                    "head2": deathBlinker,
-                    "tail2": deathBlinker2
-                }, "blinky");
- 
             }
-            
-            
-                 var squadname = "attacktest"
-
-            if (Memory.squadObject[squadname] == undefined  && 1==2)
-            {
-
-                var finalPath = [];
-var deathBlinker =  [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
-                var rawPath = roompathfind.run("E23S4", "E25N1", 5);
-                for (var q = 0; q < rawPath.length; q++)
-                {
-                    finalPath.push(["forcemoveToRoom", rawPath[q]])
-                }
-                finalPath.push(["flagattack", "E23S4"]);
- 
-                squadmanage.initializeSquad(squadname, finalPath, true, "quad", "E25N1",
-                {
-                    "head1": deathBlinker,
-                    "tail1": deathBlinker,
-                    "head2": deathBlinker,
-                    "tail2": deathBlinker
-                }, "blinky");
-            
-            }
-            
-            
-            
-            
-            
-            
-            
             
             
             

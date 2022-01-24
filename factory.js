@@ -6,6 +6,11 @@ var factoryManager = {
     },
        ecoFact: function(roomname, termin, fact)
     {
+           var resmover = fact.pos.findInRange(FIND_MY_CREEPS, 1,
+        {
+            filter: (creep) => (creep.memory.role == "resmover")
+        });
+          var resmoveractual = resmover[0];
        var srotageEnergyLevel = Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY);
        var storageBatterLevel = Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_BATTERY);
        
@@ -14,7 +19,22 @@ var factoryManager = {
            
            fact.produce(RESOURCE_ENERGY);
            
-           
+           if (fact.store.getUsedCapacity("energy") > 8000){
+                   resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", fact.id, "energy",   500]);
+                    resmoveractual.memory.memstruct.tasklist.push(["transfer", Game.rooms[roomname].storage.id,"energy" ]);
+               
+           }
+            
+            if (Game.rooms[roomname].storage.store.getUsedCapacity("battery") > 2000 && fact.store.getUsedCapacity("battery") < 2000){
+                
+                var moveAmount = Math.min(1000 , 2000 - fact.store.getUsedCapacity("battery") )
+                
+                   resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
+                    resmoveractual.memory.memstruct.tasklist.push(["withdraw",  Game.rooms[roomname].storage.id, "battery",   moveAmount]);
+                    resmoveractual.memory.memstruct.tasklist.push(["transfer",fact.id,"battery" ]);
+               
+           }
            
              return true
        }
@@ -73,7 +93,12 @@ var factoryManager = {
             }
             for(var j = 0; j < allResources.length; j++) // transfer to fact
             {
-                if(allValues[j] > fact.store.getUsedCapacity(allResources[j]) && resmoveractual.memory.memstruct.tasklist.length == 0 && termin.store.getUsedCapacity(allResources[j]) > 800)
+                
+                if(  allResources[j] == "battery" )
+                {
+                    
+                }
+                else if(allValues[j] > fact.store.getUsedCapacity(allResources[j]) && resmoveractual.memory.memstruct.tasklist.length == 0 && termin.store.getUsedCapacity(allResources[j]) > 800)
                 {
                     var moveAmount = Math.min(termin.store.getUsedCapacity(allResources[j]), resmoveractual.store.getCapacity());
                      moveAmount = Math.min(moveAmount,  allValues[j] -      fact.store.getUsedCapacity(allResources[j]) );         

@@ -11,8 +11,7 @@ var templeController = require('templeRoomManager');
 var debug = false;
 
 module.exports.loop = function()
-{
-
+{  
     var ownedrooms = [];
     var roomsall = Object.keys(Game.rooms);
     var roomsobj = Game.rooms;
@@ -135,9 +134,7 @@ module.exports.loop = function()
     var resourcekeys = Object.keys(squads);
     for (var i = 0; i < resourcekeys.length; i++)
     {
-     //   try{
         squadmanage.run(resourcekeys[i]);
-   // }catch(e){}
     }
     var squads_cpu_used = Game.cpu.getUsed() - startCpu;
     if (debug)

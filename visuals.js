@@ -24,6 +24,34 @@ var visuals = {
                 }
             }
         }
+        
+        
+        
+        
+        
+      
+              var scoutedrooms = Object.keys(Memory.roomlist);  
+        for(var i = 0; i < scoutedrooms.length; i++)
+        { 
+        
+        
+                      Game.map.visual.rect(new RoomPosition(0, 0, scoutedrooms[i]), 50, 50,
+                {
+                    fill: 'transparent',
+                    stroke: '#00FF00',
+                    strokeWidth: 1,
+                });
+        
+        
+        
+        }
+        
+        
+        
+        
+        
+        
+        
         for(var i = 0; i < ownedrooms.length; i++)
         {    var roomname = ownedrooms[i];
             try

@@ -108,7 +108,7 @@ var labs = {
             for (var i = 0; i < c.length; i++)
             {
                 var currCheck = products[c[i][0]];
-                if (terminalActual.store.getUsedCapacity(c[i][0]) < c[i][1] - 1000)
+                if (strg.store.getUsedCapacity(c[i][0]) < c[i][1] - 1000)
                 {
                     if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000 && Memory.empire.roomsobj[roomname].labBoostCurr == "")
                     {
@@ -125,7 +125,7 @@ var labs = {
                 for (var i = 0; i < b.length; i++)
                 {
                     var currCheck = products[b[i][0]];
-                    if (terminalActual.store.getUsedCapacity(b[i][0]) < b[i][1] - 1000)
+                    if (strg.store.getUsedCapacity(b[i][0]) < b[i][1] - 1000)
                     {
                         if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000 && (Memory.empire.roomsobj[roomname].labBoostCurr == ""))
                         {
@@ -139,7 +139,7 @@ var labs = {
                 for (var i = 0; i < b.length; i++)
                 {
                     var currCheck = products[b[i]];
-                    if (terminalActual.store.getUsedCapacity(b[i]) < 1000 && (Memory.empire.roomsobj[roomname].labBoostCurr == ""))
+                    if (strg.store.getUsedCapacity(b[i]) < 1000 && (Memory.empire.roomsobj[roomname].labBoostCurr == ""))
                     {
                         if (strg.store.getUsedCapacity(currCheck[0]) > 1000 && strg.store.getUsedCapacity(currCheck[1]) > 1000)
                         {

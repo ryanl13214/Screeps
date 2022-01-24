@@ -1,7 +1,7 @@
  
        Game.market.changeOrderPrice('6113c2914e9e2a2f06a8749d', 1.95);
         
-       Game.market.deal('6137f9387273f05a39b18e69', 50, "E24N3");
+       Game.market.deal('61e65d49d5d6330a62cc0b94', 35000, "E28N5");
       
       
       
@@ -61,47 +61,138 @@
       
       
       
-      
-      
-      
-      
-        Game.market.createOrder({
-    type: ORDER_SELL,
-    resourceType: "access_key",
-    price: 100000000,
-    totalAmount: 10,
-    roomName: "E24N3"   
-});      
-        
-        
-      
-      
-        Game.market.createOrder({
-    type: ORDER_BUY,
-    resourceType: "energy",
-    price: 10,
-    totalAmount: 10000,
-    roomName: "E33N8"   
-});      
-        
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
        
+      
         Game.market.createOrder({
     type: ORDER_BUY,
-    resourceType: "power",
-    price: 25.00,
-    totalAmount: 150000,
-    roomName: "E24N3"   
-});
+    resourceType:  "ops",
+    price: 50,
+    totalAmount: 20000,
+    roomName: "E28N5"   
+});      
+        
+      
+      
+      
+      
+      
+       // move
+      
+        Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType:  "XZHO2",
+    price: 50,
+    totalAmount: 20000,
+    roomName: "E28N5"   
+});      
+        
+      
+      // rnaged
+       Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType:  "XKHO2",
+    price: 75,
+    totalAmount: 20000,
+    roomName: "E28N5"   
+});      
+        
+      
+      
+      // tough
+       Game.market.createOrder({
+    type: ORDER_BUY,
+    resourceType:  "XGHO2",
+    price: 75,
+    totalAmount: 20000,
+    roomName: "E28N5"   
+});      
+        
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
        
            
        
@@ -126,54 +217,7 @@
         
        
        
-       
-       
-        Game.market.createOrder({
-    type: ORDER_BUY,
-    resourceType: "power",
-    price: 20.00,
-    totalAmount: 50000,
-    roomName: "E28N5"   
-});      
-             
-             
-        Game.market.createOrder({
-    type: ORDER_BUY,
-    resourceType: "metal",
-    price: 50.00,
-    totalAmount: 50000,
-    roomName: "E24N3"   
-});
-
-
-      
-        Game.market.createOrder({
-    type: ORDER_BUY,
-    resourceType: "composite",
-    price: 20.00,
-    totalAmount: 50000,
-    roomName: "E24N3"   
-});
- 
-       
-        Game.market.createOrder({
-    type: ORDER_BUY,
-    resourceType: "power",
-    price: 20.00,
-    totalAmount: 50000,
-    roomName: "E24N3"   
-});
-
-
-     
-        Game.market.createOrder({
-    type: ORDER_BUY,
-    resourceType: "metal",
-    price: 55.00,
-    totalAmount: 50000,
-    roomName: "E24N3"   
-});
-
+        
 
 
 

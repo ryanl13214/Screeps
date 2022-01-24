@@ -16,24 +16,7 @@ var bodypartshead = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE
 
 */
 var Duo = {
-    allowSlave: function(creep)
-    {
-        if(creep.memory.duoId != undefined)
-        {
-            var slave = Game.getObjectById(creep.memory.duoId);
-            const range = creep.pos.getRangeTo(slave);
-            var counter = 1;
-            if(slave.pos.x == 50 || slave.pos.x == 0 || slave.pos.y == 50 || slave.pos.y == 0)
-            {
-                counter = 3;
-            }
-            if(range > counter && creep.room.name == slave.room.name && Game.time % 3 == 0)
-            {
-                creep.say("come");
-                creep.moveTo(slave);
-            }
-        }
-    },
+ 
     run: function(squadID)
     {
         var mainMemoryObject = Memory.squadObject[squadID];
@@ -90,19 +73,7 @@ var Duo = {
                     this.chaseDown(head, tail);
                 }
             }
-            else
-            {
-                var range = head.pos.getRangeTo(tail);
-                if(head.room.name == tail.room.name && range > 1)
-                {
-                    head.cancelOrder('move');
-                    head.moveTo(tail);
-                    head.say("ba1");
-                }else if(head.room.name != tail.room.name){
-                       head.cancelOrder('move');
-                }
-                
-            }
+ 
         
         ///////////////////////////////////
         var slave = tail;
@@ -135,14 +106,7 @@ var Duo = {
                 }
                
             }
-        }else{
-             if(mainMemoryObject.squadSubType == "chasedown" && head)
-                {
-                  
-   //                 head.say("a");
-                    guardCode.cavalry(head );
-                }
-        }
+        } 
     },
     chaseDown: function(creep, Healer)
     {
@@ -325,7 +289,7 @@ var Duo = {
             }
             if(found.length != 0)
             {
-                //       found = creep.room.lookForAt(FIND_HOSTILE_STRUCTURES, flagsinrange[0].pos);
+                found = creep.room.lookForAt(FIND_STRUCTURES, flagsinrange[0].pos);
             }
         }
         if(found.length != 0 && a)
@@ -336,7 +300,7 @@ var Duo = {
                   movetarg = found[0];
                 if(findNewtarget == -2)
                 {
-                    var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1);
+                    var target = creep.pos.findInRange(FIND_STRUCTURES, 1);
                     if(target.length != 0)
                     {
                         creep.dismantle(target[0]);
@@ -424,9 +388,12 @@ var Duo = {
                 });
             }
             if(target == undefined)
-            {
-                //  var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
+            {   var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES);
             }
+                 if(target == undefined)
+            { 
+                //var target = creep.pos.findClosestByRange(FIND_STRUCTURES); // not mine
+            }  
             if(target != undefined && a)
             {
                 if(creep.dismantle(target) == ERR_NOT_IN_RANGE)
@@ -440,17 +407,11 @@ var Duo = {
         
         var range = creep.pos.getRangeTo(Healer);
         /////////////////////////////
-        if((range == 1 || Game.time % 5 != 0) && Healer.fatigue == 0)
+        if( (range == 1 ) && Healer.fatigue == 0)
         {
             creep.moveTo(movetarg);
         }
-        else
-        {
-            if(creep.room.name == Healer.room.name)
-            {
-                creep.moveTo(Healer);
-            }
-        }
+        
     }
 }
 module.exports = Duo;
