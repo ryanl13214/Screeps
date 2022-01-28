@@ -250,6 +250,7 @@ var defcon = {
             }
         });
 
+
         if (target.length != 0)// && Game.rooms[roomname].controller.safeMode == undefined)
         {
 

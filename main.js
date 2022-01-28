@@ -171,7 +171,7 @@ module.exports.loop = function()
     var claimsys = Object.keys(claims);
     for (var i = 0; i < claimsys.length; i++)
     {
-        claimManager.run(claimsys[i]);
+    //    claimManager.run(claimsys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    START OF ROOMS LOOP

@@ -68,7 +68,7 @@ var squadmanager = {
 
                     else
                     {
-                        this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
+                      this.spawnnewcreep(squadID, mainMemoryObject.squadHomeRoom);
                     }
                 }
             }

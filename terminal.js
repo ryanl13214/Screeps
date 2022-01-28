@@ -282,71 +282,6 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
 
 
 
-            var allCondensedResources = [
-                ["XGHO2", 8000,  1.6],
-                ["XUH2O", 8000,  1.6],
-                ["XLH2O", 8000,  1.6],
-                ["XLHO2", 8000,  1.6],
-                ["XZH2O", 8000,  1.6],
-                ["XZHO2", 8000,  1.6],
-                ["XKHO2", 8000, 1.6],
-                ["KH2O", 4000,  1.6],
-                ["XGH2O", 4000, 1.6],
-                ['ops', 9000, 1.6],
-                ["H", 7000, 0.6],
-                ["O", 7000, 0.6],
-                ["U", 7000, 0.6],
-                ["L", 7000, 0.6],
-                ["Z", 7000, 0.6],
-                ["X", 7000, 0.6],
-                ["G", 7000, 1.9],
-                ["energy", 80000, 0.3],
-                ['utrium_bar', 5000, 0.4],
-                ['lemergium_bar', 5000, 0.4],
-                ['zynthium_bar', 5000, 0.4],
-                ['keanium_bar', 5000, 0.4],
-                ['ghodium_melt', 5000, 0.4],
-                ['oxidant', 5000, 0.4],
-                ['reductant', 5000, 0.4],
-                ['purifier', 5000, 0.4],
-                ['battery', 9000, 0.4],
-                ['composite', 7000, 1],
-                ['crystal', 4000, 0.4],
-                ['liquid', 4000, 0.4],
-                ["silicon", 5000, 0.4],
-                ['wire', 2000, 0.4],
-                ['switch', 0, 0.2], ////////////////////////////////
-                ['transistor', 0, 0.1],
-                ['microchip', 0, 0.1],
-                ['circuit', 0, 0.1],
-                ["device", 0, 0.2],
-                ["biomass", 5000, 0.4],
-                ['cell', 2000, 0.4],
-                ['phlegm', 0, 0.2],
-                ['tissue', 0, 0.1],
-                ['muscle', 0, 0.1],
-                ['organoid', 0, 0.1],
-                ["organism", 0, 0.2],
-                ["mist", 5000, 0.4],
-                ['condensate', 2000, 0.2],
-                ['concentrate', 0, 0.2],
-                ['extract', 0, 0.1],
-                ['spirit', 0, 0.1],
-                ['emanation', 0, 0.1],
-                ["essence", 0, 0.2],
-                ["metal", 5000, 0.3],
-                ['alloy', 2000, 0.2],
-                ['tube', 5, 0.2], ////////////////////////////////
-                ['fixtures', 0, 0.1], ////////////////////////////////
-                ['frame', 0, 0.1],
-                ['hydraulics', 0, 0.1],
-                ["power", 15000, 0.6],
-                ["machine", 0, 0.2],
-          //       ["ops", 2000, 0.2]
-                ];
-
-
-
 
 
 
@@ -430,9 +365,10 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                  if (terminalInUse == false)
                 {
                     terminalInUse = this.buyItemsFromResourceList(roomname, allCondensedResources, terminalActual)
-                }  if (terminalInUse == false )
+                } 
+                if (terminalInUse == false )
                 {
-                //  terminalInUse = this.sellItemsFromResourceList(roomname, allCondensedResources, terminalActual)
+                terminalInUse = this.sellItemsFromResourceList(roomname, allCondensedResources, terminalActual)
                 } 
                 if (terminalInUse == false  && Game.rooms[roomname].controller.level == 8  )
                 {
@@ -511,7 +447,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                 {
                      
                     
-                    if (avgPriceOfenergy * 1.2 < 9)
+                    if (avgPriceOfenergy * 1.1 < 9)
                     {
                         Game.market.createOrder(
                         {
@@ -539,7 +475,7 @@ XGHO2   catalyzed ghodium alkalide	    	TOUGH	        -70% damage taken
                        var hist = Game.market.getHistory(RESOURCE_ENERGY)
                     for (var i = 0; i < roomOrders.length; i++)
                     {
-                        Game.market.changeOrderPrice(roomOrders[i].id, (avgPriceOfenergy * 1.5)); 
+                     Game.market.changeOrderPrice(roomOrders[i].id, (avgPriceOfenergy * 1.4)); 
                     }
                 }
                 

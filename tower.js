@@ -267,7 +267,7 @@ var unmodifiedDamage = damagePotential;
                 towers[i].attack(doretos);
             }
 
-            else if (closestDamagedStructurelow.length != 0 && allHosiles.length == 0 && towers[i].store.getUsedCapacity("energy") > 500)
+            else if (closestDamagedStructurelow.length != 0 && allHosiles.length == 0 && towers[i].store.getUsedCapacity("energy") > 500 && storagevalue > 105000)
             {
                 towers[i].repair(fullbuild[tmp]);
             }

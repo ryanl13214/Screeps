@@ -14,19 +14,19 @@ var factoryManager = {
        var srotageEnergyLevel = Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY);
        var storageBatterLevel = Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_BATTERY);
        
-       if(srotageEnergyLevel < storageBatterLevel)
+       if(srotageEnergyLevel < storageBatterLevel && resmoveractual)
        {
            
            fact.produce(RESOURCE_ENERGY);
            
-           if (fact.store.getUsedCapacity("energy") > 8000){
+           if (fact.store.getUsedCapacity("energy") > 8000 + resmoveractual.store.getUsedCapacity()){
                    resmoveractual.memory.memstruct.tasklist.push(["deposit"]);
-                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", fact.id, "energy",   500]);
+                    resmoveractual.memory.memstruct.tasklist.push(["withdraw", fact.id, "energy",   resmoveractual.store.getUsedCapacity() ]);
                     resmoveractual.memory.memstruct.tasklist.push(["transfer", Game.rooms[roomname].storage.id,"energy" ]);
                
            }
             
-            if (Game.rooms[roomname].storage.store.getUsedCapacity("battery") > 2000 && fact.store.getUsedCapacity("battery") < 2000){
+            if (Game.rooms[roomname].storage.store.getUsedCapacity("battery") > 2000 && fact.store.getUsedCapacity("battery") < 1000){
                 
                 var moveAmount = Math.min(1000 , 2000 - fact.store.getUsedCapacity("battery") )
                 
@@ -50,11 +50,11 @@ var factoryManager = {
         var allValues = [2000, 8000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 50, 30, 10, 10, 30, 30, 10, 5, 30, 30, 10, 10, 50, 30, 20, 5, 0, 0, 0, 0];
        
        
-       var factoryNeededForBateries = this.ecoFact(roomname, termin, fact)
-       if(factoryNeededForBateries == true)
-       {
-           return 0
-       }
+     //  var factoryNeededForBateries = this.ecoFact(roomname, termin, fact)
+      // if(factoryNeededForBateries == true)
+     //  {
+       //    return 0
+       //}
        
        
        

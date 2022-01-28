@@ -239,11 +239,11 @@ var guardSolo = {
         }
         else
         {
-            var range = creep.pos.getRangeTo(new RoomPosition(25, 25, creep.room.name));
+            var range = creep.pos.getRangeTo(new RoomPosition(25, 25,  creep.memory.memstruct.spawnRoom));
 
-            if (range > 24)
+            if (range >= 25)
             {
-                creep.moveTo(new RoomPosition(25, 25, creep.room.name))
+                creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.spawnRoom))
             }
         }
         creep.say(creep.memory.combatStruct.currentStage);
@@ -329,7 +329,7 @@ var guardSolo = {
             if (creep.hits < creep.hitsMax)
             {
 
-                creep.moveTo(creep.room.storage)
+                creep.moveTo(Game.rooms[creep.memory.memstruct.spawnRoom].storage)
 
             }
 
@@ -422,6 +422,22 @@ var guardSolo = {
                             }
                         }
                     });
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     room.find(FIND_MY_STRUCTURES).forEach(function(struct)
                     {
                         if ((struct.structureType == STRUCTURE_RAMPART && struct.my))

@@ -29,7 +29,7 @@ var creepfunctions = {
     {
         var LowestRamparts = creep.pos.findInRange(FIND_STRUCTURES, 3,
         {
-            filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
+            filter: (structure) => (  structure.structureType == STRUCTURE_RAMPART)
         });
         var tmp = 0;
         var tmprakmpat;
@@ -238,7 +238,10 @@ var creepfunctions = {
                     {
                         if (creep.build(target) == ERR_NOT_IN_RANGE)
                         {
-                            creep.moveTo(target);
+                            creep.moveTo(target ,
+                            {
+                                ignoreCreeps: true
+                            });
                         }
                     }
                 }
@@ -484,8 +487,60 @@ var creepfunctions = {
                     {
                         if (creep.build(target) == ERR_NOT_IN_RANGE)
                         {
-                            creep.moveTo(target);
+                            creep.moveTo(target,
+                            {
+                                ignoreCreeps: true
+                            });
                         }
+                    }
+                }
+            }
+             else if (creep.memory.memstruct.tasklist[0][0] == "upkeepRamps")
+            {
+                if (creep.store.getUsedCapacity() == 0)
+                {
+                    this.loopTasks(creep);
+                }
+                else
+                {
+                                const target = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 10000));
+                        }
+                    });
+                    if(!target){
+                        const target = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 100000));
+                        }
+                    });
+                    }
+                       if(!target){
+                        const target = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+                        {
+                            return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 1000000));
+                        }
+                    });
+                    }
+                    
+                    if (target)
+                    {
+                        if (creep.repair(target) == ERR_NOT_IN_RANGE)
+                        {
+                            creep.moveTo(target,
+                            {
+                                ignoreCreeps: true
+                            });
+                        }
+                    }  else
+                    {
+                        this.loopTasks(creep);
                     }
                 }
             }
@@ -502,7 +557,10 @@ var creepfunctions = {
                     {
                         if (creep.build(target) == ERR_NOT_IN_RANGE)
                         {
-                            creep.moveTo(target);
+                            creep.moveTo(target,
+                            {
+                                ignoreCreeps: true
+                            });
                         }
                     }
                     else
@@ -1926,6 +1984,21 @@ var creepfunctions = {
                     leader.moveTo(new RoomPosition(25, 25, leader.room.name));
                      this.loopTasks(creep);
                 }
+                
+                if(creep.memory.memstruct.tasklist[0] == undefined)
+                {
+                    console.log("creep.memory.memstruct.tasklist[0] == undefined");
+                    this.loopTasks(creep);
+                    return true
+                }
+                
+                if(creep.memory.memstruct.tasklist[0].length == 1)
+                {
+                       console.log("creep.memory.memstruct.tasklist[0].length == 1");
+                    this.loopTasks(creep);
+                     return true
+                }
+                
 
                 var roomExits = Game.map.describeExits(leader.room.name);
                 var roomnames = Object.values(roomExits);
@@ -1938,34 +2011,33 @@ var creepfunctions = {
                         exitNumber = roomkeys[i];
                     }
                 }
-console.log("exitNumber",exitNumber);
-
+ 
 
 
                 if (exitNumber != undefined)
                 {
                     leader.say("suc move");
-                    var exitDir = Game.map.findExit(leader.room, creep.memory.memstruct.tasklist[0][1]);
+                    var exitDir = Game.map.findExit(leader.room.name, creep.memory.memstruct.tasklist[0][1]);
                     var exit = leader.pos.findClosestByPath(exitDir);
-           console.log("exit",exit);  
+           
                     if (exit)
                     {
                        
-   creep.moveTo( exit );    leader.say(exit.x + "-" + exit.y);
+   
     
-                        new RoomVisual(leader.room.name).line( new RoomPosition(exit.x, exit.y, creep.memory.memstruct.tasklist[0][1]), exit,
+                        new RoomVisual(leader.room.name).line( new RoomPosition(exit.x, exit.y, creep.room.name), creep.pos,
                         {
                             color: '#ffffff',
                             lineStyle: 'solid'
                         });
                        
-   creep.moveTo( new RoomPosition(exit.x, exit.y, creep.memory.memstruct.tasklist[0][1]));
+   creep.moveTo( new RoomPosition(exit.x, exit.y, creep.room.name));
                        
                     }
                 }else
                 {
-                      leader.say("fail move");
-               //    creep.moveTo( new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
+                      leader.say("fail move", creep.memory.memstruct.tasklist[0][1]);
+                creep.moveTo( new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
               
                 }
 

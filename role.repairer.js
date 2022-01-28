@@ -128,7 +128,7 @@ findfullcontainers: function(creep, energyleveltodrawfrom)
         {
             filter: (s) =>
             {
-                return (s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART) && s.hits < s.hitsMax * 0.99;
+                return ( s.structureType != STRUCTURE_RAMPART) && s.hits < s.hitsMax * 0.99;
             }
         });
         if (repairtarg)
@@ -174,7 +174,7 @@ findfullcontainers: function(creep, energyleveltodrawfrom)
         {
             filter: (s) =>
             {
-                return (s.structureType == STRUCTURE_WALL && s.hits < s.hitsMax * 0.1) || (s.structureType == STRUCTURE_RAMPART && s.hits < s.hitsMax * 0.5);
+                return  (s.structureType == STRUCTURE_RAMPART && s.hits < s.hitsMax * 0.5);
             }
         });
         if (repairtarg)
@@ -295,7 +295,7 @@ findfullcontainers: function(creep, energyleveltodrawfrom)
             {
                 var structuresclosetoenemys = targe2.pos.findInRange(FIND_STRUCTURES, 3,
                 {
-                    filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
+                    filter: (structure) => ( structure.structureType == STRUCTURE_RAMPART)
                 });
             }
 
@@ -304,7 +304,7 @@ findfullcontainers: function(creep, energyleveltodrawfrom)
             var terminalInDanger = false;
             var storageInDanger = false;
 
-            if (structuresclosetoenemys.length == 0 || creep.name == 'repair2' + creep.room.name)
+            if (structuresclosetoenemys.length == 0 )
             {
                 creep.memory.hastask = false;
                 if (!creep.memory.hastask)
@@ -398,7 +398,7 @@ findfullcontainers: function(creep, energyleveltodrawfrom)
     {
         var LowestRamparts = creep.room.find(FIND_STRUCTURES,
         {
-            filter: (structure) => (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_RAMPART)
+            filter: (structure) => (  structure.structureType == STRUCTURE_RAMPART)
         });
         var tmp = 0;
         if (LowestRamparts.length != 0)

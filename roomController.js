@@ -25,7 +25,7 @@ var roomController = {
         {
             Memory.empire.roomsobj = {};
         }
-        if (Memory.empire.roomsobj[roomname] == undefined || Memory.empire.roomsobj[roomname].centerroomsinrange == undefined || Memory.empire.roomsobj[roomname].MineRooms == undefined)
+        if (Memory.empire.roomsobj[roomname] == undefined || Memory.empire.roomsobj[roomname].centerroomsinrange == undefined || Memory.empire.roomsobj[roomname].MineRooms == undefined || Game.time % 150000 == 0 )
         {
             Memory.empire.roomsobj[roomname] = {
                 centerroomsinrange: [],
@@ -93,7 +93,7 @@ var roomController = {
 
         if (Game.rooms[roomname].storage != undefined)
         {
-            storagevalue = Game.rooms[roomname].storage.store.getUsedCapacity();
+            storagevalue = Game.rooms[roomname].storage.store.getUsedCapacity("energy");
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();

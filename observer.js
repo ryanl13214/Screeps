@@ -248,7 +248,7 @@ var obs = {
 
     addToRoomList: function(scanroom) // make available for scout
     {
-
+ 
         var exits = Game.map.describeExits(scanroom);
         //   {
         //   "1": "W8N4",    // TOP
@@ -311,7 +311,7 @@ var obs = {
                     if (Game.rooms[scanroom].controller.level > 0) // owned room
                     {
                         this.addToHostileEmpireList(scanroom, Game.rooms[scanroom].controller.owner.username)
-                        dangerlevel = 5;
+                        dangerlevel = 9;
                     }
                    
                 }
@@ -336,14 +336,23 @@ var obs = {
                     return object.structureType == STRUCTURE_KEEPER_LAIR;
                 }
             });
-
-            if (targets.length == 0)
+    var targets2 = Game.rooms[scanroom].find(FIND_HOSTILE_STRUCTURES,
             {
-                dangerlevel = 2;
+                filter: function(object)
+                {
+                    return object.structureType == STRUCTURE_TOWER;
+                }
+            });
+                  if (targets2.length != 0 )
+            {
+                dangerlevel = 9; // stronhold
+            }else   if (targets.length == 0)
+            {
+                dangerlevel = 1.5;// corridor / center
             }
             else
             {
-                dangerlevel = 3;
+                dangerlevel = 3; // keeper
             }
 
         }

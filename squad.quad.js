@@ -1,5 +1,196 @@
 var quadsquad = {
 
+    run: function(squadID)
+    {
+        var startCpu = Game.cpu.getUsed();
+
+        this.handleattacks(squadID);
+        var mainMemoryObject = Memory.squadObject[squadID];
+
+        if (Memory.squadObject[squadID].reassignLeaderNextTick == undefined)
+        {
+            
+           
+            
+            Memory.squadObject[squadID].reassignLeaderNextTick = false;
+        }
+     if (Memory.squadObject[squadID].pathToCurrentTargetIsBlocked == undefined)
+        {
+               Memory.squadObject[squadID].pathToCurrentTargetIsBlocked = true;
+        }
+
+
+
+        if (Memory.squadObject[squadID].reassignLeaderNextTick == true)
+        {
+            this.reAssignLeader(squadID);
+            Memory.squadObject[squadID].reassignLeaderNextTick = false;
+        }
+        if (Memory.squadObject[squadID].blockLeaderNextTick == true)
+        {
+            Memory.squadObject[squadID].blockLeaderchange = true;
+            Memory.squadObject[squadID].blockLeaderNextTick == false
+        }
+        else
+        {
+            Memory.squadObject[squadID].blockLeaderchange = false;
+        }
+
+        Memory.squadObject[squadID].hardTarget = false;
+        Memory.squadObject[squadID].quadVitalBool = false;
+        Memory.squadObject[squadID].blockLeaderchange = false;
+        Memory.squadObject[squadID].tasklistHasControl = false;
+        Memory.squadObject[squadID].breakQuad = false;
+        Memory.squadObject[squadID].SquadFormation = false;
+        Memory.squadObject[squadID].forceLineMove = false;
+        var all = [];
+        var target;
+        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
+        {
+            all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+        }
+
+        if (Memory.squadObject[squadID].leader == undefined)
+        {
+            Memory.squadObject[squadID].leader = this.decideLeader(squadID);
+        }
+        var leader = Game.getObjectById(Memory.squadObject[squadID].leader);
+        //   console.log(leader);
+        if (leader == null)
+        {
+            Memory.squadObject[squadID].leader = this.decideLeader(squadID);
+        }
+        if (leader != null && leader != undefined && leader)
+        {
+            Game.rooms[leader.room.name].visual.circle(leader.pos.x, leader.pos.y,
+            {
+                color: 'red'
+            });
+
+            var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
+            Memory.squadObject[squadID].SquadFormation = SquadIsInFormation
+
+            /////////////////////////////////////////////////      
+            //                   decide targets 
+
+            target = this.TaskList(squadID);
+
+            var QuadVital = this.DecideIfQuadIsVital(squadID);
+
+            var rangeToTarget = leader.pos.getRangeTo(target);
+
+            var nearest = leader.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+
+            if (rangeToTarget >= 15 && leader.pos.getRangeTo(nearest) > 3 && Memory.squadObject[squadID].SquadFormation == false)
+            {
+
+                Memory.squadObject[squadID].blockLeaderchange = true;
+
+            }
+
+            if ((this.leaderBlocked2(squadID) && QuadVital == true && SquadIsInFormation == false && Memory.squadObject[squadID].blockLeaderchange != true))
+            {
+                Memory.squadObject[squadID].leader = this.decideLeader(squadID);
+            }
+
+            if (Memory.squadObject[squadID].quadVitalBool == true)
+            {
+                QuadVital = true;
+            }
+
+            if (Memory.squadObject[squadID].breakQuad == true)
+            {
+                QuadVital = false;
+            }
+
+            if (QuadVital && SquadIsInFormation == false   && this.leaderBlocked2(squadID))// this seems to work
+            {
+                console.log("Memory.squadObject[squadID].forceLineMove = true1")
+                Memory.squadObject[squadID].blockLeaderchange = true
+                Memory.squadObject[squadID].blockLeaderNextTick = true
+                Memory.squadObject[squadID].forceLineMove = true
+            }
+
+            var creepsNeedToFlee = this.decideToFlee(squadID);
+
+            var fleeing = false;
+            if (creepsNeedToFlee.length != 0)
+            {
+                fleeing = true;
+                var aaada = this.fleeDirection(squadID, creepsNeedToFlee, Memory.squadObject[squadID].leader);
+                this.moveAsOne(squadID, aaada);
+
+            }
+
+            if (Memory.squadObject[squadID].tasklistHasControl == false && fleeing == false && Memory.squadObject[squadID].forceLineMove == false)
+            {
+                leader.say("T-", target);
+                if (target != undefined)
+                {
+                    leader.say("T-" + target.x + "," + target.y);
+                }
+
+                if (QuadVital == false && target != undefined || (Memory.squadObject[squadID].breakQuad == true && target != undefined) ||  (Memory.squadObject[squadID].pathToCurrentTargetIsBlocked == false && target != undefined )    )
+                {
+                    leader.say("lineMove1");
+                    this.lineMove(squadID, target);
+                }
+                else if (QuadVital == true && !SquadIsInFormation && Memory.squadObject[squadID].forceLineMove == false && Memory.squadObject[squadID].pathToCurrentTargetIsBlocked == false)
+                {
+                    leader.say("moveIntoFormation");
+                    if (Memory.squadObject[squadID].leader != undefined  )
+                    {
+                        this.moveIntoFormation(Memory.squadObject[squadID].leader, squadID);
+                    }
+                }
+                else if (SquadIsInFormation && target != undefined && (leader.pos.x != target.x || leader.pos.y != target.y))
+                {
+                  
+                    var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
+                    
+                    if( Memory.squadObject[squadID].pathToCurrentTargetIsBlocked ){
+                         leader.say("quadblocked");
+                           this.lineMove(squadID, target);
+                                         Memory.squadObject[squadID].blockLeaderchange = true
+                Memory.squadObject[squadID].blockLeaderNextTick = true
+                Memory.squadObject[squadID].forceLineMove = true
+                    }else{
+                         leader.say("moveAsOne");
+                    this.moveAsOne(squadID, Direction);
+                    }
+                    
+                }
+                else if (leader != undefined && target != undefined && SquadIsInFormation && Memory.squadObject[squadID].squadSubType != "blinky")
+                {
+                    if (leader.pos.x == target.x && leader.pos.y == target.y)
+                    {
+                        this.internalRearange(squadID);
+                    }
+                }
+            }
+            
+            if (Memory.squadObject[squadID].forceLineMove == true || Memory.squadObject[squadID].pathToCurrentTargetIsBlocked)
+            {
+          
+                
+                
+                
+                this.lineMove(squadID, target);
+            }
+      if(Game.Time % 5 == 0 ) // or target closeby || towers closeby
+                {Memory.squadObject[squadID].pathToCurrentTargetIsBlocked = false;
+                 
+                Memory.squadObject[squadID].forceLineMove = false
+                
+                    
+                }
+        }
+        /////////////////////////////////////////////////////
+        //                  deal damage / heal
+        /////////////////////////////////////////
+        console.log("quad", squadID, "-", Game.cpu.getUsed() - startCpu);
+        /////
+    },
     gradePositoion: function(posision, squadID)
     {
         var mainMemoryObject = Memory.squadObject[squadID];
@@ -24,14 +215,17 @@ var quadsquad = {
         var positionBeingchecked = new RoomPosition(posision.x, posision.y + 1, posroom);
         var enemiesInRangeOfTarget4 = positionBeingchecked.findInRange(FIND_HOSTILE_CREEPS, 1); // filter for combat 
 
-        if (Memory.squadObject[squadID].blockedPosition == undefined)
+        if (Memory.squadObject[squadID].blockedPosition == undefined || Game.time % 15 == 0)
         {
             Memory.squadObject[squadID].blockedPosition = {}
         }
 
         if (Memory.squadObject[squadID].blockedPosition[posision.x + "-" + posision.y] == undefined)
         {
-            var path = leader.room.findPath(leader.pos, posision);
+            var path = leader.room.findPath(leader.pos, posision,
+            {
+                ignoreCreeps: true
+            });
 
             if (path.length > 0)
             {
@@ -97,7 +291,10 @@ var quadsquad = {
 
         // check there is a valid path 
 
-        var path = leader.room.findPath(leader.pos, posision);
+        var path = leader.room.findPath(leader.pos, posision,
+        {
+            ignoreCreeps: true
+        });
 
         if (path && path.length != 0 && path[path.length - 1] != null && path[path.length - 1].x == posision.x && path[path.length - 1].y == posision.y)
         {
@@ -125,12 +322,17 @@ var quadsquad = {
         catch (e)
         {}
 
-        Game.rooms[posision.roomName].visual.circle(posision,
+var roomobj =  Game.rooms[posision.roomName]
+if(roomobj){
+       roomobj.visual.circle(posision,
         {
             fill: 'solid',
             radius: 0.19,
             stroke: 'white'
         });
+        
+}
+        
         var mainMemoryObject = Memory.squadObject[squadID];
         var posx = posision.x;
         var posy = posision.y;
@@ -151,6 +353,7 @@ var quadsquad = {
         }
 
         var posArrayCQB = [
+
             [-1, 0],
             [-1, -1],
             [0, -2],
@@ -591,12 +794,12 @@ var quadsquad = {
             var found3 = leader.room.lookForAt(LOOK_STRUCTURES, new RoomPosition(leader.pos.x, leader.pos.y + 1, leader.room.name));
             if (found1.length == 0 && found2.length == 0 && found3.length == 0)
             {
-                //     leader.say("clear");
+                leader.say("clear");
                 return false;
             }
             else
             {
-                //     leader.say("blocked");
+                leader.say("blocked");
                 return true;
             }
         }
@@ -611,7 +814,10 @@ var quadsquad = {
         }
 
         var leader = Game.getObjectById(leaderid); // pathfinding here
-        var path = leader.pos.findPathTo(target);
+        var path = leader.pos.findPathTo(target,
+        {
+            ignoreCreeps: true
+        });
         // use the target finder for the displaced targets
         let goals = {
             pos: target,
@@ -641,7 +847,7 @@ var quadsquad = {
                     let costs = new PathFinder.CostMatrix;
                     var terrain = new Room.Terrain(roomName);
                     // set costs 
-                    if (Memory.squadObject[squadID].costscurr == undefined || Memory.squadObject[squadID].costsroom != room.name)
+                    if (Memory.squadObject[squadID].costscurr == undefined || Memory.squadObject[squadID].costsroom != leader.room.name)
                     {
 
                         for (var xx = 2; xx < 48; xx++)
@@ -790,13 +996,18 @@ var quadsquad = {
             }
         );
         var pos = ret.path[0];
-        if (ret.path.length == 0)
+        if (target && ret.path.length != 0 && (ret.path[ret.path.length - 1].x != target.x && ret.path[ret.path.length - 1].y != target.y))
         {
-            var path = leader.pos.findPathTo(target);
-            var pos = path[0];
+            console.log("Memory.squadObject[squadID].forceLineMove = true2")
+      
+           
+           
+              Memory.squadObject[squadID].pathToCurrentTargetIsBlocked = true;
+            var pos = leader.pos;
         }
         else
         {
+            Memory.squadObject[squadID].pathToCurrentTargetIsBlocked = false;
             var pos = ret.path[0];
         }
         for (var xx = 0; xx < ret.path.length; xx++)
@@ -991,7 +1202,10 @@ var quadsquad = {
             var pos = ret.path[0];
             if (ret.path.length == 0)
             {
-                var path = leader.pos.findPathTo(target);
+                var path = leader.pos.findPathTo(target,
+                {
+                    ignoreCreeps: true
+                });
                 var pos = path[0];
             }
             else
@@ -1272,7 +1486,7 @@ var quadsquad = {
                 if (exitNumber != undefined)
                 {
                     leader.say("suc move");
-                    var exitDir = Game.map.findExit(leader.room, tasklist[0][1]);
+                    var exitDir = Game.map.findExit(leader.room.name, tasklist[0][1]);
                     var exit = leader.pos.findClosestByRange(exitDir);
                     leader.say(exit.x + "-" + exit.y);
                     if (exit)
@@ -1289,7 +1503,7 @@ var quadsquad = {
                             lineStyle: 'dashed'
                         });
 
-                        return new RoomPosition(exit.x, exit.y, tasklist[0][1]);
+                        return new RoomPosition(exit.x, exit.y, leader.room.name); // changed this from tasklist 0 1 
                     }
                 }
 
@@ -1371,7 +1585,13 @@ var quadsquad = {
                             // console.log("found ",found);
                             if (!found)
                             {
-
+                                Memory.squadObject[squadID].costsroom = ""
+                                Memory.squadObject[squadID].costscurr = undefined
+                                Memory.squadObject[squadID].blockedPosition = {}
+                                if (Memory.squadObject[squadID].currentPositionsobj)
+                                {
+                                    Memory.squadObject[squadID].currentPositionsobj.candidates = [];
+                                }
                                 flagsinrange.remove();
                             }
                             else
@@ -1380,7 +1600,7 @@ var quadsquad = {
                                 try
                                 {
 
-                                    if (found[0].structureType == STRUCTURE_WALL   )
+                                    if (found[0].structureType == STRUCTURE_WALL)
                                     {
                                         Memory.squadObject[squadID].hardTarget = found[0].id;
                                     }
@@ -1391,11 +1611,22 @@ var quadsquad = {
                                 }
                                 catch (e)
                                 {
+                                    Memory.squadObject[squadID].costsroom = ""
+                                    Memory.squadObject[squadID].costscurr = undefined
+                                    Memory.squadObject[squadID].blockedPosition = {}
+                                    if (Memory.squadObject[squadID].currentPositionsobj)
+                                    {
+                                        Memory.squadObject[squadID].currentPositionsobj.candidates = [];
+                                    }
+
                                     Memory.squadObject[squadID].hardTarget = false;
                                     flagsinrange.remove();
                                 }
+                                if (found.length != 0)
+                                {
+                                    targetTmp = found[0].pos;
+                                }
 
-                                targetTmp = found[0].pos;
                             }
 
                         }
@@ -1605,7 +1836,7 @@ var quadsquad = {
         var all = [];
         var target;
         for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        { 
+        {
             all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
         }
         ////////////////////
@@ -1673,26 +1904,25 @@ var quadsquad = {
                 }
             }
             var decideMassAttack = this.decideMassAttack(all[c]);
-// defenders preventing goal attack
-          if (targets.length > 0 && decideMassAttack)
-             {
-                 all[c].rangedMassAttack();
+            // defenders preventing goal attack
+            if (targets.length > 0 && decideMassAttack)
+            {
+                all[c].rangedMassAttack();
             }
-            
-       else   if (targets.length > 0)
-             {
-                  all[c].say("f");
+
+            else if (targets.length > 0)
+            {
+                all[c].say("f");
                 all[c].rangedAttack(targets[0]);
             }
-            
-        // defenders preventing goal attack    
-            
- 
-           else  if (Memory.squadObject[squadID].hardTarget != false)
+
+            // defenders preventing goal attack    
+
+            else if (Memory.squadObject[squadID].hardTarget != false)
             {
                 all[c].rangedAttack(Game.getObjectById(Memory.squadObject[squadID].hardTarget));
             }
-            else       if (targetFromflag != 0)
+            else if (targetFromflag != 0)
             {
                 all[c].say("h");
                 all[c].rangedAttack(targetFromflag);
@@ -1829,12 +2059,7 @@ var quadsquad = {
             {
                 return true;
             }
-            var range = leader.pos.getRangeTo(targets);
-            if (range > 12)
-            {
-                return false;
-            }
-            else if (squadIsNearEdge == false)
+            if (squadIsNearEdge == false)
             {
                 return true;
             }
@@ -2050,30 +2275,30 @@ var quadsquad = {
         for (var c = 0; c < all.length; c++)
         {
 
-            var tmppppp = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 2 );
+            var tmppppp = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 2);
             for (var i = 0; i < tmppppp.length; i++)
             {
                 var coutner = 0;
                 for (var q = 0; q < tmppppp[i].body.length; q++)
                 {
-                    if (tmppppp[i].body[q].type == ATTACK )
+                    if (tmppppp[i].body[q].type == ATTACK)
                     {
                         coutner++
                     }
                 }
 
-                if (coutner > 20 )
-                { 
+                if (coutner > 20)
+                {
                     fleeList.push(tmppppp[i]);
                 }
 
             }
- 
-             var tmppppp=  all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 20 );
+
+            var tmppppp = all[c].pos.findInRange(FIND_HOSTILE_CREEPS, 20);
 
             for (var q = 0; q < tmppppp.length; q++)
             {
-            //   fleeList.push(tmppppp[q]);
+                //   fleeList.push(tmppppp[q]);
             }
         }
 
@@ -2276,154 +2501,5 @@ var quadsquad = {
 
     },
 
-    run: function(squadID)
-    {
-        var startCpu = Game.cpu.getUsed();
-
-        this.handleattacks(squadID);
-        var mainMemoryObject = Memory.squadObject[squadID];
-
-        if (Memory.squadObject[squadID].reassignLeaderNextTick == undefined)
-        {
-            Memory.squadObject[squadID].reassignLeaderNextTick = false;
-        }
-
-        if (Memory.squadObject[squadID].reassignLeaderNextTick == true)
-        {
-            this.reAssignLeader(squadID);
-            Memory.squadObject[squadID].reassignLeaderNextTick = false;
-        }
-
-        Memory.squadObject[squadID].hardTarget = false;
-        Memory.squadObject[squadID].quadVitalBool = false;
-        Memory.squadObject[squadID].blockLeaderchange = false;
-        Memory.squadObject[squadID].tasklistHasControl = false;
-        Memory.squadObject[squadID].breakQuad = false;
-        Memory.squadObject[squadID].SquadFormation = false;
-        var all = [];
-        var target;
-        for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
-        {
-            all.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
-        }
-
-        if (Memory.squadObject[squadID].leader == undefined)
-        {
-            Memory.squadObject[squadID].leader = this.decideLeader(squadID);
-        }
-        var leader = Game.getObjectById(Memory.squadObject[squadID].leader);
-        //   console.log(leader);
-        if (leader == null)
-        {
-            Memory.squadObject[squadID].leader = this.decideLeader(squadID);
-        }
-        if (leader != null && leader != undefined && leader)
-        {
-            Game.rooms[leader.room.name].visual.circle(leader.pos.x, leader.pos.y,
-            {
-                color: 'red'
-            });
-
-            var SquadIsInFormation = this.checkIfInCube(squadID, Memory.squadObject[squadID].leader);
-            Memory.squadObject[squadID].SquadFormation = SquadIsInFormation
-
-            /////////////////////////////////////////////////      
-            //                   decide targets 
-
-            target = this.TaskList(squadID);
-
-            var QuadVital = this.DecideIfQuadIsVital(squadID);
-
-            var rangeToTarget = leader.pos.getRangeTo(target);
-
-            if ((this.leaderBlocked2(squadID) && QuadVital == true && SquadIsInFormation == false && Memory.squadObject[squadID].blockLeaderchange != true))
-            {
-                Memory.squadObject[squadID].leader = this.decideLeader(squadID);
-            }
-
-            if (Memory.squadObject[squadID].quadVitalBool == true)
-            {
-                QuadVital = true;
-            }
-
-            if (Memory.squadObject[squadID].breakQuad == true)
-            {
-                QuadVital = false;
-            }
-
-            var creepsNeedToFlee = this.decideToFlee(squadID);
-             
-            var fleeing = false;
-            if (creepsNeedToFlee.length != 0)
-            {
-                fleeing = true;
-                var aaada = this.fleeDirection(squadID, creepsNeedToFlee, Memory.squadObject[squadID].leader);
-                this.moveAsOne(squadID, aaada);
-                //    fleeDirection: function(squadID,avoidarray,Memory.squadObject[squadID].leader)
-            }
-            else
-            {
-                // todo add other method fo fleeing here
-            }
-
-            if (Memory.squadObject[squadID].tasklistHasControl == false && fleeing == false)
-            {
-                 leader.say("T-" );
-                 // if leader pos is same for more than 5 ticka and  not in range of target 
-                 
-                 
-              //  this.lineMove(squadID, target);
-                    
-                    
-                    
-                //////////////////////////////////////////////////
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //      leader.say(target);
-                // leader.say(QuadVital);
-                if (target != undefined)
-                {
-                    leader.say("T-" + target.x + "," + target.y);
-                }
-
-                if (QuadVital == false && target != undefined || (Memory.squadObject[squadID].breakQuad == true && target != undefined))
-                {
-                    leader.say("lineMove1");
-                    this.lineMove(squadID, target);
-                }
-                else if (QuadVital == true && !SquadIsInFormation)
-                {
-                    leader.say("moveIntoFormation");
-                    if (Memory.squadObject[squadID].leader != undefined)
-                    {
-                        this.moveIntoFormation(Memory.squadObject[squadID].leader, squadID);
-                    }
-                }
-                else if (SquadIsInFormation && target != undefined && (leader.pos.x != target.x || leader.pos.y != target.y))
-                {
-                    leader.say("moveAsOne");
-                    var Direction = this.getDirectionToTarget(squadID, Memory.squadObject[squadID].leader, target);
-                    this.moveAsOne(squadID, Direction);
-                }
-                else if (leader != undefined && target != undefined && SquadIsInFormation && Memory.squadObject[squadID].squadSubType != "blinky")
-                {
-                    if (leader.pos.x == target.x && leader.pos.y == target.y)
-                    {
-                        this.internalRearange(squadID);
-                    }
-                }
-                
-                 
-            }
-            
-            
-            
-            
-        }
-        /////////////////////////////////////////////////////
-        //                  deal damage / heal
-        /////////////////////////////////////////
-        console.log("quad", squadID, "-", Game.cpu.getUsed() - startCpu);
-        /////
-    }
 }
 module.exports = quadsquad;

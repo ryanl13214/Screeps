@@ -69,13 +69,13 @@ var roomClaimer = {
 
         if (doretos.length != 0)
         {
-            this.creepsFleeHostiles(creepsInRoom)
+            this.creepsFleeHostiles(creepsInRoom,roomname)
        //     this.controlReinforcements(roomID, roomss[0]);
             
         }
 
         ///////////////////////////////         SPAWNING              ///////////////////////////////////////
-        if (roomss.length != 0 && storeage == undefined && doretos.length == 0)
+        if (roomss.length != 0 && storeage == undefined && (doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined))
         {
 
             if (Game.rooms[roomID].controller.level >= 5)
@@ -100,7 +100,7 @@ var roomClaimer = {
             }
 
         }
-        else if (roomss.length != 0 && doretos.length == 0  && storeage != undefined) // storage temple
+        else if (roomss.length != 0 && (doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined) && storeage != undefined) // storage temple
         {
             this.sendClaimSquad(roomID, roomss[0]);
             this.sendTempleSquad(roomID, roomss[0]);
@@ -167,7 +167,7 @@ var roomClaimer = {
         }).path;
         creep.moveByPath(patha);
     },
-    creepsFleeHostiles: function(creepsInRoom)
+    creepsFleeHostiles: function(creepsInRoom,roomname)
     {
 
         for (var q = 0; q < creepsInRoom.length; q++)
@@ -175,7 +175,7 @@ var roomClaimer = {
 
             var CloseHostiles = creepsInRoom[q].pos.findInRange(FIND_HOSTILE_CREEPS, 6);
 
-            if (creepsInRoom[q].memory.attackrole != "guard")
+            if (creepsInRoom[q].memory.attackrole != "guard" && roomname == creep.room.name)
             {
                 this.combatMove(creepsInRoom[q], CloseHostiles);
             }

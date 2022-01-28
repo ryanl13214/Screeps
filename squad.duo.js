@@ -50,8 +50,10 @@ var Duo = {
             head.memory.memstruct.tasklist = mainMemoryObject.arrayOfSquadGoals;
         }
         ///////////////////////////////////////////////////////////////////////////////
-        if(head && tail)
+        if(head)
         {
+           
+            
             var check = creepfunctions.checkglobaltasks(head);
             if(check)
             {
@@ -74,18 +76,25 @@ var Duo = {
                 }
             }
  
+        }
+            if(tail)
+         {
+        
         
         ///////////////////////////////////
         var slave = tail;
         var master = head;
        tail.heal(tail);
-           var target = creepfunctions.getcombattagetsclosest(tail);
+           
+           
+                 var target =tail.pos.findClosestByRange(FIND_HOSTILE_CREEPS );
+           
             ///////////////////////////////////////////   
             
                if(tail.body.find(elem => elem.type === RANGED_ATTACK) != undefined && target)
             {
  tail.rangedAttack(target);
-            }
+            } 
             
             
             
@@ -261,7 +270,7 @@ var Duo = {
                 
        
             }
-        var target = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 1,
+        var target = creep.pos.findInRange(FIND_STRUCTURES, 1,
         {
             filter: (res) =>
             {
@@ -278,7 +287,10 @@ var Duo = {
         var flagsinrange = creep.pos.findClosestByPath(FIND_FLAGS);
         if(flagsinrange != undefined)
         {
-            found = creep.room.lookForAt(LOOK_STRUCTURES, flagsinrange.pos);
+         
+           found =  flagsinrange.pos.findInRange(FIND_STRUCTURES,0)
+            
+            
             if(flagsinrange.pos.x == creep.pos.x && flagsinrange.pos.x == creep.pos.x && flagsinrange.pos.y == creep.pos.y && flagsinrange.pos.y == creep.pos.y)
             {
                 flagsinrange.remove();
@@ -289,9 +301,18 @@ var Duo = {
             }
             if(found.length != 0)
             {
-                found = creep.room.lookForAt(FIND_STRUCTURES, flagsinrange[0].pos);
+                found = creep.room.lookForAt(FIND_STRUCTURES, flagsinrange.pos);
+                
+                creep.room.visual.line(creep.pos, found.pos,
+    {color: 'red', lineStyle: 'dashed'});
+                
+                
             }
         }
+        
+        
+        
+        
         if(found.length != 0 && a)
         {
             if(creep.dismantle(found[0]) == ERR_NOT_IN_RANGE)
@@ -403,14 +424,19 @@ var Duo = {
             }
         }
          
-        
-        
+        if(Healer != "a"){
+     //   creep.say(Healer.hits == false)
         var range = creep.pos.getRangeTo(Healer);
         /////////////////////////////
-        if( (range == 1 ) && Healer.fatigue == 0)
+        if( (range == 1 ) &&   Healer.fatigue == 0  || Game.time % 3 == 0  )
         {
             creep.moveTo(movetarg);
         }
+         
+        }else{
+              creep.moveTo(movetarg);
+        }
+        
         
     }
 }
