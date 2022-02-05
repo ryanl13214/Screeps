@@ -9,6 +9,8 @@ var obs = {
         if (Memory.hostileempires == undefined)
         {
             Memory.hostileempires = {};
+        }else{
+            this.handleCurrentRelationships();
         }
 
         if (Memory.roomlist == undefined)
@@ -391,16 +393,8 @@ handleCurrentRelationships: function(){
    //   war list
 // currentRelationship list    war (kill every room whenever can)  harrass ( remove all minders with outriders)  net () good ()
 
-   /* 
-   
-    [Atanner,"net"],
-    [TgDgNU,"net"],
-    [RayAidas,"net"],
-    [Hulmir,"net"],
-    [6g3y,"net"],
-    [SBense,"net"]
-   */ 
-var warList=[];
+ 
+var warList=["6g3y","RayAidas"];
     
     for(var i = 0; i < warList.length; i++)
     {

@@ -93,10 +93,10 @@ var attackManager = {
         var returnList = [];
         for (var i = 0; i < ownedrooms.length; i++)
         {
-            if (Game.map.getRoomLinearDistance(attackID, ownedrooms[i]) < 10 && Game.rooms[ownedrooms[i]].controller.level == 8) // check that room has good amount of boosts
+            if (Game.map.getRoomLinearDistance(attackID, ownedrooms[i]) < 11 && Game.rooms[ownedrooms[i]].controller.level == 8) // check that room has good amount of boosts
             {
 
-                var pathacc = roompathfind.run(attackID, ownedrooms[i], 0); // 0 means allow through hostile rooms
+                var pathacc = roompathfind.run(attackID, ownedrooms[i], 4);  
                 pathacc.push(attackID);
                 Memory.attackManager[attackID].attackingRooms[ownedrooms[i]] = {};
                 Memory.attackManager[attackID].attackingRooms[ownedrooms[i]] = // "a"
@@ -378,7 +378,7 @@ var attackManager = {
         var mainMemoryObject = Memory.attackManager[attackID];
         if (Game.time % 5 == 0)
         {
-       //     Memory.attackManager[attackID] = {} ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //    Memory.attackManager[attackID] = {} ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         }
         /////////////////////////////////////////////////////////////
         //                             decide what rooms are part oif the attack and the path to get to them.
@@ -437,8 +437,8 @@ var attackManager = {
         if (mainMemoryObject.phalanx == undefined)
         {
 
-            var a = this.createphalanx(attackID);
-            Memory.attackManager[attackID].phalanx = a;
+    //        var a = this.createphalanx(attackID);
+     //       Memory.attackManager[attackID].phalanx = a;
 
         }
 
@@ -486,7 +486,7 @@ var attackManager = {
             this.updateVectors(attackID);
         }
         // spawnblinkys
-              this.ManageGenericSpawning(attackID);//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //          this.ManageGenericSpawning(attackID);//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // control the phalanc
         // power control 

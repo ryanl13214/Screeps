@@ -42,6 +42,8 @@ var roletowermover = {
         {
            var altflag = Game.flags[creep.room.name+  "AltTower"] 
            creep.moveTo(altflag)
+        }else{
+             creep.moveTo(new RoomPosition(creep.room.storage.pos.x + 1 ,creep.room.storage.pos.y + 1,creep.room.name    ))
         }
         
         

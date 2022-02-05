@@ -1,6 +1,7 @@
 var roompathfind = require('roompathfinder');
 var squadmanage = require('squadManager');
 var roles = require('roles');
+var defcon = require('defcon');
 var tower = require('tower');
 var roomClaimer = {
     run: function(roomID)
@@ -24,7 +25,6 @@ var roomClaimer = {
 
         var spawingingroom = Game.rooms[roomss[0]];
 
-
         if (roomss.length != 0 && Game.rooms[roomID] == undefined)
         {
             this.sendClaimSquad(roomID, roomss[0]);
@@ -32,33 +32,28 @@ var roomClaimer = {
         }
         if (roomss.length == 0 || Game.rooms[roomID] == undefined)
         {
-
             return 0
         }
 
         var storeage = Game.rooms[roomID].storage;
 
+        /////////////////////////////// deal with hostiles /////////////////////////////////////////////////////////////////////////
 
+        defcon.run(roomID, creepsInRoom);
 
-
-/////////////////////////////// deal with hostiles /////////////////////////////////////////////////////////////////////////
-
-
-
-
-        var hostilesInHomeRoom =spawingingroom.find(FIND_HOSTILE_CREEPS,
+        var hostilesInHomeRoom = spawingingroom.find(FIND_HOSTILE_CREEPS,
         {
             filter: (s) =>
             {
                 return (s.body.length == 50); // contans attack parts
             }
         });
-        
+
         if (hostilesInHomeRoom.length != 0)
         {
-           return 0;
+            return 0;
         }
-        
+
         var doretos = Game.rooms[roomID].find(FIND_HOSTILE_CREEPS,
         {
             filter: (s) =>
@@ -69,39 +64,72 @@ var roomClaimer = {
 
         if (doretos.length != 0)
         {
-            this.creepsFleeHostiles(creepsInRoom,roomname)
-       //     this.controlReinforcements(roomID, roomss[0]);
-            
+            this.creepsFleeHostiles(creepsInRoom, roomname)
+
         }
-
-        ///////////////////////////////         SPAWNING              ///////////////////////////////////////
-        if (roomss.length != 0 && storeage == undefined && (doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined))
-        {
-
-            if (Game.rooms[roomID].controller.level >= 5)
+        var templeflag = Game.flags["temple" + roomID]
+            if (Game.rooms[roomID].controller.level >= 5&& (doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined))
             {
                 this.renewSafemodes(roomss[0], roomID)
             }
+            
+               
+          
+          
+           if(Memory.empire.roomsobj[roomID].defcondOBJ.shortTermDefcon > 1)
+           {
+               var recentHostiles = false;
+           }
+           else
+           {
+                  var recentHostiles = true;
+           }
+          
+          
+          
+          
+          
+          
+          
+          
 
-            var templeflag = Game.flags["temple" + roomID]
-            if (Game.rooms[roomID].terminal == undefined || templeflag == undefined)// standard claiming withj group 200k per day
+        ///////////////////////////////         SPAWNING              ///////////////////////////////////////
+        if (roomss.length != 0 && storeage == undefined && Game.rooms[roomID].terminal == undefined && (doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined) && recentHostiles)
+        { 
+
+ 
+
+            if ((Game.rooms[roomID].terminal == undefined || Game.rooms[roomID].controller.level < 6 || templeflag == undefined) ) // standard claiming withj group 200k per day
             {
 
                 this.sendClaimSquad(roomID, roomss[0]);
 
-            }
-            else // standard temple
-            {
-
-                this.sendClaimSquad(roomID, roomss[0]);
-
-                this.sendTempleSquad(roomID, roomss[0]);
-                this.manageTempleEnergy(roomID)
             }
 
         }
-        else if (roomss.length != 0 && (doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined) && storeage != undefined) // storage temple
+
+        else if (Game.rooms[roomID].terminal != undefined && templeflag != undefined && Game.rooms[roomID].controller.level > 5&& recentHostiles) //   2000k per day
         {
+  
+            if (doretos.length != 0)
+            {
+
+              this.controlReinforcements(roomID, roomss[0]);
+
+            }
+            this.sendTempleSquad(roomID, roomss[0]);
+            this.manageTempleEnergy(roomID)
+
+        }
+
+        else if (roomss.length != 0 && (doretos.length == 0 || Game.rooms[roomID].controller.safeMode != undefined) && storeage != undefined  && Game.rooms[roomID].controller.level > 4&& recentHostiles) // storage temple
+        {  
+            if (doretos.length != 0)
+            {
+
+              this.controlReinforcements(roomID, roomss[0]);
+
+            }
             this.sendClaimSquad(roomID, roomss[0]);
             this.sendTempleSquad(roomID, roomss[0]);
             this.sendChainOfMovers(roomID, roomss[0]);
@@ -138,11 +166,7 @@ var roomClaimer = {
             }
 
         }
-        else
-        {
-
-            tower.run(roomname, 99590000);
-        }
+      
         var storeage = Game.rooms[roomID].storage;
 
         /////////////////           end cases 
@@ -167,7 +191,7 @@ var roomClaimer = {
         }).path;
         creep.moveByPath(patha);
     },
-    creepsFleeHostiles: function(creepsInRoom,roomname)
+    creepsFleeHostiles: function(creepsInRoom, roomname)
     {
 
         for (var q = 0; q < creepsInRoom.length; q++)
@@ -382,7 +406,7 @@ var roomClaimer = {
 
         ];
         pathBuild.push(["boost", "XZHO2", 10])
-        PathUps.push(["boost", "XGH2O", 35]);
+    
         PathUps.push(["boost", "XZHO2", 10])
         for (var q = 0; q < rawPath.length; q++)
         {
@@ -399,7 +423,7 @@ var roomClaimer = {
         pathBuild.push(["forcemoveToRoom", targetRoom])
 
         PathUps.push(["templeUP", targetRoom])
-        PathUps.push(["templeBuild", targetRoom])
+        pathBuild.push(["templeBuild", targetRoom])
 
         Game.spawns[HomeRoom].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY],
             targetRoom + 'repair-temple',
@@ -515,12 +539,13 @@ var roomClaimer = {
         var temp = Path
 
         temp.push(["harvest"])
+        temp.push(["upkeepRamps"])
         temp.push(["buildconsites"])
         temp.push(["fillTowers"])
 
         temp.push(["upgrade"])
 
-        temp.push(["repeat", 4])
+        temp.push(["repeat", 5])
 
         for (var c = 0; c < 4; c++)
         {
@@ -619,82 +644,66 @@ var roomClaimer = {
     },
     controlReinforcements: function(targetRoom, HomeRoom)
     {
-        
-        return 0
-        
-    var spawingingroom = Game.rooms[targetRoom];
 
-
-        var hostilestargetRoom =spawingingroom.find(FIND_HOSTILE_CREEPS,
+        var spawingingroom = Game.rooms[HomeRoom];
+        var claimingROom = Game.rooms[targetRoom];
+        var hostilestargetRoom = claimingROom.find(FIND_HOSTILE_CREEPS,
         {
             filter: (s) =>
             {
                 return (s.body.length == 50); // contans attack parts
             }
         });
-        
-        if(hostilestargetRoom.length > 2)
+
+        if (hostilestargetRoom.length > 3)
         {
-        if (Memory.squadObject['quad-Aid-'+targetRoom] == undefined  )
-        {
-            var finalPath = [];
-            var rawPath = roompathfind.run(targetRoom, HomeRoom, 0);
-            for (var q = 0; q < rawPath.length; q++)
+            if (Memory.squadObject['quad-Aid-' + targetRoom] == undefined)
             {
-                finalPath.push(["forcemoveToRoom", rawPath[q]])
-            }
-            finalPath.push(["killcreeps", targetRoom]);
-          
-            var bodypartshead = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
-            var bodypartstail = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
-
-              
-                 
-                 
-                 
-                    squadmanage.initializeSquad('quad-Aid-'+targetRoom, finalPath, true, "quad", HomeRoom,
-                    {
-                        "head1": bodypartshead,
-                        "tail1": bodypartstail,
-                        "head2": bodypartshead,
-                        "tail2": bodypartstail
-                    }, "blinky");
-
-
-
-
-        }
-        }else{
-        
-        
-        
-        
-        
-        
-        if (Memory.squadObject['duo-Aid-'+targetRoom] == undefined  )
-        {
-            var finalPath = [];
-            var rawPath = roompathfind.run(targetRoom, HomeRoom, 0);
-            for (var q = 0; q < rawPath.length; q++)
-            {
-                finalPath.push(["forcemoveToRoom", rawPath[q]])
-            }
-            finalPath.push(["guardRoom", targetRoom]);
-          
-            var bodypartshead = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]
-            var bodypartstail = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]
-
-            squadmanage.initializeSquad('duo-Aid-'+targetRoom,
-                finalPath, true, "duo", HomeRoom,
+                var finalPath = [];
+                var rawPath = roompathfind.run(targetRoom, HomeRoom, 5);
+                for (var q = 0; q < rawPath.length; q++)
                 {
-                    "head": bodypartshead,
-                    "tail": bodypartstail,
-                }, "chasedown");
+                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+                }
+                finalPath.push(["killcreeps", targetRoom]);
+
+                var bodypartshead = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]
+                var bodypartstail = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]
+
+                squadmanage.initializeSquad('quad-Aid-' + targetRoom, finalPath, true, "quad", HomeRoom,
+                {
+                    "head1": bodypartshead,
+                    "tail1": bodypartstail,
+                    "head2": bodypartshead,
+                    "tail2": bodypartstail
+                }, "blinky");
+
+            }
         }
+        else
+        {
+
+            if (Memory.squadObject['duo-Aid-' + targetRoom] == undefined)
+            {
+                var finalPath = [];
+                var rawPath = roompathfind.run(targetRoom, HomeRoom, 4);
+                for (var q = 0; q < rawPath.length; q++)
+                {
+                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+                }
+                finalPath.push(["guardRoom", targetRoom]);
+
+                var bodypartshead = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK]
+                var bodypartstail = [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL]
+                squadmanage.initializeSquad('duo-Aid-' + targetRoom,
+                    finalPath, true, "duo", HomeRoom,
+                    {
+                        "head": bodypartshead,
+                        "tail": bodypartstail,
+                    }, "chasedown");
+            }
         }
-        
-        
-        
+
     }
 
 }

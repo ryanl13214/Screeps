@@ -2,7 +2,106 @@
 var squadmanage = require('squadManager');
 var roompathfind = require('roompathfinder');
 var defcon = {
+    run: function(roomname, creepsinroom)
+    {
+        var target2 = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS,
+        {
+            filter: (res) =>
+            {
+                return (res.body.length > 1);
+            }
+        });
+        if (Memory.empire.roomsobj[roomname] == undefined)
+        {
+            Memory.empire.roomsobj[roomname] ={}
+        }
+        
+   
+        if (Memory.empire.roomsobj[roomname].defcondOBJ == undefined)
+        {
+            Memory.empire.roomsobj[roomname].defcondOBJ = {
+                LongTermDefcon: 0,
+                mediumTermDefcon:0,
+                shortTermDefcon: 0
+            }
+        }
 
+        if (target2.length != 0)
+        {
+            Memory.empire.roomsobj[roomname].defcondOBJ.LongTermDefcon += 8;
+             
+            Memory.empire.roomsobj[roomname].defcondOBJ.shortTermDefcon +=3;
+        }
+
+        if (Memory.empire.roomsobj[roomname].defcondOBJ.LongTermDefcon > 0 && target2.length == 0)
+        {
+            Memory.empire.roomsobj[roomname].defcondOBJ.LongTermDefcon--;
+        }
+
+        var target = []
+
+        for (var i = 0; i < target2.length; i++)
+        {
+            var targetrange = target2[i].pos.findInRange(FIND_MY_STRUCTURES, 3,
+            {
+                filter: (res) =>
+                {
+                    return (res.structureType == STRUCTURE_RAMPART);
+                }
+            });
+            if (targetrange.length != 0)
+            {
+                target.push(target2[i])
+            }
+        }
+
+        if (Memory.empire.roomsobj[roomname].defcondOBJ.shortTermDefcon > -20 && target.length == 0)
+        {
+            Memory.empire.roomsobj[roomname].defcondOBJ.shortTermDefcon--;
+        }
+
+        if (target.length != 0 )
+        {
+            ////////////////////////////////////////////////////////////////////////////////
+            var targetswithattack = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS,
+            {
+                filter: (targ) =>
+                {
+                    return (
+
+                        (targ.body.filter(x => x === "attack").length > 8)
+                    );
+                }
+            });
+
+            if (targetswithattack.length > 0)
+            {
+       /////////////         this.spawnunboostedRanger(roomname, 4);
+            }
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            var creepsAttackingRoomBorderWall = this.detectCreepsAttackignBorderWall(roomname); // add tick counter to prevent the creeps triggering this as soon as they ender 
+            if (creepsAttackingRoomBorderWall == true)
+            {
+                this.defendTheBorder(roomname);
+            }
+
+            var unboostedManager = this.unboostedManager(roomname);
+            if (unboostedManager == false)
+            {
+                var solochaser = this.solochaser(roomname);
+
+                if (solochaser == false)
+                {
+                    this.spawnBoostedarcher(roomname, Math.floor(target.length / 2));
+                }
+
+            } // end of boosted creeps needed
+
+        } // end of targets
+
+    },
     getDAMAGEpOTENTIAL: function(roomname)
     {
 
@@ -178,32 +277,30 @@ var defcon = {
         for (let i = 0; i < spawnss.length; i++)
         {
             spawnss[i].spawnCreep(bodyparts,
-            'solochaser' + roomname,
-            {
-                memory:
+                'solochaser' + roomname,
                 {
-                    role: 'guard',
-                    attackrole: "solochaser",
-                    memstruct:
+                    memory:
                     {
-                        spawnRoom: roomname,
-                        tasklist: [
-                            ["boosAllMax"],
-                        ],
-                        objectIDStorage: "",
-                        boosted: false,
-                        moveToRenew: false,
-                        opportuniticRenew: false,
-                        hastask: false
+                        role: 'guard',
+                        attackrole: "solochaser",
+                        memstruct:
+                        {
+                            spawnRoom: roomname,
+                            tasklist: [
+                                ["boosAllMax"],
+                            ],
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: false,
+                            hastask: false
+                        }
                     }
-                }
-            });
+                });
         }
     },
     solochaser: function(roomname)
     {
-       
-       
 
         if (roomname == "E25N1")
         {
@@ -240,60 +337,6 @@ var defcon = {
         return false
     },
 
-    run: function(roomname, creepsinroom)
-    {
-        var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS,
-        {
-            filter: (res) =>
-            {
-                return (res.body.length > 1);
-            }
-        });
-
-
-        if (target.length != 0)// && Game.rooms[roomname].controller.safeMode == undefined)
-        {
-
-            ////////////////////////////////////////////////////////////////////////////////
-            var targetswithattack = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS,
-            {
-                filter: (targ) =>
-                {
-                    return (
-
-                        (targ.body.filter(x => x === "attack").length > 8)
-                    );
-                }
-            });
-
-            if (targetswithattack.length > 0)
-            {
-                this.spawnunboostedRanger(roomname, 4);
-            }
-
-            //////////////////////////////////////////////////////////////////////////////////////////
-
-            var creepsAttackingRoomBorderWall = this.detectCreepsAttackignBorderWall(roomname); // add tick counter to prevent the creeps triggering this as soon as they ender 
-            if (creepsAttackingRoomBorderWall == true)
-            {
-                this.defendTheBorder(roomname);
-            }
-
-            var unboostedManager = this.unboostedManager(roomname);
-            if (unboostedManager == false)
-            {
-                var solochaser = this.solochaser(roomname);
-
-                if (solochaser == false)
-                {
-                    this.spawnBoostedarcher(roomname, Math.floor(target.length / 2));
-                }
-
-            } // end of boosted creeps needed
-
-        } // end of targets
-
-    },
     CallForAid: function(roomname)
     {
 
@@ -417,35 +460,35 @@ var defcon = {
         {
             bodyparts.push(MOVE);
         }
-               var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-         
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+
         for (let o = 0; o < 2; o++)
         {
-          for (let i = 0; i < spawnss.length; i++)
+            for (let i = 0; i < spawnss.length; i++)
             {
                 spawnss[i].spawnCreep(bodyparts,
-                'sword' + roomname + number,
-                {
-                    memory:
+                    'sword' + roomname + number,
                     {
-                        role: 'guard',
-                        attackrole: "sword",
-                        memstruct:
+                        memory:
                         {
-                            spawnRoom: roomname,
-                            tasklist: [
-                                ["boosAllMax"],
-                            ],
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
+                            role: 'guard',
+                            attackrole: "sword",
+                            memstruct:
+                            {
+                                spawnRoom: roomname,
+                                tasklist: [
+                                    ["boosAllMax"],
+                                ],
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: false,
+                                hastask: false
+                            }
                         }
-                    }
-                });
-             }
-                
+                    });
+            }
+
         }
     },
     spawnBasicedattacker: function(roomname, number)
@@ -462,8 +505,8 @@ var defcon = {
             bodyparts.push(ATTACK);
             bodyparts.push(MOVE);
         }
-   var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
-         
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+
         for (let o = 0; o < number; o++)
         {
             for (let i = 0; i < spawnss.length; i++)
@@ -512,7 +555,7 @@ var defcon = {
         {
             for (let o = 0; o < number; o++)
             {
-                 spawnss[i].spawnCreep(bodyparts,
+                spawnss[i].spawnCreep(bodyparts,
                     'archer' + roomname + o,
                     {
                         memory:

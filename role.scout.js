@@ -39,7 +39,19 @@ room considtions
              {
                  /////////////////////////////////////////////////////////////////////
                  const roomExits = Game.map.describeExits(creep.room.name);
-                 const roomnames = Object.values(roomExits);
+                 const roomnames2 = Object.values(roomExits);
+               
+                 var roomnames =[];
+                 for(var i = 0 ; i < roomnames2.length ; i++)
+                 {
+                     if(Memory.roomlist[roomnames2[i]] == undefined || Memory.roomlist[roomnames2[i]].dangerLevel < 5)
+                     {
+                        roomnames.push(roomnames2[i])
+                     }
+                 }
+                 
+              
+                 
                  if(creep.memory.exitchosen == "a" || creep.memory.exitchosen == null)
                  {
                      creep.memory.exitchosen = Math.floor(Math.random() * roomnames.length);

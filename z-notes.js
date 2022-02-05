@@ -1,7 +1,7 @@
  
        Game.market.changeOrderPrice('6113c2914e9e2a2f06a8749d', 1.95);
         
-       Game.market.deal('61e65d49d5d6330a62cc0b94', 35000, "E28N5");
+       Game.market.deal('61f6dbb194728f2c3c9773a6', 10, "E28N5");
       
       
       

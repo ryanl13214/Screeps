@@ -14,7 +14,7 @@ var factoryManager = {
        var srotageEnergyLevel = Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_ENERGY);
        var storageBatterLevel = Game.rooms[roomname].storage.store.getUsedCapacity(RESOURCE_BATTERY);
        
-       if(srotageEnergyLevel < storageBatterLevel && resmoveractual)
+       if(srotageEnergyLevel < storageBatterLevel && resmoveractual && resmoveractual.memory.memstruct.tasklist.length ==0 )
        {
            
            fact.produce(RESOURCE_ENERGY);
@@ -46,15 +46,22 @@ var factoryManager = {
     },
     run: function(roomname, termin, fact)
     {
+        
+        
+if(!Game.rooms[roomname].storage ||  !termin  ||  !fact )
+{
+    return false
+}
+        
         var allResources = ['battery', 'energy', "H", "O", "U", "L", "Z", "X", "G", 'utrium_bar', 'lemergium_bar', 'zynthium_bar', 'keanium_bar', 'ghodium_melt', 'oxidant', 'reductant', 'purifier', 'composite', 'crystal', 'liquid', 'wire', 'cell', 'alloy', 'condensate', "silicon", "metal", "mist", "biomass", 'switch', 'transistor', 'microchip', 'circuit', 'phlegm', 'tissue', 'muscle', 'organoid', 'tube', 'fixtures', 'frame', 'hydraulics', 'concentrate', 'extract', 'spirit', 'emanation', 'machine', 'organism', 'device', 'essence'];
         var allValues = [2000, 8000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 50, 30, 10, 10, 30, 30, 10, 5, 30, 30, 10, 10, 50, 30, 20, 5, 0, 0, 0, 0];
        
        
-     //  var factoryNeededForBateries = this.ecoFact(roomname, termin, fact)
-      // if(factoryNeededForBateries == true)
-     //  {
-       //    return 0
-       //}
+       var factoryNeededForBateries = this.ecoFact(roomname, termin, fact)
+       if(factoryNeededForBateries == true)
+       {
+           return 0
+       }
        
        
        

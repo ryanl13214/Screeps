@@ -261,6 +261,14 @@ var labs = {
     run: function(roomname)
     {
 
+if(!Game.rooms[roomname].storage)
+{
+    return false
+}
+
+
+
+
              this.decideBoost(roomname);
 
         var allLabs = Game.rooms[roomname].find(FIND_MY_STRUCTURES,

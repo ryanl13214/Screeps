@@ -97,11 +97,9 @@ var roomController = {
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var startCpu = Game.cpu.getUsed();
-        if (Game.rooms[roomname].controller.level > 3 && Game.time % 20 == 0 )//' run every 100 ticks ti give better chance of seeing whole attack. 
+        if (Game.rooms[roomname].controller.level > 3   ) 
         {
-
-            //
-            defcon.run(roomname, creepsInRoom);
+        defcon.run(roomname, creepsInRoom);
         }
 
         var defcon_cpu_used = +Game.cpu.getUsed() - startCpu;
@@ -168,7 +166,7 @@ var roomController = {
         var target = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
    
     
-       tower.run(roomname, storagevalue);
+      tower.run(roomname, storagevalue);
        
         var tower_cpu_used = +Game.cpu.getUsed() - startCpu;
         if (debug)
@@ -304,11 +302,11 @@ var roomController = {
                 structureType: STRUCTURE_POWER_SPAWN
             }
         });
-        var g = 4;
+       
 
         if (pwrspawn.length != 0)
         {
-            if (Game.rooms[roomname].terminal && Game.rooms[roomname].storage && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 500000 && pwrspawn.length != 0 && Game.time % (g) == 0)
+            if (Game.rooms[roomname].terminal && Game.rooms[roomname].storage && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 250000 && pwrspawn.length != 0 )
             {
                 pwrspawnManager.run(roomname, Game.rooms[roomname].terminal, pwrspawn[0]);
             }
@@ -333,6 +331,7 @@ var roomController = {
                     return (structure.structureType == STRUCTURE_LINK);
                 }
             });
+            if(controllerflag){
             var controllerlink = controllerflag.pos.findInRange(FIND_STRUCTURES, 1,
             {
                 filter: (structure) =>
@@ -340,6 +339,7 @@ var roomController = {
                     return (structure.structureType == STRUCTURE_LINK);
                 }
             });
+            }
 
             var alttower = [];
 
@@ -367,7 +367,7 @@ var roomController = {
                 if (harvesterlink0[0] != undefined && harvesterlink0[0].store.getUsedCapacity("energy") > 300)
                 {
 
-              if (controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
+              if (controllerlink && controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
                     {
                         harvesterlink0[0].transferEnergy(controllerlink[0]);
                     }
@@ -394,7 +394,7 @@ var roomController = {
                 if (harvesterlink1[0] != undefined && harvesterlink1[0].store.getUsedCapacity("energy") > 300)
                 {
                
-                if (controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
+                if (controllerlink && controllerlink[0] != undefined && controllerlink[0].store.getUsedCapacity("energy") < 400 && Game.rooms[roomname].storage.store.getUsedCapacity("energy") > 60000)
                     {
                         harvesterlink1[0].transferEnergy(controllerlink[0]);
                     }   else       if (alttower.length != 0  && alttower[0].store.getUsedCapacity("energy") < 400)

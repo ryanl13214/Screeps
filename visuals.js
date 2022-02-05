@@ -11,87 +11,110 @@ var visuals = {
         var ownedrooms = [];
         var roomsall = Object.keys(Game.rooms);
         var roomsobj = Game.rooms;
-        for(var i = 0; i < roomsall.length; i++)
+        for (var i = 0; i < roomsall.length; i++)
         {
-            if(roomsobj[roomsall[i]].controller != undefined)
+            if (roomsobj[roomsall[i]].controller != undefined)
             {
-                if(roomsobj[roomsall[i]].controller.owner != undefined)
+                if (roomsobj[roomsall[i]].controller.owner != undefined)
                 {
-                    if((roomsobj[roomsall[i]]).controller.owner.username === "Q13214")
+                    if ((roomsobj[roomsall[i]]).controller.owner.username === "Q13214")
                     {
                         ownedrooms.push(roomsall[i]);
                     }
                 }
             }
         }
-        
-        
-        
-        
-        
-      
-              var scoutedrooms = Object.keys(Memory.roomlist);  
-        for(var i = 0; i < scoutedrooms.length; i++)
-        { 
-        
-        
-                      Game.map.visual.rect(new RoomPosition(0, 0, scoutedrooms[i]), 50, 50,
-                {
-                    fill: 'transparent',
-                    stroke: '#00FF00',
-                    strokeWidth: 1,
-                });
-        
-        
-        
+
+        var scoutedrooms = Object.keys(Memory.roomlist);
+        for (var i = 0; i < scoutedrooms.length; i++)
+        {
+
+            Game.map.visual.rect(new RoomPosition(0, 0, scoutedrooms[i]), 50, 50,
+            {
+                fill: 'transparent',
+                stroke: '#00FF00',
+                strokeWidth: 1,
+            });
+
         }
-        
-        
-        
-        
-        
-        
-        
-        for(var i = 0; i < ownedrooms.length; i++)
-        {    var roomname = ownedrooms[i];
+
+        for (var i = 0; i < ownedrooms.length; i++)
+        {
+            var roomname = ownedrooms[i];
             try
             {
-                
-                
-                 
-                
-                
-                new RoomVisual(roomname).text("centerroomsinrange-"+Memory.empire.roomsobj[roomname].centerroomsinrange.length, 10, 1, {color: 'green', font: 0.8}); 
-          new RoomVisual(roomname).text("MineRooms-"+Memory.empire.roomsobj[roomname].MineRooms.length, 10, 2, {color: 'green', font: 0.8});        
-                 new RoomVisual(roomname).text("ticksOfNeeded-"+Memory.empire.roomsobj[roomname].moversobj.ticksOfNeeded, 10, 3, {color: 'green', font: 0.8});       
-             new RoomVisual(roomname).text("ticksSinceLastCall-"+ Memory.empire.roomsobj[roomname].moversobj.ticksSinceLastCall, 10, 4, {color: 'green', font: 0.8});             
-               new RoomVisual(roomname).text("moversneeded-"+   Memory.empire.roomsobj[roomname].moversobj.numberOfMoveres, 10, 5, {color: 'green', font: 0.8});                  
-                
-                   new RoomVisual(roomname).text("squadSpawning-"+   Memory.empire.roomsobj[roomname].squadSpawning, 10, 6, {color: 'green', font: 0.8});                  
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-             
+
+                // top right defcon 
+                new RoomVisual(roomname).text("defcon", 40, 1,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+
+                new RoomVisual(roomname).text("short-  " + Memory.empire.roomsobj[roomname].defcondOBJ.shortTermDefcon, 40, 2,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+
+                new RoomVisual(roomname).text("long-  " + Memory.empire.roomsobj[roomname].defcondOBJ.LongTermDefcon, 40, 3,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+
+                //      top left eco
+
+                new RoomVisual(roomname).text("centerroomsinrange- " + Memory.empire.roomsobj[roomname].centerroomsinrange.length, 4, 1,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+                new RoomVisual(roomname).text("MineRooms- " + Memory.empire.roomsobj[roomname].MineRooms.length, 4, 2,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+                new RoomVisual(roomname).text("ticksOfNeeded- " + Memory.empire.roomsobj[roomname].moversobj.ticksOfNeeded, 4, 3,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+                new RoomVisual(roomname).text("ticksSinceLastCall- " + Memory.empire.roomsobj[roomname].moversobj.ticksSinceLastCall, 4, 4,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+                new RoomVisual(roomname).text("moversneeded- " + Memory.empire.roomsobj[roomname].moversobj.numberOfMoveres, 4, 5,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+
+                // bottom left attacks 
+
+                new RoomVisual(roomname).text("squadSpawning- " + Memory.empire.roomsobj[roomname].squadSpawning, 4, 45,
+                {
+                    color: 'green',
+                    font: 0.8,
+                    align: 'left'
+                });
+
+                // bottom right terminal 
+
                 ///////////////////////// 
                 var corridorRoomList = Memory.empire.roomsobj[roomname].corridorRooms;
                 var MineRoomslist = Memory.empire.roomsobj[roomname].MineRooms;
                 var centerroomsinrange = Memory.empire.roomsobj[roomname].centerroomsinrange;
-                for(var iN = 0; iN < corridorRoomList.length; iN++)
+                for (var iN = 0; iN < corridorRoomList.length; iN++)
                 {
                     Game.map.visual.line(new RoomPosition(25, 25, roomname), new RoomPosition(25, 25, corridorRoomList[iN]),
                     {
@@ -105,7 +128,7 @@ var visuals = {
                         opacity: 0.1
                     });
                 }
-                for(var iN = 0; iN < MineRoomslist.length; iN++)
+                for (var iN = 0; iN < MineRoomslist.length; iN++)
                 {
                     Game.map.visual.line(new RoomPosition(25, 25, roomname), new RoomPosition(25, 25, MineRoomslist[iN]),
                     {
@@ -119,7 +142,7 @@ var visuals = {
                         opacity: 0.1
                     });
                 }
-                for(var iN = 0; iN < centerroomsinrange.length; iN++)
+                for (var iN = 0; iN < centerroomsinrange.length; iN++)
                 {
                     Game.map.visual.line(new RoomPosition(25, 25, roomname), new RoomPosition(25, 25, centerroomsinrange[iN]),
                     {
@@ -158,8 +181,8 @@ var visuals = {
                 });
                 /////////////////////////////////////////////////////////////////////////
                 //  Game.map.visual.circle(new RoomPosition(25, 25, roomname), 25);
-   
-                var storagev = 1000000 -  Game.rooms[roomname].terminal.store.getUsedCapacity("energy")*10;
+
+                var storagev = 1000000 - Game.rooms[roomname].terminal.store.getUsedCapacity("energy") * 10;
                 var fillv = Math.floor((storagev / 1000000) * 50);
                 Game.map.visual.rect(new RoomPosition(35, 0, roomname), 5, 50,
                 {
@@ -174,16 +197,7 @@ var visuals = {
                     strokeWidth: 1,
                     opacity: 0.4
                 });
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
                 /////////////////////////////////////////////////////////////////////////
                 var towers = Game.rooms[roomname].find(FIND_STRUCTURES,
                 {
@@ -192,7 +206,7 @@ var visuals = {
                         return (s.structureType == STRUCTURE_TOWER);
                     }
                 });
-                for(var iN = 0; iN < towers.length; iN++)
+                for (var iN = 0; iN < towers.length; iN++)
                 {
                     Game.map.visual.rect(new RoomPosition(towers[iN].pos.x - 5, towers[iN].pos.y - 5, towers[iN].pos.roomName), 11, 11,
                     {
@@ -204,7 +218,7 @@ var visuals = {
             catch (e)
             {}
             // nuker  
-            if(1 == 2)
+            if (1 == 2)
             {
                 Game.map.visual.rect(new RoomPosition(25, 25, ownedrooms[i]), 525, 525,
                 {
@@ -234,7 +248,7 @@ var visuals = {
         }
         var allcreeps = Game.creeps;
         allcreeps = Object.keys(allcreeps);
-        for(var i = 0; i < allcreeps.length; i++)
+        for (var i = 0; i < allcreeps.length; i++)
         {
             allcreeps[i] = Game.creeps[allcreeps[i]];
             var claimfound = false;
@@ -242,34 +256,34 @@ var visuals = {
             var rangefound = false;
             var healfound = false;
             var workfound = false;
-            for(var ik = 0; ik < allcreeps[i].body.length; ik++)
+            for (var ik = 0; ik < allcreeps[i].body.length; ik++)
             {
-                if(allcreeps[i].body[ik].type == CLAIM)
+                if (allcreeps[i].body[ik].type == CLAIM)
                 {
                     claimfound = true;
                 }
-                if(allcreeps[i].body[ik].type == CLAIM)
+                if (allcreeps[i].body[ik].type == CLAIM)
                 {
                     claimfound = true;
                 }
-                if(allcreeps[i].body[ik].type == HEAL)
+                if (allcreeps[i].body[ik].type == HEAL)
                 {
                     healfound = true;
                 }
-                if(allcreeps[i].body[ik].type == ATTACK)
+                if (allcreeps[i].body[ik].type == ATTACK)
                 {
                     attackfound = true;
                 }
-                if(allcreeps[i].body[ik].type == RANGED_ATTACK)
+                if (allcreeps[i].body[ik].type == RANGED_ATTACK)
                 {
                     rangefound = true;
                 }
-                if(allcreeps[i].body[ik].type == WORK)
+                if (allcreeps[i].body[ik].type == WORK)
                 {
                     workfound = true;
                 }
             }
-            if(claimfound)
+            if (claimfound)
             {
                 Game.map.visual.circle(allcreeps[i].pos,
                 {
@@ -279,7 +293,7 @@ var visuals = {
                 });
             }
             else
-            if(rangefound)
+            if (rangefound)
             {
                 Game.map.visual.circle(allcreeps[i].pos,
                 {
@@ -289,7 +303,7 @@ var visuals = {
                 });
             }
             else
-            if(attackfound)
+            if (attackfound)
             {
                 Game.map.visual.circle(allcreeps[i].pos,
                 {
@@ -299,7 +313,7 @@ var visuals = {
                 });
             }
             else
-            if(workfound)
+            if (workfound)
             {
                 Game.map.visual.circle(allcreeps[i].pos,
                 {
@@ -309,7 +323,7 @@ var visuals = {
                 });
             }
             else
-            if(healfound)
+            if (healfound)
             {
                 Game.map.visual.circle(allcreeps[i].pos,
                 {

@@ -201,7 +201,7 @@ var unmodifiedDamage = damagePotential;
 
             var closestDamagedStructurelow = towers[i].room.find(FIND_STRUCTURES,
             {
-                filter: (structure) => ((structure.hits < 4000000) && structure.structureType == STRUCTURE_RAMPART)
+                filter: (structure) => (      (structure.hits < 1000000 && structure.structureType == STRUCTURE_WALL) ||    (structure.hits < 5100000 && structure.structureType == STRUCTURE_RAMPART))
             });
 
             var soloNeedingHeal = towers[i].room.find(FIND_MY_CREEPS,
@@ -267,7 +267,7 @@ var unmodifiedDamage = damagePotential;
                 towers[i].attack(doretos);
             }
 
-            else if (closestDamagedStructurelow.length != 0 && allHosiles.length == 0 && towers[i].store.getUsedCapacity("energy") > 500 && storagevalue > 105000)
+            else if (closestDamagedStructurelow.length != 0 && allHosiles.length == 0 && towers[i].store.getUsedCapacity("energy") > 300 && storagevalue > 105000)
             {
                 towers[i].repair(fullbuild[tmp]);
             }

@@ -130,7 +130,7 @@ var roompathfinder = {
         while (!breakLoop);
 
         var closedNodesroomKeys = Object.keys(closedNodes);
-
+/*
         for (var i = 0; i < closedNodesroomKeys.length; i++)
         {
             //    console.log("a", closedNodes[closedNodesroomKeys[i]].parentt );
@@ -144,7 +144,7 @@ var roompathfinder = {
                 });
             }
         }
-
+*/
         var roomlistEnd = [];
         var current = targetRoom;
 
@@ -200,7 +200,7 @@ var roompathfinder = {
         if (Memory.roomlist === undefined)
         {
             Memory.roomlist = {};
-            console.log("wtf");
+       
         }
 
         for (var xx = -15; xx < 15; xx++)
@@ -243,12 +243,7 @@ var roompathfinder = {
                     {
                         var dangerlvl = 250
                         
-                                Game.map.visual.circle(new RoomPosition(25, 25, roomname),
-                        {
-                            fill: 'red',
-                            radius:  5,
-                            stroke: 'white'
-                        });
+                   
                         
                     }
                     else
@@ -279,12 +274,13 @@ var roompathfinder = {
                     allConnections.push(exits["7"]); //// top toom get roomname
 
                     roomlista[roomname] = {
-                        travelCost: 15,
+                        travelCost: 355,
                         conections: allConnections,
                         H_cost: 9999,
                         F_cost: 9999,
                         parentt: ""
                     };
+                
                 }
 
             }

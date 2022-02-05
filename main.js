@@ -7,11 +7,24 @@ var tickcode = require('tickcode');
 
 var roles = require('roles');
 var roomController = require('roomController');
-var templeController = require('templeRoomManager');
+var OutriderManager = require('Outrider.manager');
 var debug = false;
 
 module.exports.loop = function()
 {  
+
+    if (Memory.empire == undefined)
+    {
+        Memory.empire = {
+            roomsobj:{}
+        }
+    }
+    if (Memory.hostileempires == undefined)
+    {
+        Memory.hostileempires ={}
+        
+    }
+     
     var ownedrooms = [];
     var roomsall = Object.keys(Game.rooms);
     var roomsobj = Game.rooms;
@@ -29,7 +42,23 @@ module.exports.loop = function()
             }
         }
     }
-
+    
+    
+    
+    
+    
+    
+    
+//    OutriderManager.run();
+    
+    
+    
+    
+    
+    
+    
+    
+    
     var mainstartCpu = Game.cpu.getUsed();
     var gametime = Game.time;
     //------------------------------------------------------------------------------------------------
@@ -41,7 +70,9 @@ module.exports.loop = function()
     var listvalues = Object.values(powerCreepList);
     for (var i = 0; i < listnumbers.length; i++)
     {
+        try{
         powerManager.run(listvalues[i]);
+        }catch(e){}
     }
     var powerManager_cpu_used = Game.cpu.getUsed() - startCpu;
     if (debug)
@@ -155,7 +186,7 @@ module.exports.loop = function()
     var resourcekeys = Object.keys(attacks);
     for (var i = 0; i < resourcekeys.length; i++)
     {
-        //  attackManager.run(resourcekeys[i]);
+    //      attackManager.run(resourcekeys[i]);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        claim MANAGER
@@ -178,7 +209,12 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     for (var i = 0; i < ownedrooms.length; i++)
     {
-  
+      if (Memory.empire.roomsobj[ownedrooms[i]] == undefined)
+        {
+            Memory.empire.roomsobj[ownedrooms[i]] = {
+          
+            }
+        }
         
         if( claimsys.indexOf(ownedrooms[i]) == -1)
         {

@@ -25,7 +25,13 @@ var roles = {
             var creep = Game.creeps[creepsglobal[i].name];
             if (creep.spawning == false)
             {
+                if(  creep.memory.role == "squadmember"){
+                     var check = false;
+                }else{
                         var check = creepfunctions.checkglobaltasks(creep);
+                        
+                }
+                        
                 if(check)
                 {
                   
