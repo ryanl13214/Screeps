@@ -13,12 +13,18 @@ var roleUpgrader = {
             });
             if(pathh.length > 2)
             {
-                creep.moveTo(creep.room.controller);
+                creep.moveTo(creep.room.controller,
+                {
+                    ignoreCreeps: true
+                });
             }
             else if(pathh.length == 2)
             {
                 creep.room.createFlag(creep.pos.x, creep.pos.y, creep.room.name + "controllerposcontainer");
-                creep.moveTo(creep.room.controller);
+                creep.moveTo(creep.room.controller,
+                {
+                    ignoreCreeps: true
+                });
             }
             else if(pathh.length == 1)
             {

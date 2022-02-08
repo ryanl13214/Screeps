@@ -358,7 +358,7 @@ var obs = {
             }
 
         }
-
+ var sources = Game.rooms[scanroom].find(FIND_SOURCES);
         /*
         danger levels
         1 hallway
@@ -379,8 +379,9 @@ var obs = {
             ExitTop: ExitTopacc,
             ExitRight: ExitRightacc,
             ExitBottom: ExitBottomacc,
-            ExitLeft: ExitLeftacc
-
+            ExitLeft: ExitLeftacc,
+            numberOfSources:sources.length
+            
         }
 
         ;

@@ -72,7 +72,9 @@ var roleMover = {
         var roomname = creep.room.name;
 
         var container1 = Game.flags[creep.memory.memstruct.spawnRoom + "container1"];
+var cont1volume=0;
 
+    if(container1){
         var input = Game.rooms[creep.memory.memstruct.spawnRoom].lookForAt(LOOK_STRUCTURES, container1.pos);
 
         for (var i = 0; i < input.length; i++)
@@ -81,13 +83,18 @@ var roleMover = {
             {
                 if (input[i].store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity())
                 {
+                    cont1volume = input[i].store.getUsedCapacity(RESOURCE_ENERGY)
                     containers.push(input[i]);
                 }
             }
         }
+    }
+        
+        
+         
 
         var container0 = Game.flags[creep.memory.memstruct.spawnRoom + "container0"];
-
+  if(container0){
         var input = Game.rooms[creep.memory.memstruct.spawnRoom].lookForAt(LOOK_STRUCTURES, container0.pos);
 
         for (var i = 0; i < input.length; i++)
@@ -96,20 +103,29 @@ var roleMover = {
             {
                 if (input[i].store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity())
                 {
-                    containers.push(input[i]);
+                    if(cont1volume < input[i].store.getUsedCapacity(RESOURCE_ENERGY)){
+                        containers = [];
+                        containers.push(input[i]);
+                    }
+                    
                 }
             }
         }
-
+}
         if (containers.length != 0)
         {
+            
+            
             creep.memory.memstruct.tasklist.push(["withdraw", containers[0].id, "energy"]);
+            
+            
+            
         }
 
         else
         {
 
-            var listofrooms = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange.concat(Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms)
+    //        var listofrooms = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange.concat(Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms)
 
             var target = creep.room.find(FIND_HOSTILE_CREEPS);
 
@@ -378,7 +394,7 @@ var roleMover = {
             {
                 var target = creep.room.find(FIND_HOSTILE_CREEPS);
 
-                if (target.length != 0)
+                if (target.length != 0 || roomLevel < 6)
                 {
                     var valuablematerialsTogather = false
                 }

@@ -10,24 +10,69 @@ var roleharvester = {
             var flag2 = Game.flags[creep.room.name + "container" + creep.memory.sourcetarget];
             if(flag1 == undefined || flag2 == undefined)
             {
-                var target = creep.room.find(FIND_SOURCES);
-                const pathh = creep.pos.findPathTo(target[creep.memory.sourcetarget],
+                var target = creep.room.find(FIND_SOURCES)[creep.memory.sourcetarget];
+                 var target2 = creep.room.find(FIND_SOURCES)[(creep.memory.sourcetarget + 1 % 2)];
+                 
+                 
+                 var spn = creep.room.find(FIND_MY_STRUCTURES, 
+            {
+                filter: (structure) =>
+                {
+                    return (structure.structureType == STRUCTURE_SPAWN);
+                }
+            });
+                
+        
+                var pathh = target.pos.findPathTo(spn[0],
                 {
                     ignoreCreeps: true
                 });
-                if(pathh.length > 2)
+                
+                  creep.room.createFlag(pathh[1].x, pathh[1].y, creep.room.name + "container" + creep.memory.sourcetarget);
+                 creep.room.createFlag(pathh[0].x, pathh[0].y, creep.room.name + "source" + creep.memory.sourcetarget);
+                
+                
+                 var flag1 = Game.flags[creep.room.name + "source" + (creep.memory.sourcetarget + 1 % 2)];
+            var flag2 = Game.flags[creep.room.name + "container" + (creep.memory.sourcetarget + 1 % 2)];
+                
+                
+                  if(flag1 == undefined || flag2 == undefined)
+            {
+                  
+                 var spn = creep.room.find(FIND_MY_STRUCTURES, 
+            {
+                filter: (structure) =>
                 {
-                    creep.moveTo(target[creep.memory.sourcetarget]);
+                    return (structure.structureType == STRUCTURE_SPAWN);
                 }
-                else if(pathh.length == 2)
+            });
+                
+        
+                var pathh = target2.pos.findPathTo(spn[0],
                 {
-                    creep.room.createFlag(creep.pos.x, creep.pos.y, creep.room.name + "container" + creep.memory.sourcetarget);
-                    creep.moveTo(target[creep.memory.sourcetarget]);
-                }
-                else if(pathh.length == 1)
-                {
-                    creep.room.createFlag(creep.pos.x, creep.pos.y, creep.room.name + "source" + creep.memory.sourcetarget);
-                }
+                    ignoreCreeps: true
+                });
+                
+                  creep.room.createFlag(pathh[1].x, pathh[1].y, creep.room.name + "container" +(creep.memory.sourcetarget + 1 % 2));
+                 creep.room.createFlag(pathh[0].x, pathh[0].y, creep.room.name + "source" + (creep.memory.sourcetarget + 1 % 2));
+                
+                
+            }
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            
+               
             }
             if(creep.ticksToLive < 130)
             {

@@ -7,6 +7,8 @@ var tickcode = require('tickcode');
 
 var roles = require('roles');
 var roomController = require('roomController');
+var roomControllerBotArena = require('roomControllerBotArena');
+var roomControllerOutrider = require('roomControllerOutrider');
 var OutriderManager = require('Outrider.manager');
 var debug = false;
 
@@ -23,19 +25,26 @@ module.exports.loop = function()
     {
         Memory.hostileempires ={}
         
-    }
+    }   if(Memory.roomlist == undefined)
+               {
+                   Memory.roomlist = {};
+               }
      
     var ownedrooms = [];
     var roomsall = Object.keys(Game.rooms);
     var roomsobj = Game.rooms;
     for (var i = 0; i < roomsall.length; i++)
     {
+        
+        
+           
         if (roomsobj[roomsall[i]].controller != undefined)
         {
             if (roomsobj[roomsall[i]].controller.owner != undefined)
             {
                 if ((roomsobj[roomsall[i]]).controller.owner.username === "Q13214" && (roomsobj[roomsall[i]]).controller.level > 0)
                 {
+
 
                     ownedrooms.push(roomsall[i]);
                 }
@@ -44,10 +53,18 @@ module.exports.loop = function()
     }
     
     
+      var ownedrooms2 = Object.keys(Memory.empire.roomsobj);
+      for (var i = 0; i < ownedrooms2.length; i++)
+    {
     
     
+     if((   Game.rooms[ownedrooms2[i]] == undefined  ||  (Game.rooms[ownedrooms2[i]].controller != undefined && Game.rooms[ownedrooms2[i]].controller.owner != undefined && Game.rooms[ownedrooms2[i]].controller.owner != "Q13214" )    )  && Memory.empire.roomsobj[ownedrooms2[i]] != undefined )
+        {
+            delete Memory.empire.roomsobj[ownedrooms2[i]]
+        }
+        
     
-    
+    }
     
 //    OutriderManager.run();
     
@@ -84,7 +101,10 @@ module.exports.loop = function()
     // console.log(Game.market.credits*0.00000005);
     //------------------------------------------------------------------------------------------------
     tickcode.run();
+   
+    
     visuals.run();
+  
     //------------------------------------------------------------------------------------------------
     //                                  
     //------------------------------------------------------------------------------------------------
@@ -104,7 +124,9 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     if (Game.cpu.bucket == 10000)
     {
+           try{
         Game.cpu.generatePixel()
+        }catch(e){}
     }
     //------------------------------------------------------------------------------------------------
     //                          deleting memory
@@ -133,24 +155,7 @@ module.exports.loop = function()
             }
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //                                       INTERSHARD 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var inteshardCreeps = _.filter(Game.creeps, (creep) => (creep.memory.role == undefined || creep.memory.intershard == true));
-    for (var i = 0; i < inteshardCreeps.length; i++)
-    {
-        if (inteshardCreeps[i].memory.role == undefined)
-        {
-            inteshardCreeps[i].memory.role = "multi";
-            inteshardCreeps[i].memory.memstruct = {
-                tasklist: []
-            }
-            inteshardCreeps[i].memory.memstruct.tasklist = [
-                ["getDataFromOldShard"]
-            ]
-        }
-    }
-    roles.run(inteshardCreeps);
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        SQUAD MANAGER
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,21 +207,27 @@ module.exports.loop = function()
     var claimsys = Object.keys(claims);
     for (var i = 0; i < claimsys.length; i++)
     {
-    //    claimManager.run(claimsys[i]);
+     claimManager.run(claimsys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    START OF ROOMS LOOP
     //------------------------------------------------------------------------------------------------
     for (var i = 0; i < ownedrooms.length; i++)
     {
-      if (Memory.empire.roomsobj[ownedrooms[i]] == undefined)
+        
+         if(Memory.empire.roomsobj[ownedrooms[i]] == undefined)
         {
             Memory.empire.roomsobj[ownedrooms[i]] = {
           
             }
         }
-        
-        if( claimsys.indexOf(ownedrooms[i]) == -1)
+         
+        if(ownedrooms.length == 1 && Game.rooms[ownedrooms[i]].controller.level < 6)
+        {
+          
+            roomControllerBotArena.run(ownedrooms[i]);
+        }
+        else if( claimsys.indexOf(ownedrooms[i]) == -1)
         {
                roomController.run(ownedrooms[i]);
         }

@@ -41,6 +41,20 @@ room considtions
                  const roomExits = Game.map.describeExits(creep.room.name);
                  const roomnames2 = Object.values(roomExits);
                
+               
+               
+               if(Memory.roomlist == undefined)
+               {
+                   Memory.roomlist = {};
+               }
+               
+               
+               
+               
+               
+               
+               
+               
                  var roomnames =[];
                  for(var i = 0 ; i < roomnames2.length ; i++)
                  {
@@ -76,6 +90,19 @@ room considtions
              else if(creep.memory.exitchosen != "a" && creep.room.name != creep.memory.prevRoom) // if ceep has moved into new room
              {
                  observer.addToRoomList(creep.room.name);
+                 
+                 if(Memory.roomlist[creep.room.name].distanceFromHomeRoom == undefined || Memory.roomlist[creep.room.name].distanceFromHomeRoom < 1500 - creep.ticksToLive)
+                 {
+                     Memory.roomlist[creep.room.name].distanceFromHomeRoom = 1500 - creep.ticksToLive
+                     Memory.roomlist[creep.room.name].closestRoom = creep.memory.memstruct.spawnRoom
+                
+                 }
+                     
+                 
+                 
+                 
+                 
+                 
                  creep.moveTo(new RoomPosition(25, 25, creep.room.name), // move away from room edge
                      {
                          reusePath: 3,
