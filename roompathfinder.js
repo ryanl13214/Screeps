@@ -264,7 +264,7 @@ var roompathfinder = {
                 {
 
                     var exits = Game.map.describeExits(roomname);
-
+if(exits != undefined){
                     allConnections.push(exits["1"]); //// top toom get roomname
 
                     allConnections.push(exits["3"]); //// top toom get roomname
@@ -280,6 +280,10 @@ var roompathfinder = {
                         F_cost: 9999,
                         parentt: ""
                     };
+                
+                }
+                
+                
                 
                 }
 

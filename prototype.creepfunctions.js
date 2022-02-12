@@ -172,6 +172,12 @@ var creepfunctions = {
     },
     checkglobaltasks: function(creep)
     {
+
+        if (creep.memory.memstruct.tasklist.length > 500)
+        {
+            creep.suicide()
+        }
+
         if (creep.memory.memstruct.tasklist.length == 0)
         {
             return true;
@@ -181,6 +187,8 @@ var creepfunctions = {
         {
             if (creep.memory.memstruct.tasklist[0][0] == "upgrade")
             {
+
+                creep.say("up1");
                 if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
                 {
                     creep.say("g");
@@ -188,6 +196,7 @@ var creepfunctions = {
                 }
                 else
                 {
+                    creep.say("up");
                     if (creep.room.controller)
                     {
                         if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE)
@@ -197,6 +206,66 @@ var creepfunctions = {
                     }
                 }
             }
+            else if (creep.memory.memstruct.tasklist[0][0] == "pickupDroppedEnergy")
+            {
+
+                if (creep.store.getFreeCapacity() === 0)
+                {
+
+                    this.loopTasks(creep);
+
+                }
+                else
+                {
+                    var droppedresources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES,
+                    {
+                        filter: (res) =>
+                        {
+                            return (res.resourceType == RESOURCE_ENERGY && res.amount > creep.store.getFreeCapacity());
+                        }
+                    });
+                    if (droppedresources != undefined && creep.store.getFreeCapacity(RESOURCE_ENERGY) != 0)
+                    {
+
+                        if (creep.pickup(droppedresources) == ERR_NOT_IN_RANGE)
+                        {
+                            creep.moveTo(droppedresources);
+                        }
+                    }
+                    else if(creep.memory.memstruct.tasklist[0].length < 2)
+                    {
+
+                        this.loopTasks(creep);
+
+                    }
+                }
+                return true
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "buildGeneral")
+            {
+                if (creep.store.getUsedCapacity() == 0)
+                {
+                    this.loopTasks(creep);
+
+                }
+                else
+                {
+                    const target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+                    if (target)
+                    {
+                        if (creep.build(target) == ERR_NOT_IN_RANGE)
+                        {
+                            creep.moveTo(target);
+                        }
+                    }
+                    else
+                    {
+                        this.loopTasks(creep);
+
+                    }
+                }
+
+            }
             else if (creep.memory.memstruct.tasklist[0][0] == "joinOutriders") // ["","goalRoom","starroom",dangerlevel]
             {
 
@@ -204,8 +273,16 @@ var creepfunctions = {
                 this.loopTasks(creep);
 
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "findPathBetweenRooms") // ["","goalRoom","starroom",dangerlevel]
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "findPathBetweenRooms")
             {
+
+                var tmpstore = creep.memory.memstruct.tasklist[0]
+                if (creep.memory.memstruct.tasklist[0][1] == creep.room.name)
+                {
+                    this.loopTasks(creep);
+                    return true
+                }
 
                 var finalPath = [];
 
@@ -219,47 +296,16 @@ var creepfunctions = {
                     finalPath.push(["forcemoveToRoom", rawPath[q]])
                 }
 
-                creep.memory.memstruct.tasklist.splice(0, 1);
+                //  creep.memory.memstruct.tasklist.splice(0, 1);   removing so it can be repeated
 
                 for (var q = 0; q < creep.memory.memstruct.tasklist.length; q++)
                 {
                     finalPath.push(creep.memory.memstruct.tasklist[q]);
                 }
+
                 creep.memory.memstruct.tasklist = finalPath
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "buildGeneral")
-            { var target = creep.room.find(FIND_CONSTRUCTION_SITES);
-            
-            if (target.length == 0)
-                {
-                     
-                    this.loopTasks(creep);
-                }
-            
-            
-                creep.say("buildGeneral");
-                if (creep.store[RESOURCE_ENERGY] == 0)
-                {
-                    creep.say("ge");
-                    this.loopTasks(creep);
-                }
-                else
-                {
-                   
-                    if (target.length != 0)
-                    {
-                        if (creep.build(target[0]) == ERR_NOT_IN_RANGE)
-                        {
-                            creep.moveTo(target[0]);
-                        }
-                    }
-                    else
-                    {
-                        this.loopTasks(creep);
-                    }
 
-                }
-            }
             else if (creep.memory.memstruct.tasklist[0][0] == "templeUP")
             {
                 var tewers = creep.pos.findInRange(FIND_MY_STRUCTURES, 1,
@@ -404,17 +450,110 @@ var creepfunctions = {
                 }
 
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "BMdrop")
+            else if (creep.memory.memstruct.tasklist[0][0] == "cachemove")
             {
-
-                var roomsall = Object.keys(creep.store);
-                if (roomsall.length != 0)
+                var q = creep.memory.memstruct.tasklist[0][1];
+                
+                var range = creep.pos.getRangeTo(new RoomPosition(q.x, q.y, creep.room.name))
+                if(range > 1)
                 {
-                    creep.drop(roomsall[0])
+                      this.loopTasks(creep);
+                    this.checkglobaltasks(creep); 
+                }
+                
+                var dire = creep.pos.getDirectionTo(creep.memory.memstruct.tasklist[0][1])
+                new RoomVisual(creep.room.name).line(creep.memory.memstruct.tasklist[0][1], creep.pos,
+                {
+                    color: '#f00fff',
+                    lineStyle: 'solid'
+                });
+                var a = creep.moveTo(new RoomPosition(q.x, q.y, creep.room.name))
+                creep.say("a", a);
+                //  var a = creep.move(dire)
+                if (a == OK)
+                {
+                    this.loopTasks(creep);
+                }
+                //   var path = leader.pos.findPathTo(target);
+                //  return leader.pos.getDirectionTo(pos);
+
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "lowcpumoveToRoom")
+            {
+                var leader = creep;
+
+                if (leader.room.name == creep.memory.memstruct.tasklist[0][1])
+                {
+                    leader.say("loop");
+
+                    leader.moveTo(new RoomPosition(25, 25, leader.room.name));
+                    this.loopTasks(creep);
+                    return true
+                }
+
+                if (creep.memory.memstruct.tasklist[0] == undefined)
+                {
+                    console.log("creep.memory.memstruct.tasklist[0] == undefined", JSON.stringify(creep.memory.memstruct.tasklist));
+                    //         this.loopTasks(creep);
+                    return true
+                }
+
+                if (creep.memory.memstruct.tasklist[0].length == 1)
+                {
+                    console.log("creep.memory.memstruct.tasklist[0].length == 1", JSON.stringify(creep.memory.memstruct.tasklist));
+                    //   this.loopTasks(creep);
+                    return true
+                }
+
+                var roomExits = Game.map.describeExits(leader.room.name);
+                var roomnames = Object.values(roomExits);
+                var roomkeys = Object.keys(roomExits);
+                var exitNumber;
+                for (var i = 0; i < roomnames.length; i++)
+                {
+                    if (roomnames[i] == creep.memory.memstruct.tasklist[0][1])
+                    {
+                        exitNumber = roomkeys[i];
+                    }
+                }
+
+                if (exitNumber != undefined)
+                {
+                    leader.say("suc move");
+                    var exitDir = Game.map.findExit(leader.room.name, creep.memory.memstruct.tasklist[0][1]);
+                    var exit = leader.pos.findClosestByPath(exitDir);
+
+                    if (exit)
+                    {
+
+                        new RoomVisual(leader.room.name).line(new RoomPosition(exit.x, exit.y, creep.room.name), creep.pos,
+                        {
+                            color: '#ffffff',
+                            lineStyle: 'solid'
+                        });
+
+                        var pathacc = []
+
+                        var path = creep.pos.findPathTo(new RoomPosition(exit.x, exit.y, creep.room.name));
+                        for (var i = 0; i < path.length; i++)
+                        {
+                            pathacc.push(["cachemove", new RoomPosition(path[i].x, path[i].y, creep.room.name), creep.room.name])
+                        }
+                        for (var i = 0; i < creep.memory.memstruct.tasklist.length; i++)
+                        {
+                            pathacc.push(creep.memory.memstruct.tasklist[i])
+                        }
+                        creep.memory.memstruct.tasklist = pathacc
+
+                        //   creep.moveTo(new RoomPosition(exit.x, exit.y, creep.room.name));
+
+                    }
                 }
                 else
                 {
-                    this.loopTasks(creep);
+                    leader.say("fail move", creep.memory.memstruct.tasklist[0][1]);
+                    creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
+
                 }
 
             }
@@ -583,6 +722,7 @@ var creepfunctions = {
                 if (creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
+
                 }
                 else
                 {
@@ -600,6 +740,7 @@ var creepfunctions = {
                     else
                     {
                         this.loopTasks(creep);
+
                     }
                 }
             }
@@ -652,6 +793,7 @@ var creepfunctions = {
                     else
                     {
                         this.loopTasks(creep);
+                        this.checkglobaltasks(creep);
                     }
                 }
             }
@@ -660,6 +802,7 @@ var creepfunctions = {
                 if (creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
+
                 }
                 else
                 {
@@ -677,41 +820,273 @@ var creepfunctions = {
                     else
                     {
                         this.loopTasks(creep);
+
                     }
                 }
+            }
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "depositintcontainers")
+            {
+
+                var targets = creep.room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_CONTAINER && structure.store.getUsedCapacity() < 1900);
+                    }
+                });
+                creep.room.visual.circle(creep.pos,
+                {
+                    fill: 'transparent',
+                    radius: 0.55,
+                    stroke: 'red'
+                });
+                if (targets.length != 0 && creep.store.getUsedCapacity() != 0)
+                {
+
+                    var a = [
+                        ["transfer", targets[0].id, "energy"]
+                    ]
+                    a = a.concat(creep.memory.memstruct.tasklist)
+                    creep.memory.memstruct.tasklist = a
+                    this.checkglobaltasks(creep);
+                }
+                else
+                {
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+
+            }
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "harvestNextRoom")
+            {
+
+                if (creep.store[RESOURCE_ENERGY] == creep.store.getCapacity() && creep.store.getCapacity() != 0)
+                {
+
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+                else
+                {
+                    if (creep.memory.memstruct.tasklist[0].length == 1)
+                    {
+                        var target = creep.pos.findClosestByRange(FIND_SOURCES);
+                        creep.say("basicharvest");
+
+                        if (target)
+                        {
+                            if (creep.harvest(target) == ERR_NOT_IN_RANGE)
+                            {
+                                if (Game.time % 5 == 0)
+                                {
+                                    creep.moveTo(target,
+                                    {
+                                        ignoreCreeps: true
+                                    });
+                                }
+                                else
+                                {
+                                    creep.moveTo(target)
+                                }
+
+                            }
+                        }
+
+                    }
+                    else
+                    {
+
+                        var myArray = creep.name.split("-");
+
+                        if (myArray[1] != creep.memory.memstruct.tasklist[0][1])
+                        {
+                            creep.memory.memstruct.tasklist[0][1] = myArray[1];
+                        }
+
+                        var scouriD = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
+
+                        if (scouriD != undefined)
+                        {
+                            if (creep.harvest(scouriD) == ERR_NOT_IN_RANGE)
+                            {
+                                if (Game.time % 5 == 0)
+                                {
+                                    creep.moveTo(scouriD,
+                                    {
+                                        ignoreCreeps: true
+                                    });
+                                }
+                                else
+                                {
+                                    creep.moveTo(scouriD);
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+
+                var droppedresources = creep.room.find(FIND_DROPPED_RESOURCES,
+                {
+                    filter: (res) =>
+                    {
+                        return (res.resourceType == RESOURCE_ENERGY && res.amount > creep.store.getCapacity());
+                    }
+                });
+
+                // call for haulkers 
+
+                var target = Game.rooms[creep.room.name].find(FIND_SOURCES);
+                ///////////////////////////////////////////////////////
+                if (droppedresources.length != 0)
+                {
+                    var counter = 0;
+                    var finalPath = []
+                    var rawPath = roompathfind.run(creep.room.name, creep.memory.memstruct.spawnRoom, 2);
+                    for (var q = 0; q < rawPath.length; q++)
+                    {
+                        finalPath.push(["lowcpumoveToRoom", rawPath[q]])
+                        counter++;
+                    }
+
+                    finalPath.push(["pickupDroppedEnergy","noloop"])
+
+                    var rawPath = roompathfind.run(creep.memory.memstruct.spawnRoom, creep.room.name, 2);
+                    for (var q = 0; q < rawPath.length; q++)
+                    {
+                        finalPath.push(["lowcpumoveToRoom", rawPath[q]])
+                        counter++;
+                    }
+                    finalPath.push(["fillspawn"])
+                    finalPath.push(["fillext"])
+                    finalPath.push(["depositintcontainers"])
+
+                    finalPath.push(["repeat", counter + 4])
+
+                    if (counter == 0)
+                    {
+                        return false
+                    }
+
+                    var memstruct = {
+                        spawnRoom: creep.memory.memstruct.spawnRoom,
+                        tasklist: finalPath,
+                        objectIDStorage: "",
+                        boosted: false,
+                        moveToRenew: false,
+                        opportuniticRenew: true,
+                        hastask: false,
+                        full: false,
+                        wantsToJoinSquad: false,
+                        isInSquad: false,
+                        SquadID: "0",
+                        SquadRole: false
+                    };
+                    var bpodyparts = [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY]
+
+                    var energyavailable = Game.rooms[creep.memory.memstruct.spawnRoom].energyCapacityAvailable;
+
+                    var numberofparts = Math.floor((energyavailable - 300) / 100);
+                    if (numberofparts > 20)
+                    {
+                        numberofparts = 20;
+                    }
+                    for (let j = 0; j < numberofparts; j++)
+                    {
+                        bpodyparts.push(CARRY);
+                        bpodyparts.push(MOVE);
+                    }
+
+
+
+
+                    for (let q = 0; q < target.length * 2; q++)
+                    {
+
+                        Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bpodyparts, 'nextroomHauler' + creep.room.name + q,
+                        {
+                            memory:
+                            {
+                                role: 'multi',
+                                cpuUsed: 0,
+                                roomtarg: roomname,
+                                sourcetarget: 1,
+                                full: false,
+                                memstruct: memstruct
+                            }
+                        });
+                    }
+
+                }
+
+                ///////////////////////////////////////////////
+
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "harvest")
             {
                 creep.say(creep.store[RESOURCE_ENERGY])
 
-                if (creep.store[RESOURCE_ENERGY] == creep.store.getCapacity())
+                if (creep.store[RESOURCE_ENERGY] == creep.store.getCapacity() && creep.store.getCapacity() != 0)
                 {
 
                     this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
                 }
                 else
                 {
-
-                    var target = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-
-                    if (target)
+                    if (creep.memory.memstruct.tasklist[0].length == 1)
                     {
-                        if (creep.harvest(target) == ERR_NOT_IN_RANGE)
-                        {
-                            if (Game.time % 5 == 0)
-                            {
-                                creep.moveTo(target,
-                                {
-                                    ignoreCreeps: true
-                                });
-                            }
-                            else
-                            {
-                                creep.moveTo(target)
-                            }
+                        var target = creep.pos.findClosestByRange(FIND_SOURCES);
+                        creep.say("basicharvest");
 
+                        if (target)
+                        {
+                            if (creep.harvest(target) == ERR_NOT_IN_RANGE)
+                            {
+                                if (Game.time % 5 == 0)
+                                {
+                                    creep.moveTo(target,
+                                    {
+                                        ignoreCreeps: true
+                                    });
+                                }
+                                else
+                                {
+                                    creep.moveTo(target)
+                                }
+
+                            }
+                        }
+
+                    }
+                    else
+                    {
+
+                        var scouriD = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
+
+                        if (scouriD != undefined)
+                        {
+                            if (creep.harvest(scouriD) == ERR_NOT_IN_RANGE)
+                            {
+                                if (Game.time % 5 == 0)
+                                {
+                                    creep.moveTo(scouriD,
+                                    {
+                                        ignoreCreeps: true
+                                    });
+                                }
+                                else
+                                {
+                                    creep.moveTo(scouriD);
+                                }
+
+                            }
                         }
                     }
+
                 }
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "guardRoom")
@@ -848,6 +1223,7 @@ var creepfunctions = {
                     ]
                     a = a.concat(creep.memory.memstruct.tasklist)
                     creep.memory.memstruct.tasklist = a
+                    this.checkglobaltasks(creep);
                 }
                 else
                 {
@@ -856,14 +1232,14 @@ var creepfunctions = {
                 }
 
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "fillspawn")
+            else if (creep.memory.memstruct.tasklist[0][0] == "fillext")
             {
 
                 var targets = creep.room.find(FIND_STRUCTURES,
                 {
                     filter: (structure) =>
                     {
-                        return (structure.structureType == STRUCTURE_SPAWN && structure.store.getUsedCapacity("energy") < 290);
+                        return (structure.structureType == STRUCTURE_EXTENSION && structure.store.getFreeCapacity("energy") > 0);
                     }
                 });
 
@@ -876,7 +1252,41 @@ var creepfunctions = {
                 if (targets.length == 0)
                 {
                     this.loopTasks(creep);
+
+                }
+                else
+
+                {
+
+                    var a = [
+                        ["transfer", targets[0].id, "energy"]
+                    ]
+                    a = a.concat(creep.memory.memstruct.tasklist)
+                    creep.memory.memstruct.tasklist = a
+                }
+
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "fillspawn")
+            {
+
+                var targets = creep.room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (structure.structureType == STRUCTURE_SPAWN && structure.store.getUsedCapacity("energy") < 300);
+                    }
+                });
+
+                if (creep.store.getUsedCapacity("energy") == 0)
+                {
+                    this.loopTasks(creep);
                     this.checkglobaltasks(creep);
+                }
+                else
+                if (targets.length == 0)
+                {
+                    this.loopTasks(creep);
+
                 }
                 else
 
@@ -893,7 +1303,7 @@ var creepfunctions = {
             else if (creep.memory.memstruct.tasklist[0][0] == "withdrawControllerContainer")
             {
 
-                var targets = creep.room.controller.pos.findInRange(FIND_STRUCTURES,4,
+                var targets = creep.room.controller.pos.findInRange(FIND_STRUCTURES, 4,
                 {
                     filter: (structure) =>
                     {
@@ -904,11 +1314,13 @@ var creepfunctions = {
                 if (creep.store.getFreeCapacity("energy") == 0)
                 {
                     this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
                 }
                 else
                 if (targets.length == 0)
                 {
                     this.loopTasks(creep);
+
                 }
                 else
                 {
@@ -987,6 +1399,7 @@ var creepfunctions = {
                     {
                         creep.say("breakwithdraw");
                         this.loopTasks(creep);
+                        this.checkglobaltasks(creep);
                     }
                     else
                     {
@@ -1006,11 +1419,13 @@ var creepfunctions = {
                         {
                             console.log("controller withdraw eerr");
                             this.loopTasks(creep);
+                            this.checkglobaltasks(creep);
                         }
                         else if (!targ)
                         {
 
                             this.loopTasks(creep);
+                            this.checkglobaltasks(creep);
                         }
 
                         else
@@ -1047,6 +1462,7 @@ var creepfunctions = {
                             else if (a == -6)
                             {
                                 this.loopTasks(creep);
+                                this.checkglobaltasks(creep);
                             }
 
                         }
@@ -1065,7 +1481,7 @@ var creepfunctions = {
                 //     ["transfer" , "5f4e3d6138522b1096393b7d","tissue",50]
                 var targ = Game.getObjectById(creep.memory.memstruct.tasklist[0][1]);
 
-                if (creep.memory.role == "mover" && targ.structureType == STRUCTURE_CONTAINER)
+                if (creep.memory.role == "mover" && targ != undefined && targ.structureType == STRUCTURE_CONTAINER)
                 {
                     if (targ.store.getFreeCapacity() < 300)
                     {
@@ -1082,7 +1498,10 @@ var creepfunctions = {
                 {
                     this.loopTasks(creep);
                 }
-
+if (targ == undefined )
+                {
+                    this.loopTasks(creep);
+                }
                 if (creep.memory.memstruct.tasklist[0].length == 4)
                 {
                     var a = creep.transfer(targ, creep.memory.memstruct.tasklist[0][2], creep.memory.memstruct.tasklist[0][3]);
@@ -2152,8 +2571,6 @@ var creepfunctions = {
                     }
                 }
             }
-            ////////////////
-
             else if (creep.memory.memstruct.tasklist[0][0] == "movetoRoom" || creep.memory.memstruct.tasklist[0][0] == "moveToRoom" || creep.memory.memstruct.tasklist[0][0] == "forcemoveToRoom")
             {
                 var leader = creep;
@@ -2468,12 +2885,14 @@ var creepfunctions = {
             }
             else
             {
-                this.loopTasks(creep);
+                creep.say("1loopfail1")
+                //    this.loopTasks(creep);
             }
         }
         else
         {
-            this.loopTasks(creep);
+            creep.say("2loopfail1")
+            //   this.loopTasks(creep);
             return true;
         }
     },

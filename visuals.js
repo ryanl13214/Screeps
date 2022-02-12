@@ -35,6 +35,11 @@ var visuals = {
                 stroke: '#00FF00',
                 strokeWidth: 1,
             });
+            Game.map.visual.text(Memory.roomlist[scoutedrooms[i]].dangerLevel +"-", new RoomPosition(5,5,scoutedrooms[i]), {color: '#FFFFFF', fontSize: 10}); 
+                
+           
+            
+            
 
         }
 
@@ -164,6 +169,14 @@ var visuals = {
                     stroke: '#00FF00',
                     strokeWidth: 1,
                 });
+                
+                
+                
+                
+                
+                
+                
+                
                 var storagev = 1000000 - Game.rooms[roomname].storage.store.getUsedCapacity("energy");
                 var fillv = Math.floor((storagev / 1000000) * 50);
                 Game.map.visual.rect(new RoomPosition(40, 0, roomname), 10, 50,

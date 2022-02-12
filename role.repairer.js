@@ -233,6 +233,69 @@ findfullcontainers: function(creep, energyleveltodrawfrom)
             creep.memory.hastask = true;
         }
     },
+      MaterialGathereing: function(creep)
+    {
+
+        var droppedresources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES,
+        {
+            filter: (res) =>
+            {
+                return (res.resourceType == RESOURCE_ENERGY) && (res.amount > creep.store.getCapacity());
+            }
+        });
+
+        var tombstones = creep.pos.findClosestByPath(FIND_TOMBSTONES,
+        {
+            filter: (tomb) =>
+            {
+                return (tomb.store.getUsedCapacity() == tomb.store.getUsedCapacity(RESOURCE_ENERGY)) && (tomb.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getCapacity());
+            }
+        });
+
+        var target = creep.room.find(FIND_HOSTILE_CREEPS);
+
+        //pcik up from recycle lab point
+        var containers = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) < structure.store.getUsedCapacity());
+            }
+        });
+
+        if (containers != undefined)
+        {
+
+            var input = Object.keys(containers.store);
+
+            for (var i = 0; i < input.length; i++)
+            {
+                creep.memory.memstruct.tasklist.push(["withdraw", containers.id, input[i]]);
+            }
+
+        }
+
+        if (tombstones != undefined && target.length == 0)
+        {
+
+            var input = Object.keys(tombstones.store);
+
+            for (var i = 0; i < input.length; i++)
+            {
+                creep.memory.memstruct.tasklist.push(["withdraw", tombstones.id, input[i]]);
+            }
+
+        }
+
+        if (droppedresources != undefined && target.length == 0)
+        {
+
+            creep.memory.memstruct.tasklist.push(["gatherLooseResources"]);
+
+        }
+
+        return false;
+    },
     run: function(creep)
     {
         var startCpurepair = Game.cpu.getUsed();
@@ -256,7 +319,7 @@ findfullcontainers: function(creep, energyleveltodrawfrom)
             creep.memory.hastask = false;
             if (!creep.memory.hastask)
             {
-                this.findfullcontainers(creep, 500);
+                this.MaterialGathereing(creep);
             }
             if (!creep.memory.hastask)
             {

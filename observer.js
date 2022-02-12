@@ -239,7 +239,7 @@ var obs = {
             // if the room is not on roomlist
             //         if(Memory.roomlist[scanroom] == undefined)
             //       {
-            this.addToRoomList(scanroom);
+            this.addToRoomList(scanroom,0,"a");
             //       }
 
             // if room is on list and hasnt been updatred in a while.
@@ -248,9 +248,9 @@ var obs = {
 
     },
 
-    addToRoomList: function(scanroom) // make available for scout
+    addToRoomList: function(scanroom,distance,closeroom) // make available for scout
     {
- 
+ //addToRoomList(creep.room.name,1500 - creep.ticksToLive,creep.memory.memstruct.spawnRoom);
         var exits = Game.map.describeExits(scanroom);
         //   {
         //   "1": "W8N4",    // TOP
@@ -370,17 +370,49 @@ var obs = {
 
 
         */
+        
+        var reset =  false
+        
+        if(Memory.roomlist[scanroom] == undefined ){
+            reset = true
+        }   
+        
+          if(Memory.roomlist[scanroom] != undefined  && distance != 0 && distance <  Memory.roomlist[scanroom].distanceFromHomeRoom   ){
+            reset = true
+              var distancepass =  distance
+              
+        }   
+        else
+        {
+         var distancepass =   99999
+        }
+        if(closeroom != "a" && reset)
+        {
+            var roompass =  closeroom
+        }
+        else
+        {
+         var roompass =     ""
+        }
+        
+        var sourceIDs = []
+            for (var qq = 0; qq < sources.length; qq++)
+        {
+        sourceIDs.push(sources[qq].id)
+         
+        }
 
         Memory.roomlist[scanroom] = {
             roomname: scanroom,
-            distanceFromHomeRoom: 99999,
-            closestRoom: "",
+            distanceFromHomeRoom: distancepass,
+            closestRoom: roompass,
             dangerLevel: dangerlevel,
             ExitTop: ExitTopacc,
             ExitRight: ExitRightacc,
             ExitBottom: ExitBottomacc,
             ExitLeft: ExitLeftacc,
-            numberOfSources:sources.length
+            numberOfSources:sources.length,
+            SourceIDs:sourceIDs
             
         }
 

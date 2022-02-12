@@ -207,6 +207,66 @@ var cont1volume=0;
             }
             return false;
         }
+        
+        if(creep.room.storage == undefined)
+        {
+            
+            
+              var ex = creep.pos.findClosestByPath(FIND_STRUCTURES,
+        {
+            filter: (structure) =>
+            {
+                return (structure.structureType == STRUCTURE_SPAWN && structure.store.getFreeCapacity("energy") != 0);
+            }
+        });
+        
+        if (ex)
+        {
+          
+            if (creep.transfer(ex, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+            {
+                creep.moveTo(ex);
+            }
+            return false;
+        }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         return true;
     },
     filllabs: function(creep)
@@ -394,7 +454,7 @@ var cont1volume=0;
             {
                 var target = creep.room.find(FIND_HOSTILE_CREEPS);
 
-                if (target.length != 0 || roomLevel < 6)
+                if (target.length != 0 )
                 {
                     var valuablematerialsTogather = false
                 }

@@ -11,9 +11,7 @@ var roleharvester = {
             if(flag1 == undefined || flag2 == undefined)
             {
                 var target = creep.room.find(FIND_SOURCES)[creep.memory.sourcetarget];
-                 var target2 = creep.room.find(FIND_SOURCES)[(creep.memory.sourcetarget + 1 % 2)];
-                 
-                 
+              
                  var spn = creep.room.find(FIND_MY_STRUCTURES, 
             {
                 filter: (structure) =>
@@ -31,34 +29,7 @@ var roleharvester = {
                   creep.room.createFlag(pathh[1].x, pathh[1].y, creep.room.name + "container" + creep.memory.sourcetarget);
                  creep.room.createFlag(pathh[0].x, pathh[0].y, creep.room.name + "source" + creep.memory.sourcetarget);
                 
-                
-                 var flag1 = Game.flags[creep.room.name + "source" + (creep.memory.sourcetarget + 1 % 2)];
-            var flag2 = Game.flags[creep.room.name + "container" + (creep.memory.sourcetarget + 1 % 2)];
-                
-                
-                  if(flag1 == undefined || flag2 == undefined)
-            {
-                  
-                 var spn = creep.room.find(FIND_MY_STRUCTURES, 
-            {
-                filter: (structure) =>
-                {
-                    return (structure.structureType == STRUCTURE_SPAWN);
-                }
-            });
-                
-        
-                var pathh = target2.pos.findPathTo(spn[0],
-                {
-                    ignoreCreeps: true
-                });
-                
-                  creep.room.createFlag(pathh[1].x, pathh[1].y, creep.room.name + "container" +(creep.memory.sourcetarget + 1 % 2));
-                 creep.room.createFlag(pathh[0].x, pathh[0].y, creep.room.name + "source" + (creep.memory.sourcetarget + 1 % 2));
-                
-                
-            }
-                
+                 
                 
                 
                 

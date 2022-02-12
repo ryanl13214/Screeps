@@ -89,7 +89,7 @@ room considtions
              }
              else if(creep.memory.exitchosen != "a" && creep.room.name != creep.memory.prevRoom) // if ceep has moved into new room
              {
-                 observer.addToRoomList(creep.room.name);
+                 observer.addToRoomList(creep.room.name,1500 - creep.ticksToLive,creep.memory.memstruct.spawnRoom);
                  
                  if(Memory.roomlist[creep.room.name].distanceFromHomeRoom == undefined || Memory.roomlist[creep.room.name].distanceFromHomeRoom < 1500 - creep.ticksToLive)
                  {

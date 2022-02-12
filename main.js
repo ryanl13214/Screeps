@@ -29,9 +29,16 @@ module.exports.loop = function()
                {
                    Memory.roomlist = {};
                }
+               
+                var roomsall = Object.keys(Game.rooms);
+           if(roomsall.length == 1 && Game.rooms[roomsall[0]].controller.safeMode > 19990){
+                Memory.roomlist = {};
+           }    
+               
+               
      
     var ownedrooms = [];
-    var roomsall = Object.keys(Game.rooms);
+   
     var roomsobj = Game.rooms;
     for (var i = 0; i < roomsall.length; i++)
     {
@@ -222,7 +229,7 @@ module.exports.loop = function()
             }
         }
          
-        if(ownedrooms.length == 1 && Game.rooms[ownedrooms[i]].controller.level < 6)
+        if(ownedrooms.length == 1 && Game.rooms[ownedrooms[i]].controller.level < 4)
         {
           
             roomControllerBotArena.run(ownedrooms[i]);
