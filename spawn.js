@@ -143,6 +143,7 @@ var spwan = {
             }
             if (Memory.empire.roomsobj[roomname].moversobj == undefined)
             {
+                console.log("creating moverObj");
                 Memory.empire.roomsobj[roomname].moversobj = {
                     numberOfMoveres: 1,
                     ticksSinceLastCall: 0,

@@ -217,13 +217,41 @@ var creepfunctions = {
                 }
                 else
                 {
-                    var droppedresources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES,
+                    var droppedresourcesa = creep.room.find(FIND_DROPPED_RESOURCES,
                     {
                         filter: (res) =>
                         {
                             return (res.resourceType == RESOURCE_ENERGY && res.amount > creep.store.getFreeCapacity());
                         }
                     });
+                    
+                    
+                     
+             var droppedresources;
+             if(droppedresourcesa.length != 0 )
+             {
+                 var maxvalue = 0;
+                 for (var k = 0; k < droppedresourcesa.length; k++)
+                        {
+                 
+                 if(droppedresourcesa[k].amount >maxvalue )
+                 {
+                     maxvalue = droppedresourcesa[k].amount 
+                     droppedresources = droppedresourcesa[k]
+                 }
+                 
+                        }
+             }
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     if (droppedresources != undefined && creep.store.getFreeCapacity(RESOURCE_ENERGY) != 0)
                     {
 
@@ -450,7 +478,7 @@ var creepfunctions = {
                 }
 
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "cachemove")
+            else if (creep.memory.memstruct.tasklist[0][0] == "cachemove" || creep.memory.memstruct.tasklist[0][0] == "lowCpuMove"    )
             {
                 var q = creep.memory.memstruct.tasklist[0][1];
                 
@@ -460,23 +488,29 @@ var creepfunctions = {
                       this.loopTasks(creep);
                     this.checkglobaltasks(creep); 
                 }
-                
-                var dire = creep.pos.getDirectionTo(creep.memory.memstruct.tasklist[0][1])
-                new RoomVisual(creep.room.name).line(creep.memory.memstruct.tasklist[0][1], creep.pos,
-                {
-                    color: '#f00fff',
-                    lineStyle: 'solid'
-                });
-                var a = creep.moveTo(new RoomPosition(q.x, q.y, creep.room.name))
-                creep.say("a", a);
-                //  var a = creep.move(dire)
-                if (a == OK)
-                {
-                    this.loopTasks(creep);
+                else if(creep.memory.memstruct.tasklist[0].length == 1){
+                         this.loopTasks(creep);
+                    this.checkglobaltasks(creep); 
                 }
-                //   var path = leader.pos.findPathTo(target);
-                //  return leader.pos.getDirectionTo(pos);
-
+                else
+                {
+                
+                    var dire = creep.pos.getDirectionTo(creep.memory.memstruct.tasklist[0][1])
+                    new RoomVisual(creep.room.name).line(creep.memory.memstruct.tasklist[0][1], creep.pos,
+                    {
+                        color: '#f00fff',
+                        lineStyle: 'solid'
+                    });
+                    var a = creep.moveTo(new RoomPosition(q.x, q.y, creep.room.name))
+                    creep.say("a", a);
+                    //  var a = creep.move(dire)
+                    if (a == OK)
+                    {
+                        this.loopTasks(creep);
+                    }
+                    //   var path = leader.pos.findPathTo(target);
+                    //  return leader.pos.getDirectionTo(pos);
+                }
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "lowcpumoveToRoom")
             {
@@ -488,6 +522,7 @@ var creepfunctions = {
 
                     leader.moveTo(new RoomPosition(25, 25, leader.room.name));
                     this.loopTasks(creep);
+                    
                     return true
                 }
 
@@ -535,6 +570,7 @@ var creepfunctions = {
                         var pathacc = []
 
                         var path = creep.pos.findPathTo(new RoomPosition(exit.x, exit.y, creep.room.name));
+                          creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
                         for (var i = 0; i < path.length; i++)
                         {
                             pathacc.push(["cachemove", new RoomPosition(path[i].x, path[i].y, creep.room.name), creep.room.name])
@@ -544,7 +580,7 @@ var creepfunctions = {
                             pathacc.push(creep.memory.memstruct.tasklist[i])
                         }
                         creep.memory.memstruct.tasklist = pathacc
-
+    this.loopTasks(creep);
                         //   creep.moveTo(new RoomPosition(exit.x, exit.y, creep.room.name));
 
                     }
@@ -555,7 +591,7 @@ var creepfunctions = {
                     creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
 
                 }
-
+ 
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "templeBuild")
             {
@@ -2067,8 +2103,34 @@ if (targ == undefined )
                 }
                 else
                 {
-                    var droppedresources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
-                    var tombstones = creep.pos.findClosestByRange(FIND_TOMBSTONES,
+                  var droppedresourcesa = creep.room.find(FIND_DROPPED_RESOURCES,
+                    {
+                        filter: (res) =>
+                        {
+                            return (res.resourceType == RESOURCE_ENERGY && res.amount > creep.store.getFreeCapacity());
+                        }
+                    });
+             var droppedresources;
+             if(droppedresourcesa.length != 0 )
+             {
+                 var maxvalue = 0;
+                 for (var k = 0; k < droppedresourcesa.length; k++)
+                        {
+                 
+                 if(droppedresourcesa[k].amount >maxvalue )
+                 {
+                     maxvalue = droppedresourcesa[k].amount 
+                     droppedresources = droppedresourcesa[k]
+                 }
+                 
+                        }
+             }
+             
+             
+             
+             
+             
+                   var tombstones = creep.pos.findClosestByRange(FIND_TOMBSTONES,
                     {
                         filter: (res) =>
                         {

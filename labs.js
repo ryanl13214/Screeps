@@ -5,18 +5,8 @@ var labs = {
         var mainFlag = Game.flags[roomname];
         var strg = mainFlag.room.storage;
         var terminalActual = mainFlag.room.terminal;
-        if (Memory.empire == undefined)
-        {
-            Memory.empire = {};
-        }
-        else if (Memory.empire.roomsobj == undefined)
-        {
-            Memory.empire.roomsobj = {};
-        }
-        else if (Memory.empire.roomsobj[roomname] == undefined)
-        {
-            Memory.empire.roomsobj[roomname] = {};
-        }
+    
+   
 
         if (Memory.empire.roomsobj[roomname].labBoostCurr == undefined)
         {

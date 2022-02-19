@@ -115,7 +115,7 @@ var roomController = {
         {
             if (Game.time % 99 == 0)
             {
-                // squadgenerate.run(roomname);
+                 squadgenerate.run(roomname);
             }
         }
         var squadgenerator_cpu_used = +Game.cpu.getUsed() - startCpu;

@@ -1,6 +1,25 @@
 var roompathfind = require('roompathfinder');
 var harrassers = require('Outrider.mineHarasser');
 var OutriderManager = {
+    flagControl: function()
+    {
+        var roomob2j = Game.flags["orattack"];
+        if (roomob2j != undefined)
+        {
+            for (var c = 0; c <   Memory.outrider.activeRiders.length ; c++)
+            {
+                var creep = Game.getObjectById(Memory.outrider.activeRiders[c])
+                if(creep &&  creep.memory.roomtarg != roomob2j.pos.roomName)
+                {
+                 creep.memory.memstruct.tasklist = [];
+                creep.memory.roomtarg = roomob2j.pos.roomName;
+                } 
+            } 
+        }
+    },
+    
+    
+    
     selectRooms: function(roomID) // select rooms within moverange
     {
 
@@ -15,7 +34,7 @@ var OutriderManager = {
         var counter = 15;
         for (var i = 0; i < ownedrooms.length; i++)
         {
-            if (Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) < counter && Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) != 0 &&  ownedrooms[i] != "E24N3" ) //  check room has a valid path 
+            if (Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) < counter && Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) != 0   ) //  check room has a valid path 
             {
                 counter = Game.map.getRoomLinearDistance(roomID, ownedrooms[i]);
                 returnList = [];
@@ -67,7 +86,7 @@ var OutriderManager = {
 
     run: function(roomID)
     {
-
+ 
         if (Memory.outrider == undefined)
         {
             Memory.outrider = {
@@ -90,7 +109,7 @@ var OutriderManager = {
             if (Memory.outrider.TargetRooms[i].lastActiveGuard == 0 || Game.time - Memory.outrider.TargetRooms[i].lastActiveGuard < 0)        // if the creep in room warning was old 
             {
 
-               this.spawnnewcreep(Memory.outrider.TargetRooms[i].targRoomname , Memory.outrider.TargetRooms[i].nearestRoomName ,  Memory.outrider.TargetRooms[i].creeptrole   )
+           //    this.spawnnewcreep(Memory.outrider.TargetRooms[i].targRoomname , Memory.outrider.TargetRooms[i].nearestRoomName ,  Memory.outrider.TargetRooms[i].creeptrole   )
 
             }
 
@@ -100,13 +119,13 @@ var OutriderManager = {
         var target;
         for (var c = 0; c <   Memory.outrider.activeRiders.length       ; c++)
         {
-            
+            var cre = Game.getObjectById(Memory.outrider.activeRiders[c])
             if(!Game.getObjectById(Memory.outrider.activeRiders[c]))
             {
                  Memory.outrider.activeRiders.splice(c, 1); 
-            }
+            }else
             
-            if(1==1){// begiond with mine
+            if(cre.memory.memstruct.tasklist.length == 0 ){// begiond with mine
            harrassers.run(Game.getObjectById(Memory.outrider.activeRiders[c]))
            }
             
@@ -114,7 +133,7 @@ var OutriderManager = {
         }
         
         
-        
+        this.flagControl()
         
         
 

@@ -3,7 +3,16 @@ var roles = require('roles');
 var roompathfind = require('roompathfinder');
 var roomControllerBotArena = {
     run: function(roomname)
-    {
+    { 
+        
+           if (Memory.empire.roomsobj[roomname] == undefined  && (Game.rooms[roomname] != undefined && Game.rooms[roomname].controller != undefined && Game.rooms[roomname].controller.owner === "Q13214" )  )
+        {
+            Memory.empire.roomsobj[roomname] = {
+    
+            }
+        }
+        
+        tower.run(roomname, 0);
 
         //          run basicBuild 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +95,6 @@ var roomControllerBotArena = {
             [1, 2],
             [1, 3],
             [2, 3],
-
             [-2, 1],
             [-2, 2],
             [-1, 3],
@@ -168,6 +176,16 @@ var roomControllerBotArena = {
             }
         });
 
+
+ 
+
+
+
+
+
+
+
+
         if (!Game.creeps['erly1' + roomname] || (!Game.creeps['erly2' + roomname] && levelOfController == 1))
         {
             if (levelOfController == 1)
@@ -175,6 +193,7 @@ var roomControllerBotArena = {
                 memstruct.tasklist = [
                     ["pickupDroppedEnergy"],
                     ["harvest", Memory.botarena.rooms[roomname].source1ID],
+                     ["fillTowers"],
                     ["fillspawn"],
                     ["fillext"],
                     ["buildGeneral"],
@@ -236,10 +255,9 @@ var roomControllerBotArena = {
             });
 
         }
-
         else if (energyavailable < 750 && (!Game.creeps['erly4' + roomname] || !Game.creeps['erly3' + roomname]) && containers.length != 3)
         {
-
+   
             memstruct.tasklist = [
                 ["harvest", Memory.botarena.rooms[roomname].source1ID],
                 ["repeat", 1]
@@ -291,10 +309,9 @@ var roomControllerBotArena = {
             });
 
         }
-
         else if (energyavailable < 750 && (!Game.creeps['erlyd01' + roomname] || !Game.creeps['erlyd02' + roomname]) && containers.length != 3)
         {
-
+ 
             memstruct.tasklist = [
                 ["harvest", Memory.botarena.rooms[roomname].source0ID],
                 ["repeat", 1]
@@ -348,7 +365,7 @@ var roomControllerBotArena = {
         }
         else if (!Game.creeps['erlym' + roomname] && movers.length == 0)
         {
-
+   
             var bpodyparts = [MOVE, MOVE, CARRY, MOVE, CARRY, CARRY];
 
             memstruct.tasklist = [
@@ -371,10 +388,9 @@ var roomControllerBotArena = {
             });
 
         }
-
-        else if (movers.length < 2 && containers.length != 0)
+        else if ((!Game.creeps['mover' + roomname] || !Game.creeps['mover1' + roomname])  && containers.length != 0)
         {
-            //   console.log("spawn 1");
+           
             memstruct.opportuniticRenew = false
 
             var bpodyparts = [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY];
@@ -389,7 +405,7 @@ var roomControllerBotArena = {
                 bpodyparts.push(MOVE);
             }
 
-            Game.spawns[roomname].spawnCreep(bpodyparts, 'mover' + roomname + Game.time,
+            Game.spawns[roomname].spawnCreep(bpodyparts, 'mover' + roomname  ,
             {
                 memory:
                 {
@@ -401,6 +417,25 @@ var roomControllerBotArena = {
                     memstruct: memstruct
                 }
             });
+            
+            Game.spawns[roomname].spawnCreep(bpodyparts, 'mover1' + roomname  ,
+            {
+                memory:
+                {
+                    role: 'mover',
+                    cpuUsed: 0,
+                    roomtarg: roomname,
+                    sourcetarget: Game.time % 2,
+                    full: false,
+                    memstruct: memstruct
+                }
+            });            
+            
+            
+            
+            
+            
+            
 
         }
         else if (energyavailable >= 550 && harvesters.length < 2)
@@ -524,7 +559,6 @@ var roomControllerBotArena = {
             }
 
         }
-
         else if (upgraders.length < 5 && droppedresources.length != 0 && containers.length != 3)
         {
             //  console.log("spawn 0");
@@ -558,10 +592,26 @@ var roomControllerBotArena = {
             }
 
         }
-
-        else if (repairs.length < 2 || (repairs.length < 6 && levelOfController == 2))
+        else if (repairs.length < 3 || (repairs.length < 6 && levelOfController == 2))
         {
             var bodyparts = [WORK, CARRY, MOVE, MOVE];
+
+            var numberofparts = Math.floor((energyavailable - 250) / 250);
+            if (numberofparts > 5)
+            {
+                numberofparts = 5;
+            }
+            for (let j = 0; j < numberofparts; j++)
+            {
+    bodyparts.push(CARRY);
+    bodyparts.push(WORK);
+    bodyparts.push(MOVE);
+                bodyparts.push(MOVE);
+            }
+            
+
+
+
 
             for (let q = 0; q < 6; q++)
             {
@@ -605,7 +655,7 @@ var roomControllerBotArena = {
         }
         else if (!Game.creeps['scoutobs' + roomname])
         {
-
+ 
             Game.spawns[roomname].spawnCreep([MOVE], 'scoutobs' + roomname,
             {
                 memory:

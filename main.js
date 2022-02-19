@@ -4,7 +4,6 @@ var claimManager = require('roomClaimer');
 var visuals = require('visuals');
 var powerManager = require('powercreepManager');
 var tickcode = require('tickcode');
-
 var roles = require('roles');
 var roomController = require('roomController');
 var roomControllerBotArena = require('roomControllerBotArena');
@@ -13,38 +12,37 @@ var OutriderManager = require('Outrider.manager');
 var debug = false;
 
 module.exports.loop = function()
-{  
+{
 
     if (Memory.empire == undefined)
     {
         Memory.empire = {
-            roomsobj:{}
+            roomsobj:
+            {}
         }
     }
     if (Memory.hostileempires == undefined)
     {
-        Memory.hostileempires ={}
-        
-    }   if(Memory.roomlist == undefined)
-               {
-                   Memory.roomlist = {};
-               }
-               
-                var roomsall = Object.keys(Game.rooms);
-           if(roomsall.length == 1 && Game.rooms[roomsall[0]].controller.safeMode > 19990){
-                Memory.roomlist = {};
-           }    
-               
-               
-     
+        Memory.hostileempires = {}
+
+    }
+    if (Memory.roomlist == undefined)
+    {
+        Memory.roomlist = {};
+    }
+
+    var roomsall = Object.keys(Game.rooms);
+    if (roomsall.length == 1 && Game.rooms[roomsall[0]].controller.safeMode > 19990)
+    {
+        Memory.roomlist = {};
+    }
+
     var ownedrooms = [];
-   
+
     var roomsobj = Game.rooms;
     for (var i = 0; i < roomsall.length; i++)
     {
-        
-        
-           
+
         if (roomsobj[roomsall[i]].controller != undefined)
         {
             if (roomsobj[roomsall[i]].controller.owner != undefined)
@@ -52,37 +50,27 @@ module.exports.loop = function()
                 if ((roomsobj[roomsall[i]]).controller.owner.username === "Q13214" && (roomsobj[roomsall[i]]).controller.level > 0)
                 {
 
-
                     ownedrooms.push(roomsall[i]);
                 }
             }
         }
     }
-    
-    
-      var ownedrooms2 = Object.keys(Memory.empire.roomsobj);
-      for (var i = 0; i < ownedrooms2.length; i++)
+
+    var roomsall2 = Object.keys(Memory.empire.roomsobj);
+
+    for (var i = 0; i < roomsall2.length; i++)
     {
-    
-    
-     if((   Game.rooms[ownedrooms2[i]] == undefined  ||  (Game.rooms[ownedrooms2[i]].controller != undefined && Game.rooms[ownedrooms2[i]].controller.owner != undefined && Game.rooms[ownedrooms2[i]].controller.owner != "Q13214" )    )  && Memory.empire.roomsobj[ownedrooms2[i]] != undefined )
+        var roomobj = Game.rooms[roomsall2[i]];
+
+        if (!roomobj || !roomobj.controller || !roomobj.controller.owner || roomobj.controller.owner.username !== "Q13214")
         {
-            delete Memory.empire.roomsobj[ownedrooms2[i]]
+            console.log("deleting room from memory-", roomsall2[i]);
+            delete Memory.empire.roomsobj[roomsall2[i]]
         }
-        
-    
     }
-    
-//    OutriderManager.run();
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    OutriderManager.run();
+
     var mainstartCpu = Game.cpu.getUsed();
     var gametime = Game.time;
     //------------------------------------------------------------------------------------------------
@@ -94,9 +82,12 @@ module.exports.loop = function()
     var listvalues = Object.values(powerCreepList);
     for (var i = 0; i < listnumbers.length; i++)
     {
-        try{
-        powerManager.run(listvalues[i]);
-        }catch(e){}
+        try
+        {
+            powerManager.run(listvalues[i]);
+        }
+        catch (e)
+        {}
     }
     var powerManager_cpu_used = Game.cpu.getUsed() - startCpu;
     if (debug)
@@ -108,10 +99,9 @@ module.exports.loop = function()
     // console.log(Game.market.credits*0.00000005);
     //------------------------------------------------------------------------------------------------
     tickcode.run();
-   
-    
+
     visuals.run();
-  
+
     //------------------------------------------------------------------------------------------------
     //                                  
     //------------------------------------------------------------------------------------------------
@@ -131,9 +121,12 @@ module.exports.loop = function()
     //------------------------------------------------------------------------------------------------
     if (Game.cpu.bucket == 10000)
     {
-           try{
-        Game.cpu.generatePixel()
-        }catch(e){}
+        try
+        {
+            //  Game.cpu.generatePixel()
+        }
+        catch (e)
+        {}
     }
     //------------------------------------------------------------------------------------------------
     //                          deleting memory
@@ -198,7 +191,7 @@ module.exports.loop = function()
     var resourcekeys = Object.keys(attacks);
     for (var i = 0; i < resourcekeys.length; i++)
     {
-    //      attackManager.run(resourcekeys[i]);
+        //      attackManager.run(resourcekeys[i]);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                        claim MANAGER
@@ -214,34 +207,54 @@ module.exports.loop = function()
     var claimsys = Object.keys(claims);
     for (var i = 0; i < claimsys.length; i++)
     {
-     claimManager.run(claimsys[i]);
+        claimManager.run(claimsys[i]);
     }
     //------------------------------------------------------------------------------------------------
     //                    START OF ROOMS LOOP
     //------------------------------------------------------------------------------------------------
     for (var i = 0; i < ownedrooms.length; i++)
     {
-        
-         if(Memory.empire.roomsobj[ownedrooms[i]] == undefined)
+        var roomobj = Game.rooms[ownedrooms[i]];
+
+        if (!roomobj || !roomobj.controller || !roomobj.controller.owner || roomobj.controller.owner.username !== "Q13214")
         {
-            Memory.empire.roomsobj[ownedrooms[i]] = {
-          
-            }
+            console.log("deleting room from memory-", ownedrooms[i]);
+            delete Memory.empire.roomsobj[ownedrooms[i]]
         }
-         
-        if(ownedrooms.length == 1 && Game.rooms[ownedrooms[i]].controller.level < 4)
+
+        if (Game.rooms[ownedrooms[i]].controller.level <= 4 && Game.spawns["OR" + ownedrooms[i]] != undefined)
         {
-          
+
+            new RoomVisual(ownedrooms[i]).text("roomtype - Outrider", 23, 1,
+            {
+                color: 'green',
+                font: 0.8,
+                align: 'centre'
+            });
+            roomControllerOutrider.run(ownedrooms[i]);
+        }
+        else if (Game.rooms[ownedrooms[i]].controller.level <= 4 && Game.spawns[ownedrooms[i]] != undefined)
+        {
+            new RoomVisual(ownedrooms[i]).text("roomtype - BA", 23, 1,
+            {
+                color: 'green',
+                font: 0.8,
+                align: 'centre'
+            });
             roomControllerBotArena.run(ownedrooms[i]);
         }
-        else if( claimsys.indexOf(ownedrooms[i]) == -1)
+        else if (claimsys.indexOf(ownedrooms[i]) == -1)
         {
-               roomController.run(ownedrooms[i]);
+            new RoomVisual(ownedrooms[i]).text("roomtype - STD", 23, 1,
+            {
+                color: 'green',
+                font: 0.8,
+                align: 'centre'
+            });
+            roomController.run(ownedrooms[i]);
         }
-        
-         
-        
-    } 
+
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 

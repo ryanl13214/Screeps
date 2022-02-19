@@ -11,14 +11,11 @@ var defcon = {
                 return (res.body.length > 1);
             }
         });
-        if (Memory.empire.roomsobj[roomname] == undefined)
-        {
-            Memory.empire.roomsobj[roomname] ={}
-        }
-        
+      
    
         if (Memory.empire.roomsobj[roomname].defcondOBJ == undefined)
         {
+               console.log("creating defcondOBJ");
             Memory.empire.roomsobj[roomname].defcondOBJ = {
                 LongTermDefcon: 0,
                 mediumTermDefcon:0,

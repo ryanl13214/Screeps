@@ -4,7 +4,7 @@
 // brown stronghold Attack
 var roompathfind = require('roompathfinder');
 var squadmanage = require('squadManager');
-   var observer = require('observer');
+var observer = require('observer');
 var tickcode = {
     run: function()
     {
@@ -21,7 +21,7 @@ var tickcode = {
 
         if (Game.shard.name == "shard2")
         {
-            
+
             this.launchNukea();
             this.flagControl();
             var squadname = "TEST"
@@ -38,78 +38,234 @@ var tickcode = {
                 }
             }
 
-
-
-
-
- 
-
-
-/*
-5ff8a9b25961652be06ff2e5   term 
-604086126454eac544410921   fact
-
-
-
-var twr = Game.getObjectById("61e142e76486b621f4480f5f");
-
-var str = Game.getObjectById("5fdf5a4f9fcf940d421a1419");
-
-twr.attack(str);
-
-    var rawPath = roompathfind.run("E23S4","E25N1", 4);
-
- var finalPath = [];
-   for (var q = 0; q < rawPath.length; q++)
-            {
-                finalPath.push(["forcemoveToRoom", rawPath[q]])
-            }
-
-    finalPath.push(["gatherstoredResources", rawPath[q]])
-
-    finalPath.push(["BMdrop" ])
-  finalPath.push(["repeat",2 ])
-
-var bpodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL]
-
-  Game.spawns["E25N1"].spawnCreep(bpodyparts, 'dropper' ,
-                    {
-                        memory:
-                        {
-                            role: 'mover',
-                            cpuUsed: 0,
-                            roomtarg: "E25N1",
-                            sourcetarget: Game.time % 2,
-                            full: false,
-                            memstruct: {
-                spawnRoom: "E25N1",
-                tasklist:finalPath,
-                objectIDStorage: "",
-                boosted: false,
-                moveToRenew: false,
-                opportuniticRenew: true,
-                hastask: false,
-                full: false,
-                wantsToJoinSquad: false,
-                isInSquad: false,
-                SquadID: "0",
-                SquadRole: false
-            }
-                        }
-                    });
-*/
-
-
-
-
-
-       
             /////////////////////////////////////////////////////////////////////////////////////////////////////
- 
 
         }
     },
+    setupOrroom: function(flaags) // select rooms within moverange
+    {
 
+        var squadflag = Game.flags[flaags];
+
+        var flagroomName = squadflag.pos.roomName;
+
+        var targetRoom = Game.flags[flaags].pos.roomName;
+        var parentRoom = this.selectRoomsAny(targetRoom)
+
+        if (parentRoom != undefined && parentRoom.length != 0)
+        {
+ 
+            if (Game.rooms[targetRoom] == undefined ||  (Game.rooms[targetRoom] != undefined && Game.rooms[targetRoom].controller != undefined && Game.rooms[targetRoom].controller.owner == undefined )    )
+            {
+// console.log("targetRoom",targetRoom);
+//console.log("parentRoom",parentRoom);
+//console.log("Game.rooms[targetRoom]",Game.rooms[targetRoom]);
+                var rawPath = roompathfind.run(targetRoom, parentRoom, 4);
+                var finalPath = [];
+                for (var q = 0; q < rawPath.length; q++)
+                {
+                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+                }
+
+                finalPath.push(["claim"])
+
+                Game.spawns[parentRoom].spawnCreep([MOVE, CLAIM], 'claimer' + targetRoom,
+                {
+                    memory:
+                    {
+                        role: 'multi',
+                        cpuUsed: 0,
+                        roomtarg: targetRoom,
+                        sourcetarget: Game.time % 2,
+                        full: false,
+                        memstruct:
+                        {
+                            spawnRoom: parentRoom,
+                            tasklist: finalPath,
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: true,
+                            hastask: false,
+                            full: false,
+                            wantsToJoinSquad: false,
+                            isInSquad: false,
+                            SquadID: "0",
+                            SquadRole: false
+                        }
+                    }
+                });
+            }
+            else if(!Game.spawns['OR'+targetRoom])
+            {
+
+try{
+    Game.rooms[targetRoom].createConstructionSite(squadflag.pos.x, squadflag.pos.y, STRUCTURE_SPAWN, 
+    'OR'+targetRoom);
+    
+    
+}catch(e){}
+
+
+
+                var rawPath = roompathfind.run(targetRoom, parentRoom, 4);
+                var finalPath2 = [];
+                for (var q = 0; q < rawPath.length; q++)
+                {
+                    finalPath2.push(["forcemoveToRoom", rawPath[q]])
+                }
+                finalPath2.push(["harvest"])
+                finalPath2.push(["buildGeneral"])
+
+                finalPath2.push(["repeat", 2])
+
+                for (var q = 0; q < 3; q++)
+                {
+                    Game.spawns[parentRoom].spawnCreep([MOVE, MOVE, CARRY, WORK, WORK], 'worker' + q + targetRoom,
+                    {
+                        memory:
+                        {
+                            role: 'multi',
+                            cpuUsed: 0,
+                            roomtarg: targetRoom,
+                            sourcetarget: Game.time % 2,
+                            full: false,
+                            memstruct:
+                            {
+                                spawnRoom: parentRoom,
+                                tasklist: finalPath2,
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: true,
+                                hastask: false,
+                                full: false,
+                                wantsToJoinSquad: false,
+                                isInSquad: false,
+                                SquadID: "0",
+                                SquadRole: false
+                            }
+                        }
+                    });
+                }
+
+            }
+
+        }
+    },
+    
+    basciClaim: function(flaags) // select rooms within moverange
+    {
+
+        var squadflag = Game.flags[flaags];
+
+        var flagroomName = squadflag.pos.roomName;
+
+        var targetRoom = Game.flags[flaags].pos.roomName;
+        var parentRoom = this.selectRoomsAny(targetRoom)
+
+        if (parentRoom != undefined && parentRoom.length != 0)
+        {
+ 
+            if (Game.rooms[targetRoom] == undefined ||  (Game.rooms[targetRoom] != undefined && Game.rooms[targetRoom].controller != undefined && Game.rooms[targetRoom].controller.owner == undefined )    )
+            {
+ 
+ 
+                var rawPath = roompathfind.run(targetRoom, parentRoom, 2);
+                var finalPath = [];
+                for (var q = 0; q < rawPath.length; q++)
+                {
+                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+                }
+
+                finalPath.push(["claim"])
+
+                Game.spawns[parentRoom].spawnCreep([MOVE, CLAIM], 'claimer' + targetRoom,
+                {
+                    memory:
+                    {
+                        role: 'multi',
+                        cpuUsed: 0,
+                        roomtarg: targetRoom,
+                        sourcetarget: Game.time % 2,
+                        full: false,
+                        memstruct:
+                        {
+                            spawnRoom: parentRoom,
+                            tasklist: finalPath,
+                            objectIDStorage: "",
+                            boosted: false,
+                            moveToRenew: false,
+                            opportuniticRenew: true,
+                            hastask: false,
+                            full: false,
+                            wantsToJoinSquad: false,
+                            isInSquad: false,
+                            SquadID: "0",
+                            SquadRole: false
+                        }
+                    }
+                });
+            }
+            else if(!Game.spawns[targetRoom])
+            {
+
+try{
+    Game.rooms[targetRoom].createConstructionSite(squadflag.pos.x, squadflag.pos.y, STRUCTURE_SPAWN, 
+    targetRoom);
+    
+    
+}catch(e){}
+
+
+
+                var rawPath = roompathfind.run(targetRoom, parentRoom, 2);
+                var finalPath2 = [];
+                for (var q = 0; q < rawPath.length; q++)
+                {
+                    finalPath2.push(["forcemoveToRoom", rawPath[q]])
+                }
+                finalPath2.push(["harvest"])
+                finalPath2.push(["buildGeneral"])
+                
+                finalPath2.push(["repeat", 2])
+
+                for (var q = 0; q < 3; q++)
+                {
+                    Game.spawns[parentRoom].spawnCreep([MOVE, MOVE, CARRY, WORK, WORK], 'worker' + q + targetRoom,
+                    {
+                        memory:
+                        {
+                            role: 'multi',
+                            cpuUsed: 0,
+                            roomtarg: targetRoom,
+                            sourcetarget: Game.time % 2,
+                            full: false,
+                            memstruct:
+                            {
+                                spawnRoom: parentRoom,
+                                tasklist: finalPath2,
+                                objectIDStorage: "",
+                                boosted: false,
+                                moveToRenew: false,
+                                opportuniticRenew: true,
+                                hastask: false,
+                                full: false,
+                                wantsToJoinSquad: false,
+                                isInSquad: false,
+                                SquadID: "0",
+                                SquadRole: false
+                            }
+                        }
+                    });
+                }
+
+            }
+
+        }
+    },
+    
+    
     selectRooms: function(roomID) // select rooms within moverange
     {
 
@@ -124,11 +280,11 @@ var bpodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOV
         var counter = 15;
         for (var i = 0; i < ownedrooms.length; i++)
         {
-            if( Game.rooms[ownedrooms[i]] == undefined)
+            if (Game.rooms[ownedrooms[i]] == undefined)
             {
-            delete     Memory.empire.roomsobj[ownedrooms[i]]
+                delete Memory.empire.roomsobj[ownedrooms[i]]
             }
-            else if(Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) < counter && Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) > 0 && Game.rooms[ownedrooms[i]].controller.level == 8) // check that room has good amount of boosts
+            else if (Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) < counter && Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) > 0 && Game.rooms[ownedrooms[i]].controller.level == 8) // check that room has good amount of boosts
             {
                 counter = Game.map.getRoomLinearDistance(roomID, ownedrooms[i]);
                 returnList = [];
@@ -138,7 +294,46 @@ var bpodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOV
 
         return returnList
     },
+    selectRoomsAny: function(roomID) // select rooms within moverange
+    {
 
+        var roomsall = Object.keys(Game.rooms);
+
+        var ownedrooms = [];
+
+        var roomsobj = Game.rooms;
+        for (var i = 0; i < roomsall.length; i++)
+        {
+
+            if (roomsobj[roomsall[i]].controller != undefined)
+            {
+                if (roomsobj[roomsall[i]].controller.owner != undefined)
+                {
+                    if ((roomsobj[roomsall[i]]).controller.owner.username === "Q13214" && (roomsobj[roomsall[i]]).controller.level > 2)
+                    {
+
+                        ownedrooms.push(roomsall[i]);
+                    }
+                }
+            }
+        }
+
+        var returnList = [];
+        var counter = 12;
+        for (let i = 0; i < ownedrooms.length; i++)
+        {
+            if (Game.map.getRoomLinearDistance(roomID, ownedrooms[i]) < counter && Game.rooms[ownedrooms[i]].controller.level > 2) // check that room has good amount of boosts
+            {
+                returnList.push(ownedrooms[i]);
+            }
+        }
+
+        if (returnList.length != 0)
+        {
+            return returnList[0]
+        }
+
+    },
     createBlinkySQuad: function(flagname)
     {
         var squadflag = Game.flags[flagname];
@@ -244,41 +439,35 @@ var bpodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOV
     createedgeSQuad: function(flagname) ///               getRoomname: function(center, xx, yy)
     {
         var squadflag = Game.flags[flagname];
-        
-        
-        
+
         var flagx = squadflag.pos.x
         var flagy = squadflag.pos.y
-            var flagroomName = squadflag.pos.roomName;
-            var edgeroonmane = "";
-        if(flagx == 47){
-        
-            edgeroonmane =  observer.getRoomname(flagroomName, 1, 0)
+        var flagroomName = squadflag.pos.roomName;
+        var edgeroonmane = "";
+        if (flagx == 47)
+        {
+
+            edgeroonmane = observer.getRoomname(flagroomName, 1, 0)
         }
-               if(flagx == 2){
-                 
-                 edgeroonmane =  observer.getRoomname(flagroomName, -1, 0)
+        if (flagx == 2)
+        {
+
+            edgeroonmane = observer.getRoomname(flagroomName, -1, 0)
         }
-        
-        
-        if(flagy == 47){
-         
-                    edgeroonmane =  observer.getRoomname(flagroomName, 0, 1)     
+
+        if (flagy == 47)
+        {
+
+            edgeroonmane = observer.getRoomname(flagroomName, 0, 1)
         }
-               if(flagy == 2){
-                
-               edgeroonmane =  observer.getRoomname(flagroomName,0, -1)
-        }          
-        
-        
-         
-        
-        
-        
-        
+        if (flagy == 2)
+        {
+
+            edgeroonmane = observer.getRoomname(flagroomName, 0, -1)
+        }
+
         var squadtype = flagname.substring(4, flagname.length - 1);
         var squadName = squadflag.name;
-    
 
         // find closest room
         var roomss = this.selectRooms(flagroomName)
@@ -309,7 +498,7 @@ var bpodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOV
             {
                 finalPath.push(["forcemoveToRoom", rawPath[q]])
             }
-        finalPath.push(["forcemoveToRoom",flagroomName])
+            finalPath.push(["forcemoveToRoom", flagroomName])
             squadmanage.initializeSquad(squadname,
                 finalPath, true, "duo", roomss[0],
                 {
@@ -319,9 +508,7 @@ var bpodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOV
         }
 
     },
-    
-    
-    
+
     launchNukea: function()
     {
         var manNukeFlag = Game.flags["nuke"];
@@ -399,10 +586,25 @@ var bpodyparts =[MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOV
             {
                 this.createDuoSQuad(keys[c]);
             }
-           if (values[c].color == COLOR_RED && keys[c].substring(0, 4) == "edge")
+            if (values[c].color == COLOR_RED && keys[c].substring(0, 4) == "edge")
             {
                 this.createedgeSQuad(keys[c]);
             }
+
+            if (values[c].color == COLOR_GREEN && keys[c].substring(0, 2) === "OR")
+            {
+
+                this.setupOrroom(keys[c]);
+            }
+            
+
+            if (values[c].color == COLOR_GREEN && keys[c].substring(0, 5) === "Claim")
+            {
+
+                this.basciClaim(keys[c]);
+            }
+            
+
         }
     }
 

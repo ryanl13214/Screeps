@@ -454,6 +454,13 @@ var cont1volume=0;
             {
                 var target = creep.room.find(FIND_HOSTILE_CREEPS);
 
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//get energy from the outer mines
+
+
                 if (target.length != 0 )
                 {
                     var valuablematerialsTogather = false

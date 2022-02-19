@@ -30,6 +30,7 @@ var obs = {
         }
         if (Memory.empire.roomsobj[roomname].oberverobj == undefined)
         {
+                 console.log("creating oberverobj");
             Memory.empire.roomsobj[roomname].oberverobj = {
                 currentRoom: "",
                 xx: 0,
@@ -310,10 +311,18 @@ var obs = {
             {
                 if (Game.rooms[scanroom].controller.owner.username != "Q13214" && Game.rooms[scanroom].controller.owner.username != undefined)
                 {  //console.log("a" );
-                    if (Game.rooms[scanroom].controller.level > 0) // owned room
+                
+                
+                
+                
+                
+                    if (Game.rooms[scanroom].controller.level > 2) // owned room
                     {
                         this.addToHostileEmpireList(scanroom, Game.rooms[scanroom].controller.owner.username)
                         dangerlevel = 9;
+                    }else{
+                        this.addToHostileEmpireList(scanroom, Game.rooms[scanroom].controller.owner.username)
+                        dangerlevel = 2;
                     }
                    
                 }
@@ -425,6 +434,8 @@ handleCurrentRelationships: function(){
 
    //   war list
 // currentRelationship list    war (kill every room whenever can)  harrass ( remove all minders with outriders)  net () good ()
+
+//     Memory.hostileempires["rupper"].currentRelationship = "war"
 
  
 var warList=["6g3y","RayAidas"];
