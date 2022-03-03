@@ -65,7 +65,7 @@
       
         Game.market.createOrder({
     type: ORDER_BUY,
-    resourceType:  "ops",
+    resourceType:  "energy",
     price: 50,
     totalAmount: 20000,
     roomName: "E28N5"   
@@ -81,9 +81,9 @@
         Game.market.createOrder({
     type: ORDER_BUY,
     resourceType:  "XZHO2",
-    price: 50,
-    totalAmount: 20000,
-    roomName: "E28N5"   
+    price: 5,
+    totalAmount: 1000000,
+    roomName: "W29S52"   
 });      
         
       

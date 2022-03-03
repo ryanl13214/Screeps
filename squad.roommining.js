@@ -20,14 +20,14 @@ var roommining = {
         }
 
     },
- 
+
     run: function(squadID)
     {
         // console.log("test mineing op");
         var mainMemoryObject = Memory.squadObject[squadID];
         var newroomposition = new RoomPosition(mainMemoryObject.squadposition[0], mainMemoryObject.squadposition[1], mainMemoryObject.arrayOfSquadGoals[0])
         //var target = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[0]).pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-
+        var movers = [];
         var miners = [];
         for (var c = 0; c < mainMemoryObject.SquadMembersCurrent.length; c++)
         {
@@ -36,6 +36,34 @@ var roommining = {
             {
                 miners.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
             }
+
+            if (creepername == "MOVE")
+            {
+                
+                 movers.push(Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]));
+               var creeperm = Game.getObjectById(mainMemoryObject.SquadMembersCurrent[c]);
+                            if (creeperm.memory.memstruct.tasklist.length == 1  )
+                {
+                    
+                     
+                    var newtasklist = [
+    
+                        ["findPathBetweenRooms", mainMemoryObject.arrayOfSquadGoals[0],mainMemoryObject.squadHomeRoom,2],
+    
+                        ["gathermine"],
+    
+                        ["findPathBetweenRooms", mainMemoryObject.squadHomeRoom,mainMemoryObject.arrayOfSquadGoals[0],2],
+    
+                        ["fillext"],
+                        ["fillspawn"],
+                        ["deposit"],
+                        ["repeat",6]
+                    ]
+                    
+                    creeperm.memory.memstruct.tasklist = newtasklist
+                }
+            }
+
         }
         var roomObj = Game.rooms[mainMemoryObject.arrayOfSquadGoals[0]];
         if (roomObj != undefined)
@@ -96,9 +124,63 @@ var roommining = {
                 }
             });
 
-           
-    
-          
+            var keys = Object.keys(mainMemoryObject.SquadMembersGoal);
+            if (containers.length == containersall.length && Game.time % 750 == 0)
+            {
+                     var energyavailable = Game.rooms[mainMemoryObject.squadHomeRoom].energyCapacityAvailable;
+                var numberofparts = Math.floor((energyavailable ) / 150);
+                var max = 0;
+                for (let j = 0; j < keys.length; j++)
+                {
+
+                    var creepername = keys[j].substring(0, 4);
+
+                    if (creepername == "MOVE" && Memory.squadObject[squadID].SquadMembersGoal[keys[j]].length < 47  &&  Memory.squadObject[squadID].SquadMembersGoal[keys[j]].length < numberofparts * 3                  )
+                    {
+   Memory.squadObject[squadID].SquadMembersGoal[keys[j]].push(CARRY);
+                        Memory.squadObject[squadID].SquadMembersGoal[keys[j]].push(MOVE);
+                        Memory.squadObject[squadID].SquadMembersGoal[keys[j]].push(CARRY);
+                    }
+                    
+                    
+                   else if (creepername == "MOVE" &&  Memory.squadObject[squadID].SquadMembersGoal[keys[j]].length > numberofparts * 3                  )
+                    {
+                         for (let qj = 0; qj < numberofparts; qj++)
+                        {
+                            Memory.squadObject[squadID].SquadMembersGoal[keys[j]].push(CARRY);
+                            Memory.squadObject[squadID].SquadMembersGoal[keys[j]].push(MOVE);
+                            Memory.squadObject[squadID].SquadMembersGoal[keys[j]].push(CARRY);
+                        }
+                    }
+                    
+                    
+                    
+                    
+                    else
+                    {
+                        max++;
+                    }
+                }
+
+                if (max == movers.length || movers.length == 0  )
+                {
+                    console.log("add a new mover ",max);
+                    
+                          
+                    Memory.squadObject[squadID].SquadMembersGoal["MOVER"+max] =  [MOVE,MOVE,CARRY,CARRY,CARRY,CARRY]
+                    
+                    
+                    
+                    
+                    
+                    // add new mover
+                     var keys = Object.keys(mainMemoryObject.SquadMembersGoal);
+                     console.log(keys)
+                }
+
+            }
+             
+
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // 2 sources
             var sources = roomObj.find(FIND_SOURCES);
@@ -239,6 +321,9 @@ var roommining = {
             }
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ 
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

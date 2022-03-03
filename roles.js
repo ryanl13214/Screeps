@@ -1,4 +1,4 @@
-var rolerepair = require('role.repairer');
+ 
 var roleHarvester = require('role.harvester');
 var rolemover = require('role.mover');
 var roleupgrader = require('role.upgrader');
@@ -60,18 +60,12 @@ var roles = {
                         }
                     }
                    
-                    if (creep.memory.role == "repair")
-                    {
-                        rolerepair.run(creep);
-                    }
-                    else if (creep.memory.role == "harvester")
+              
+                    else if (creep.memory.role == "harvester" || creep.memory.role == "harvesteralt")
                     {
                         roleHarvester.run(creep);
                     }
-                    else if (creep.memory.role == "harvesteralt")
-                    {
-                        roleHarvester.run(creep);
-                    }
+                     
                     else if (creep.memory.role == "mover" || creep.memory.role == "moveralt")
                     {
                         rolemover.run(creep);

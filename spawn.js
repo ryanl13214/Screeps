@@ -1,6 +1,6 @@
 var spwan = {
 
-    run: function(roomname, storagevalue, roomExits, creepsinroom)
+    run: function(roomname, storagevalue, creepsinroom)
     {
         var targeth = Game.rooms[roomname].find(FIND_HOSTILE_CREEPS);
 
@@ -80,7 +80,7 @@ var spwan = {
         }
         var levelOfController = Game.rooms[roomname].controller.level;
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // console.log(roomname, " creepsinroom.length ", creepsinroom.length  );
+         
         var harvesters = _.filter(creepsinroom, (creep) => creep.memory.role == 'harvester');
 
         if (Game.time % 30 == 0 || levelOfController < 4 || creepsinroom.length < 4 || harvesters.length == 0)
@@ -107,6 +107,11 @@ var spwan = {
                 SquadID: "0",
                 SquadRole: false
             };
+            
+            
+            
+            
+            
             Game.flags[roomname].memory.flagstruct.spawnfree = true;
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -690,6 +695,19 @@ var spwan = {
 
                 else if ((!Game.creeps['repair' + roomname] || energyavailable < 900) && targeth.length == 0)
                 {
+                         memstruct.tasklist=[["withdrawContainersStorageLink"],
+["harvest"],
+
+
+["repairRampartsClosestToEnemy"],
+["repairRoadsAndContainers"],
+["nukeDefence"],
+ ["buildGeneral"] ,
+["RepLowestDefence"],
+["upgrade"],
+["repeat" ,8]
+]
+           
                     var bodyparts = [];
                     var numberofparts = Math.floor(energyavailable / 350);
                     if (numberofparts * 6 > 50)
@@ -711,60 +729,46 @@ var spwan = {
                     {
 
                         bodyparts = [MOVE, MOVE, MOVE, WORK, CARRY];
+                 
+                       
                         spawnss[i].spawnCreep(bodyparts, 'repair1' + roomname,
                         {
                             memory:
                             {
-                                role: 'repair',
-                                cpuUsed: 0,
-                                roomtarg: roomname,
-                                sourcetarget: Game.time % 2,
-                                full: false,
+                                role: 'multi',
                                 memstruct: memstruct
                             }
                         });
                         spawnss[i].spawnCreep(bodyparts, 'repair2' + roomname,
                         {
-                            memory:
+                              memory:
                             {
-                                role: 'repair',
-                                cpuUsed: 0,
-                                roomtarg: roomname,
-                                sourcetarget: Game.time % 2,
-                                full: false,
+                                role: 'multi',
                                 memstruct: memstruct
                             }
                         });
                         spawnss[i].spawnCreep(bodyparts, 'repair3' + roomname,
                         {
-                            memory:
+                             memory:
                             {
-                                role: 'repair',
-                                cpuUsed: 0,
-                                roomtarg: roomname,
-                                sourcetarget: Game.time % 2,
-                                full: false,
+                                role: 'multi',
                                 memstruct: memstruct
                             }
                         });
 
                     }
-   memstruct.tasklist.push(["boost","LH",numberofparts])
+ 
                     spawnss[i].spawnCreep(bodyparts, 'repair' + roomname,
                     {
-                        memory:
-                        {
-                            role: 'repair',
-                            cpuUsed: 0,
-                            roomtarg: roomname,
-                            sourcetarget: Game.time % 2,
-                            full: false,
-                            memstruct: memstruct
-                        }
+                         memory:
+                            {
+                                role: 'multi',
+                                memstruct: memstruct
+                            }
                     });
                 }
 
-                else if (!Game.creeps['upgrader' + roomname])
+                else if (!Game.creeps['upgrader' + roomname] || (!Game.creeps['upgrader2' + roomname] && levelOfController < 8))
                 {
 
                     var bodyparts = [];
@@ -776,11 +780,11 @@ var spwan = {
 
                     if (levelOfController == 4)
                     {
-                        bodyparts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
+                        bodyparts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY]
                     }
                     if (levelOfController == 5)
                     {
-                        bodyparts = [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY];
+                        bodyparts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY];
                     }
 
                     var term = Game.rooms[roomname].terminal;
@@ -797,7 +801,7 @@ var spwan = {
                     }
                     if (levelOfController == 7)
                     {
-                        bodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+                        bodyparts = [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY]
 
                         if (term != undefined && term.store.getUsedCapacity("XGH2O") > 900)
                         {
@@ -809,9 +813,7 @@ var spwan = {
                     {
                         bodyparts = [MOVE, MOVE, WORK, CARRY];
                     }
-
-                    //  memstruct.tasklist = [["booost", "GH2O", ]];
-
+ 
                     spawnss[i].spawnCreep(bodyparts, 'upgrader' + roomname,
                     {
                         memory:
@@ -822,6 +824,21 @@ var spwan = {
                             memstruct: memstruct
                         }
                     });
+                    
+                    
+                    if (!Game.creeps['upgrader2' + roomname] && levelOfController < 8)
+                    {
+                        spawnss[i].spawnCreep(bodyparts, 'upgrader2' + roomname,
+                        {
+                            memory:
+                            {
+                                role: 'upgrader',
+                                cpuUsed: 0,
+                                full: false,
+                                memstruct: memstruct
+                            }
+                        });
+                    }
                 }
                 else if (!Game.creeps['scoutobs' + roomname] && Game.rooms[roomname].controller.level > 3)
                 {

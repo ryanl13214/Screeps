@@ -109,11 +109,30 @@ var squadgenerator = {
                                 bodypartsMINER.push(WORK);
                             }
               
+                       var energyavailable = Game.rooms[roomname].energyCapacityAvailable;
+                            var numberofparts = Math.floor((energyavailable  ) / 150);
+                            if(numberofparts > 16)
+                            {
+                                numberofparts = 16;
+                            }
+                            var bodypartsMINER2 = [ ];
+                            for(let j = 0; j < numberofparts; j++)
+                            {
+                                bodypartsMINER2.push(MOVE);
+                                bodypartsMINER2.push(CARRY);
+                                 bodypartsMINER2.push(CARRY);
+                            }
+              
                   
                         
                                 squadmanage.initializeSquad(roomname + Memory.empire.roomsobj[roomname].MineRooms[l] + "MiningSquad", [Memory.empire.roomsobj[roomname].MineRooms[l]], false, "MiningSquad", roomname,
                                 {
-                                    "miner0": bodypartsMINER
+                                    "miner0": bodypartsMINER,
+                                    "MOVER0": bodypartsMINER2
+                                    
+                                    
+                                    
+                                    
                                 },"a");
                            
                            

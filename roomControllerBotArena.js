@@ -1,6 +1,7 @@
 var tower = require('tower');
 var roles = require('roles');
 var roompathfind = require('roompathfinder');
+var buildbase = require('buildbase');
 var roomControllerBotArena = {
     run: function(roomname)
     { 
@@ -88,6 +89,32 @@ var roomControllerBotArena = {
             }
 
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+           var mainflag = Game.flags[roomname ];
+        
+        
+        
+        
+        buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
+        
 
         var extArr = [
             [0, 2],
@@ -126,6 +153,26 @@ var roomControllerBotArena = {
             }
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         var numberOfMinersNeeded = 0;
         var roomnames = Object.keys(Memory.roomlist)

@@ -78,17 +78,18 @@ creep.say("ntarg")
     attacker: function(creep)
     {
 
-        var target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+        var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (target)
         {
             if (creep.attack(target) == ERR_NOT_IN_RANGE)
             {
-                creep.moveTo(target);
-            }
+             
+            }   
+            creep.moveTo(target);
         }
         else
         {
-            var target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
+            var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
             {
                 filter: function(object)
                 {
@@ -106,7 +107,7 @@ creep.say("ntarg")
             }
             else
             {
-                  var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                  var target = creep.pos.findClosestByRange(FIND_STRUCTURES,
                         {
                             filter: function(object)
                             {
@@ -136,12 +137,13 @@ creep.say("ntarg")
         {
             if (creep.rangedAttack(target) == ERR_NOT_IN_RANGE)
             {
-                creep.moveTo(target);
+              
             }
+                creep.moveTo(target);
         }
         else
         {
-            var target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
+            var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
             {
                 filter: function(object)
                 {
@@ -159,7 +161,7 @@ creep.say("ntarg")
             }
             else
             {
-                  var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                  var target = creep.pos.findClosestByRange(FIND_STRUCTURES,
                         {
                             filter: function(object)
                             {
@@ -238,16 +240,32 @@ creep.say("ntarg")
     worker: function(creep)
     {
 
-        var target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
+        var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
+        {
+            filter: function(object)
+            {
+                return (object.structureType != STRUCTURE_CONTROLLER &&  object.structureType != STRUCTURE_WALL   &&  object.structureType != STRUCTURE_RAMPART    );
+            }
+        });
+
+        if (!target)
+        {
+            
+            
+                   var target = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES,
         {
             filter: function(object)
             {
                 return object.structureType != STRUCTURE_CONTROLLER;
             }
         });
-
-        if (!target)
+            
+            
+            
+            
+            if (!target)
         {
+            
             var roomobj = Game.rooms[creep.room.name];
 
             if(roomobj && roomobj.controller != undefined && roomobj.controller.owner != undefined && roomobj.controller.owner.username === "Q13214")
@@ -256,7 +274,7 @@ creep.say("ntarg")
             }
             else
             {
-                  var target = creep.pos.findClosestByPath(FIND_STRUCTURES,
+                  var target = creep.pos.findClosestByRange(FIND_STRUCTURES,
                         {
                             filter: function(object)
                             {
@@ -265,9 +283,16 @@ creep.say("ntarg")
                         });
              
             }
+        }
 
 
         }
+        
+        
+        
+        
+        
+        
 
         if (target)
         {

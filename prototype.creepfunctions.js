@@ -206,6 +206,192 @@ var creepfunctions = {
                     }
                 }
             }
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "withdrawContainersStorageLink")
+            {
+
+                var targets = creep.room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return (
+                            (structure.structureType == STRUCTURE_CONTAINER && structure.store.getUsedCapacity("energy") > creep.store.getFreeCapacity()) ||
+                            (structure.structureType == STRUCTURE_STORAGE && structure.store.getUsedCapacity("energy") > creep.store.getFreeCapacity()) ||
+                            (structure.structureType == STRUCTURE_TERMINAL && structure.store.getUsedCapacity("energy") > creep.store.getFreeCapacity())
+                        );
+
+                    }
+                });
+
+                if (creep.store.getFreeCapacity("energy") == 0)
+                {
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+                else
+                if (targets.length == 0)
+                {
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+                else
+                {
+
+                    var a = [
+                        ["withdraw", targets[0].id, "energy"]
+                    ]
+                    a = a.concat(creep.memory.memstruct.tasklist)
+                    creep.memory.memstruct.tasklist = a
+                    this.checkglobaltasks(creep);
+                }
+
+            }
+
+            else if (creep.memory.memstruct.tasklist[0][0] == "repairRampartsClosestToEnemy")
+            {
+
+                var target = creep.room.find(FIND_HOSTILE_CREEPS,
+                {
+                    filter: (structure) => (structure.body.length > 15)
+                });
+                var targe2 = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,
+                {
+                    filter: (structure) => (structure.body.length > 15)
+                });
+                var structuresclosetoenemys = [];
+                if (targe2 != undefined)
+                {
+                    var structuresclosetoenemys = targe2.pos.findInRange(FIND_STRUCTURES, 3,
+                    {
+                        filter: (structure) => (structure.structureType == STRUCTURE_RAMPART)
+                    });
+                }
+
+                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
+                {
+                    creep.say("g");
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+                else
+
+                if (structuresclosetoenemys.length != 0)
+                {
+                    var tmp = 0;
+                    var value = 9999999999999999999;
+                    for (var i = 0; i < structuresclosetoenemys.length; i++)
+                    {
+                        if (structuresclosetoenemys[i].hits < value)
+                        {
+                            value = structuresclosetoenemys[i].hits;
+                            tmp = i;
+                        }
+                    }
+                    var range = creep.pos.getRangeTo(structuresclosetoenemys[tmp]);
+                    if (range <= 3)
+                    {
+                        creep.repair(structuresclosetoenemys[tmp]);
+                    }
+                    else
+                    {
+                        creep.moveTo(structuresclosetoenemys[tmp],
+                        {
+                            reusePath: 5
+                        });
+                    }
+                }
+                else
+                {
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+
+                }
+
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "repairRoadsAndContainers")
+            {
+
+                var repairtarg = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                {
+                    filter: (s) =>
+                    {
+                        return (s.structureType == STRUCTURE_ROAD || s.structureType == STRUCTURE_CONTAINER) && s.hits < s.hitsMax * 0.7;
+                    }
+                });
+                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
+                {
+
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+                else if (repairtarg)
+                {
+                    creep.say(repairtarg)
+                    var range = creep.pos.getRangeTo(repairtarg);
+                    if (range <= 3)
+                    {
+                        creep.repair(repairtarg);
+                    }
+                    else
+                    {
+                        creep.moveTo(repairtarg);
+                    }
+
+                }
+                else
+                {
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+
+                }
+
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "nukeDefence")
+            {
+                this.loopTasks(creep);
+            }
+            else if (creep.memory.memstruct.tasklist[0][0] == "RepLowestDefence")
+            {
+
+                var LowestRamparts = creep.room.find(FIND_STRUCTURES,
+                {
+                    filter: (structure) => (structure.structureType == STRUCTURE_RAMPART || structure.structureType == STRUCTURE_WALL)
+                });
+                var tmp = 0;
+                if (creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0)
+                {
+                    creep.say("g");
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+                else
+
+                if (LowestRamparts.length != 0)
+                {
+                    var value = 9999999999999999999;
+                    for (var i = 0; i < LowestRamparts.length; i++)
+                    {
+                        if (LowestRamparts[i].hits < value)
+                        {
+                            value = LowestRamparts[i].hits;
+                            tmp = i;
+                        }
+                    }
+
+                    var a = [
+                        ["repair", LowestRamparts[tmp].id]
+                    ]
+                    a = a.concat(creep.memory.memstruct.tasklist)
+                    creep.memory.memstruct.tasklist = a
+                    this.checkglobaltasks(creep);
+
+                }
+                else
+                {
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
+                }
+            }
             else if (creep.memory.memstruct.tasklist[0][0] == "pickupDroppedEnergy")
             {
 
@@ -213,7 +399,7 @@ var creepfunctions = {
                 {
 
                     this.loopTasks(creep);
-
+                    this.checkglobaltasks(creep);
                 }
                 else
                 {
@@ -224,34 +410,23 @@ var creepfunctions = {
                             return (res.resourceType == RESOURCE_ENERGY && res.amount > creep.store.getFreeCapacity());
                         }
                     });
-                    
-                    
-                     
-             var droppedresources;
-             if(droppedresourcesa.length != 0 )
-             {
-                 var maxvalue = 0;
-                 for (var k = 0; k < droppedresourcesa.length; k++)
+
+                    var droppedresources;
+                    if (droppedresourcesa.length != 0)
+                    {
+                        var maxvalue = 0;
+                        for (var k = 0; k < droppedresourcesa.length; k++)
                         {
-                 
-                 if(droppedresourcesa[k].amount >maxvalue )
-                 {
-                     maxvalue = droppedresourcesa[k].amount 
-                     droppedresources = droppedresourcesa[k]
-                 }
-                 
+
+                            if (droppedresourcesa[k].amount > maxvalue)
+                            {
+                                maxvalue = droppedresourcesa[k].amount
+                                droppedresources = droppedresourcesa[k]
+                            }
+
                         }
-             }
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    }
+
                     if (droppedresources != undefined && creep.store.getFreeCapacity(RESOURCE_ENERGY) != 0)
                     {
 
@@ -260,7 +435,7 @@ var creepfunctions = {
                             creep.moveTo(droppedresources);
                         }
                     }
-                    else if(creep.memory.memstruct.tasklist[0].length < 2)
+                    else if (creep.memory.memstruct.tasklist[0].length < 2)
                     {
 
                         this.loopTasks(creep);
@@ -274,7 +449,7 @@ var creepfunctions = {
                 if (creep.store.getUsedCapacity() == 0)
                 {
                     this.loopTasks(creep);
-
+                    this.checkglobaltasks(creep);
                 }
                 else
                 {
@@ -289,10 +464,8 @@ var creepfunctions = {
                     else
                     {
                         this.loopTasks(creep);
-
                     }
                 }
-
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "joinOutriders") // ["","goalRoom","starroom",dangerlevel]
             {
@@ -311,27 +484,28 @@ var creepfunctions = {
                     this.loopTasks(creep);
                     return true
                 }
-
-                var finalPath = [];
-
-                var goalRoom = creep.memory.memstruct.tasklist[0][1]
-                var starroom = creep.memory.memstruct.tasklist[0][2]
-                var dangerlevel = creep.memory.memstruct.tasklist[0][3]
-
-                var rawPath = roompathfind.run(goalRoom, starroom, dangerlevel);
-                for (var q = 0; q < rawPath.length; q++)
+                else
                 {
-                    finalPath.push(["forcemoveToRoom", rawPath[q]])
+
+                    var finalPath = [];
+
+                    var goalRoom = creep.memory.memstruct.tasklist[0][1]
+                    var starroom = creep.memory.memstruct.tasklist[0][2]
+                    var dangerlevel = creep.memory.memstruct.tasklist[0][3]
+
+                    var rawPath = roompathfind.run(goalRoom, starroom, dangerlevel);
+                    for (var q = 0; q < rawPath.length; q++)
+                    {
+                        finalPath.push(["lowcpumoveToRoom", rawPath[q]])
+                    }
+
+                    for (var q = 0; q < creep.memory.memstruct.tasklist.length; q++)
+                    {
+                        finalPath.push(creep.memory.memstruct.tasklist[q]);
+                    }
+
+                    creep.memory.memstruct.tasklist = finalPath
                 }
-
-                //  creep.memory.memstruct.tasklist.splice(0, 1);   removing so it can be repeated
-
-                for (var q = 0; q < creep.memory.memstruct.tasklist.length; q++)
-                {
-                    finalPath.push(creep.memory.memstruct.tasklist[q]);
-                }
-
-                creep.memory.memstruct.tasklist = finalPath
             }
 
             else if (creep.memory.memstruct.tasklist[0][0] == "templeUP")
@@ -478,23 +652,24 @@ var creepfunctions = {
                 }
 
             }
-            else if (creep.memory.memstruct.tasklist[0][0] == "cachemove" || creep.memory.memstruct.tasklist[0][0] == "lowCpuMove"    )
+            else if (creep.memory.memstruct.tasklist[0][0] == "cachemove" || creep.memory.memstruct.tasklist[0][0] == "lowCpuMove")
             {
                 var q = creep.memory.memstruct.tasklist[0][1];
-                
+
                 var range = creep.pos.getRangeTo(new RoomPosition(q.x, q.y, creep.room.name))
-                if(range > 1)
+                if (range > 1)
                 {
-                      this.loopTasks(creep);
-                    this.checkglobaltasks(creep); 
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
                 }
-                else if(creep.memory.memstruct.tasklist[0].length == 1){
-                         this.loopTasks(creep);
-                    this.checkglobaltasks(creep); 
+                else if (creep.memory.memstruct.tasklist[0].length == 1)
+                {
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
                 }
                 else
                 {
-                
+
                     var dire = creep.pos.getDirectionTo(creep.memory.memstruct.tasklist[0][1])
                     new RoomVisual(creep.room.name).line(creep.memory.memstruct.tasklist[0][1], creep.pos,
                     {
@@ -522,7 +697,7 @@ var creepfunctions = {
 
                     leader.moveTo(new RoomPosition(25, 25, leader.room.name));
                     this.loopTasks(creep);
-                    
+
                     return true
                 }
 
@@ -570,7 +745,7 @@ var creepfunctions = {
                         var pathacc = []
 
                         var path = creep.pos.findPathTo(new RoomPosition(exit.x, exit.y, creep.room.name));
-                          creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
+                        creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
                         for (var i = 0; i < path.length; i++)
                         {
                             pathacc.push(["cachemove", new RoomPosition(path[i].x, path[i].y, creep.room.name), creep.room.name])
@@ -580,7 +755,7 @@ var creepfunctions = {
                             pathacc.push(creep.memory.memstruct.tasklist[i])
                         }
                         creep.memory.memstruct.tasklist = pathacc
-    this.loopTasks(creep);
+                        this.loopTasks(creep);
                         //   creep.moveTo(new RoomPosition(exit.x, exit.y, creep.room.name));
 
                     }
@@ -591,7 +766,7 @@ var creepfunctions = {
                     creep.moveTo(new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]));
 
                 }
- 
+
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "templeBuild")
             {
@@ -988,7 +1163,7 @@ var creepfunctions = {
                         counter++;
                     }
 
-                    finalPath.push(["pickupDroppedEnergy","noloop"])
+                    finalPath.push(["pickupDroppedEnergy", "noloop"])
 
                     var rawPath = roompathfind.run(creep.memory.memstruct.spawnRoom, creep.room.name, 2);
                     for (var q = 0; q < rawPath.length; q++)
@@ -1035,9 +1210,6 @@ var creepfunctions = {
                         bpodyparts.push(CARRY);
                         bpodyparts.push(MOVE);
                     }
-
-
-
 
                     for (let q = 0; q < target.length * 2; q++)
                     {
@@ -1534,7 +1706,7 @@ var creepfunctions = {
                 {
                     this.loopTasks(creep);
                 }
-if (targ == undefined )
+                if (targ == undefined)
                 {
                     this.loopTasks(creep);
                 }
@@ -2039,7 +2211,7 @@ if (targ == undefined )
             }
             else if (creep.memory.memstruct.tasklist[0][0] == "patrolroom")
             {
-                creep.say("patrolroom");
+                console.log("patrolroom");
                 var targets = this.getcombattagets(creep);
                 var targposition = new RoomPosition(25, 25, creep.memory.memstruct.tasklist[0][1]);
                 var pos1 = creep.pos;
@@ -2103,34 +2275,30 @@ if (targ == undefined )
                 }
                 else
                 {
-                  var droppedresourcesa = creep.room.find(FIND_DROPPED_RESOURCES,
+                    var droppedresourcesa = creep.room.find(FIND_DROPPED_RESOURCES,
                     {
                         filter: (res) =>
                         {
                             return (res.resourceType == RESOURCE_ENERGY && res.amount > creep.store.getFreeCapacity());
                         }
                     });
-             var droppedresources;
-             if(droppedresourcesa.length != 0 )
-             {
-                 var maxvalue = 0;
-                 for (var k = 0; k < droppedresourcesa.length; k++)
+                    var droppedresources;
+                    if (droppedresourcesa.length != 0)
+                    {
+                        var maxvalue = 0;
+                        for (var k = 0; k < droppedresourcesa.length; k++)
                         {
-                 
-                 if(droppedresourcesa[k].amount >maxvalue )
-                 {
-                     maxvalue = droppedresourcesa[k].amount 
-                     droppedresources = droppedresourcesa[k]
-                 }
-                 
+
+                            if (droppedresourcesa[k].amount > maxvalue)
+                            {
+                                maxvalue = droppedresourcesa[k].amount
+                                droppedresources = droppedresourcesa[k]
+                            }
+
                         }
-             }
-             
-             
-             
-             
-             
-                   var tombstones = creep.pos.findClosestByRange(FIND_TOMBSTONES,
+                    }
+
+                    var tombstones = creep.pos.findClosestByRange(FIND_TOMBSTONES,
                     {
                         filter: (res) =>
                         {
@@ -2189,18 +2357,32 @@ if (targ == undefined )
             {
                 var targets = creep.room.find(FIND_HOSTILE_CREEPS);
 
+                var targ = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                {
+                    filter: (structure) =>
+                    {
+                        return ((structure.structureType == STRUCTURE_CONTAINER) && structure.store.getUsedCapacity() > 500);
+                    }
+                });
+               
+                var range = creep.pos.getRangeTo(new RoomPosition(25, 25, creep.room.name));
+                if (range > 23 && targ)
+                {
+                    console.log("targ");
+                    creep.moveTo(targ);
+
+                }
+
                 if (targets.length != 0)
                 {
                     this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
                 }
 
                 if (creep.store.getFreeCapacity() == 0)
                 {
-
-                    if (Memory.roomlist[creep.room.name].movercontrol != undefined && Memory.roomlist[creep.room.name].movercontrol.moveCap != undefined)
-                    {
-                        Memory.roomlist[creep.room.name].movercontrol.moveCap = Memory.roomlist[creep.room.name].movercontrol.moveCap - creep.store.getCapacity();
-                    }
+                    this.loopTasks(creep);
+                    this.checkglobaltasks(creep);
 
                 }
                 else
@@ -2235,7 +2417,8 @@ if (targ == undefined )
                         {
                             creep.pickup(droppedresources);
                         }
-                        else
+
+                        else if (range >= 2)
                         {
                             creep.moveTo(droppedresources,
                             {
@@ -2246,6 +2429,7 @@ if (targ == undefined )
                                 }
                             });
                         }
+
                     }
                     else if (tombstones != undefined)
                     {
@@ -2257,7 +2441,7 @@ if (targ == undefined )
                         {
                             creep.withdraw(tombstones, resourcekeys[0]);
                         }
-                        else
+                        else if (range >= 2)
                         {
                             creep.moveTo(tombstones,
                             {
@@ -2268,6 +2452,7 @@ if (targ == undefined )
                                 }
                             });
                         }
+
                     }
                     else if (targ != undefined)
                     {
@@ -2700,59 +2885,6 @@ if (targ == undefined )
 
             }
 
-            else if (creep.memory.memstruct.tasklist[0][0] == "attackMoveToRoom")
-            {
-                var targetRoomFlag = Game.flags[creep.memory.memstruct.tasklist[0][1]];
-                var pos1 = creep.pos;
-                var pos2 = targetRoomFlag.pos;
-                var range = creep.pos.getRangeTo(targetRoomFlag.pos);
-                if (range > 23)
-                { // might cause bug on nxt room wall 
-                    var targets = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    var range2 = creep.pos.getRangeTo(targets);
-                    if (range2 <= 4)
-                    {
-                        var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                        var targetArr = creep.room.find(FIND_HOSTILE_CREEPS);
-                        var targets = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3);
-                        if (targets.length > 0)
-                        {
-                            creep.rangedAttack(targets[0]);
-                        }
-                        if (creep.hits < creep.hitsMax)
-                        {
-                            creep.heal(creep);
-                        }
-                        if (creep.memory.attackrole == "ranger")
-                        { // long range creeps here 
-                            var range = creep.pos.getRangeTo(target);
-                            if (range > 3)
-                            {
-                                creep.moveTo(target);
-                            }
-                            if (range < 3 || (creep.hits + 300 < creep.hitsMax && range < 5))
-                            {
-                                creepfunctions.combatMove(creep, targetArr, target);
-                            }
-                        }
-                        else
-                        {
-                            if (range > 1)
-                            {
-                                creep.moveTo(target);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        creep.moveTo(targetRoomFlag.pos);
-                    }
-                }
-                else
-                {
-                    this.loopTasks(creep);
-                }
-            }
             else if (creep.memory.memstruct.tasklist[0][0] == "moveTo")
             {
                 try
@@ -3037,46 +3169,8 @@ if (targ == undefined )
             }
             else
             {
-                var lvl = Game.rooms[creep.memory.memstruct.spawnRoom].controller.level;
-                var bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK];
-                if (lvl == 6)
-                {
-                    bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK]
-                }
-                if (lvl > 6)
-                {
-                    bgodyparts = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK]
-                }
-                var corridorRoomList = Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms;
-                var tmptasklist = [];
-                if (corridorRoomList == undefined)
-                {
-                    Game.flags[creep.memory.memstruct.spawnRoom].memory.flagstruct.claimedroomstuct.corridorRooms = [];
-                }
-                tmptasklist.push(["createslave", "healer"]);
-                for (var c = 0; c < corridorRoomList.length; c++)
-                {
-                    tmptasklist.push(["patrolroom", corridorRoomList[c]]);
-                }
-                tmptasklist.push(["repeat", corridorRoomList.length]);
-                Game.spawns[creep.memory.memstruct.spawnRoom].spawnCreep(bgodyparts, 'coridor guard' + creep.memory.memstruct.spawnRoom,
-                {
-                    memory:
-                    {
-                        role: 'guard',
-                        attackrole: "chasedown",
-                        memstruct:
-                        {
-                            spawnRoom: creep.memory.memstruct.spawnRoom,
-                            tasklist: tmptasklist,
-                            objectIDStorage: "",
-                            boosted: false,
-                            moveToRenew: false,
-                            opportuniticRenew: false,
-                            hastask: false
-                        }
-                    }
-                });
+                console.log("create dedicated duo for corridor defence and offence");
+
             }
         }
     }

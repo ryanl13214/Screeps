@@ -222,7 +222,7 @@ module.exports.loop = function()
             delete Memory.empire.roomsobj[ownedrooms[i]]
         }
 
-        if (Game.rooms[ownedrooms[i]].controller.level <= 4 && Game.spawns["OR" + ownedrooms[i]] != undefined)
+        if (Game.rooms[ownedrooms[i]].controller.level <= 4  && Game.spawns["OR" + ownedrooms[i]] != undefined)
         {
 
             new RoomVisual(ownedrooms[i]).text("roomtype - Outrider", 23, 1,
@@ -233,7 +233,7 @@ module.exports.loop = function()
             });
             roomControllerOutrider.run(ownedrooms[i]);
         }
-        else if (Game.rooms[ownedrooms[i]].controller.level <= 4 && Game.spawns[ownedrooms[i]] != undefined)
+        else if (Game.rooms[ownedrooms[i]].controller.level <= 3 && Game.spawns[ownedrooms[i]] != undefined)
         {
             new RoomVisual(ownedrooms[i]).text("roomtype - BA", 23, 1,
             {
