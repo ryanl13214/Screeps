@@ -233,7 +233,7 @@ module.exports.loop = function()
             });
             roomControllerOutrider.run(ownedrooms[i]);
         }
-        else if (Game.rooms[ownedrooms[i]].controller.level <= 3 && Game.spawns[ownedrooms[i]] != undefined)
+        else if (Game.rooms[ownedrooms[i]].controller.level <= 4 && Game.spawns[ownedrooms[i]] != undefined)
         {
             new RoomVisual(ownedrooms[i]).text("roomtype - BA", 23, 1,
             {

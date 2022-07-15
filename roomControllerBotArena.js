@@ -5,16 +5,32 @@ var buildbase = require('buildbase');
 var roomControllerBotArena = {
     run: function(roomname)
     { 
-        
-           if (Memory.empire.roomsobj[roomname] == undefined  && (Game.rooms[roomname] != undefined && Game.rooms[roomname].controller != undefined && Game.rooms[roomname].controller.owner === "Q13214" )  )
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+           if (Memory.empire.roomsobj[roomname] == undefined   )
         {
             Memory.empire.roomsobj[roomname] = {
     
             }
         }
-        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
         tower.run(roomname, 0);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var mainflag = Game.flags[roomname];
+         
+        var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
+        if (mainflag == undefined)
+        {
+         
 
+            //  console.log(roomname);
+            if (spawnss.length > 0)
+            {
+                Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x , Game.spawns[roomname].pos.y + 1, roomname);
+            }
+       
+            var mainflags = Game.flags[roomname];
+         
+        }
         //          run basicBuild 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         var memstruct = {
@@ -116,48 +132,7 @@ var roomControllerBotArena = {
         buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
         
 
-        var extArr = [
-            [0, 2],
-            [0, 3],
-            [1, 2],
-            [1, 3],
-            [2, 3],
-            [-2, 1],
-            [-2, 2],
-            [-1, 3],
-            [3, 1],
-            [2, 1]
-        ]
-
-        var consites = Game.spawns[roomname].pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3);
-
-        var breaak = false;
-
-        for (var j = 0; j < extArr.length; j++)
-        {
-            var posx = (mainspawn[0].pos.x + extArr[j][0])
-            var posy = (mainspawn[0].pos.y + extArr[j][1])
-
-            if (consites.length < 1 && breaak == false)
-            {
-
-                var a = Game.rooms[roomname].createConstructionSite(posx, posy, STRUCTURE_EXTENSION);
-
-                if (a == OK)
-                {
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-
-                    breaak = true
-                }
-
-            }
-
-        }
-
-
-
-
-
+        
 
 
 
@@ -233,10 +208,9 @@ var roomControllerBotArena = {
 
 
 
-        if (!Game.creeps['erly1' + roomname] || (!Game.creeps['erly2' + roomname] && levelOfController == 1))
+        if (!Game.creeps['erly1' + roomname] || (!Game.creeps['erly2' + roomname]))
         {
-            if (levelOfController == 1)
-            {
+          
                 memstruct.tasklist = [
                     ["pickupDroppedEnergy"],
                     ["harvest", Memory.botarena.rooms[roomname].source1ID],
@@ -269,7 +243,7 @@ var roomControllerBotArena = {
                     }
                 });
 
-            }
+            
             memstruct.tasklist = [
                 ["pickupDroppedEnergy"],
                 ["harvest", Memory.botarena.rooms[roomname].source1ID],
@@ -356,7 +330,7 @@ var roomControllerBotArena = {
             });
 
         }
-        else if (energyavailable < 750 && (!Game.creeps['erlyd01' + roomname] || !Game.creeps['erlyd02' + roomname]) && containers.length != 3)
+        else if ( (!Game.creeps['erlyd01' + roomname] || !Game.creeps['erlyd02' + roomname]) && containers.length != 3)
         {
  
             memstruct.tasklist = [
@@ -641,24 +615,37 @@ var roomControllerBotArena = {
         }
         else if (repairs.length < 3 || (repairs.length < 6 && levelOfController == 2))
         {
-            var bodyparts = [WORK, CARRY, MOVE, MOVE];
+        memstruct.tasklist = [
+                        ["withdrawContainersStorageLink"],
+                        ["pickupDroppedEnergy"],
+                        ["harvest"],
+                        ["repairRampartsClosestToEnemy"],
+                        ["repairRoadsAndContainers"],
+                        ["nukeDefence"],
+                        ["buildGeneral"],
+                        ["RepLowestDefence"],
+                        ["upgrade"],
+                        ["repeat", 9]
+                    ]
+           
+                    var bodyparts = [];
+                    var numberofparts = Math.floor(energyavailable / 350);
+                    if (numberofparts * 6 > 50)
+                    {
+                        numberofparts = Math.floor(50 / 6);
+                    }
+                    var bodyparts = [];
+                    for (let q = 0; q < numberofparts; q++)
+                    {
+                        bodyparts.push(WORK);
+                        bodyparts.push(CARRY);
+                        bodyparts.push(CARRY);
+                        bodyparts.push(MOVE);
+                        bodyparts.push(MOVE);
+                        bodyparts.push(MOVE);
+                    }
 
-            var numberofparts = Math.floor((energyavailable - 250) / 250);
-            if (numberofparts > 5)
-            {
-                numberofparts = 5;
-            }
-            for (let j = 0; j < numberofparts; j++)
-            {
-    bodyparts.push(CARRY);
-    bodyparts.push(WORK);
-    bodyparts.push(MOVE);
-                bodyparts.push(MOVE);
-            }
-            
-
-
-
+               
 
             for (let q = 0; q < 6; q++)
             {

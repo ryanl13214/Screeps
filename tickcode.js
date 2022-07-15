@@ -19,7 +19,7 @@ var tickcode = {
         // 12 tough 14 range 14 heal 
         // var bodyp = [TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,TOUGH,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL];
 
-        if (Game.shard.name == "shard2")
+        if (Game.shard.name == "shard0")
         {
 
             this.launchNukea();
@@ -156,7 +156,7 @@ try{
     
     basciClaim: function(flaags) // select rooms within moverange
     {
-
+console.log("claimactive");
         var squadflag = Game.flags[flaags];
 
         var flagroomName = squadflag.pos.roomName;
@@ -260,7 +260,13 @@ try{
                     });
                 }
 
+            }else{
+               squadflag.remove(); 
             }
+            
+            
+            
+            
 
         }
     },
@@ -591,14 +597,14 @@ try{
                 this.createedgeSQuad(keys[c]);
             }
 
-            if (values[c].color == COLOR_GREEN && keys[c].substring(0, 2) === "OR")
+            if (values[c].color == COLOR_GREEN && keys[c].substring(0, 2) == "OR")
             {
 
                 this.setupOrroom(keys[c]);
             }
             
 
-            if (values[c].color == COLOR_GREEN && keys[c].substring(0, 5) === "Claim")
+            if (values[c].color == COLOR_GREEN && keys[c].substring(0, 5) == "claim")
             {
 
                 this.basciClaim(keys[c]);

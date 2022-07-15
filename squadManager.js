@@ -102,7 +102,7 @@ var squadmanager = {
                 {
                     var startCpu = Game.cpu.getUsed();
                     roommining.run(squadID);
-                    Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.mineroomsCPU += Game.cpu.getUsed() - startCpu;
+       //            Game.flags[mainMemoryObject.squadHomeRoom].memory.flagstruct.mineroomsCPU += Game.cpu.getUsed() - startCpu;
                 }
             }
             /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,11 +231,11 @@ var squadmanager = {
                                 total += 10;
                             }
                         }
-                        if (Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost == undefined)
-                        {
-                            Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost = 0;
-                        }
-                        Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost += total;
+                     //   if (Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost == undefined)
+                    //    {
+                      //      Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost = 0;
+                      //  }
+               //         Game.flags[squadHomeRoom].memory.flagstruct.mineroomsCost += total;
                     }
                     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 }

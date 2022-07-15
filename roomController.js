@@ -43,44 +43,24 @@ var roomController = {
        
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var mainflag = Game.flags[roomname];
-        if (Game.time % 50 == 0)
-        {
-            mainflag.memory.flagstruct.squadspawning = "";
-        }
+         
         var spawnss = Game.rooms[roomname].find(FIND_MY_SPAWNS);
         if (mainflag == undefined)
         {
-            var flagstruct = {
-                squadspawning: "",
-                mineroomsProfitmargin: 0,
-                mineroomsCPU: 0,
-                mineroomsCost: 0,
-                claimedroomstuct:
-                {
-                    roomIsStronghold: false,
-                    allyRoomsInRange: [],
-                    MineRooms: [],
-                    centerroomsinrange: [],
-                    mineroomsProfitmargin: [],
-                    cpuUsedlastTick: 99,
-                    roomdefconstruct:
-                    {},
-                    dismantelrooms: []
-                }
-            };
+         
 
             //  console.log(roomname);
             if (spawnss.length > 0)
             {
-                Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x - 2, Game.spawns[roomname].pos.y - 2, roomname);
+                Game.rooms[roomname].createFlag(Game.spawns[roomname].pos.x , Game.spawns[roomname].pos.y + 1, roomname);
             }
             else
             {
                 Game.rooms[roomname].createFlag(25, 25, roomname);
-                Game.rooms[roomname].createFlag(25, 25, roomname + "noTemplate");
+               
             }
             var mainflags = Game.flags[roomname];
-            mainflags.memory.flagstruct = flagstruct;
+         
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            defcon
@@ -107,7 +87,7 @@ var roomController = {
         {
             if (Game.time % 99 == 0)
             {
-                 squadgenerate.run(roomname);
+            //     squadgenerate.run(roomname);
             }
         }
  
@@ -122,24 +102,7 @@ var roomController = {
         
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            basebuild
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-        if (Game.time % (3500) == 0)
-        {
-            var checkflag = Game.flags[roomname + "noTemplate"];
-            try
-            {
-                var startCpu = Game.cpu.getUsed();
-                if (checkflag == undefined)
-                {
-                    //      buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
-                }
-                var buildbase_cpu_used = +Game.cpu.getUsed() - startCpu;
-            }
-            catch (e)
-            {
-                console.log("basebuild err");
-            }
-        }
+       buildbase.run(roomname, mainflag.pos.x, mainflag.pos.y);
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                            towers
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            

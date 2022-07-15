@@ -1511,7 +1511,7 @@ var creepfunctions = {
             else if (creep.memory.memstruct.tasklist[0][0] == "withdrawControllerContainer")
             {
 
-                var targets = creep.room.controller.pos.findInRange(FIND_STRUCTURES, 4,
+                var targets = creep.room.controller.pos.findInRange(FIND_STRUCTURES, 2,
                 {
                     filter: (structure) =>
                     {

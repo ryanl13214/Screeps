@@ -264,6 +264,13 @@ roomnames=roomnames2
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
                      var depo = creep.room.find(FIND_DEPOSITS);
                      var tmpvar = Memory.empire.roomsobj[roomname].corridorRooms;
+                     
+                     
+                     
+                     
+                     
+                     
+                     
                      if (tmpvar == undefined)
                      {
                          Memory.empire.roomsobj[roomname].corridorRooms = [];
@@ -279,14 +286,14 @@ roomnames=roomnames2
                      }
                      if (!found && creep.room.name != creep.memory.memstruct.spawnRoom && creep.room.controller == undefined && depo.length != 0)
                      {
-                         Memory.empire.roomsobj[roomname].corridorRooms.push(creep.room.name); /// 
+                         Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].corridorRooms.push(creep.room.name); /// 
                      }
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                      //                                                     deciding what rooms to mine 
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
                      var listEnemyStructures = creep.room.find(FIND_HOSTILE_STRUCTURES);
                      var listEnemycreeps = creep.room.find(FIND_HOSTILE_CREEPS);
-                     var tmpvar = Memory.empire.roomsobj[roomname].MineRooms;
+                     var tmpvar = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms;
                      var found = false;
 
                      if (tmpvar == undefined)
@@ -326,7 +333,7 @@ roomnames=roomnames2
                          creep.say(available);
                          if (available && creep.ticksToLive > 1450 && listEnemyStructures.length == 0 && listEnemycreeps.length == 0)
                          {
-                             Memory.empire.roomsobj[roomname].MineRooms.push(creep.room.name); /// 
+                             Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].MineRooms.push(creep.room.name); /// 
                          }
                      }
                      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,8 +344,8 @@ roomnames=roomnames2
 
                      if (tmpvar == undefined)
                      {
-                         Memory.empire.roomsobj[roomname].centerroomsinrange = [];
-                         var tmpvar = Memory.empire.roomsobj[roomname].centerroomsinrange;
+                         Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange = [];
+                         var tmpvar = Memory.empire.roomsobj[creep.memory.memstruct.spawnRoom].centerroomsinrange;
                      }
 
                      var found = false;

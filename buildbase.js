@@ -173,9 +173,8 @@ var goalroom = Game.rooms[roomname]
       
       var extLocationsbunker =   Object.values(buildings.buildings.extension["pos"]);
          
-        
-        console.log(JSON.stringify(extLocationsbunker))
-        
+     goalroom.createConstructionSite(storage_xpos + 1, storage_ypos + 1, STRUCTURE_STORAGE);
+ //   console.log(roomname, "-roomname",goalroom.createConstructionSite(storage_xpos + 1, storage_ypos + 1, STRUCTURE_STORAGE))
          for(var i = 0; i < extLocationsbunker.length; i++)
          {
             
@@ -186,6 +185,26 @@ var goalroom = Game.rooms[roomname]
              
            
          }
+         
+         
+         
+         
+               var roadLocationsbunker =   Object.values(buildings.buildings.road["pos"]);
+         
+         if(goalroom.controller.level > 3){
+             for(var i = 0; i < roadLocationsbunker.length; i++)
+             {
+                
+                     if(terrain.get(storage_xpos + roadLocationsbunker[i].x, storage_ypos + roadLocationsbunker[i].y) != 1)
+                     {
+                       //  goalroom.createConstructionSite(storage_xpos + roadLocationsbunker[i].x, storage_ypos + roadLocationsbunker[i].y, STRUCTURE_ROAD);
+                     }
+                 
+               
+             }
+         
+         }
+         
        
          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
          if(goalroom.storage == undefined)
